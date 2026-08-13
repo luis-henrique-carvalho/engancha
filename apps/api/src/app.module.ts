@@ -13,6 +13,13 @@ import {
 } from './infrastructure/infrastructure-health.service'
 import { createRedisProbe } from './infrastructure/redis-probe'
 import { Pool } from 'pg'
+import { VerificationController } from './verification/verification.controller'
+import { VerificationService } from './verification/verification.service'
+import {
+  VERIFICATION_QUEUE,
+  VerificationQueueLifecycle,
+  createVerificationQueue,
+} from './verification/verification.queue'
 
 @Module({
   imports: [
@@ -23,7 +30,7 @@ import { Pool } from 'pg'
       validationOptions: { allowUnknown: true, abortEarly: false },
     }),
   ],
-  controllers: [AppController, HealthController],
+  controllers: [AppController, HealthController, VerificationController],
   providers: [
     { provide: StructuredLogger, useFactory: () => new StructuredLogger('api') },
     {
@@ -57,6 +64,18 @@ import { Pool } from 'pg'
       useFactory: (postgres: Pool, redisProbe: ReturnType<typeof createRedisProbe>) =>
         new InfrastructureHealthService(postgres, redisProbe),
       inject: [POSTGRES_POOL, REDIS_PROBE],
+    },
+    {
+      provide: VERIFICATION_QUEUE,
+      useFactory: (config: ConfigService) => createVerificationQueue(config),
+      inject: [ConfigService],
+    },
+    VerificationService,
+    {
+      provide: VerificationQueueLifecycle,
+      useFactory: (queue: ReturnType<typeof createVerificationQueue>) =>
+        new VerificationQueueLifecycle(queue),
+      inject: [VERIFICATION_QUEUE],
     },
   ],
   exports: [RuntimeLifecycleService],
