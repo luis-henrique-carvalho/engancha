@@ -3,4 +3,10 @@ version = 1
 name = "engancha"
 
 [setup]
-script = ""
+script = """
+set -eu
+
+if [ ! -f .env ]; then
+  cp .env.example .env
+fi
+"""
