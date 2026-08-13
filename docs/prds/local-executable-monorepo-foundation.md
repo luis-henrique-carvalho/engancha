@@ -94,7 +94,7 @@ As quatro filas iniciais são declaradas com nomes centralizados. Somente a veri
 - Redis é a infraestrutura de BullMQ, não fonte de verdade.
 - PostgreSQL é provisionado e verificado, sem schema de domínio.
 - A API mantém o prefixo público `/api/v1`; endpoints técnicos permanecem claramente separados de contratos de produto futuros.
-- O grafo do projeto continua em `insta-flow/graphify-out/`; a referência do `shadcn-admin` mantém seu próprio `graphify-out/` em um clone local externo ao monorepo. Consultas combinadas só devem ser criadas temporariamente para comparação explícita.
+- O grafo do projeto continua em `Engancha/graphify-out/`; a referência do `shadcn-admin` mantém seu próprio `graphify-out/` em um clone local externo ao monorepo. Consultas combinadas só devem ser criadas temporariamente para comparação explícita.
 
 ## Acceptance Criteria
 
