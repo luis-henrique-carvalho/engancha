@@ -1,4 +1,4 @@
-# Insta Flow — Modelo de Dados
+# Engancha — Modelo de Dados
 
 > Versão: 0.2  
 > Status: aprovado para implementação  
@@ -6,7 +6,7 @@
 
 ## 1. Objetivo
 
-Este documento define o modelo lógico de dados do Insta Flow antes da criação do `schema.prisma`.
+Este documento define o modelo lógico de dados do Engancha antes da criação do `schema.prisma`.
 
 O modelo precisa atender três objetivos ao mesmo tempo:
 

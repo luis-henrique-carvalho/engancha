@@ -70,17 +70,6 @@
       "norm_label": "better auth"
     },
     {
-      "label": "Bull Board",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L392",
-      "_origin": "ast",
-      "id": "roadmap_bull_board",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "bull board"
-    },
-    {
       "label": "Checklist de valida\u00e7\u00e3o",
       "file_type": "document",
       "source_file": "ROADMAP.md",
@@ -268,17 +257,6 @@
       "norm_label": "fase 6 \u2014 dashboard e metricas"
     },
     {
-      "label": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L386",
-      "_origin": "ast",
-      "id": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "fase 7 \u2014 operacao, testes e release do mvp"
-    },
-    {
       "label": "Fase futura \u2014 Integra\u00e7\u00e3o real com Instagram/Meta",
       "file_type": "document",
       "source_file": "ROADMAP.md",
@@ -389,17 +367,6 @@
       "norm_label": "registro de decisoes do roadmap"
     },
     {
-      "label": "Release",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L431",
-      "_origin": "ast",
-      "id": "roadmap_release",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "release"
-    },
-    {
       "label": "Resend",
       "file_type": "document",
       "source_file": "ROADMAP.md",
@@ -411,17 +378,6 @@
       "norm_label": "resend"
     },
     {
-      "label": "Seguran\u00e7a e opera\u00e7\u00e3o",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L417",
-      "_origin": "ast",
-      "id": "roadmap_seguran\u00e7a_e_opera\u00e7\u00e3o",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "seguranca e operacao"
-    },
-    {
       "label": "Status atual",
       "file_type": "document",
       "source_file": "ROADMAP.md",
@@ -431,17 +387,6 @@
       "community": 0,
       "community_name": "Insta Flow \u2014 Roadmap",
       "norm_label": "status atual"
-    },
-    {
-      "label": "Testes",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L403",
-      "_origin": "ast",
-      "id": "roadmap_testes",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "testes"
     },
     {
       "label": "Vis\u00e3o geral das fases",
@@ -464,17 +409,6 @@
       "community": 0,
       "community_name": "Insta Flow \u2014 Roadmap",
       "norm_label": "worker"
-    },
-    {
-      "label": "10. \u00c9picos candidatos consolidados",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L921",
-      "_origin": "ast",
-      "id": "requirements_10_\u00e9picos_candidatos_consolidados",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "10. epicos candidatos consolidados"
     },
     {
       "label": "11. Depend\u00eancias entre \u00e9picos",
@@ -609,105 +543,6 @@
       "norm_label": "9. criterios de aceite do mvp"
     },
     {
-      "label": "EPIC-01 \u2014 Autentica\u00e7\u00e3o e acesso",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L923",
-      "_origin": "ast",
-      "id": "requirements_epic_01_autentica\u00e7\u00e3o_e_acesso",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-01 \u2014 autenticacao e acesso"
-    },
-    {
-      "label": "EPIC-02 \u2014 Workspaces e isolamento multi-tenant",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L927",
-      "_origin": "ast",
-      "id": "requirements_epic_02_workspaces_e_isolamento_multi_tenant",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-02 \u2014 workspaces e isolamento multi-tenant"
-    },
-    {
-      "label": "EPIC-03 \u2014 Gest\u00e3o de automa\u00e7\u00f5es",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L931",
-      "_origin": "ast",
-      "id": "requirements_epic_03_gest\u00e3o_de_automa\u00e7\u00f5es",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-03 \u2014 gestao de automacoes"
-    },
-    {
-      "label": "EPIC-04 \u2014 Simula\u00e7\u00e3o do fluxo Instagram-first",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L935",
-      "_origin": "ast",
-      "id": "requirements_epic_04_simula\u00e7\u00e3o_do_fluxo_instagram_first",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-04 \u2014 simulacao do fluxo instagram-first"
-    },
-    {
-      "label": "EPIC-05 \u2014 Conversas, contatos e leads",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L939",
-      "_origin": "ast",
-      "id": "requirements_epic_05_conversas_contatos_e_leads",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-05 \u2014 conversas, contatos e leads"
-    },
-    {
-      "label": "EPIC-06 \u2014 Dashboard e m\u00e9tricas",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L943",
-      "_origin": "ast",
-      "id": "requirements_epic_06_dashboard_e_m\u00e9tricas",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-06 \u2014 dashboard e metricas"
-    },
-    {
-      "label": "EPIC-07 \u2014 E-mails transacionais",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L947",
-      "_origin": "ast",
-      "id": "requirements_epic_07_e_mails_transacionais",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-07 \u2014 e-mails transacionais"
-    },
-    {
-      "label": "EPIC-08 \u2014 Opera\u00e7\u00e3o e monitoramento de filas",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L951",
-      "_origin": "ast",
-      "id": "requirements_epic_08_opera\u00e7\u00e3o_e_monitoramento_de_filas",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-08 \u2014 operacao e monitoramento de filas"
-    },
-    {
-      "label": "EPIC-09 \u2014 Integra\u00e7\u00e3o real com Instagram/Meta (primeiro provider real)",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L955",
-      "_origin": "ast",
-      "id": "requirements_epic_09_integra\u00e7\u00e3o_real_com_instagram_meta_primeiro_provider_real",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epic-09 \u2014 integracao real com instagram/meta (primeiro provider real)"
-    },
-    {
       "label": "FR-ANALYTICS-001 \u2014 Exibir resumo do workspace",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
@@ -829,6 +664,105 @@
       "norm_label": "fr-email-003 \u2014 reenviar confirmacao"
     },
     {
+      "label": "FR-OPS-001 \u2014 Visualizar filas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L661",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_001_visualizar_filas",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-001 \u2014 visualizar filas"
+    },
+    {
+      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L675",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_002_proteger_bull_board",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-002 \u2014 proteger bull board"
+    },
+    {
+      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L682",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_003_inspecionar_jobs",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
+    },
+    {
+      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L689",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
+    },
+    {
+      "label": "FR-WORK-001 \u2014 Criar workspace padr\u00e3o",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L178",
+      "_origin": "ast",
+      "id": "requirements_fr_work_001_criar_workspace_padr\u00e3o",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-work-001 \u2014 criar workspace padrao"
+    },
+    {
+      "label": "FR-WORK-002 \u2014 Exibir workspace ativo",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L193",
+      "_origin": "ast",
+      "id": "requirements_fr_work_002_exibir_workspace_ativo",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-work-002 \u2014 exibir workspace ativo"
+    },
+    {
+      "label": "FR-WORK-003 \u2014 Trocar workspace ativo",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L206",
+      "_origin": "ast",
+      "id": "requirements_fr_work_003_trocar_workspace_ativo",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-work-003 \u2014 trocar workspace ativo"
+    },
+    {
+      "label": "FR-WORK-004 \u2014 Isolar dados por workspace",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L219",
+      "_origin": "ast",
+      "id": "requirements_fr_work_004_isolar_dados_por_workspace",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-work-004 \u2014 isolar dados por workspace"
+    },
+    {
+      "label": "FR-WORK-005 \u2014 Preparar membros futuros",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L233",
+      "_origin": "ast",
+      "id": "requirements_fr_work_005_preparar_membros_futuros",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "fr-work-005 \u2014 preparar membros futuros"
+    },
+    {
       "label": "Inclu\u00eddo",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
@@ -862,6 +796,17 @@
       "norm_label": "nao incluido"
     },
     {
+      "label": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L176",
+      "_origin": "ast",
+      "id": "requirements_\u00e9pico_candidato_b_organizations_e_workspaces",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "epico candidato b \u2014 organizations e workspaces"
+    },
+    {
       "label": "\u00c9pico candidato F \u2014 Dashboard e m\u00e9tricas",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
@@ -882,6 +827,17 @@
       "community": 1,
       "community_name": "Insta Flow \u2014 Requisitos Funcionais",
       "norm_label": "epico candidato g \u2014 e-mails transacionais"
+    },
+    {
+      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L659",
+      "_origin": "ast",
+      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
+      "community": 1,
+      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
     },
     {
       "label": "6. Regras de neg\u00f3cio transversais",
@@ -1082,81 +1038,114 @@
       "norm_label": "epico candidato d \u2014 simulacao de comentarios e automacoes"
     },
     {
-      "label": "5.1 Monorepo",
+      "label": "prd-to-tickets/SKILL.md",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L64",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "architecture_5_1_monorepo",
+      "id": "codex_skills_prd_to_tickets_skill",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.1 monorepo"
+      "community_name": "PRD to Tickets",
+      "norm_label": "prd-to-tickets/skill.md"
     },
     {
-      "label": "5.2 API e worker",
+      "label": "Entradas e escopo",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L79",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "architecture_5_2_api_e_worker",
+      "id": "codex_skills_prd_to_tickets_skill_entradas_e_escopo",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.2 api e worker"
+      "community_name": "PRD to Tickets",
+      "norm_label": "entradas e escopo"
     },
     {
-      "label": "5.3 Modular monolith no backend",
+      "label": "Fase 1 \u2014 Entender o contexto",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L90",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L51",
       "_origin": "ast",
-      "id": "architecture_5_3_modular_monolith_no_backend",
+      "id": "codex_skills_prd_to_tickets_skill_fase_1_entender_o_contexto",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.3 modular monolith no backend"
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 1 \u2014 entender o contexto"
     },
     {
-      "label": "5.4 API REST versionada",
+      "label": "Fase 2 \u2014 Resolver decis\u00f5es com o usu\u00e1rio",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L102",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L63",
       "_origin": "ast",
-      "id": "architecture_5_4_api_rest_versionada",
+      "id": "codex_skills_prd_to_tickets_skill_fase_2_resolver_decis\u00f5es_com_o_usu\u00e1rio",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.4 api rest versionada"
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 2 \u2014 resolver decisoes com o usuario"
     },
     {
-      "label": "5.5 Banco de dados",
+      "label": "Fase 3 \u2014 Criar a PRD",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L118",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L88",
       "_origin": "ast",
-      "id": "architecture_5_5_banco_de_dados",
+      "id": "codex_skills_prd_to_tickets_skill_fase_3_criar_a_prd",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.5 banco de dados"
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 3 \u2014 criar a prd"
     },
     {
-      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
+      "label": "Fase 4 \u2014 Propor tickets verticais",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L129",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L165",
       "_origin": "ast",
-      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
+      "id": "codex_skills_prd_to_tickets_skill_fase_4_propor_tickets_verticais",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 4 \u2014 propor tickets verticais"
     },
     {
-      "label": "5. Decis\u00f5es arquiteturais",
+      "label": "Fase 5 \u2014 Criar tickets locais",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L62",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L188",
       "_origin": "ast",
-      "id": "architecture_5_decis\u00f5es_arquiteturais",
+      "id": "codex_skills_prd_to_tickets_skill_fase_5_criar_tickets_locais",
       "community": 12,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5. decisoes arquiteturais"
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 5 \u2014 criar tickets locais"
+    },
+    {
+      "label": "Fase 6 \u2014 Verificar a sa\u00edda",
+      "file_type": "document",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L237",
+      "_origin": "ast",
+      "id": "codex_skills_prd_to_tickets_skill_fase_6_verificar_a_sa\u00edda",
+      "community": 12,
+      "community_name": "PRD to Tickets",
+      "norm_label": "fase 6 \u2014 verificar a saida"
+    },
+    {
+      "label": "Objetivo",
+      "file_type": "document",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "codex_skills_prd_to_tickets_skill_objetivo",
+      "community": 12,
+      "community_name": "PRD to Tickets",
+      "norm_label": "objetivo"
+    },
+    {
+      "label": "PRD to Tickets",
+      "file_type": "document",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "community": 12,
+      "community_name": "PRD to Tickets",
+      "norm_label": "prd to tickets"
     },
     {
       "label": "8. Contratos m\u00ednimos de API",
@@ -1456,125 +1445,191 @@
       "norm_label": "step 1 \u2014 traversal"
     },
     {
-      "label": "FR-WORK-001 \u2014 Criar workspace padr\u00e3o",
+      "label": "10. \u00c9picos candidatos consolidados",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L178",
+      "source_location": "L921",
       "_origin": "ast",
-      "id": "requirements_fr_work_001_criar_workspace_padr\u00e3o",
+      "id": "requirements_10_\u00e9picos_candidatos_consolidados",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "fr-work-001 \u2014 criar workspace padrao"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "10. epicos candidatos consolidados"
     },
     {
-      "label": "FR-WORK-002 \u2014 Exibir workspace ativo",
+      "label": "EPIC-01 \u2014 Autentica\u00e7\u00e3o e acesso",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L193",
+      "source_location": "L923",
       "_origin": "ast",
-      "id": "requirements_fr_work_002_exibir_workspace_ativo",
+      "id": "requirements_epic_01_autentica\u00e7\u00e3o_e_acesso",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "fr-work-002 \u2014 exibir workspace ativo"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-01 \u2014 autenticacao e acesso"
     },
     {
-      "label": "FR-WORK-003 \u2014 Trocar workspace ativo",
+      "label": "EPIC-02 \u2014 Workspaces e isolamento multi-tenant",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L206",
+      "source_location": "L927",
       "_origin": "ast",
-      "id": "requirements_fr_work_003_trocar_workspace_ativo",
+      "id": "requirements_epic_02_workspaces_e_isolamento_multi_tenant",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "fr-work-003 \u2014 trocar workspace ativo"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-02 \u2014 workspaces e isolamento multi-tenant"
     },
     {
-      "label": "FR-WORK-004 \u2014 Isolar dados por workspace",
+      "label": "EPIC-03 \u2014 Gest\u00e3o de automa\u00e7\u00f5es",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L219",
+      "source_location": "L931",
       "_origin": "ast",
-      "id": "requirements_fr_work_004_isolar_dados_por_workspace",
+      "id": "requirements_epic_03_gest\u00e3o_de_automa\u00e7\u00f5es",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "fr-work-004 \u2014 isolar dados por workspace"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-03 \u2014 gestao de automacoes"
     },
     {
-      "label": "FR-WORK-005 \u2014 Preparar membros futuros",
+      "label": "EPIC-04 \u2014 Simula\u00e7\u00e3o do fluxo Instagram-first",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L233",
+      "source_location": "L935",
       "_origin": "ast",
-      "id": "requirements_fr_work_005_preparar_membros_futuros",
+      "id": "requirements_epic_04_simula\u00e7\u00e3o_do_fluxo_instagram_first",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "fr-work-005 \u2014 preparar membros futuros"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-04 \u2014 simulacao do fluxo instagram-first"
     },
     {
-      "label": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "label": "EPIC-05 \u2014 Conversas, contatos e leads",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L176",
+      "source_location": "L939",
       "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_b_organizations_e_workspaces",
+      "id": "requirements_epic_05_conversas_contatos_e_leads",
       "community": 17,
-      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
-      "norm_label": "epico candidato b \u2014 organizations e workspaces"
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-05 \u2014 conversas, contatos e leads"
     },
     {
-      "label": "FR-OPS-001 \u2014 Visualizar filas",
+      "label": "EPIC-06 \u2014 Dashboard e m\u00e9tricas",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L661",
+      "source_location": "L943",
       "_origin": "ast",
-      "id": "requirements_fr_ops_001_visualizar_filas",
+      "id": "requirements_epic_06_dashboard_e_m\u00e9tricas",
+      "community": 17,
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-06 \u2014 dashboard e metricas"
+    },
+    {
+      "label": "EPIC-07 \u2014 E-mails transacionais",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L947",
+      "_origin": "ast",
+      "id": "requirements_epic_07_e_mails_transacionais",
+      "community": 17,
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-07 \u2014 e-mails transacionais"
+    },
+    {
+      "label": "EPIC-08 \u2014 Opera\u00e7\u00e3o e monitoramento de filas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L951",
+      "_origin": "ast",
+      "id": "requirements_epic_08_opera\u00e7\u00e3o_e_monitoramento_de_filas",
+      "community": 17,
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-08 \u2014 operacao e monitoramento de filas"
+    },
+    {
+      "label": "EPIC-09 \u2014 Integra\u00e7\u00e3o real com Instagram/Meta (primeiro provider real)",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L955",
+      "_origin": "ast",
+      "id": "requirements_epic_09_integra\u00e7\u00e3o_real_com_instagram_meta_primeiro_provider_real",
+      "community": 17,
+      "community_name": "10. \u00c9picos candidatos consolidados",
+      "norm_label": "epic-09 \u2014 integracao real com instagram/meta (primeiro provider real)"
+    },
+    {
+      "label": "8. Dom\u00ednios e m\u00f3dulos",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L301",
+      "_origin": "ast",
+      "id": "architecture_8_dom\u00ednios_e_m\u00f3dulos",
       "community": 18,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-001 \u2014 visualizar filas"
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "8. dominios e modulos"
     },
     {
-      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
+      "label": "Analytics",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L675",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L360",
       "_origin": "ast",
-      "id": "requirements_fr_ops_002_proteger_bull_board",
+      "id": "architecture_analytics",
       "community": 18,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-002 \u2014 proteger bull board"
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "analytics"
     },
     {
-      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
+      "label": "Auth",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L682",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L303",
       "_origin": "ast",
-      "id": "requirements_fr_ops_003_inspecionar_jobs",
+      "id": "architecture_auth",
       "community": 18,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "auth"
     },
     {
-      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
+      "label": "Automations",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L689",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L330",
       "_origin": "ast",
-      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
+      "id": "architecture_automations",
       "community": 18,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "automations"
     },
     {
-      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "label": "Conversations e Contacts",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L659",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L356",
       "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
+      "id": "architecture_conversations_e_contacts",
       "community": 18,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "conversations e contacts"
+    },
+    {
+      "label": "Simulation",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L344",
+      "_origin": "ast",
+      "id": "architecture_simulation",
+      "community": 18,
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "simulation"
+    },
+    {
+      "label": "Workspaces",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L314",
+      "_origin": "ast",
+      "id": "architecture_workspaces",
+      "community": 18,
+      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
+      "norm_label": "workspaces"
     },
     {
       "label": "add-watch.md",
@@ -1786,6 +1841,83 @@
       "norm_label": "4. vocabulario do dominio"
     },
     {
+      "label": "5.1 Monorepo",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "architecture_5_1_monorepo",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.1 monorepo"
+    },
+    {
+      "label": "5.2 API e worker",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "architecture_5_2_api_e_worker",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.2 api e worker"
+    },
+    {
+      "label": "5.3 Modular monolith no backend",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "architecture_5_3_modular_monolith_no_backend",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.3 modular monolith no backend"
+    },
+    {
+      "label": "5.4 API REST versionada",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "architecture_5_4_api_rest_versionada",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.4 api rest versionada"
+    },
+    {
+      "label": "5.5 Banco de dados",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "architecture_5_5_banco_de_dados",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.5 banco de dados"
+    },
+    {
+      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
+    },
+    {
+      "label": "5. Decis\u00f5es arquiteturais",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "architecture_5_decis\u00f5es_arquiteturais",
+      "community": 2,
+      "community_name": "Insta Flow \u2014 Architecture",
+      "norm_label": "5. decisoes arquiteturais"
+    },
+    {
       "label": "6. Topologia de runtime",
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
@@ -1808,17 +1940,6 @@
       "norm_label": "7. organizacao de pastas"
     },
     {
-      "label": "8. Dom\u00ednios e m\u00f3dulos",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L301",
-      "_origin": "ast",
-      "id": "architecture_8_dom\u00ednios_e_m\u00f3dulos",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "8. dominios e modulos"
-    },
-    {
       "label": "9. Eventos e filas",
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
@@ -1828,50 +1949,6 @@
       "community": 2,
       "community_name": "Insta Flow \u2014 Architecture",
       "norm_label": "9. eventos e filas"
-    },
-    {
-      "label": "Analytics",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L360",
-      "_origin": "ast",
-      "id": "architecture_analytics",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "analytics"
-    },
-    {
-      "label": "Auth",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L303",
-      "_origin": "ast",
-      "id": "architecture_auth",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "auth"
-    },
-    {
-      "label": "Automations",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L330",
-      "_origin": "ast",
-      "id": "architecture_automations",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "automations"
-    },
-    {
-      "label": "Conversations e Contacts",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L356",
-      "_origin": "ast",
-      "id": "architecture_conversations_e_contacts",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "conversations e contacts"
     },
     {
       "label": "Desenvolvimento",
@@ -1938,28 +2015,6 @@
       "community": 2,
       "community_name": "Insta Flow \u2014 Architecture",
       "norm_label": "producao inicial"
-    },
-    {
-      "label": "Simulation",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L344",
-      "_origin": "ast",
-      "id": "architecture_simulation",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "simulation"
-    },
-    {
-      "label": "Workspaces",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L314",
-      "_origin": "ast",
-      "id": "architecture_workspaces",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "workspaces"
     },
     {
       "label": "hooks.md",
@@ -2160,51 +2215,62 @@
       "norm_label": "graphify reference: extraction subagent prompt (compact)"
     },
     {
-      "label": "ARCHITECTURE.md",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "architecture",
-      "community": 26,
-      "community_name": "ARCHITECTURE.md",
-      "norm_label": "architecture.md"
-    },
-    {
-      "label": "DATA-MODEL.md",
-      "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "data_model",
-      "community": 26,
-      "community_name": "ARCHITECTURE.md",
-      "norm_label": "data-model.md"
-    },
-    {
-      "label": "REQUIREMENTS.md",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "requirements",
-      "community": 26,
-      "community_name": "ARCHITECTURE.md",
-      "norm_label": "requirements.md"
-    },
-    {
-      "label": "ROADMAP.md",
+      "label": "Bull Board",
       "file_type": "document",
       "source_file": "ROADMAP.md",
-      "source_location": "L1",
+      "source_location": "L392",
       "_origin": "ast",
-      "id": "roadmap",
+      "id": "roadmap_bull_board",
       "community": 26,
-      "community_name": "ARCHITECTURE.md",
-      "norm_label": "roadmap.md"
+      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "norm_label": "bull board"
     },
     {
-      "label": "SKILL.md",
+      "label": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L386",
+      "_origin": "ast",
+      "id": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
+      "community": 26,
+      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "norm_label": "fase 7 \u2014 operacao, testes e release do mvp"
+    },
+    {
+      "label": "Release",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L431",
+      "_origin": "ast",
+      "id": "roadmap_release",
+      "community": 26,
+      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "norm_label": "release"
+    },
+    {
+      "label": "Seguran\u00e7a e opera\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L417",
+      "_origin": "ast",
+      "id": "roadmap_seguran\u00e7a_e_opera\u00e7\u00e3o",
+      "community": 26,
+      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "norm_label": "seguranca e operacao"
+    },
+    {
+      "label": "Testes",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L403",
+      "_origin": "ast",
+      "id": "roadmap_testes",
+      "community": 26,
+      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "norm_label": "testes"
+    },
+    {
+      "label": "graphify/SKILL.md",
       "file_type": "document",
       "source_file": ".codex/skills/graphify/SKILL.md",
       "source_location": "L1",
@@ -2212,7 +2278,7 @@
       "id": "codex_skills_graphify_skill",
       "community": 3,
       "community_name": "What You Must Do When Invoked",
-      "norm_label": "skill.md"
+      "norm_label": "graphify/skill.md"
     },
     {
       "label": "For /graphify add and --watch",
@@ -2479,6 +2545,28 @@
       "norm_label": "what you must do when invoked"
     },
     {
+      "label": "ARCHITECTURE.md",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "architecture",
+      "community": 4,
+      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "norm_label": "architecture.md"
+    },
+    {
+      "label": "DATA-MODEL.md",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_model",
+      "community": 4,
+      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "norm_label": "data-model.md"
+    },
+    {
       "label": "10. Mapeamento para requisitos",
       "file_type": "document",
       "source_file": "DATA-MODEL.md",
@@ -2686,6 +2774,28 @@
       "community": 4,
       "community_name": "Insta Flow \u2014 Modelo de Dados",
       "norm_label": "tabelas gerenciadas pelo better auth"
+    },
+    {
+      "label": "REQUIREMENTS.md",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "requirements",
+      "community": 4,
+      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "norm_label": "requirements.md"
+    },
+    {
+      "label": "ROADMAP.md",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "roadmap",
+      "community": 4,
+      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "norm_label": "roadmap.md"
     },
     {
       "label": "FR-AUTO-001 \u2014 Listar automa\u00e7\u00f5es",
@@ -4282,6 +4392,105 @@
       "_origin": "ast",
       "source": "codex_skills_graphify_skill_what_you_must_do_when_invoked",
       "target": "codex_skills_graphify_skill_step_1_ensure_graphify_is_installed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill",
+      "target": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_4_propor_tickets_verticais",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L188",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_5_criar_tickets_locais",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L237",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_6_verificar_a_sa\u00edda",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_entradas_e_escopo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_1_entender_o_contexto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_2_resolver_decis\u00f5es_com_o_usu\u00e1rio",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_objetivo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
+      "target": "codex_skills_prd_to_tickets_skill_fase_3_criar_a_prd",
       "confidence_score": 1.0
     },
     {

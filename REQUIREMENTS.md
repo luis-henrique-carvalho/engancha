@@ -1,4 +1,4 @@
-# Insta Flow — Requisitos Funcionais
+# Engancha — Requisitos Funcionais
 
 > Status: draft 0.1  
 > Escopo: MVP navegável Instagram-first, com núcleo preparado para múltiplos providers  
@@ -6,7 +6,7 @@
 
 ## 1. Objetivo do documento
 
-Este documento define o comportamento funcional do MVP do Insta Flow e serve como base para decomposição em épicos, histórias de usuário e tarefas de implementação.
+Este documento define o comportamento funcional do MVP do Engancha e serve como base para decomposição em épicos, histórias de usuário e tarefas de implementação.
 
 O MVP deve validar o fluxo:
 

@@ -11,7 +11,7 @@
       "_origin": "ast",
       "id": "roadmap_abstra\u00e7\u00e3o_de_canal",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "abstracao de canal"
     },
     {
@@ -22,7 +22,7 @@
       "_origin": "ast",
       "id": "roadmap_api",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "api"
     },
     {
@@ -33,7 +33,7 @@
       "_origin": "ast",
       "id": "roadmap_api_e_interface",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "api e interface"
     },
     {
@@ -44,7 +44,7 @@
       "_origin": "ast",
       "id": "roadmap_backend_base",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "backend base"
     },
     {
@@ -55,7 +55,7 @@
       "_origin": "ast",
       "id": "roadmap_backlog_posterior",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "backlog posterior"
     },
     {
@@ -66,8 +66,19 @@
       "_origin": "ast",
       "id": "roadmap_better_auth",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "better auth"
+    },
+    {
+      "label": "Bull Board",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L392",
+      "_origin": "ast",
+      "id": "roadmap_bull_board",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "bull board"
     },
     {
       "label": "Checklist de valida\u00e7\u00e3o",
@@ -77,7 +88,7 @@
       "_origin": "ast",
       "id": "roadmap_checklist_de_valida\u00e7\u00e3o",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "checklist de validacao"
     },
     {
@@ -88,7 +99,7 @@
       "_origin": "ast",
       "id": "roadmap_como_usar_este_roadmap",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "como usar este roadmap"
     },
     {
@@ -99,7 +110,7 @@
       "_origin": "ast",
       "id": "roadmap_contratos",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "contratos"
     },
     {
@@ -110,7 +121,7 @@
       "_origin": "ast",
       "id": "roadmap_dados_e_infraestrutura_local",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "dados e infraestrutura local"
     },
     {
@@ -121,7 +132,7 @@
       "_origin": "ast",
       "id": "roadmap_defini\u00e7\u00e3o_de_pronto_funcionalidade",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "definicao de pronto \u2014 funcionalidade"
     },
     {
@@ -132,7 +143,7 @@
       "_origin": "ast",
       "id": "roadmap_depend\u00eancias_cr\u00edticas",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "dependencias criticas"
     },
     {
@@ -143,8 +154,19 @@
       "_origin": "ast",
       "id": "roadmap_dom\u00ednio_e_persist\u00eancia",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "dominio e persistencia"
+    },
+    {
+      "label": "Engancha \u2014 Roadmap",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "roadmap_engancha_roadmap",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "engancha \u2014 roadmap"
     },
     {
       "label": "Eventos e filas",
@@ -154,7 +176,7 @@
       "_origin": "ast",
       "id": "roadmap_eventos_e_filas",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "eventos e filas"
     },
     {
@@ -165,7 +187,7 @@
       "_origin": "ast",
       "id": "roadmap_extens\u00f5es_futuras_novos_providers",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "extensoes futuras \u2014 novos providers"
     },
     {
@@ -176,7 +198,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_0_5_valida\u00e7\u00e3o_do_modelo_de_dados",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 0.5 \u2014 validacao do modelo de dados"
     },
     {
@@ -187,7 +209,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_0_prepara\u00e7\u00e3o",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 0 \u2014 preparacao"
     },
     {
@@ -198,7 +220,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_1_funda\u00e7\u00e3o_do_monorepo_e_infraestrutura",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 1 \u2014 fundacao do monorepo e infraestrutura"
     },
     {
@@ -209,7 +231,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_2_autentica\u00e7\u00e3o_e_workspaces",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 2 \u2014 autenticacao e workspaces"
     },
     {
@@ -220,7 +242,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_3_gest\u00e3o_de_automa\u00e7\u00f5es",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 3 \u2014 gestao de automacoes"
     },
     {
@@ -231,7 +253,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_4_simula\u00e7\u00e3o_ponta_a_ponta",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 4 \u2014 simulacao ponta a ponta"
     },
     {
@@ -242,7 +264,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_5_conversas_contatos_e_leads",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 5 \u2014 conversas, contatos e leads"
     },
     {
@@ -253,8 +275,19 @@
       "_origin": "ast",
       "id": "roadmap_fase_6_dashboard_e_m\u00e9tricas",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase 6 \u2014 dashboard e metricas"
+    },
+    {
+      "label": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L386",
+      "_origin": "ast",
+      "id": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "fase 7 \u2014 operacao, testes e release do mvp"
     },
     {
       "label": "Fase futura \u2014 Integra\u00e7\u00e3o real com Instagram/Meta",
@@ -264,7 +297,7 @@
       "_origin": "ast",
       "id": "roadmap_fase_futura_integra\u00e7\u00e3o_real_com_instagram_meta",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "fase futura \u2014 integracao real com instagram/meta"
     },
     {
@@ -275,7 +308,7 @@
       "_origin": "ast",
       "id": "roadmap_formul\u00e1rio_web",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "formulario web"
     },
     {
@@ -286,7 +319,7 @@
       "_origin": "ast",
       "id": "roadmap_frontend_base",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "frontend base"
     },
     {
@@ -297,19 +330,8 @@
       "_origin": "ast",
       "id": "roadmap_gate_de_aprova\u00e7\u00e3o",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "gate de aprovacao"
-    },
-    {
-      "label": "Insta Flow \u2014 Roadmap",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "roadmap_insta_flow_roadmap",
-      "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
-      "norm_label": "insta flow \u2014 roadmap"
     },
     {
       "label": "Interface",
@@ -319,7 +341,7 @@
       "_origin": "ast",
       "id": "roadmap_interface",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "interface"
     },
     {
@@ -330,7 +352,7 @@
       "_origin": "ast",
       "id": "roadmap_monorepo",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "monorepo"
     },
     {
@@ -341,7 +363,7 @@
       "_origin": "ast",
       "id": "roadmap_organization_plugin",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "organization plugin"
     },
     {
@@ -352,7 +374,7 @@
       "_origin": "ast",
       "id": "roadmap_persist\u00eancia",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "persistencia"
     },
     {
@@ -363,8 +385,19 @@
       "_origin": "ast",
       "id": "roadmap_registro_de_decis\u00f5es_do_roadmap",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "registro de decisoes do roadmap"
+    },
+    {
+      "label": "Release",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L431",
+      "_origin": "ast",
+      "id": "roadmap_release",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "release"
     },
     {
       "label": "Resend",
@@ -374,8 +407,19 @@
       "_origin": "ast",
       "id": "roadmap_resend",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "resend"
+    },
+    {
+      "label": "Seguran\u00e7a e opera\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L417",
+      "_origin": "ast",
+      "id": "roadmap_seguran\u00e7a_e_opera\u00e7\u00e3o",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "seguranca e operacao"
     },
     {
       "label": "Status atual",
@@ -385,8 +429,19 @@
       "_origin": "ast",
       "id": "roadmap_status_atual",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "status atual"
+    },
+    {
+      "label": "Testes",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L403",
+      "_origin": "ast",
+      "id": "roadmap_testes",
+      "community": 0,
+      "community_name": "Engancha \u2014 Roadmap",
+      "norm_label": "testes"
     },
     {
       "label": "Vis\u00e3o geral das fases",
@@ -396,7 +451,7 @@
       "_origin": "ast",
       "id": "roadmap_vis\u00e3o_geral_das_fases",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "visao geral das fases"
     },
     {
@@ -407,7 +462,7 @@
       "_origin": "ast",
       "id": "roadmap_worker",
       "community": 0,
-      "community_name": "Insta Flow \u2014 Roadmap",
+      "community_name": "Engancha \u2014 Roadmap",
       "norm_label": "worker"
     },
     {
@@ -418,7 +473,7 @@
       "_origin": "ast",
       "id": "requirements_11_depend\u00eancias_entre_\u00e9picos",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "11. dependencias entre epicos"
     },
     {
@@ -429,7 +484,7 @@
       "_origin": "ast",
       "id": "requirements_12_decis\u00f5es_ainda_necess\u00e1rias_antes_das_hist\u00f3rias",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "12. decisoes ainda necessarias antes das historias"
     },
     {
@@ -440,8 +495,74 @@
       "_origin": "ast",
       "id": "requirements_1_objetivo_do_documento",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "1. objetivo do documento"
+    },
+    {
+      "label": "2.1 Usu\u00e1rio",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "requirements_2_1_usu\u00e1rio",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2.1 usuario"
+    },
+    {
+      "label": "2.2 Membro do workspace",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "requirements_2_2_membro_do_workspace",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2.2 membro do workspace"
+    },
+    {
+      "label": "2.3 Administrador da plataforma",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "requirements_2_3_administrador_da_plataforma",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2.3 administrador da plataforma"
+    },
+    {
+      "label": "2.4 Worker",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "requirements_2_4_worker",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2.4 worker"
+    },
+    {
+      "label": "2.5 Sistema externo",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "requirements_2_5_sistema_externo",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2.5 sistema externo"
+    },
+    {
+      "label": "2. Perfis e atores",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "requirements_2_perfis_e_atores",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "2. perfis e atores"
     },
     {
       "label": "3. Conven\u00e7\u00f5es",
@@ -451,7 +572,7 @@
       "_origin": "ast",
       "id": "requirements_3_conven\u00e7\u00f5es",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "3. convencoes"
     },
     {
@@ -462,19 +583,8 @@
       "_origin": "ast",
       "id": "requirements_4_escopo_do_mvp",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "4. escopo do mvp"
-    },
-    {
-      "label": "5.1 Contrato transversal de canais e providers",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L740",
-      "_origin": "ast",
-      "id": "requirements_5_1_contrato_transversal_de_canais_e_providers",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "5.1 contrato transversal de canais e providers"
     },
     {
       "label": "5. Requisitos funcionais",
@@ -484,7 +594,7 @@
       "_origin": "ast",
       "id": "requirements_5_requisitos_funcionais",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "5. requisitos funcionais"
     },
     {
@@ -495,7 +605,7 @@
       "_origin": "ast",
       "id": "requirements_7_1_automa\u00e7\u00e3o",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "7.1 automacao"
     },
     {
@@ -506,7 +616,7 @@
       "_origin": "ast",
       "id": "requirements_7_2_execu\u00e7\u00e3o",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "7.2 execucao"
     },
     {
@@ -517,7 +627,7 @@
       "_origin": "ast",
       "id": "requirements_7_3_contato_lead",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "7.3 contato/lead"
     },
     {
@@ -528,7 +638,7 @@
       "_origin": "ast",
       "id": "requirements_7_estados_funcionais",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "7. estados funcionais"
     },
     {
@@ -539,8 +649,19 @@
       "_origin": "ast",
       "id": "requirements_9_crit\u00e9rios_de_aceite_do_mvp",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "9. criterios de aceite do mvp"
+    },
+    {
+      "label": "Engancha \u2014 Requisitos Funcionais",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "requirements_engancha_requisitos_funcionais",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "engancha \u2014 requisitos funcionais"
     },
     {
       "label": "FR-ANALYTICS-001 \u2014 Exibir resumo do workspace",
@@ -550,7 +671,7 @@
       "_origin": "ast",
       "id": "requirements_fr_analytics_001_exibir_resumo_do_workspace",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-analytics-001 \u2014 exibir resumo do workspace"
     },
     {
@@ -561,7 +682,7 @@
       "_origin": "ast",
       "id": "requirements_fr_analytics_002_filtrar_per\u00edodo",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-analytics-002 \u2014 filtrar periodo"
     },
     {
@@ -572,63 +693,74 @@
       "_origin": "ast",
       "id": "requirements_fr_analytics_003_atualizar_m\u00e9tricas_ap\u00f3s_execu\u00e7\u00e3o",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-analytics-003 \u2014 atualizar metricas apos execucao"
     },
     {
-      "label": "FR-CHANNEL-001 \u2014 Separar provider e modo de execu\u00e7\u00e3o",
+      "label": "FR-AUTH-001 \u2014 Criar conta com e-mail e senha",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L744",
+      "source_location": "L94",
       "_origin": "ast",
-      "id": "requirements_fr_channel_001_separar_provider_e_modo_de_execu\u00e7\u00e3o",
+      "id": "requirements_fr_auth_001_criar_conta_com_e_mail_e_senha",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-channel-001 \u2014 separar provider e modo de execucao"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-001 \u2014 criar conta com e-mail e senha"
     },
     {
-      "label": "FR-CHANNEL-002 \u2014 Normalizar intera\u00e7\u00f5es e mensagens",
+      "label": "FR-AUTH-002 \u2014 Entrar com e-mail e senha",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L755",
+      "source_location": "L110",
       "_origin": "ast",
-      "id": "requirements_fr_channel_002_normalizar_intera\u00e7\u00f5es_e_mensagens",
+      "id": "requirements_fr_auth_002_entrar_com_e_mail_e_senha",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-channel-002 \u2014 normalizar interacoes e mensagens"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-002 \u2014 entrar com e-mail e senha"
     },
     {
-      "label": "FR-CHANNEL-003 \u2014 Declarar capacidades do canal",
+      "label": "FR-AUTH-003 \u2014 Entrar com Google",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L769",
+      "source_location": "L124",
       "_origin": "ast",
-      "id": "requirements_fr_channel_003_declarar_capacidades_do_canal",
+      "id": "requirements_fr_auth_003_entrar_com_google",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-channel-003 \u2014 declarar capacidades do canal"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-003 \u2014 entrar com google"
     },
     {
-      "label": "FR-CHANNEL-004 \u2014 Isolar adapters de provider",
+      "label": "FR-AUTH-004 \u2014 Confirmar endere\u00e7o de e-mail",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L781",
+      "source_location": "L139",
       "_origin": "ast",
-      "id": "requirements_fr_channel_004_isolar_adapters_de_provider",
+      "id": "requirements_fr_auth_004_confirmar_endere\u00e7o_de_e_mail",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-channel-004 \u2014 isolar adapters de provider"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-004 \u2014 confirmar endereco de e-mail"
     },
     {
-      "label": "FR-CHANNEL-005 \u2014 Preservar rastreabilidade do canal",
+      "label": "FR-AUTH-005 \u2014 Recuperar senha",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L785",
+      "source_location": "L155",
       "_origin": "ast",
-      "id": "requirements_fr_channel_005_preservar_rastreabilidade_do_canal",
+      "id": "requirements_fr_auth_005_recuperar_senha",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-channel-005 \u2014 preservar rastreabilidade do canal"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-005 \u2014 recuperar senha"
+    },
+    {
+      "label": "FR-AUTH-006 \u2014 Encerrar sess\u00e3o",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L169",
+      "_origin": "ast",
+      "id": "requirements_fr_auth_006_encerrar_sess\u00e3o",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-auth-006 \u2014 encerrar sessao"
     },
     {
       "label": "FR-EMAIL-001 \u2014 Enfileirar e-mail transacional",
@@ -638,7 +770,7 @@
       "_origin": "ast",
       "id": "requirements_fr_email_001_enfileirar_e_mail_transacional",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-email-001 \u2014 enfileirar e-mail transacional"
     },
     {
@@ -649,7 +781,7 @@
       "_origin": "ast",
       "id": "requirements_fr_email_002_enviar_e_mail_via_resend",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-email-002 \u2014 enviar e-mail via resend"
     },
     {
@@ -660,107 +792,8 @@
       "_origin": "ast",
       "id": "requirements_fr_email_003_reenviar_confirma\u00e7\u00e3o",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "fr-email-003 \u2014 reenviar confirmacao"
-    },
-    {
-      "label": "FR-OPS-001 \u2014 Visualizar filas",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L661",
-      "_origin": "ast",
-      "id": "requirements_fr_ops_001_visualizar_filas",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-ops-001 \u2014 visualizar filas"
-    },
-    {
-      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L675",
-      "_origin": "ast",
-      "id": "requirements_fr_ops_002_proteger_bull_board",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-ops-002 \u2014 proteger bull board"
-    },
-    {
-      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L682",
-      "_origin": "ast",
-      "id": "requirements_fr_ops_003_inspecionar_jobs",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
-    },
-    {
-      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L689",
-      "_origin": "ast",
-      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
-    },
-    {
-      "label": "FR-WORK-001 \u2014 Criar workspace padr\u00e3o",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L178",
-      "_origin": "ast",
-      "id": "requirements_fr_work_001_criar_workspace_padr\u00e3o",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-work-001 \u2014 criar workspace padrao"
-    },
-    {
-      "label": "FR-WORK-002 \u2014 Exibir workspace ativo",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L193",
-      "_origin": "ast",
-      "id": "requirements_fr_work_002_exibir_workspace_ativo",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-work-002 \u2014 exibir workspace ativo"
-    },
-    {
-      "label": "FR-WORK-003 \u2014 Trocar workspace ativo",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L206",
-      "_origin": "ast",
-      "id": "requirements_fr_work_003_trocar_workspace_ativo",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-work-003 \u2014 trocar workspace ativo"
-    },
-    {
-      "label": "FR-WORK-004 \u2014 Isolar dados por workspace",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L219",
-      "_origin": "ast",
-      "id": "requirements_fr_work_004_isolar_dados_por_workspace",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-work-004 \u2014 isolar dados por workspace"
-    },
-    {
-      "label": "FR-WORK-005 \u2014 Preparar membros futuros",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L233",
-      "_origin": "ast",
-      "id": "requirements_fr_work_005_preparar_membros_futuros",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "fr-work-005 \u2014 preparar membros futuros"
     },
     {
       "label": "Inclu\u00eddo",
@@ -770,19 +803,8 @@
       "_origin": "ast",
       "id": "requirements_inclu\u00eddo",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "incluido"
-    },
-    {
-      "label": "Insta Flow \u2014 Requisitos Funcionais",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "requirements_insta_flow_requisitos_funcionais",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "insta flow \u2014 requisitos funcionais"
     },
     {
       "label": "N\u00e3o inclu\u00eddo",
@@ -792,19 +814,19 @@
       "_origin": "ast",
       "id": "requirements_n\u00e3o_inclu\u00eddo",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "nao incluido"
     },
     {
-      "label": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "label": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L176",
+      "source_location": "L92",
       "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_b_organizations_e_workspaces",
+      "id": "requirements_\u00e9pico_candidato_a_autentica\u00e7\u00e3o_e_acesso",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epico candidato b \u2014 organizations e workspaces"
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epico candidato a \u2014 autenticacao e acesso"
     },
     {
       "label": "\u00c9pico candidato F \u2014 Dashboard e m\u00e9tricas",
@@ -814,7 +836,7 @@
       "_origin": "ast",
       "id": "requirements_\u00e9pico_candidato_f_dashboard_e_m\u00e9tricas",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "epico candidato f \u2014 dashboard e metricas"
     },
     {
@@ -825,19 +847,8 @@
       "_origin": "ast",
       "id": "requirements_\u00e9pico_candidato_g_e_mails_transacionais",
       "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "epico candidato g \u2014 e-mails transacionais"
-    },
-    {
-      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L659",
-      "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
-      "community": 1,
-      "community_name": "Insta Flow \u2014 Requisitos Funcionais",
-      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
     },
     {
       "label": "6. Regras de neg\u00f3cio transversais",
@@ -1225,81 +1236,70 @@
       "norm_label": "workspaces"
     },
     {
-      "label": "FR-AUTH-001 \u2014 Criar conta com e-mail e senha",
+      "label": "5.1 Contrato transversal de canais e providers",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L94",
+      "source_location": "L740",
       "_origin": "ast",
-      "id": "requirements_fr_auth_001_criar_conta_com_e_mail_e_senha",
+      "id": "requirements_5_1_contrato_transversal_de_canais_e_providers",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-001 \u2014 criar conta com e-mail e senha"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "5.1 contrato transversal de canais e providers"
     },
     {
-      "label": "FR-AUTH-002 \u2014 Entrar com e-mail e senha",
+      "label": "FR-CHANNEL-001 \u2014 Separar provider e modo de execu\u00e7\u00e3o",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L110",
+      "source_location": "L744",
       "_origin": "ast",
-      "id": "requirements_fr_auth_002_entrar_com_e_mail_e_senha",
+      "id": "requirements_fr_channel_001_separar_provider_e_modo_de_execu\u00e7\u00e3o",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-002 \u2014 entrar com e-mail e senha"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-001 \u2014 separar provider e modo de execucao"
     },
     {
-      "label": "FR-AUTH-003 \u2014 Entrar com Google",
+      "label": "FR-CHANNEL-002 \u2014 Normalizar intera\u00e7\u00f5es e mensagens",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L124",
+      "source_location": "L755",
       "_origin": "ast",
-      "id": "requirements_fr_auth_003_entrar_com_google",
+      "id": "requirements_fr_channel_002_normalizar_intera\u00e7\u00f5es_e_mensagens",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-003 \u2014 entrar com google"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-002 \u2014 normalizar interacoes e mensagens"
     },
     {
-      "label": "FR-AUTH-004 \u2014 Confirmar endere\u00e7o de e-mail",
+      "label": "FR-CHANNEL-003 \u2014 Declarar capacidades do canal",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L139",
+      "source_location": "L769",
       "_origin": "ast",
-      "id": "requirements_fr_auth_004_confirmar_endere\u00e7o_de_e_mail",
+      "id": "requirements_fr_channel_003_declarar_capacidades_do_canal",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-004 \u2014 confirmar endereco de e-mail"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-003 \u2014 declarar capacidades do canal"
     },
     {
-      "label": "FR-AUTH-005 \u2014 Recuperar senha",
+      "label": "FR-CHANNEL-004 \u2014 Isolar adapters de provider",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L155",
+      "source_location": "L781",
       "_origin": "ast",
-      "id": "requirements_fr_auth_005_recuperar_senha",
+      "id": "requirements_fr_channel_004_isolar_adapters_de_provider",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-005 \u2014 recuperar senha"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-004 \u2014 isolar adapters de provider"
     },
     {
-      "label": "FR-AUTH-006 \u2014 Encerrar sess\u00e3o",
+      "label": "FR-CHANNEL-005 \u2014 Preservar rastreabilidade do canal",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L169",
+      "source_location": "L785",
       "_origin": "ast",
-      "id": "requirements_fr_auth_006_encerrar_sess\u00e3o",
+      "id": "requirements_fr_channel_005_preservar_rastreabilidade_do_canal",
       "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "fr-auth-006 \u2014 encerrar sessao"
-    },
-    {
-      "label": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L92",
-      "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_a_autentica\u00e7\u00e3o_e_acesso",
-      "community": 14,
-      "community_name": "\u00c9pico candidato A \u2014 Autentica\u00e7\u00e3o e acesso",
-      "norm_label": "epico candidato a \u2014 autenticacao e acesso"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-005 \u2014 preservar rastreabilidade do canal"
     },
     {
       "label": "FR-DATA-001 \u2014 Registrar conversa",
@@ -1683,7 +1683,7 @@
       "_origin": "ast",
       "id": "architecture_10_fluxo_principal_do_mvp",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "10. fluxo principal do mvp"
     },
     {
@@ -1694,7 +1694,7 @@
       "_origin": "ast",
       "id": "architecture_11_autentica\u00e7\u00e3o_e_e_mail",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "11. autenticacao e e-mail"
     },
     {
@@ -1705,7 +1705,7 @@
       "_origin": "ast",
       "id": "architecture_12_bull_board",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "12. bull board"
     },
     {
@@ -1716,7 +1716,7 @@
       "_origin": "ast",
       "id": "architecture_13_frontend",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "13. frontend"
     },
     {
@@ -1727,7 +1727,7 @@
       "_origin": "ast",
       "id": "architecture_14_seguran\u00e7a_e_isolamento",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "14. seguranca e isolamento"
     },
     {
@@ -1738,7 +1738,7 @@
       "_origin": "ast",
       "id": "architecture_15_deploy_e_opera\u00e7\u00e3o",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "15. deploy e operacao"
     },
     {
@@ -1749,7 +1749,7 @@
       "_origin": "ast",
       "id": "architecture_16_testes",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "16. testes"
     },
     {
@@ -1760,7 +1760,7 @@
       "_origin": "ast",
       "id": "architecture_17_observabilidade_m\u00ednima",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "17. observabilidade minima"
     },
     {
@@ -1771,7 +1771,7 @@
       "_origin": "ast",
       "id": "architecture_18_decis\u00f5es_adiadas",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "18. decisoes adiadas"
     },
     {
@@ -1782,7 +1782,7 @@
       "_origin": "ast",
       "id": "architecture_19_ordem_de_implementa\u00e7\u00e3o",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "19. ordem de implementacao"
     },
     {
@@ -1793,7 +1793,7 @@
       "_origin": "ast",
       "id": "architecture_1_vis\u00e3o_do_produto",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "1. visao do produto"
     },
     {
@@ -1804,7 +1804,7 @@
       "_origin": "ast",
       "id": "architecture_20_crit\u00e9rio_para_evolu\u00e7\u00e3o_da_arquitetura",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "20. criterio para evolucao da arquitetura"
     },
     {
@@ -1815,7 +1815,7 @@
       "_origin": "ast",
       "id": "architecture_2_objetivos_do_mvp",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "2. objetivos do mvp"
     },
     {
@@ -1826,7 +1826,7 @@
       "_origin": "ast",
       "id": "architecture_3_fora_do_escopo_inicial",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "3. fora do escopo inicial"
     },
     {
@@ -1837,85 +1837,8 @@
       "_origin": "ast",
       "id": "architecture_4_vocabul\u00e1rio_do_dom\u00ednio",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "4. vocabulario do dominio"
-    },
-    {
-      "label": "5.1 Monorepo",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "architecture_5_1_monorepo",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.1 monorepo"
-    },
-    {
-      "label": "5.2 API e worker",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L79",
-      "_origin": "ast",
-      "id": "architecture_5_2_api_e_worker",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.2 api e worker"
-    },
-    {
-      "label": "5.3 Modular monolith no backend",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L90",
-      "_origin": "ast",
-      "id": "architecture_5_3_modular_monolith_no_backend",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.3 modular monolith no backend"
-    },
-    {
-      "label": "5.4 API REST versionada",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L102",
-      "_origin": "ast",
-      "id": "architecture_5_4_api_rest_versionada",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.4 api rest versionada"
-    },
-    {
-      "label": "5.5 Banco de dados",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L118",
-      "_origin": "ast",
-      "id": "architecture_5_5_banco_de_dados",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.5 banco de dados"
-    },
-    {
-      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L129",
-      "_origin": "ast",
-      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
-    },
-    {
-      "label": "5. Decis\u00f5es arquiteturais",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "architecture_5_decis\u00f5es_arquiteturais",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "5. decisoes arquiteturais"
     },
     {
       "label": "6. Topologia de runtime",
@@ -1925,7 +1848,7 @@
       "_origin": "ast",
       "id": "architecture_6_topologia_de_runtime",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "6. topologia de runtime"
     },
     {
@@ -1936,7 +1859,7 @@
       "_origin": "ast",
       "id": "architecture_7_organiza\u00e7\u00e3o_de_pastas",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "7. organizacao de pastas"
     },
     {
@@ -1947,7 +1870,7 @@
       "_origin": "ast",
       "id": "architecture_9_eventos_e_filas",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "9. eventos e filas"
     },
     {
@@ -1958,8 +1881,19 @@
       "_origin": "ast",
       "id": "architecture_desenvolvimento",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "desenvolvimento"
+    },
+    {
+      "label": "Engancha \u2014 Architecture",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "architecture_engancha_architecture",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "engancha \u2014 architecture"
     },
     {
       "label": "Eventos de dom\u00ednio",
@@ -1969,7 +1903,7 @@
       "_origin": "ast",
       "id": "architecture_eventos_de_dom\u00ednio",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "eventos de dominio"
     },
     {
@@ -1980,7 +1914,7 @@
       "_origin": "ast",
       "id": "architecture_evolu\u00e7\u00e3o",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "evolucao"
     },
     {
@@ -1991,19 +1925,8 @@
       "_origin": "ast",
       "id": "architecture_filas_bullmq",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "filas bullmq"
-    },
-    {
-      "label": "Insta Flow \u2014 Architecture",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "architecture_insta_flow_architecture",
-      "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
-      "norm_label": "insta flow \u2014 architecture"
     },
     {
       "label": "Produ\u00e7\u00e3o inicial",
@@ -2013,7 +1936,7 @@
       "_origin": "ast",
       "id": "architecture_produ\u00e7\u00e3o_inicial",
       "community": 2,
-      "community_name": "Insta Flow \u2014 Architecture",
+      "community_name": "Engancha \u2014 Architecture",
       "norm_label": "producao inicial"
     },
     {
@@ -2193,6 +2116,17 @@
       "norm_label": "graphify"
     },
     {
+      "label": "Workflow de desenvolvimento",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "agents_workflow_de_desenvolvimento",
+      "community": 24,
+      "community_name": "AGENTS.md",
+      "norm_label": "workflow de desenvolvimento"
+    },
+    {
       "label": "extraction-spec.md",
       "file_type": "document",
       "source_file": ".codex/skills/graphify/references/extraction-spec.md",
@@ -2215,59 +2149,125 @@
       "norm_label": "graphify reference: extraction subagent prompt (compact)"
     },
     {
-      "label": "Bull Board",
+      "label": "FR-WORK-001 \u2014 Criar workspace padr\u00e3o",
       "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L392",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L178",
       "_origin": "ast",
-      "id": "roadmap_bull_board",
+      "id": "requirements_fr_work_001_criar_workspace_padr\u00e3o",
       "community": 26,
-      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "norm_label": "bull board"
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "fr-work-001 \u2014 criar workspace padrao"
     },
     {
-      "label": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
+      "label": "FR-WORK-002 \u2014 Exibir workspace ativo",
       "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L386",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L193",
       "_origin": "ast",
-      "id": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
+      "id": "requirements_fr_work_002_exibir_workspace_ativo",
       "community": 26,
-      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "norm_label": "fase 7 \u2014 operacao, testes e release do mvp"
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "fr-work-002 \u2014 exibir workspace ativo"
     },
     {
-      "label": "Release",
+      "label": "FR-WORK-003 \u2014 Trocar workspace ativo",
       "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L431",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L206",
       "_origin": "ast",
-      "id": "roadmap_release",
+      "id": "requirements_fr_work_003_trocar_workspace_ativo",
       "community": 26,
-      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "norm_label": "release"
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "fr-work-003 \u2014 trocar workspace ativo"
     },
     {
-      "label": "Seguran\u00e7a e opera\u00e7\u00e3o",
+      "label": "FR-WORK-004 \u2014 Isolar dados por workspace",
       "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L417",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L219",
       "_origin": "ast",
-      "id": "roadmap_seguran\u00e7a_e_opera\u00e7\u00e3o",
+      "id": "requirements_fr_work_004_isolar_dados_por_workspace",
       "community": 26,
-      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "norm_label": "seguranca e operacao"
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "fr-work-004 \u2014 isolar dados por workspace"
     },
     {
-      "label": "Testes",
+      "label": "FR-WORK-005 \u2014 Preparar membros futuros",
       "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L403",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L233",
       "_origin": "ast",
-      "id": "roadmap_testes",
+      "id": "requirements_fr_work_005_preparar_membros_futuros",
       "community": 26,
-      "community_name": "Fase 7 \u2014 Opera\u00e7\u00e3o, testes e release do MVP",
-      "norm_label": "testes"
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "fr-work-005 \u2014 preparar membros futuros"
+    },
+    {
+      "label": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L176",
+      "_origin": "ast",
+      "id": "requirements_\u00e9pico_candidato_b_organizations_e_workspaces",
+      "community": 26,
+      "community_name": "\u00c9pico candidato B \u2014 Organizations e workspaces",
+      "norm_label": "epico candidato b \u2014 organizations e workspaces"
+    },
+    {
+      "label": "FR-OPS-001 \u2014 Visualizar filas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L661",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_001_visualizar_filas",
+      "community": 27,
+      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "norm_label": "fr-ops-001 \u2014 visualizar filas"
+    },
+    {
+      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L675",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_002_proteger_bull_board",
+      "community": 27,
+      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "norm_label": "fr-ops-002 \u2014 proteger bull board"
+    },
+    {
+      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L682",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_003_inspecionar_jobs",
+      "community": 27,
+      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
+    },
+    {
+      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L689",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
+      "community": 27,
+      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
+    },
+    {
+      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L659",
+      "_origin": "ast",
+      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
+      "community": 27,
+      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
     },
     {
       "label": "graphify/SKILL.md",
@@ -2552,7 +2552,7 @@
       "_origin": "ast",
       "id": "architecture",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "architecture.md"
     },
     {
@@ -2563,7 +2563,7 @@
       "_origin": "ast",
       "id": "data_model",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "data-model.md"
     },
     {
@@ -2574,7 +2574,7 @@
       "_origin": "ast",
       "id": "data_model_10_mapeamento_para_requisitos",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "10. mapeamento para requisitos"
     },
     {
@@ -2585,7 +2585,7 @@
       "_origin": "ast",
       "id": "data_model_11_decis\u00f5es_adiadas",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "11. decisoes adiadas"
     },
     {
@@ -2596,7 +2596,7 @@
       "_origin": "ast",
       "id": "data_model_12_crit\u00e9rio_de_aprova\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "12. criterio de aprovacao"
     },
     {
@@ -2607,7 +2607,7 @@
       "_origin": "ast",
       "id": "data_model_1_objetivo",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "1. objetivo"
     },
     {
@@ -2618,7 +2618,7 @@
       "_origin": "ast",
       "id": "data_model_2_princ\u00edpios",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "2. principios"
     },
     {
@@ -2629,7 +2629,7 @@
       "_origin": "ast",
       "id": "data_model_3_separa\u00e7\u00e3o_entre_autentica\u00e7\u00e3o_e_produto",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "3. separacao entre autenticacao e produto"
     },
     {
@@ -2640,7 +2640,7 @@
       "_origin": "ast",
       "id": "data_model_4_diagrama_l\u00f3gico",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "4. diagrama logico"
     },
     {
@@ -2651,7 +2651,7 @@
       "_origin": "ast",
       "id": "data_model_6_1_capacidades_do_canal",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "6.1 capacidades do canal"
     },
     {
@@ -2662,7 +2662,7 @@
       "_origin": "ast",
       "id": "data_model_6_enums_principais",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "6. enums principais"
     },
     {
@@ -2673,7 +2673,7 @@
       "_origin": "ast",
       "id": "data_model_7_1_criar_automa\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "7.1 criar automacao"
     },
     {
@@ -2684,7 +2684,7 @@
       "_origin": "ast",
       "id": "data_model_7_2_receber_coment\u00e1rio_simulado_do_instagram",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "7.2 receber comentario simulado do instagram"
     },
     {
@@ -2695,7 +2695,7 @@
       "_origin": "ast",
       "id": "data_model_7_3_processar_execu\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "7.3 processar execucao"
     },
     {
@@ -2706,7 +2706,7 @@
       "_origin": "ast",
       "id": "data_model_7_4_capturar_e_mail",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "7.4 capturar e-mail"
     },
     {
@@ -2717,7 +2717,7 @@
       "_origin": "ast",
       "id": "data_model_7_fluxo_de_persist\u00eancia_do_mvp",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "7. fluxo de persistencia do mvp"
     },
     {
@@ -2728,7 +2728,7 @@
       "_origin": "ast",
       "id": "data_model_8_regras_de_integridade",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "8. regras de integridade"
     },
     {
@@ -2739,19 +2739,19 @@
       "_origin": "ast",
       "id": "data_model_9_\u00edndices_m\u00ednimos",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "9. indices minimos"
     },
     {
-      "label": "Insta Flow \u2014 Modelo de Dados",
+      "label": "Engancha \u2014 Modelo de Dados",
       "file_type": "document",
       "source_file": "DATA-MODEL.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "data_model_insta_flow_modelo_de_dados",
+      "id": "data_model_engancha_modelo_de_dados",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
-      "norm_label": "insta flow \u2014 modelo de dados"
+      "community_name": "Engancha \u2014 Modelo de Dados",
+      "norm_label": "engancha \u2014 modelo de dados"
     },
     {
       "label": "Tabelas do produto",
@@ -2761,7 +2761,7 @@
       "_origin": "ast",
       "id": "data_model_tabelas_do_produto",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "tabelas do produto"
     },
     {
@@ -2772,7 +2772,7 @@
       "_origin": "ast",
       "id": "data_model_tabelas_gerenciadas_pelo_better_auth",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "tabelas gerenciadas pelo better auth"
     },
     {
@@ -2783,7 +2783,7 @@
       "_origin": "ast",
       "id": "requirements",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "requirements.md"
     },
     {
@@ -2794,7 +2794,7 @@
       "_origin": "ast",
       "id": "roadmap",
       "community": 4,
-      "community_name": "Insta Flow \u2014 Modelo de Dados",
+      "community_name": "Engancha \u2014 Modelo de Dados",
       "norm_label": "roadmap.md"
     },
     {
@@ -3238,70 +3238,81 @@
       "norm_label": "epico futuro \u2014 integracao real com instagram/meta"
     },
     {
-      "label": "2.1 Usu\u00e1rio",
+      "label": "5.1 Monorepo",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L29",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L64",
       "_origin": "ast",
-      "id": "requirements_2_1_usu\u00e1rio",
+      "id": "architecture_5_1_monorepo",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2.1 usuario"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.1 monorepo"
     },
     {
-      "label": "2.2 Membro do workspace",
+      "label": "5.2 API e worker",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L33",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L79",
       "_origin": "ast",
-      "id": "requirements_2_2_membro_do_workspace",
+      "id": "architecture_5_2_api_e_worker",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2.2 membro do workspace"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.2 api e worker"
     },
     {
-      "label": "2.3 Administrador da plataforma",
+      "label": "5.3 Modular monolith no backend",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L37",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L90",
       "_origin": "ast",
-      "id": "requirements_2_3_administrador_da_plataforma",
+      "id": "architecture_5_3_modular_monolith_no_backend",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2.3 administrador da plataforma"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.3 modular monolith no backend"
     },
     {
-      "label": "2.4 Worker",
+      "label": "5.4 API REST versionada",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L41",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L102",
       "_origin": "ast",
-      "id": "requirements_2_4_worker",
+      "id": "architecture_5_4_api_rest_versionada",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2.4 worker"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.4 api rest versionada"
     },
     {
-      "label": "2.5 Sistema externo",
+      "label": "5.5 Banco de dados",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L45",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L118",
       "_origin": "ast",
-      "id": "requirements_2_5_sistema_externo",
+      "id": "architecture_5_5_banco_de_dados",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2.5 sistema externo"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.5 banco de dados"
     },
     {
-      "label": "2. Perfis e atores",
+      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L27",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L129",
       "_origin": "ast",
-      "id": "requirements_2_perfis_e_atores",
+      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
       "community": 8,
-      "community_name": "2. Perfis e atores",
-      "norm_label": "2. perfis e atores"
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
+    },
+    {
+      "label": "5. Decis\u00f5es arquiteturais",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "architecture_5_decis\u00f5es_arquiteturais",
+      "community": 8,
+      "community_name": "5. Decis\u00f5es arquiteturais",
+      "norm_label": "5. decisoes arquiteturais"
     },
     {
       "label": "exports.md",
@@ -3418,12 +3429,23 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "agents",
+      "target": "agents_workflow_de_desenvolvimento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "ARCHITECTURE.md",
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
       "source": "architecture",
-      "target": "architecture_insta_flow_architecture",
+      "target": "architecture_engancha_architecture",
       "confidence_score": 1.0
     },
     {
@@ -3620,7 +3642,7 @@
       "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_6_topologia_de_runtime",
       "confidence_score": 1.0
     },
@@ -3631,7 +3653,7 @@
       "source_location": "L217",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_7_organiza\u00e7\u00e3o_de_pastas",
       "confidence_score": 1.0
     },
@@ -3642,7 +3664,7 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_2_objetivos_do_mvp",
       "confidence_score": 1.0
     },
@@ -3653,7 +3675,7 @@
       "source_location": "L301",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_8_dom\u00ednios_e_m\u00f3dulos",
       "confidence_score": 1.0
     },
@@ -3664,7 +3686,7 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_3_fora_do_escopo_inicial",
       "confidence_score": 1.0
     },
@@ -3675,7 +3697,7 @@
       "source_location": "L370",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_9_eventos_e_filas",
       "confidence_score": 1.0
     },
@@ -3686,7 +3708,7 @@
       "source_location": "L409",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_10_fluxo_principal_do_mvp",
       "confidence_score": 1.0
     },
@@ -3697,7 +3719,7 @@
       "source_location": "L441",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_11_autentica\u00e7\u00e3o_e_e_mail",
       "confidence_score": 1.0
     },
@@ -3708,7 +3730,7 @@
       "source_location": "L467",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_12_bull_board",
       "confidence_score": 1.0
     },
@@ -3719,7 +3741,7 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_4_vocabul\u00e1rio_do_dom\u00ednio",
       "confidence_score": 1.0
     },
@@ -3730,7 +3752,7 @@
       "source_location": "L484",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_13_frontend",
       "confidence_score": 1.0
     },
@@ -3741,7 +3763,7 @@
       "source_location": "L515",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_14_seguran\u00e7a_e_isolamento",
       "confidence_score": 1.0
     },
@@ -3752,7 +3774,7 @@
       "source_location": "L528",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_15_deploy_e_opera\u00e7\u00e3o",
       "confidence_score": 1.0
     },
@@ -3763,7 +3785,7 @@
       "source_location": "L559",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_16_testes",
       "confidence_score": 1.0
     },
@@ -3774,7 +3796,7 @@
       "source_location": "L570",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_17_observabilidade_m\u00ednima",
       "confidence_score": 1.0
     },
@@ -3785,7 +3807,7 @@
       "source_location": "L579",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_18_decis\u00f5es_adiadas",
       "confidence_score": 1.0
     },
@@ -3796,7 +3818,7 @@
       "source_location": "L593",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_19_ordem_de_implementa\u00e7\u00e3o",
       "confidence_score": 1.0
     },
@@ -3807,7 +3829,7 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_1_vis\u00e3o_do_produto",
       "confidence_score": 1.0
     },
@@ -3818,7 +3840,7 @@
       "source_location": "L607",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_20_crit\u00e9rio_para_evolu\u00e7\u00e3o_da_arquitetura",
       "confidence_score": 1.0
     },
@@ -3829,7 +3851,7 @@
       "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "architecture_insta_flow_architecture",
+      "source": "architecture_engancha_architecture",
       "target": "architecture_5_decis\u00f5es_arquiteturais",
       "confidence_score": 1.0
     },
@@ -4501,7 +4523,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "data_model",
-      "target": "data_model_insta_flow_modelo_de_dados",
+      "target": "data_model_engancha_modelo_de_dados",
       "confidence_score": 1.0
     },
     {
@@ -4731,7 +4753,7 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_2_princ\u00edpios",
       "confidence_score": 1.0
     },
@@ -4742,7 +4764,7 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_3_separa\u00e7\u00e3o_entre_autentica\u00e7\u00e3o_e_produto",
       "confidence_score": 1.0
     },
@@ -4753,7 +4775,7 @@
       "source_location": "L482",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_6_enums_principais",
       "confidence_score": 1.0
     },
@@ -4764,7 +4786,7 @@
       "source_location": "L554",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_7_fluxo_de_persist\u00eancia_do_mvp",
       "confidence_score": 1.0
     },
@@ -4775,7 +4797,7 @@
       "source_location": "L609",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_8_regras_de_integridade",
       "confidence_score": 1.0
     },
@@ -4786,7 +4808,7 @@
       "source_location": "L620",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_9_\u00edndices_m\u00ednimos",
       "confidence_score": 1.0
     },
@@ -4797,7 +4819,7 @@
       "source_location": "L633",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_10_mapeamento_para_requisitos",
       "confidence_score": 1.0
     },
@@ -4808,7 +4830,7 @@
       "source_location": "L644",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_11_decis\u00f5es_adiadas",
       "confidence_score": 1.0
     },
@@ -4819,7 +4841,7 @@
       "source_location": "L656",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_12_crit\u00e9rio_de_aprova\u00e7\u00e3o",
       "confidence_score": 1.0
     },
@@ -4830,7 +4852,7 @@
       "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_4_diagrama_l\u00f3gico",
       "confidence_score": 1.0
     },
@@ -4841,7 +4863,7 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_1_objetivo",
       "confidence_score": 1.0
     },
@@ -4852,7 +4874,7 @@
       "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "data_model_insta_flow_modelo_de_dados",
+      "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_5_entidades",
       "confidence_score": 1.0
     },
@@ -4864,7 +4886,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "requirements",
-      "target": "requirements_insta_flow_requisitos_funcionais",
+      "target": "requirements_engancha_requisitos_funcionais",
       "confidence_score": 1.0
     },
     {
@@ -5292,7 +5314,7 @@
       "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_b_organizations_e_workspaces",
       "confidence_score": 1.0
     },
@@ -5303,7 +5325,7 @@
       "source_location": "L242",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_c_cria\u00e7\u00e3o_e_gest\u00e3o_de_automa\u00e7\u00f5es",
       "confidence_score": 1.0
     },
@@ -5314,7 +5336,7 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_2_perfis_e_atores",
       "confidence_score": 1.0
     },
@@ -5325,7 +5347,7 @@
       "source_location": "L435",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_d_simula\u00e7\u00e3o_de_coment\u00e1rios_e_automa\u00e7\u00f5es",
       "confidence_score": 1.0
     },
@@ -5336,7 +5358,7 @@
       "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_3_conven\u00e7\u00f5es",
       "confidence_score": 1.0
     },
@@ -5347,7 +5369,7 @@
       "source_location": "L520",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_e_conversas_contatos_e_leads",
       "confidence_score": 1.0
     },
@@ -5358,7 +5380,7 @@
       "source_location": "L56",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_4_escopo_do_mvp",
       "confidence_score": 1.0
     },
@@ -5369,7 +5391,7 @@
       "source_location": "L597",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_f_dashboard_e_m\u00e9tricas",
       "confidence_score": 1.0
     },
@@ -5380,7 +5402,7 @@
       "source_location": "L629",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_g_e_mails_transacionais",
       "confidence_score": 1.0
     },
@@ -5391,7 +5413,7 @@
       "source_location": "L659",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
       "confidence_score": 1.0
     },
@@ -5402,7 +5424,7 @@
       "source_location": "L696",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_futuro_integra\u00e7\u00e3o_real_com_instagram_meta",
       "confidence_score": 1.0
     },
@@ -5413,7 +5435,7 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_1_objetivo_do_documento",
       "confidence_score": 1.0
     },
@@ -5424,7 +5446,7 @@
       "source_location": "L740",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_5_1_contrato_transversal_de_canais_e_providers",
       "confidence_score": 1.0
     },
@@ -5435,7 +5457,7 @@
       "source_location": "L789",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_6_regras_de_neg\u00f3cio_transversais",
       "confidence_score": 1.0
     },
@@ -5446,7 +5468,7 @@
       "source_location": "L823",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_7_estados_funcionais",
       "confidence_score": 1.0
     },
@@ -5457,7 +5479,7 @@
       "source_location": "L848",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_8_contratos_m\u00ednimos_de_api",
       "confidence_score": 1.0
     },
@@ -5468,7 +5490,7 @@
       "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_5_requisitos_funcionais",
       "confidence_score": 1.0
     },
@@ -5479,7 +5501,7 @@
       "source_location": "L901",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_9_crit\u00e9rios_de_aceite_do_mvp",
       "confidence_score": 1.0
     },
@@ -5490,7 +5512,7 @@
       "source_location": "L92",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_\u00e9pico_candidato_a_autentica\u00e7\u00e3o_e_acesso",
       "confidence_score": 1.0
     },
@@ -5501,7 +5523,7 @@
       "source_location": "L921",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_10_\u00e9picos_candidatos_consolidados",
       "confidence_score": 1.0
     },
@@ -5512,7 +5534,7 @@
       "source_location": "L961",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_11_depend\u00eancias_entre_\u00e9picos",
       "confidence_score": 1.0
     },
@@ -5523,7 +5545,7 @@
       "source_location": "L983",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "requirements_insta_flow_requisitos_funcionais",
+      "source": "requirements_engancha_requisitos_funcionais",
       "target": "requirements_12_decis\u00f5es_ainda_necess\u00e1rias_antes_das_hist\u00f3rias",
       "confidence_score": 1.0
     },
@@ -6184,7 +6206,205 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "roadmap",
-      "target": "roadmap_insta_flow_roadmap",
+      "target": "roadmap_engancha_roadmap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_1_funda\u00e7\u00e3o_do_monorepo_e_infraestrutura",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_status_atual",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L182",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_2_autentica\u00e7\u00e3o_e_workspaces",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L227",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_3_gest\u00e3o_de_automa\u00e7\u00f5es",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_vis\u00e3o_geral_das_fases",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L273",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_4_simula\u00e7\u00e3o_ponta_a_ponta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L318",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_5_conversas_contatos_e_leads",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L361",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_6_dashboard_e_m\u00e9tricas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L386",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L446",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_futura_integra\u00e7\u00e3o_real_com_instagram_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L478",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_extens\u00f5es_futuras_novos_providers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L495",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_backlog_posterior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L514",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_depend\u00eancias_cr\u00edticas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L526",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_defini\u00e7\u00e3o_de_pronto_funcionalidade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_0_prepara\u00e7\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L540",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_registro_de_decis\u00f5es_do_roadmap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_fase_0_5_valida\u00e7\u00e3o_do_modelo_de_dados",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ROADMAP.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "roadmap_engancha_roadmap",
+      "target": "roadmap_como_usar_este_roadmap",
       "confidence_score": 1.0
     },
     {
@@ -6441,204 +6661,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L117",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_1_funda\u00e7\u00e3o_do_monorepo_e_infraestrutura",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_status_atual",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L182",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_2_autentica\u00e7\u00e3o_e_workspaces",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L227",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_3_gest\u00e3o_de_automa\u00e7\u00f5es",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L27",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_vis\u00e3o_geral_das_fases",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L273",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_4_simula\u00e7\u00e3o_ponta_a_ponta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L318",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_5_conversas_contatos_e_leads",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L361",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_6_dashboard_e_m\u00e9tricas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L386",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_7_opera\u00e7\u00e3o_testes_e_release_do_mvp",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L446",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_futura_integra\u00e7\u00e3o_real_com_instagram_meta",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L478",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_extens\u00f5es_futuras_novos_providers",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L495",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_backlog_posterior",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L514",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_depend\u00eancias_cr\u00edticas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L526",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_defini\u00e7\u00e3o_de_pronto_funcionalidade",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L53",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_0_prepara\u00e7\u00e3o",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L540",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_registro_de_decis\u00f5es_do_roadmap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L74",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_fase_0_5_valida\u00e7\u00e3o_do_modelo_de_dados",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "ROADMAP.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "roadmap_insta_flow_roadmap",
-      "target": "roadmap_como_usar_este_roadmap",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "DATA-MODEL.md",
@@ -6705,5 +6727,6 @@
       "confidence_score": 1.0
     }
   ],
-  "hyperedges": []
+  "hyperedges": [],
+  "built_at_commit": "64b2f317fc4ff8a271ebccc5e7869fbb7244a1d8"
 }

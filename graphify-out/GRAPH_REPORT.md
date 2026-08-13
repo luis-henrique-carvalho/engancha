@@ -1,30 +1,35 @@
 # Graph Report - insta-flow  (2026-08-13)
 
 ## Corpus Check
-- 16 files · ~24,160 words
+- 16 files · ~24,290 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 309 nodes · 300 edges · 27 communities (23 shown, 4 thin omitted)
+- 310 nodes · 301 edges · 28 communities (24 shown, 4 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
+## Graph Freshness
+- Built from commit: `64b2f317`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
+
 ## Community Hubs (Navigation)
-- Insta Flow — Roadmap
-- Insta Flow — Requisitos Funcionais
-- Insta Flow — Architecture
+- Engancha — Roadmap
+- Engancha — Requisitos Funcionais
+- Engancha — Architecture
 - What You Must Do When Invoked
-- Insta Flow — Modelo de Dados
+- Engancha — Modelo de Dados
 - Épico candidato C — Criação e gestão de automações
 - 5. Entidades
 - Épico futuro — Integração real com Instagram/Meta
-- 2. Perfis e atores
+- 5. Decisões arquiteturais
 - graphify reference: extra exports and benchmark
 - 6. Regras de negócio transversais
 - Épico candidato D — Simulação de comentários e automações
 - PRD to Tickets
 - 8. Contratos mínimos de API
-- Épico candidato A — Autenticação e acesso
+- 5.1 Contrato transversal de canais e providers
 - Épico candidato E — Conversas, contatos e leads
 - graphify reference: query, path, explain
 - 10. Épicos candidatos consolidados
@@ -36,15 +41,16 @@
 - graphify reference: transcribe video and audio
 - AGENTS.md
 - extraction-spec.md
-- Fase 7 — Operação, testes e release do MVP
+- Épico candidato B — Organizations e workspaces
+- Épico candidato H — Operação e monitoramento
 
 ## God Nodes (most connected - your core abstractions)
-1. `Insta Flow — Requisitos Funcionais` - 23 edges
-2. `Insta Flow — Architecture` - 21 edges
-3. `Insta Flow — Roadmap` - 19 edges
+1. `Engancha — Requisitos Funcionais` - 23 edges
+2. `Engancha — Architecture` - 21 edges
+3. `Engancha — Roadmap` - 19 edges
 4. `Épico candidato C — Criação e gestão de automações` - 15 edges
 5. `5. Entidades` - 14 edges
-6. `Insta Flow — Modelo de Dados` - 13 edges
+6. `Engancha — Modelo de Dados` - 13 edges
 7. `What You Must Do When Invoked` - 12 edges
 8. `Épico futuro — Integração real com Instagram/Meta` - 11 edges
 9. `/graphify` - 10 edges
@@ -53,25 +59,25 @@
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
 
-## Communities (27 total, 4 thin omitted)
+## Communities (28 total, 4 thin omitted)
 
-### Community 0 - "Insta Flow — Roadmap"
+### Community 0 - "Engancha — Roadmap"
 Cohesion: 0.05
-Nodes (37): Abstração de canal, API, API e interface, Backend base, Backlog posterior, Better Auth, Checklist de validação, Como usar este roadmap (+29 more)
+Nodes (42): Abstração de canal, API, API e interface, Backend base, Backlog posterior, Better Auth, Bull Board, Checklist de validação (+34 more)
 
-### Community 1 - "Insta Flow — Requisitos Funcionais"
-Cohesion: 0.05
-Nodes (39): 11. Dependências entre épicos, 12. Decisões ainda necessárias antes das histórias, 1. Objetivo do documento, 3. Convenções, 4. Escopo do MVP, 5.1 Contrato transversal de canais e providers, 5. Requisitos funcionais, 7.1 Automação (+31 more)
-
-### Community 2 - "Insta Flow — Architecture"
+### Community 1 - "Engancha — Requisitos Funcionais"
 Cohesion: 0.06
-Nodes (31): 10. Fluxo principal do MVP, 11. Autenticação e e-mail, 12. Bull Board, 13. Frontend, 14. Segurança e isolamento, 15. Deploy e operação, 16. Testes, 17. Observabilidade mínima (+23 more)
+Nodes (35): 11. Dependências entre épicos, 12. Decisões ainda necessárias antes das histórias, 1. Objetivo do documento, 2.1 Usuário, 2.2 Membro do workspace, 2.3 Administrador da plataforma, 2.4 Worker, 2.5 Sistema externo (+27 more)
+
+### Community 2 - "Engancha — Architecture"
+Cohesion: 0.08
+Nodes (24): 10. Fluxo principal do MVP, 11. Autenticação e e-mail, 12. Bull Board, 13. Frontend, 14. Segurança e isolamento, 15. Deploy e operação, 16. Testes, 17. Observabilidade mínima (+16 more)
 
 ### Community 3 - "What You Must Do When Invoked"
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 4 - "Insta Flow — Modelo de Dados"
+### Community 4 - "Engancha — Modelo de Dados"
 Cohesion: 0.10
 Nodes (19): 10. Mapeamento para requisitos, 11. Decisões adiadas, 12. Critério de aprovação, 1. Objetivo, 2. Princípios, 3. Separação entre autenticação e produto, 4. Diagrama lógico, 6.1 Capacidades do canal (+11 more)
 
@@ -87,9 +93,9 @@ Nodes (14): 5.10 Tag, 5.11 ContactTag, 5.12 ChannelConnection — futuro, 5.13 E
 Cohesion: 0.18
 Nodes (11): FR-META-001 — Conectar conta profissional, FR-META-002 — Associar conta ao workspace, FR-META-003 — Armazenar credenciais com segurança, FR-META-004 — Receber comentários via webhook, FR-META-005 — Receber mensagens via webhook, FR-META-006 — Responder comentário, FR-META-007 — Enviar mensagem, FR-META-008 — Deduplicar eventos externos (+3 more)
 
-### Community 8 - "2. Perfis e atores"
-Cohesion: 0.33
-Nodes (6): 2.1 Usuário, 2.2 Membro do workspace, 2.3 Administrador da plataforma, 2.4 Worker, 2.5 Sistema externo, 2. Perfis e atores
+### Community 8 - "5. Decisões arquiteturais"
+Cohesion: 0.29
+Nodes (7): 5.1 Monorepo, 5.2 API e worker, 5.3 Modular monolith no backend, 5.4 API REST versionada, 5.5 Banco de dados, 5.6 Abstração de canal, provider e integração futura, 5. Decisões arquiteturais
 
 ### Community 9 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
@@ -111,9 +117,9 @@ Nodes (9): Entradas e escopo, Fase 1 — Entender o contexto, Fase 2 — Resolve
 Cohesion: 0.29
 Nodes (7): 8. Contratos mínimos de API, Autenticação, Automações, Conversas e dados, Dashboard, Simulações, Workspaces
 
-### Community 14 - "Épico candidato A — Autenticação e acesso"
-Cohesion: 0.29
-Nodes (7): FR-AUTH-001 — Criar conta com e-mail e senha, FR-AUTH-002 — Entrar com e-mail e senha, FR-AUTH-003 — Entrar com Google, FR-AUTH-004 — Confirmar endereço de e-mail, FR-AUTH-005 — Recuperar senha, FR-AUTH-006 — Encerrar sessão, Épico candidato A — Autenticação e acesso
+### Community 14 - "5.1 Contrato transversal de canais e providers"
+Cohesion: 0.33
+Nodes (6): 5.1 Contrato transversal de canais e providers, FR-CHANNEL-001 — Separar provider e modo de execução, FR-CHANNEL-002 — Normalizar interações e mensagens, FR-CHANNEL-003 — Declarar capacidades do canal, FR-CHANNEL-004 — Isolar adapters de provider, FR-CHANNEL-005 — Preservar rastreabilidade do canal
 
 ### Community 15 - "Épico candidato E — Conversas, contatos e leads"
 Cohesion: 0.29
@@ -143,29 +149,33 @@ Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify refer
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
-### Community 26 - "Fase 7 — Operação, testes e release do MVP"
+### Community 26 - "Épico candidato B — Organizations e workspaces"
+Cohesion: 0.33
+Nodes (6): FR-WORK-001 — Criar workspace padrão, FR-WORK-002 — Exibir workspace ativo, FR-WORK-003 — Trocar workspace ativo, FR-WORK-004 — Isolar dados por workspace, FR-WORK-005 — Preparar membros futuros, Épico candidato B — Organizations e workspaces
+
+### Community 27 - "Épico candidato H — Operação e monitoramento"
 Cohesion: 0.40
-Nodes (5): Bull Board, Fase 7 — Operação, testes e release do MVP, Release, Segurança e operação, Testes
+Nodes (5): FR-OPS-001 — Visualizar filas, FR-OPS-002 — Proteger Bull Board, FR-OPS-003 — Inspecionar jobs, FR-OPS-004 — Reprocessar ou remover job, Épico candidato H — Operação e monitoramento
 
 ## Knowledge Gaps
-- **248 isolated node(s):** `Usage`, `What graphify is for`, `Step 0 - GitHub repos and multi-path merge (only if a URL or several paths)`, `Step 1 - Ensure graphify is installed`, `Step 2 - Detect files` (+243 more)
+- **249 isolated node(s):** `Usage`, `What graphify is for`, `Step 0 - GitHub repos and multi-path merge (only if a URL or several paths)`, `Step 1 - Ensure graphify is installed`, `Step 2 - Detect files` (+244 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Insta Flow — Requisitos Funcionais` connect `Insta Flow — Requisitos Funcionais` to `Insta Flow — Modelo de Dados`, `Épico candidato C — Criação e gestão de automações`, `Épico futuro — Integração real com Instagram/Meta`, `2. Perfis e atores`, `6. Regras de negócio transversais`, `Épico candidato D — Simulação de comentários e automações`, `8. Contratos mínimos de API`, `Épico candidato A — Autenticação e acesso`, `Épico candidato E — Conversas, contatos e leads`, `10. Épicos candidatos consolidados`?**
-  _High betweenness centrality (0.434) - this node is a cross-community bridge._
-- **Why does `Insta Flow — Roadmap` connect `Insta Flow — Roadmap` to `Fase 7 — Operação, testes e release do MVP`, `Insta Flow — Modelo de Dados`?**
-  _High betweenness centrality (0.185) - this node is a cross-community bridge._
-- **Why does `Insta Flow — Architecture` connect `Insta Flow — Architecture` to `8. Domínios e módulos`, `Insta Flow — Modelo de Dados`?**
-  _High betweenness centrality (0.169) - this node is a cross-community bridge._
+- **Why does `Engancha — Requisitos Funcionais` connect `Engancha — Requisitos Funcionais` to `Engancha — Modelo de Dados`, `Épico candidato C — Criação e gestão de automações`, `Épico futuro — Integração real com Instagram/Meta`, `6. Regras de negócio transversais`, `Épico candidato D — Simulação de comentários e automações`, `8. Contratos mínimos de API`, `5.1 Contrato transversal de canais e providers`, `Épico candidato E — Conversas, contatos e leads`, `10. Épicos candidatos consolidados`, `Épico candidato B — Organizations e workspaces`, `Épico candidato H — Operação e monitoramento`?**
+  _High betweenness centrality (0.431) - this node is a cross-community bridge._
+- **Why does `Engancha — Roadmap` connect `Engancha — Roadmap` to `Engancha — Modelo de Dados`?**
+  _High betweenness centrality (0.184) - this node is a cross-community bridge._
+- **Why does `Engancha — Architecture` connect `Engancha — Architecture` to `5. Decisões arquiteturais`, `8. Domínios e módulos`, `Engancha — Modelo de Dados`?**
+  _High betweenness centrality (0.168) - this node is a cross-community bridge._
 - **What connects `Usage`, `What graphify is for`, `Step 0 - GitHub repos and multi-path merge (only if a URL or several paths)` to the rest of the system?**
-  _248 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Insta Flow — Roadmap` be split into smaller, more focused modules?**
-  _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._
-- **Should `Insta Flow — Requisitos Funcionais` be split into smaller, more focused modules?**
-  _Cohesion score 0.05128205128205128 - nodes in this community are weakly interconnected._
-- **Should `Insta Flow — Architecture` be split into smaller, more focused modules?**
-  _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
+  _249 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Engancha — Roadmap` be split into smaller, more focused modules?**
+  _Cohesion score 0.047619047619047616 - nodes in this community are weakly interconnected._
+- **Should `Engancha — Requisitos Funcionais` be split into smaller, more focused modules?**
+  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
+- **Should `Engancha — Architecture` be split into smaller, more focused modules?**
+  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._

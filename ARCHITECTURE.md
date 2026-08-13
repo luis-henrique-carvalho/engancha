@@ -1,11 +1,11 @@
-# Insta Flow — Architecture
+# Engancha — Architecture
 
 > Status: approved 1.1  
 > Approved for MVP implementation.
 
 ## 1. Visão do produto
 
-O Insta Flow será um SaaS para criadores de conteúdo e pequenos negócios que desejam transformar interações em conversas e leads. O Instagram será o primeiro canal validado, mas não será uma dependência do núcleo do produto.
+O Engancha será um SaaS para criadores de conteúdo e pequenos negócios que desejam transformar interações em conversas e leads. O Instagram será o primeiro canal validado, mas não será uma dependência do núcleo do produto.
 
 O primeiro fluxo validado pelo MVP é:
 

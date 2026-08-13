@@ -1,13 +1,13 @@
 ---
 name: prd-to-tickets
-description: Criar PRDs detalhadas a partir de requisitos, épicos, planos ou specs locais e decompor cada PRD em tickets Markdown verticais para o projeto. Usar quando o usuário quiser transformar um requisito do Insta Flow em decisões explícitas, documentação de produto e tickets locais implementáveis.
+description: Criar PRDs detalhadas a partir de requisitos, épicos, planos ou specs locais e decompor cada PRD em tickets Markdown verticais para o projeto. Usar quando o usuário quiser transformar um requisito do Engancha em decisões explícitas, documentação de produto e tickets locais implementáveis.
 ---
 
 # PRD to Tickets
 
 ## Objetivo
 
-Conduzir o fluxo completo de descoberta e planejamento do Insta Flow:
+Conduzir o fluxo completo de descoberta e planejamento do Engancha:
 
 ```text
 Requirement / Epic / Spec
@@ -38,7 +38,7 @@ Aceitar como fonte:
 
 Se o pedido cobrir o produto inteiro, identificar um épico ou uma primeira fatia implementável. Não misturar vários épicos em uma única PRD sem justificar o limite.
 
-Usar o vocabulário e as restrições do projeto. No Insta Flow, consultar, quando relevantes:
+Usar o vocabulário e as restrições do projeto. No Engancha, consultar, quando relevantes:
 
 - `ARCHITECTURE.md` para fronteiras, módulos e decisões arquiteturais;
 - `REQUIREMENTS.md` para requisitos, épicos, histórias e critérios de aceite;
