@@ -1,6 +1,6 @@
 ---
 title: "Monorepo executável e shell web"
-status: "needs-triage"
+status: "done"
 type: "AFK"
 parent: "docs/prds/local-executable-monorepo-foundation.md"
 blocked_by: []
@@ -125,4 +125,27 @@ None - can start immediately.
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
+Implementado em 2026-08-13.
+
+### Comportamento entregue
+
+- Workspace npm privado com `apps/web`, `apps/api`, `apps/worker` e `packages/contracts`, linkados pelo `package-lock.json`.
+- Configuração compartilhada de TypeScript, ESLint flat config e Prettier, com scripts raiz de `typecheck`, `lint`, `format` e `format:check`.
+- Shell TanStack Start manual em `apps/web`, com Vite, React Router baseado em arquivos, rota `/` estática e porta documentada `3000`.
+- Entry points independentes para API e worker, com comandos `dev` e `start`, sem imports cruzados entre aplicações.
+- `.env.example`, README de instalação/inicialização, testes de topologia/fronteiras e artefato gerado `apps/web/src/routeTree.gen.ts`.
+
+### Arquivos principais
+
+- `package.json`, `package-lock.json`, `tsconfig.base.json`, `eslint.config.mjs`, `.prettierrc` e `.prettierignore`.
+- `apps/web/package.json`, `apps/web/vite.config.ts`, `apps/web/src/router.tsx`, `apps/web/src/routes/` e `apps/web/src/styles.css`.
+- `apps/api/src/main.ts`, `apps/worker/src/main.ts` e `packages/contracts/src/index.ts`.
+- `tests/workspace-foundation.test.mjs` e `README.md`.
+
+### Validações executadas
+
+- `node --version` → `v22.22.2`; `node -p process.versions.icu` → `78.2`.
+- `npm ls --workspaces --depth=0` reconheceu os quatro workspaces.
+- `npm test`, `npm run typecheck`, `npm run lint` e `npm run format:check` passaram.
+- `npm run web:build` passou; `npm run dev --workspace=@engancha/web` e `npm run preview --workspace=@engancha/web` responderam `/` com `Environment ready`.
+- A atualização das dependências criou o lockfile sem vulnerabilidades reportadas pelo npm.

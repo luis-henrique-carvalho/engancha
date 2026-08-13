@@ -240,6 +240,8 @@ Preencher durante a implementação com comportamento entregue, contratos, arqui
 
 Manter os corpos concisos e orientados à implementação. Não modificar decisões, requisitos, arquitetura ou modelo de dados para criar tickets; a única alteração permitida na PRD é adicionar ou atualizar a seção de rastreabilidade `Ticket Map`, quando ela existir ou for necessária.
 
+Os itens de `## Acceptance criteria` devem permanecer como checkboxes Markdown (`- [ ]`) durante o planejamento e ser marcados (`- [x]`) individualmente assim que cada critério for comprovadamente entregue durante a implementação. Não marcar critérios por inferência ou apenas porque o código foi escrito; exigir a validação correspondente e manter qualquer critério não atendido como `- [ ]`.
+
 ## Fase 6 — Verificar a saída
 
 Antes de finalizar:
@@ -252,5 +254,7 @@ Antes de finalizar:
 6. Confirmar ausência de tickets horizontais sem comportamento verificável.
 7. Confirmar que o `Ticket Map`, quando existir, aponta para todos os tickets criados.
 8. Se `graphify-out/` existir, executar `graphify update .` após alterações documentais para manter o grafo atualizado.
+
+Ao revisar tickets implementados, confirmar que cada item de `## Acceptance criteria` foi marcado individualmente somente após a validação correspondente; critérios pendentes devem continuar desmarcados.
 
 Não criar GitHub Issues, labels ou registros em trackers remotos. Reportar arquivos criados, decisões assumidas, bloqueios e validações executadas.

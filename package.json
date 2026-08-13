@@ -1,0 +1,39 @@
+{
+  "name": "@engancha/monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Fundação executável local do Engancha",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run web:dev",
+    "web:dev": "npm run dev --workspace=@engancha/web",
+    "web:build": "npm run build --workspace=@engancha/web",
+    "web:preview": "npm run preview --workspace=@engancha/web",
+    "api:dev": "npm run dev --workspace=@engancha/api",
+    "api:start": "npm run start --workspace=@engancha/api",
+    "worker:dev": "npm run dev --workspace=@engancha/worker",
+    "worker:start": "npm run start --workspace=@engancha/worker",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --import tsx --test tests/*.test.mjs"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.10",
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.0",
+    "eslint": "^9.33.0",
+    "globals": "^16.3.0",
+    "prettier": "3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0"
+  }
+}

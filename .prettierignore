@@ -1,0 +1,10 @@
+node_modules
+dist
+.output
+coverage
+graphify-out
+.codex
+docs
+AGENTS.md
+apps/web/src/routeTree.gen.ts
+package-lock.json

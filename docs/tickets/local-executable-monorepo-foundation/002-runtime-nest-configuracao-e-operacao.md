@@ -1,6 +1,6 @@
 ---
 title: "Runtime Nest, configuração e operação"
-status: "needs-triage"
+status: "done"
 type: "AFK"
 parent: "docs/prds/local-executable-monorepo-foundation.md"
 blocked_by:
@@ -132,4 +132,17 @@ O worker não pode aceitar novos jobs depois de entrar em encerramento. Os adapt
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
+Implementado o runtime Nest independente da API e do worker. A API agora possui `AppModule`, configuração Joi validada antes do `listen`, prefixo público `/api/v1`, `ValidationPipe` global, rota `GET /api/v1/status`, filtro global de exceções com resposta estável e correlação por `x-request-id`. O worker usa `NestApplicationContext`, valida `NODE_ENV`/`REDIS_URL` antes de ficar pronto e permanece vivo aguardando SIGINT/SIGTERM até que os adapters de infraestrutura sejam conectados.
+
+Ambos os processos usam `ConsoleLogger({ json: true })` com eventos de bootstrap, prontidão, erro e encerramento. `enableShutdownHooks()` e serviços de ciclo de vida marcam o runtime como encerrando antes do cleanup; os hooks são idempotentes e não expõem valores de ambiente, stack trace ou payload arbitrário na resposta HTTP. Os adapters de Redis, BullMQ e banco permanecem fora do escopo deste ticket e serão ligados nos tickets de infraestrutura.
+
+Arquivos principais: `apps/api/src/main.ts`, `apps/api/src/app.module.ts`, `apps/api/src/config/runtime-env.ts`, `apps/api/src/common/global-exception.filter.ts`, `apps/api/src/common/runtime-lifecycle.service.ts`, `apps/api/nest-cli.json`, e equivalentes do worker em `apps/worker/`.
+
+Validações executadas:
+
+- `npm test` — os arquivos de teste passaram, cobrindo configuração ausente/inválida sem vazamento, ciclo de vida e limites dos workspaces.
+- `npm run lint`, `npm run format:check` e `npm run typecheck` — passaram.
+- `npm run build --workspace=@engancha/api` e `npm run build --workspace=@engancha/worker` — passaram e geraram `dist/main.js` independentes.
+- API real respondeu `GET /api/v1/status` com `200`, retornou erro estruturado para rota inexistente e registrou `shutdown_started`/`shutdown_completed` ao SIGINT.
+- Worker real registrou `ready` e os mesmos eventos de shutdown ao SIGINT.
+- Execuções com `PORT=70000`, URI inválida ou `NODE_ENV=staging` falharam antes do bootstrap, sem imprimir credenciais.
