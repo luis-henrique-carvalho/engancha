@@ -1,13 +1,13 @@
 {
-  "0": "Insta Flow — Roadmap",
-  "1": "Insta Flow — Requisitos Funcionais",
-  "2": "Insta Flow — Architecture",
+  "0": "Engancha — Roadmap",
+  "1": "Engancha — Requisitos Funcionais",
+  "2": "Engancha — Architecture",
   "3": "What You Must Do When Invoked",
-  "4": "Insta Flow — Modelo de Dados",
+  "4": "Engancha — Modelo de Dados",
   "5": "Épico candidato C — Criação e gestão de automações",
   "6": "5. Entidades",
   "7": "Épico futuro — Integração real com Instagram/Meta",
-  "8": "2. Perfis e atores",
+  "8": "Fundação executável local do monorepo",
   "9": "graphify reference: extra exports and benchmark",
   "10": "6. Regras de negócio transversais",
   "11": "Épico candidato D — Simulação de comentários e automações",
@@ -25,5 +25,7 @@
   "23": "graphify reference: transcribe video and audio",
   "24": "AGENTS.md",
   "25": "extraction-spec.md",
-  "26": "Fase 7 — Operação, testes e release do MVP"
+  "26": "Épico candidato B — Organizations e workspaces",
+  "27": "2. Perfis e atores",
+  "28": "Fase 1 — Fundação do monorepo e infraestrutura"
 }

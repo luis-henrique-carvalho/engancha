@@ -15,14 +15,14 @@
 
 ## Status atual
 
-| Item | Status |
-|---|---|
-| Arquitetura | ✅ Aprovada — versão 1.1 |
-| Requisitos funcionais | ✅ Definidos — revisão contínua |
-| Roadmap | ✅ Criado |
-| Código | 🚧 Fase 1 em preparação |
-| Meta/Instagram real | ⏸️ Futuro — EPIC-09 |
-| Outros providers | ⏸️ Posterior — mesmos contratos e capacidades |
+| Item                  | Status                                        |
+| --------------------- | --------------------------------------------- |
+| Arquitetura           | ✅ Aprovada — versão 1.1                      |
+| Requisitos funcionais | ✅ Definidos — revisão contínua               |
+| Roadmap               | ✅ Criado                                     |
+| Código                | 🚧 Fase 1 em preparação                       |
+| Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
+| Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
 ## Visão geral das fases
 
@@ -124,7 +124,7 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 ### Monorepo
 
-- [ ] Criar workspace pnpm.
+- [ ] Criar workspace npm.
 - [ ] Criar `apps/web`.
 - [ ] Criar `apps/api`.
 - [ ] Criar `apps/worker`.
@@ -539,10 +539,10 @@ Uma funcionalidade só deve ser marcada como concluída quando:
 
 ## Registro de decisões do roadmap
 
-| Data | Decisão | Impacto |
-|---|---|---|
-| 2026-08-13 | Simulador e Meta real usarão os mesmos contratos e pipeline | Evita reescrita na futura integração |
-| 2026-08-13 | API e worker serão deployables separados | Permite escala e deploy independentes |
-| 2026-08-13 | Better Auth Organization Plugin representará workspaces | Prepara membros e roles futuros |
-| 2026-08-13 | PostgreSQL será a fonte de verdade | Redis fica restrito a cache e filas |
+| Data       | Decisão                                                                            | Impacto                                                     |
+| ---------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 2026-08-13 | Simulador e Meta real usarão os mesmos contratos e pipeline                        | Evita reescrita na futura integração                        |
+| 2026-08-13 | API e worker serão deployables separados                                           | Permite escala e deploy independentes                       |
+| 2026-08-13 | Better Auth Organization Plugin representará workspaces                            | Prepara membros e roles futuros                             |
+| 2026-08-13 | PostgreSQL será a fonte de verdade                                                 | Redis fica restrito a cache e filas                         |
 | 2026-08-13 | Instagram será o primeiro provider, com `provider`, `mode` e capacidades separados | Permite adicionar Facebook e Twitter/X sem duplicar o motor |

@@ -290,7 +290,7 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 │   ├── schema.prisma
 │   └── migrations/
 ├── docker-compose.yml
-├── pnpm-workspace.yaml
+├── npm-workspace.yaml
 ├── package.json
 ├── .env.example
 └── ARCHITECTURE.md

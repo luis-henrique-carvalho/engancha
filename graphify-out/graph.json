@@ -466,6 +466,17 @@
       "norm_label": "worker"
     },
     {
+      "label": "10. \u00c9picos candidatos consolidados",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L921",
+      "_origin": "ast",
+      "id": "requirements_10_\u00e9picos_candidatos_consolidados",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "10. epicos candidatos consolidados"
+    },
+    {
       "label": "11. Depend\u00eancias entre \u00e9picos",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
@@ -497,72 +508,6 @@
       "community": 1,
       "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "1. objetivo do documento"
-    },
-    {
-      "label": "2.1 Usu\u00e1rio",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L29",
-      "_origin": "ast",
-      "id": "requirements_2_1_usu\u00e1rio",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2.1 usuario"
-    },
-    {
-      "label": "2.2 Membro do workspace",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L33",
-      "_origin": "ast",
-      "id": "requirements_2_2_membro_do_workspace",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2.2 membro do workspace"
-    },
-    {
-      "label": "2.3 Administrador da plataforma",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L37",
-      "_origin": "ast",
-      "id": "requirements_2_3_administrador_da_plataforma",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2.3 administrador da plataforma"
-    },
-    {
-      "label": "2.4 Worker",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "requirements_2_4_worker",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2.4 worker"
-    },
-    {
-      "label": "2.5 Sistema externo",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L45",
-      "_origin": "ast",
-      "id": "requirements_2_5_sistema_externo",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2.5 sistema externo"
-    },
-    {
-      "label": "2. Perfis e atores",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "requirements_2_perfis_e_atores",
-      "community": 1,
-      "community_name": "Engancha \u2014 Requisitos Funcionais",
-      "norm_label": "2. perfis e atores"
     },
     {
       "label": "3. Conven\u00e7\u00f5es",
@@ -662,6 +607,105 @@
       "community": 1,
       "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "engancha \u2014 requisitos funcionais"
+    },
+    {
+      "label": "EPIC-01 \u2014 Autentica\u00e7\u00e3o e acesso",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L923",
+      "_origin": "ast",
+      "id": "requirements_epic_01_autentica\u00e7\u00e3o_e_acesso",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-01 \u2014 autenticacao e acesso"
+    },
+    {
+      "label": "EPIC-02 \u2014 Workspaces e isolamento multi-tenant",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L927",
+      "_origin": "ast",
+      "id": "requirements_epic_02_workspaces_e_isolamento_multi_tenant",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-02 \u2014 workspaces e isolamento multi-tenant"
+    },
+    {
+      "label": "EPIC-03 \u2014 Gest\u00e3o de automa\u00e7\u00f5es",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L931",
+      "_origin": "ast",
+      "id": "requirements_epic_03_gest\u00e3o_de_automa\u00e7\u00f5es",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-03 \u2014 gestao de automacoes"
+    },
+    {
+      "label": "EPIC-04 \u2014 Simula\u00e7\u00e3o do fluxo Instagram-first",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L935",
+      "_origin": "ast",
+      "id": "requirements_epic_04_simula\u00e7\u00e3o_do_fluxo_instagram_first",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-04 \u2014 simulacao do fluxo instagram-first"
+    },
+    {
+      "label": "EPIC-05 \u2014 Conversas, contatos e leads",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L939",
+      "_origin": "ast",
+      "id": "requirements_epic_05_conversas_contatos_e_leads",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-05 \u2014 conversas, contatos e leads"
+    },
+    {
+      "label": "EPIC-06 \u2014 Dashboard e m\u00e9tricas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L943",
+      "_origin": "ast",
+      "id": "requirements_epic_06_dashboard_e_m\u00e9tricas",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-06 \u2014 dashboard e metricas"
+    },
+    {
+      "label": "EPIC-07 \u2014 E-mails transacionais",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L947",
+      "_origin": "ast",
+      "id": "requirements_epic_07_e_mails_transacionais",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-07 \u2014 e-mails transacionais"
+    },
+    {
+      "label": "EPIC-08 \u2014 Opera\u00e7\u00e3o e monitoramento de filas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L951",
+      "_origin": "ast",
+      "id": "requirements_epic_08_opera\u00e7\u00e3o_e_monitoramento_de_filas",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-08 \u2014 operacao e monitoramento de filas"
+    },
+    {
+      "label": "EPIC-09 \u2014 Integra\u00e7\u00e3o real com Instagram/Meta (primeiro provider real)",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L955",
+      "_origin": "ast",
+      "id": "requirements_epic_09_integra\u00e7\u00e3o_real_com_instagram_meta_primeiro_provider_real",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epic-09 \u2014 integracao real com instagram/meta (primeiro provider real)"
     },
     {
       "label": "FR-ANALYTICS-001 \u2014 Exibir resumo do workspace",
@@ -796,6 +840,50 @@
       "norm_label": "fr-email-003 \u2014 reenviar confirmacao"
     },
     {
+      "label": "FR-OPS-001 \u2014 Visualizar filas",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L661",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_001_visualizar_filas",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-001 \u2014 visualizar filas"
+    },
+    {
+      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L675",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_002_proteger_bull_board",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-002 \u2014 proteger bull board"
+    },
+    {
+      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L682",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_003_inspecionar_jobs",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
+    },
+    {
+      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L689",
+      "_origin": "ast",
+      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
+    },
+    {
       "label": "Inclu\u00eddo",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
@@ -849,6 +937,17 @@
       "community": 1,
       "community_name": "Engancha \u2014 Requisitos Funcionais",
       "norm_label": "epico candidato g \u2014 e-mails transacionais"
+    },
+    {
+      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L659",
+      "_origin": "ast",
+      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
+      "community": 1,
+      "community_name": "Engancha \u2014 Requisitos Funcionais",
+      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
     },
     {
       "label": "6. Regras de neg\u00f3cio transversais",
@@ -1129,7 +1228,7 @@
       "label": "Fase 6 \u2014 Verificar a sa\u00edda",
       "file_type": "document",
       "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
-      "source_location": "L237",
+      "source_location": "L243",
       "_origin": "ast",
       "id": "codex_skills_prd_to_tickets_skill_fase_6_verificar_a_sa\u00edda",
       "community": 12,
@@ -1236,70 +1335,70 @@
       "norm_label": "workspaces"
     },
     {
-      "label": "5.1 Contrato transversal de canais e providers",
+      "label": "006-worker-processa-job-de-verificacao.md",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L740",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "requirements_5_1_contrato_transversal_de_canais_e_providers",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "5.1 contrato transversal de canais e providers"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "006-worker-processa-job-de-verificacao.md"
     },
     {
-      "label": "FR-CHANNEL-001 \u2014 Separar provider e modo de execu\u00e7\u00e3o",
+      "label": "Acceptance criteria",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L744",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L21",
       "_origin": "ast",
-      "id": "requirements_fr_channel_001_separar_provider_e_modo_de_execu\u00e7\u00e3o",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_acceptance_criteria",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "fr-channel-001 \u2014 separar provider e modo de execucao"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "acceptance criteria"
     },
     {
-      "label": "FR-CHANNEL-002 \u2014 Normalizar intera\u00e7\u00f5es e mensagens",
+      "label": "Blocked by",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L755",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "requirements_fr_channel_002_normalizar_intera\u00e7\u00f5es_e_mensagens",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_blocked_by",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "fr-channel-002 \u2014 normalizar interacoes e mensagens"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "blocked by"
     },
     {
-      "label": "FR-CHANNEL-003 \u2014 Declarar capacidades do canal",
+      "label": "Parent",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L769",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L13",
       "_origin": "ast",
-      "id": "requirements_fr_channel_003_declarar_capacidades_do_canal",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_parent",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "fr-channel-003 \u2014 declarar capacidades do canal"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "parent"
     },
     {
-      "label": "FR-CHANNEL-004 \u2014 Isolar adapters de provider",
+      "label": "Result",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L781",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L36",
       "_origin": "ast",
-      "id": "requirements_fr_channel_004_isolar_adapters_de_provider",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_result",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "fr-channel-004 \u2014 isolar adapters de provider"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "result"
     },
     {
-      "label": "FR-CHANNEL-005 \u2014 Preservar rastreabilidade do canal",
+      "label": "What to build",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L785",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L17",
       "_origin": "ast",
-      "id": "requirements_fr_channel_005_preservar_rastreabilidade_do_canal",
+      "id": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_what_to_build",
       "community": 14,
-      "community_name": "5.1 Contrato transversal de canais e providers",
-      "norm_label": "fr-channel-005 \u2014 preservar rastreabilidade do canal"
+      "community_name": "006-worker-processa-job-de-verificacao.md",
+      "norm_label": "what to build"
     },
     {
       "label": "FR-DATA-001 \u2014 Registrar conversa",
@@ -1445,191 +1544,136 @@
       "norm_label": "step 1 \u2014 traversal"
     },
     {
-      "label": "10. \u00c9picos candidatos consolidados",
+      "label": "007-validacao-e-documentacao-do-slice-local.md",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L921",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "requirements_10_\u00e9picos_candidatos_consolidados",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "10. epicos candidatos consolidados"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "007-validacao-e-documentacao-do-slice-local.md"
     },
     {
-      "label": "EPIC-01 \u2014 Autentica\u00e7\u00e3o e acesso",
+      "label": "Acceptance criteria",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L923",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L24",
       "_origin": "ast",
-      "id": "requirements_epic_01_autentica\u00e7\u00e3o_e_acesso",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_acceptance_criteria",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-01 \u2014 autenticacao e acesso"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "acceptance criteria"
     },
     {
-      "label": "EPIC-02 \u2014 Workspaces e isolamento multi-tenant",
+      "label": "Blocked by",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L927",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L32",
       "_origin": "ast",
-      "id": "requirements_epic_02_workspaces_e_isolamento_multi_tenant",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_blocked_by",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-02 \u2014 workspaces e isolamento multi-tenant"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "blocked by"
     },
     {
-      "label": "EPIC-03 \u2014 Gest\u00e3o de automa\u00e7\u00f5es",
+      "label": "Parent",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L931",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "requirements_epic_03_gest\u00e3o_de_automa\u00e7\u00f5es",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_parent",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-03 \u2014 gestao de automacoes"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "parent"
     },
     {
-      "label": "EPIC-04 \u2014 Simula\u00e7\u00e3o do fluxo Instagram-first",
+      "label": "Result",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L935",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "requirements_epic_04_simula\u00e7\u00e3o_do_fluxo_instagram_first",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_result",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-04 \u2014 simulacao do fluxo instagram-first"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "result"
     },
     {
-      "label": "EPIC-05 \u2014 Conversas, contatos e leads",
+      "label": "What to build",
       "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L939",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L20",
       "_origin": "ast",
-      "id": "requirements_epic_05_conversas_contatos_e_leads",
+      "id": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_what_to_build",
       "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-05 \u2014 conversas, contatos e leads"
+      "community_name": "007-validacao-e-documentacao-do-slice-local.md",
+      "norm_label": "what to build"
     },
     {
-      "label": "EPIC-06 \u2014 Dashboard e m\u00e9tricas",
+      "label": "5.1 Contrato transversal de canais e providers",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L943",
+      "source_location": "L740",
       "_origin": "ast",
-      "id": "requirements_epic_06_dashboard_e_m\u00e9tricas",
-      "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-06 \u2014 dashboard e metricas"
-    },
-    {
-      "label": "EPIC-07 \u2014 E-mails transacionais",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L947",
-      "_origin": "ast",
-      "id": "requirements_epic_07_e_mails_transacionais",
-      "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-07 \u2014 e-mails transacionais"
-    },
-    {
-      "label": "EPIC-08 \u2014 Opera\u00e7\u00e3o e monitoramento de filas",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L951",
-      "_origin": "ast",
-      "id": "requirements_epic_08_opera\u00e7\u00e3o_e_monitoramento_de_filas",
-      "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-08 \u2014 operacao e monitoramento de filas"
-    },
-    {
-      "label": "EPIC-09 \u2014 Integra\u00e7\u00e3o real com Instagram/Meta (primeiro provider real)",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L955",
-      "_origin": "ast",
-      "id": "requirements_epic_09_integra\u00e7\u00e3o_real_com_instagram_meta_primeiro_provider_real",
-      "community": 17,
-      "community_name": "10. \u00c9picos candidatos consolidados",
-      "norm_label": "epic-09 \u2014 integracao real com instagram/meta (primeiro provider real)"
-    },
-    {
-      "label": "8. Dom\u00ednios e m\u00f3dulos",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L301",
-      "_origin": "ast",
-      "id": "architecture_8_dom\u00ednios_e_m\u00f3dulos",
+      "id": "requirements_5_1_contrato_transversal_de_canais_e_providers",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "8. dominios e modulos"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "5.1 contrato transversal de canais e providers"
     },
     {
-      "label": "Analytics",
+      "label": "FR-CHANNEL-001 \u2014 Separar provider e modo de execu\u00e7\u00e3o",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L360",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L744",
       "_origin": "ast",
-      "id": "architecture_analytics",
+      "id": "requirements_fr_channel_001_separar_provider_e_modo_de_execu\u00e7\u00e3o",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "analytics"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-001 \u2014 separar provider e modo de execucao"
     },
     {
-      "label": "Auth",
+      "label": "FR-CHANNEL-002 \u2014 Normalizar intera\u00e7\u00f5es e mensagens",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L303",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L755",
       "_origin": "ast",
-      "id": "architecture_auth",
+      "id": "requirements_fr_channel_002_normalizar_intera\u00e7\u00f5es_e_mensagens",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "auth"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-002 \u2014 normalizar interacoes e mensagens"
     },
     {
-      "label": "Automations",
+      "label": "FR-CHANNEL-003 \u2014 Declarar capacidades do canal",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L330",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L769",
       "_origin": "ast",
-      "id": "architecture_automations",
+      "id": "requirements_fr_channel_003_declarar_capacidades_do_canal",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "automations"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-003 \u2014 declarar capacidades do canal"
     },
     {
-      "label": "Conversations e Contacts",
+      "label": "FR-CHANNEL-004 \u2014 Isolar adapters de provider",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L356",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L781",
       "_origin": "ast",
-      "id": "architecture_conversations_e_contacts",
+      "id": "requirements_fr_channel_004_isolar_adapters_de_provider",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "conversations e contacts"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-004 \u2014 isolar adapters de provider"
     },
     {
-      "label": "Simulation",
+      "label": "FR-CHANNEL-005 \u2014 Preservar rastreabilidade do canal",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L344",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L785",
       "_origin": "ast",
-      "id": "architecture_simulation",
+      "id": "requirements_fr_channel_005_preservar_rastreabilidade_do_canal",
       "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "simulation"
-    },
-    {
-      "label": "Workspaces",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L314",
-      "_origin": "ast",
-      "id": "architecture_workspaces",
-      "community": 18,
-      "community_name": "8. Dom\u00ednios e m\u00f3dulos",
-      "norm_label": "workspaces"
+      "community_name": "5.1 Contrato transversal de canais e providers",
+      "norm_label": "fr-channel-005 \u2014 preservar rastreabilidade do canal"
     },
     {
       "label": "add-watch.md",
@@ -1841,6 +1885,83 @@
       "norm_label": "4. vocabulario do dominio"
     },
     {
+      "label": "5.1 Monorepo",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "architecture_5_1_monorepo",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.1 monorepo"
+    },
+    {
+      "label": "5.2 API e worker",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L79",
+      "_origin": "ast",
+      "id": "architecture_5_2_api_e_worker",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.2 api e worker"
+    },
+    {
+      "label": "5.3 Modular monolith no backend",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L90",
+      "_origin": "ast",
+      "id": "architecture_5_3_modular_monolith_no_backend",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.3 modular monolith no backend"
+    },
+    {
+      "label": "5.4 API REST versionada",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "architecture_5_4_api_rest_versionada",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.4 api rest versionada"
+    },
+    {
+      "label": "5.5 Banco de dados",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L118",
+      "_origin": "ast",
+      "id": "architecture_5_5_banco_de_dados",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.5 banco de dados"
+    },
+    {
+      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L129",
+      "_origin": "ast",
+      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
+    },
+    {
+      "label": "5. Decis\u00f5es arquiteturais",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "architecture_5_decis\u00f5es_arquiteturais",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "5. decisoes arquiteturais"
+    },
+    {
       "label": "6. Topologia de runtime",
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
@@ -1863,6 +1984,17 @@
       "norm_label": "7. organizacao de pastas"
     },
     {
+      "label": "8. Dom\u00ednios e m\u00f3dulos",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L301",
+      "_origin": "ast",
+      "id": "architecture_8_dom\u00ednios_e_m\u00f3dulos",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "8. dominios e modulos"
+    },
+    {
       "label": "9. Eventos e filas",
       "file_type": "document",
       "source_file": "ARCHITECTURE.md",
@@ -1872,6 +2004,50 @@
       "community": 2,
       "community_name": "Engancha \u2014 Architecture",
       "norm_label": "9. eventos e filas"
+    },
+    {
+      "label": "Analytics",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L360",
+      "_origin": "ast",
+      "id": "architecture_analytics",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "analytics"
+    },
+    {
+      "label": "Auth",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L303",
+      "_origin": "ast",
+      "id": "architecture_auth",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "auth"
+    },
+    {
+      "label": "Automations",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L330",
+      "_origin": "ast",
+      "id": "architecture_automations",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "automations"
+    },
+    {
+      "label": "Conversations e Contacts",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L356",
+      "_origin": "ast",
+      "id": "architecture_conversations_e_contacts",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "conversations e contacts"
     },
     {
       "label": "Desenvolvimento",
@@ -1938,6 +2114,28 @@
       "community": 2,
       "community_name": "Engancha \u2014 Architecture",
       "norm_label": "producao inicial"
+    },
+    {
+      "label": "Simulation",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L344",
+      "_origin": "ast",
+      "id": "architecture_simulation",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "simulation"
+    },
+    {
+      "label": "Workspaces",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L314",
+      "_origin": "ast",
+      "id": "architecture_workspaces",
+      "community": 2,
+      "community_name": "Engancha \u2014 Architecture",
+      "norm_label": "workspaces"
     },
     {
       "label": "hooks.md",
@@ -2215,59 +2413,114 @@
       "norm_label": "epico candidato b \u2014 organizations e workspaces"
     },
     {
-      "label": "FR-OPS-001 \u2014 Visualizar filas",
+      "label": "2.1 Usu\u00e1rio",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L661",
+      "source_location": "L29",
       "_origin": "ast",
-      "id": "requirements_fr_ops_001_visualizar_filas",
+      "id": "requirements_2_1_usu\u00e1rio",
       "community": 27,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-001 \u2014 visualizar filas"
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2.1 usuario"
     },
     {
-      "label": "FR-OPS-002 \u2014 Proteger Bull Board",
+      "label": "2.2 Membro do workspace",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L675",
+      "source_location": "L33",
       "_origin": "ast",
-      "id": "requirements_fr_ops_002_proteger_bull_board",
+      "id": "requirements_2_2_membro_do_workspace",
       "community": 27,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-002 \u2014 proteger bull board"
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2.2 membro do workspace"
     },
     {
-      "label": "FR-OPS-003 \u2014 Inspecionar jobs",
+      "label": "2.3 Administrador da plataforma",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L682",
+      "source_location": "L37",
       "_origin": "ast",
-      "id": "requirements_fr_ops_003_inspecionar_jobs",
+      "id": "requirements_2_3_administrador_da_plataforma",
       "community": 27,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-003 \u2014 inspecionar jobs"
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2.3 administrador da plataforma"
     },
     {
-      "label": "FR-OPS-004 \u2014 Reprocessar ou remover job",
+      "label": "2.4 Worker",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L689",
+      "source_location": "L41",
       "_origin": "ast",
-      "id": "requirements_fr_ops_004_reprocessar_ou_remover_job",
+      "id": "requirements_2_4_worker",
       "community": 27,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "fr-ops-004 \u2014 reprocessar ou remover job"
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2.4 worker"
     },
     {
-      "label": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
+      "label": "2.5 Sistema externo",
       "file_type": "document",
       "source_file": "REQUIREMENTS.md",
-      "source_location": "L659",
+      "source_location": "L45",
       "_origin": "ast",
-      "id": "requirements_\u00e9pico_candidato_h_opera\u00e7\u00e3o_e_monitoramento",
+      "id": "requirements_2_5_sistema_externo",
       "community": 27,
-      "community_name": "\u00c9pico candidato H \u2014 Opera\u00e7\u00e3o e monitoramento",
-      "norm_label": "epico candidato h \u2014 operacao e monitoramento"
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2.5 sistema externo"
+    },
+    {
+      "label": "2. Perfis e atores",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "requirements_2_perfis_e_atores",
+      "community": 27,
+      "community_name": "2. Perfis e atores",
+      "norm_label": "2. perfis e atores"
+    },
+    {
+      "label": "ARCHITECTURE.md",
+      "file_type": "document",
+      "source_file": "ARCHITECTURE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "architecture",
+      "community": 28,
+      "community_name": "ARCHITECTURE.md",
+      "norm_label": "architecture.md"
+    },
+    {
+      "label": "DATA-MODEL.md",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "data_model",
+      "community": 28,
+      "community_name": "ARCHITECTURE.md",
+      "norm_label": "data-model.md"
+    },
+    {
+      "label": "REQUIREMENTS.md",
+      "file_type": "document",
+      "source_file": "REQUIREMENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "requirements",
+      "community": 28,
+      "community_name": "ARCHITECTURE.md",
+      "norm_label": "requirements.md"
+    },
+    {
+      "label": "ROADMAP.md",
+      "file_type": "document",
+      "source_file": "ROADMAP.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "roadmap",
+      "community": 28,
+      "community_name": "ARCHITECTURE.md",
+      "norm_label": "roadmap.md"
     },
     {
       "label": "graphify/SKILL.md",
@@ -2545,28 +2798,6 @@
       "norm_label": "what you must do when invoked"
     },
     {
-      "label": "ARCHITECTURE.md",
-      "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "architecture",
-      "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
-      "norm_label": "architecture.md"
-    },
-    {
-      "label": "DATA-MODEL.md",
-      "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "data_model",
-      "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
-      "norm_label": "data-model.md"
-    },
-    {
       "label": "10. Mapeamento para requisitos",
       "file_type": "document",
       "source_file": "DATA-MODEL.md",
@@ -2574,7 +2805,7 @@
       "_origin": "ast",
       "id": "data_model_10_mapeamento_para_requisitos",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "10. mapeamento para requisitos"
     },
     {
@@ -2585,7 +2816,7 @@
       "_origin": "ast",
       "id": "data_model_11_decis\u00f5es_adiadas",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "11. decisoes adiadas"
     },
     {
@@ -2596,7 +2827,7 @@
       "_origin": "ast",
       "id": "data_model_12_crit\u00e9rio_de_aprova\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "12. criterio de aprovacao"
     },
     {
@@ -2607,7 +2838,7 @@
       "_origin": "ast",
       "id": "data_model_1_objetivo",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "1. objetivo"
     },
     {
@@ -2618,7 +2849,7 @@
       "_origin": "ast",
       "id": "data_model_2_princ\u00edpios",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "2. principios"
     },
     {
@@ -2629,7 +2860,7 @@
       "_origin": "ast",
       "id": "data_model_3_separa\u00e7\u00e3o_entre_autentica\u00e7\u00e3o_e_produto",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "3. separacao entre autenticacao e produto"
     },
     {
@@ -2640,8 +2871,162 @@
       "_origin": "ast",
       "id": "data_model_4_diagrama_l\u00f3gico",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "4. diagrama logico"
+    },
+    {
+      "label": "5.10 Tag",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L388",
+      "_origin": "ast",
+      "id": "data_model_5_10_tag",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.10 tag"
+    },
+    {
+      "label": "5.11 ContactTag",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L407",
+      "_origin": "ast",
+      "id": "data_model_5_11_contacttag",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.11 contacttag"
+    },
+    {
+      "label": "5.12 ChannelConnection \u2014 futuro",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L423",
+      "_origin": "ast",
+      "id": "data_model_5_12_channelconnection_futuro",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.12 channelconnection \u2014 futuro"
+    },
+    {
+      "label": "5.13 ExternalEvent \u2014 futuro",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L454",
+      "_origin": "ast",
+      "id": "data_model_5_13_externalevent_futuro",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.13 externalevent \u2014 futuro"
+    },
+    {
+      "label": "5.1 Organization",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "data_model_5_1_organization",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.1 organization"
+    },
+    {
+      "label": "5.2 Automation",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L126",
+      "_origin": "ast",
+      "id": "data_model_5_2_automation",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.2 automation"
+    },
+    {
+      "label": "5.3 AutomationTrigger",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L160",
+      "_origin": "ast",
+      "id": "data_model_5_3_automationtrigger",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.3 automationtrigger"
+    },
+    {
+      "label": "5.4 AutomationAction",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L188",
+      "_origin": "ast",
+      "id": "data_model_5_4_automationaction",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.4 automationaction"
+    },
+    {
+      "label": "5.5 AutomationExecution",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L246",
+      "_origin": "ast",
+      "id": "data_model_5_5_automationexecution",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.5 automationexecution"
+    },
+    {
+      "label": "5.6 Conversation",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L284",
+      "_origin": "ast",
+      "id": "data_model_5_6_conversation",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.6 conversation"
+    },
+    {
+      "label": "5.7 Message",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L310",
+      "_origin": "ast",
+      "id": "data_model_5_7_message",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.7 message"
+    },
+    {
+      "label": "5.8 Contact",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L332",
+      "_origin": "ast",
+      "id": "data_model_5_8_contact",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.8 contact"
+    },
+    {
+      "label": "5.9 Lead",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L362",
+      "_origin": "ast",
+      "id": "data_model_5_9_lead",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5.9 lead"
+    },
+    {
+      "label": "5. Entidades",
+      "file_type": "document",
+      "source_file": "DATA-MODEL.md",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "data_model_5_entidades",
+      "community": 4,
+      "community_name": "5. Entidades",
+      "norm_label": "5. entidades"
     },
     {
       "label": "6.1 Capacidades do canal",
@@ -2651,7 +3036,7 @@
       "_origin": "ast",
       "id": "data_model_6_1_capacidades_do_canal",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "6.1 capacidades do canal"
     },
     {
@@ -2662,7 +3047,7 @@
       "_origin": "ast",
       "id": "data_model_6_enums_principais",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "6. enums principais"
     },
     {
@@ -2673,7 +3058,7 @@
       "_origin": "ast",
       "id": "data_model_7_1_criar_automa\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "7.1 criar automacao"
     },
     {
@@ -2684,7 +3069,7 @@
       "_origin": "ast",
       "id": "data_model_7_2_receber_coment\u00e1rio_simulado_do_instagram",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "7.2 receber comentario simulado do instagram"
     },
     {
@@ -2695,7 +3080,7 @@
       "_origin": "ast",
       "id": "data_model_7_3_processar_execu\u00e7\u00e3o",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "7.3 processar execucao"
     },
     {
@@ -2706,7 +3091,7 @@
       "_origin": "ast",
       "id": "data_model_7_4_capturar_e_mail",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "7.4 capturar e-mail"
     },
     {
@@ -2717,7 +3102,7 @@
       "_origin": "ast",
       "id": "data_model_7_fluxo_de_persist\u00eancia_do_mvp",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "7. fluxo de persistencia do mvp"
     },
     {
@@ -2728,7 +3113,7 @@
       "_origin": "ast",
       "id": "data_model_8_regras_de_integridade",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "8. regras de integridade"
     },
     {
@@ -2739,7 +3124,7 @@
       "_origin": "ast",
       "id": "data_model_9_\u00edndices_m\u00ednimos",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "9. indices minimos"
     },
     {
@@ -2750,7 +3135,7 @@
       "_origin": "ast",
       "id": "data_model_engancha_modelo_de_dados",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "engancha \u2014 modelo de dados"
     },
     {
@@ -2761,7 +3146,7 @@
       "_origin": "ast",
       "id": "data_model_tabelas_do_produto",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "tabelas do produto"
     },
     {
@@ -2772,30 +3157,8 @@
       "_origin": "ast",
       "id": "data_model_tabelas_gerenciadas_pelo_better_auth",
       "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
+      "community_name": "5. Entidades",
       "norm_label": "tabelas gerenciadas pelo better auth"
-    },
-    {
-      "label": "REQUIREMENTS.md",
-      "file_type": "document",
-      "source_file": "REQUIREMENTS.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "requirements",
-      "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
-      "norm_label": "requirements.md"
-    },
-    {
-      "label": "ROADMAP.md",
-      "file_type": "document",
-      "source_file": "ROADMAP.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "roadmap",
-      "community": 4,
-      "community_name": "Engancha \u2014 Modelo de Dados",
-      "norm_label": "roadmap.md"
     },
     {
       "label": "FR-AUTO-001 \u2014 Listar automa\u00e7\u00f5es",
@@ -2963,158 +3326,411 @@
       "norm_label": "epico candidato c \u2014 criacao e gestao de automacoes"
     },
     {
-      "label": "5.10 Tag",
+      "label": "local-executable-monorepo-foundation.md",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L388",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "data_model_5_10_tag",
+      "id": "docs_prds_local_executable_monorepo_foundation",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.10 tag"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "local-executable-monorepo-foundation.md"
     },
     {
-      "label": "5.11 ContactTag",
+      "label": "001-monorepo-executavel-e-shell-web.md",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L407",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "data_model_5_11_contacttag",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.11 contacttag"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "001-monorepo-executavel-e-shell-web.md"
     },
     {
-      "label": "5.12 ChannelConnection \u2014 futuro",
+      "label": "Acceptance criteria",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L423",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "data_model_5_12_channelconnection_futuro",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_acceptance_criteria",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.12 channelconnection \u2014 futuro"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
     },
     {
-      "label": "5.13 ExternalEvent \u2014 futuro",
+      "label": "Blocked by",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L454",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L26",
       "_origin": "ast",
-      "id": "data_model_5_13_externalevent_futuro",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_blocked_by",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.13 externalevent \u2014 futuro"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
     },
     {
-      "label": "5.1 Organization",
+      "label": "Parent",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L100",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L10",
       "_origin": "ast",
-      "id": "data_model_5_1_organization",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_parent",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.1 organization"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
     },
     {
-      "label": "5.2 Automation",
+      "label": "Result",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L126",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L30",
       "_origin": "ast",
-      "id": "data_model_5_2_automation",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_result",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.2 automation"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
     },
     {
-      "label": "5.3 AutomationTrigger",
+      "label": "What to build",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L160",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L14",
       "_origin": "ast",
-      "id": "data_model_5_3_automationtrigger",
+      "id": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_what_to_build",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.3 automationtrigger"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
     },
     {
-      "label": "5.4 AutomationAction",
+      "label": "002-runtime-nest-configuracao-e-operacao.md",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L188",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "data_model_5_4_automationaction",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.4 automationaction"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "002-runtime-nest-configuracao-e-operacao.md"
     },
     {
-      "label": "5.5 AutomationExecution",
+      "label": "Acceptance criteria",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L246",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L19",
       "_origin": "ast",
-      "id": "data_model_5_5_automationexecution",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_acceptance_criteria",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.5 automationexecution"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
     },
     {
-      "label": "5.6 Conversation",
+      "label": "Blocked by",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L284",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L27",
       "_origin": "ast",
-      "id": "data_model_5_6_conversation",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_blocked_by",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.6 conversation"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
     },
     {
-      "label": "5.7 Message",
+      "label": "Parent",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L310",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L11",
       "_origin": "ast",
-      "id": "data_model_5_7_message",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_parent",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.7 message"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
     },
     {
-      "label": "5.8 Contact",
+      "label": "Result",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L332",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L31",
       "_origin": "ast",
-      "id": "data_model_5_8_contact",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_result",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.8 contact"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
     },
     {
-      "label": "5.9 Lead",
+      "label": "What to build",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L362",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L15",
       "_origin": "ast",
-      "id": "data_model_5_9_lead",
+      "id": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_what_to_build",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5.9 lead"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
     },
     {
-      "label": "5. Entidades",
+      "label": "003-infraestrutura-local-e-health-checks.md",
       "file_type": "document",
-      "source_file": "DATA-MODEL.md",
-      "source_location": "L98",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L1",
       "_origin": "ast",
-      "id": "data_model_5_entidades",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
       "community": 6,
-      "community_name": "5. Entidades",
-      "norm_label": "5. entidades"
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "003-infraestrutura-local-e-health-checks.md"
+    },
+    {
+      "label": "Acceptance criteria",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_acceptance_criteria",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
+    },
+    {
+      "label": "Blocked by",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_blocked_by",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
+    },
+    {
+      "label": "Parent",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_parent",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
+    },
+    {
+      "label": "Result",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_result",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
+    },
+    {
+      "label": "What to build",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_what_to_build",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
+    },
+    {
+      "label": "004-contrato-do-job-e-registro-de-filas.md",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "004-contrato-do-job-e-registro-de-filas.md"
+    },
+    {
+      "label": "Acceptance criteria",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_acceptance_criteria",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
+    },
+    {
+      "label": "Blocked by",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_blocked_by",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
+    },
+    {
+      "label": "Parent",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_parent",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
+    },
+    {
+      "label": "Result",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_result",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
+    },
+    {
+      "label": "What to build",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_what_to_build",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
+    },
+    {
+      "label": "005-api-enfileira-job-de-verificacao.md",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "005-api-enfileira-job-de-verificacao.md"
+    },
+    {
+      "label": "Acceptance criteria",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_acceptance_criteria",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
+    },
+    {
+      "label": "Blocked by",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_blocked_by",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
+    },
+    {
+      "label": "Parent",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_parent",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
+    },
+    {
+      "label": "Result",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_result",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
+    },
+    {
+      "label": "What to build",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_what_to_build",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
+    },
+    {
+      "label": "008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "008-referencia-local-shadcn-admin-e-grafo-separado.md"
+    },
+    {
+      "label": "Acceptance criteria",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_acceptance_criteria",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "acceptance criteria"
+    },
+    {
+      "label": "Blocked by",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_blocked_by",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "blocked by"
+    },
+    {
+      "label": "Parent",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_parent",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "parent"
+    },
+    {
+      "label": "Result",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_result",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "result"
+    },
+    {
+      "label": "What to build",
+      "file_type": "document",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_what_to_build",
+      "community": 6,
+      "community_name": "local-executable-monorepo-foundation.md",
+      "norm_label": "what to build"
     },
     {
       "label": "FR-META-001 \u2014 Conectar conta profissional",
@@ -3238,81 +3854,213 @@
       "norm_label": "epico futuro \u2014 integracao real com instagram/meta"
     },
     {
-      "label": "5.1 Monorepo",
+      "label": "Acceptance Criteria",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L64",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L99",
       "_origin": "ast",
-      "id": "architecture_5_1_monorepo",
+      "id": "docs_prds_local_executable_monorepo_foundation_acceptance_criteria",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.1 monorepo"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "acceptance criteria"
     },
     {
-      "label": "5.2 API e worker",
+      "label": "Actors and Permissions",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L79",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L42",
       "_origin": "ast",
-      "id": "architecture_5_2_api_e_worker",
+      "id": "docs_prds_local_executable_monorepo_foundation_actors_and_permissions",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.2 api e worker"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "actors and permissions"
     },
     {
-      "label": "5.3 Modular monolith no backend",
+      "label": "Contracts and Integrations",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L90",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L89",
       "_origin": "ast",
-      "id": "architecture_5_3_modular_monolith_no_backend",
+      "id": "docs_prds_local_executable_monorepo_foundation_contracts_and_integrations",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.3 modular monolith no backend"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "contracts and integrations"
     },
     {
-      "label": "5.4 API REST versionada",
+      "label": "Decision Log",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L102",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L139",
       "_origin": "ast",
-      "id": "architecture_5_4_api_rest_versionada",
+      "id": "docs_prds_local_executable_monorepo_foundation_decision_log",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.4 api rest versionada"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "decision log"
     },
     {
-      "label": "5.5 Banco de dados",
+      "label": "Domain Rules and Data",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L118",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L81",
       "_origin": "ast",
-      "id": "architecture_5_5_banco_de_dados",
+      "id": "docs_prds_local_executable_monorepo_foundation_domain_rules_and_data",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.5 banco de dados"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "domain rules and data"
     },
     {
-      "label": "5.6 Abstra\u00e7\u00e3o de canal, provider e integra\u00e7\u00e3o futura",
+      "label": "Failures and recovery",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L129",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L74",
       "_origin": "ast",
-      "id": "architecture_5_6_abstra\u00e7\u00e3o_de_canal_provider_e_integra\u00e7\u00e3o_futura",
+      "id": "docs_prds_local_executable_monorepo_foundation_failures_and_recovery",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5.6 abstracao de canal, provider e integracao futura"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "failures and recovery"
     },
     {
-      "label": "5. Decis\u00f5es arquiteturais",
+      "label": "Functional Behavior",
       "file_type": "document",
-      "source_file": "ARCHITECTURE.md",
-      "source_location": "L62",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L56",
       "_origin": "ast",
-      "id": "architecture_5_decis\u00f5es_arquiteturais",
+      "id": "docs_prds_local_executable_monorepo_foundation_functional_behavior",
       "community": 8,
-      "community_name": "5. Decis\u00f5es arquiteturais",
-      "norm_label": "5. decisoes arquiteturais"
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "functional behavior"
+    },
+    {
+      "label": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "fundacao executavel local do monorepo"
+    },
+    {
+      "label": "Further Notes",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L149",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_further_notes",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "further notes"
+    },
+    {
+      "label": "Goal and Scope",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_goal_and_scope",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "goal and scope"
+    },
+    {
+      "label": "Health and verification flow",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L66",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_health_and_verification_flow",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "health and verification flow"
+    },
+    {
+      "label": "Implementation Decisions",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_implementation_decisions",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "implementation decisions"
+    },
+    {
+      "label": "Local startup",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_local_startup",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "local startup"
+    },
+    {
+      "label": "Out of Scope",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L131",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_out_of_scope",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "out of scope"
+    },
+    {
+      "label": "Problem Statement",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_problem_statement",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "problem statement"
+    },
+    {
+      "label": "Source and Traceability",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_source_and_traceability",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "source and traceability"
+    },
+    {
+      "label": "Testing Decisions",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L124",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_testing_decisions",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "testing decisions"
+    },
+    {
+      "label": "Ticket Map",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L156",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_ticket_map",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "ticket map"
+    },
+    {
+      "label": "User Stories",
+      "file_type": "document",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "docs_prds_local_executable_monorepo_foundation_user_stories",
+      "community": 8,
+      "community_name": "Funda\u00e7\u00e3o execut\u00e1vel local do monorepo",
+      "norm_label": "user stories"
     },
     {
       "label": "exports.md",
@@ -4453,7 +5201,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".codex/skills/prd-to-tickets/SKILL.md",
-      "source_location": "L237",
+      "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
       "source": "codex_skills_prd_to_tickets_skill_prd_to_tickets",
@@ -4876,6 +5624,655 @@
       "_origin": "ast",
       "source": "data_model_engancha_modelo_de_dados",
       "target": "data_model_5_entidades",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_functional_behavior",
+      "target": "docs_prds_local_executable_monorepo_foundation_local_startup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_functional_behavior",
+      "target": "docs_prds_local_executable_monorepo_foundation_health_and_verification_flow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_functional_behavior",
+      "target": "docs_prds_local_executable_monorepo_foundation_failures_and_recovery",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_problem_statement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_implementation_decisions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L124",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_testing_decisions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L131",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_out_of_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L139",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_decision_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_further_notes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_goal_and_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_ticket_map",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_source_and_traceability",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_actors_and_permissions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_user_stories",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_functional_behavior",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_domain_rules_and_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_contracts_and_integrations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation_funda\u00e7\u00e3o_execut\u00e1vel_local_do_monorepo",
+      "target": "docs_prds_local_executable_monorepo_foundation_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/001-monorepo-executavel-e-shell-web.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/002-runtime-nest-configuracao-e-operacao.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/003-infraestrutura-local-e-health-checks.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/004-contrato-do-job-e-registro-de-filas.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/005-api-enfileira-job-de-verificacao.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/006-worker-processa-job-de-verificacao.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/007-validacao-e-documentacao-do-slice-local.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_parent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_what_to_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_acceptance_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_blocked_by",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/tickets/local-executable-monorepo-foundation/008-referencia-local-shadcn-admin-e-grafo-separado.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado_result",
       "confidence_score": 1.0
     },
     {
@@ -6685,6 +8082,94 @@
     {
       "relation": "references",
       "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_001_monorepo_executavel_e_shell_web",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_002_runtime_nest_configuracao_e_operacao",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_003_infraestrutura_local_e_health_checks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_004_contrato_do_job_e_registro_de_filas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L162",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_005_api_enfileira_job_de_verificacao",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L163",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_006_worker_processa_job_de_verificacao",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L164",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_007_validacao_e_documentacao_do_slice_local",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/prds/local-executable-monorepo-foundation.md",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_prds_local_executable_monorepo_foundation",
+      "target": "docs_tickets_local_executable_monorepo_foundation_008_referencia_local_shadcn_admin_e_grafo_separado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
       "source_file": "REQUIREMENTS.md",
       "source_location": "L5",
       "weight": 1.0,
@@ -6728,5 +8213,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "64b2f317fc4ff8a271ebccc5e7869fbb7244a1d8"
+  "built_at_commit": "8f3b2feb0185feef2245afadd74d5431926f69fc"
 }

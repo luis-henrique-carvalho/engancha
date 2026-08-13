@@ -22,7 +22,7 @@ decomposição em fatias verticais
         ↓
 aprovação da decomposição
         ↓
-docs/tickets/*.md
+docs/tickets/<prd-slug>/NNN-*.md
 ```
 
 Produzir documentação e tickets; não implementar código durante este fluxo.
@@ -187,9 +187,13 @@ Pedir aprovação da granularidade, dependências, classificações e autorizaç
 
 ## Fase 5 — Criar tickets locais
 
-Depois da aprovação, criar os tickets em `docs/tickets/`, em ordem de dependência. Determinar o próximo número lendo os arquivos existentes e continuar do maior número. Nunca sobrescrever ticket existente.
+Depois da aprovação, criar os tickets em `docs/tickets/<prd-slug>/`, em ordem de dependência. O `<prd-slug>` deve ser o slug ASCII lowercase com hífens do arquivo da PRD, sem a extensão `.md`. Exemplo: `docs/prds/local-executable-monorepo-foundation.md` gera a pasta `docs/tickets/local-executable-monorepo-foundation/`.
+
+Determinar o próximo número lendo os tickets existentes dentro da subpasta da PRD e continuar do maior número. Começar em `001` quando a subpasta ainda não existir. A numeração é local à subpasta; o caminho completo diferencia tickets de PRDs diferentes. Nunca sobrescrever ticket existente.
 
 Usar nomes `NNN-slug-do-ticket.md`, com slug ASCII lowercase e hífens.
+
+Quando a origem for uma conversa sem PRD em arquivo, usar `docs/tickets/conversation/` e `parent: "conversation"`.
 
 Cada ticket deve ter este frontmatter:
 
@@ -204,7 +208,9 @@ user_stories: [1, 2]
 ---
 ```
 
-Usar caminhos relativos ao repositório em `parent` e `blocked_by`. Usar `parent: "conversation"` somente quando não existir fonte ou PRD em arquivo.
+Usar caminhos relativos ao repositório em `parent` e `blocked_by`. O campo `parent` deve apontar para a PRD em `docs/prds/`, mesmo quando o ticket estiver em uma subpasta diferente. Dependências dentro da mesma PRD devem usar o caminho completo, por exemplo `docs/tickets/feature/001-first-slice.md`. Usar `parent: "conversation"` somente quando não existir fonte ou PRD em arquivo.
+
+Se a PRD tiver uma seção `Ticket Map`, adicionar ou atualizar nela os links relativos para os tickets criados. Essa atualização deve conter apenas rastreabilidade; não alterar decisões, escopo ou critérios da PRD durante a criação dos tickets.
 
 Usar este corpo mínimo:
 
@@ -232,7 +238,7 @@ Tickets locais necessários antes, ou `None - can start immediately`.
 Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
 ```
 
-Manter os corpos concisos e orientados à implementação. Não modificar a PRD, `REQUIREMENTS.md`, `ARCHITECTURE.md` ou `DATA-MODEL.md` para criar tickets.
+Manter os corpos concisos e orientados à implementação. Não modificar decisões, requisitos, arquitetura ou modelo de dados para criar tickets; a única alteração permitida na PRD é adicionar ou atualizar a seção de rastreabilidade `Ticket Map`, quando ela existir ou for necessária.
 
 ## Fase 6 — Verificar a saída
 
@@ -241,9 +247,10 @@ Antes de finalizar:
 1. Confirmar que a PRD existe e cobre a fonte selecionada.
 2. Confirmar que todas as decisões bloqueadoras foram respondidas.
 3. Confirmar que cada ticket tem frontmatter válido e `status: "needs-triage"`.
-4. Confirmar numeração única, dependências existentes e ordem coerente.
+4. Confirmar que cada ticket está na subpasta correta da PRD, que a numeração é única dentro da subpasta, e que as dependências existentes e a ordem são coerentes.
 5. Confirmar rastreabilidade de histórias e critérios para tickets.
 6. Confirmar ausência de tickets horizontais sem comportamento verificável.
-7. Se `graphify-out/` existir, executar `graphify update .` após alterações documentais para manter o grafo atualizado.
+7. Confirmar que o `Ticket Map`, quando existir, aponta para todos os tickets criados.
+8. Se `graphify-out/` existir, executar `graphify update .` após alterações documentais para manter o grafo atualizado.
 
 Não criar GitHub Issues, labels ou registros em trackers remotos. Reportar arquivos criados, decisões assumidas, bloqueios e validações executadas.
