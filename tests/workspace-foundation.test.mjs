@@ -43,7 +43,8 @@ test('workspace dependency boundaries stay explicit', async () => {
   const contracts = await readJson('packages/contracts/package.json')
 
   assert.doesNotMatch(web, /@engancha\/(api|worker)/)
-  assert.deepEqual(contracts.dependencies ?? {}, {})
+  assert.deepEqual(Object.keys(contracts.dependencies ?? {}), ['zod'])
+  assert.doesNotMatch(JSON.stringify(contracts.dependencies ?? {}), /nestjs|prisma|redis|bullmq/i)
   assert.deepEqual(contracts.peerDependencies ?? {}, {})
 })
 
