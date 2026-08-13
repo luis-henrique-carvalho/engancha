@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from './app.controller'
 import { apiEnvSchema, validateApiEnvironment } from './config/runtime-env'
 import { RuntimeLifecycleService } from './common/runtime-lifecycle.service'
 import { ShutdownGuard } from './common/shutdown.guard'
 import { StructuredLogger } from './common/structured-logger'
+import { HealthController } from './health/health.controller'
+import {
+  InfrastructureHealthService,
+  POSTGRES_POOL,
+  REDIS_PROBE,
+} from './infrastructure/infrastructure-health.service'
+import { createRedisProbe } from './infrastructure/redis-probe'
+import { Pool } from 'pg'
 
 @Module({
   imports: [
@@ -15,7 +23,7 @@ import { StructuredLogger } from './common/structured-logger'
       validationOptions: { allowUnknown: true, abortEarly: false },
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [
     { provide: StructuredLogger, useFactory: () => new StructuredLogger('api') },
     {
@@ -27,6 +35,28 @@ import { StructuredLogger } from './common/structured-logger'
       provide: ShutdownGuard,
       useFactory: (lifecycle: RuntimeLifecycleService) => new ShutdownGuard(lifecycle),
       inject: [RuntimeLifecycleService],
+    },
+    {
+      provide: POSTGRES_POOL,
+      useFactory: (config: ConfigService) =>
+        new Pool({
+          connectionString: config.getOrThrow<string>('databaseUrl'),
+          max: 1,
+          connectionTimeoutMillis: 1000,
+        }),
+      inject: [ConfigService],
+    },
+    {
+      provide: REDIS_PROBE,
+      useFactory: (config: ConfigService) =>
+        createRedisProbe(config.getOrThrow<string>('redisUrl')),
+      inject: [ConfigService],
+    },
+    {
+      provide: InfrastructureHealthService,
+      useFactory: (postgres: Pool, redisProbe: ReturnType<typeof createRedisProbe>) =>
+        new InfrastructureHealthService(postgres, redisProbe),
+      inject: [POSTGRES_POOL, REDIS_PROBE],
     },
   ],
   exports: [RuntimeLifecycleService],
