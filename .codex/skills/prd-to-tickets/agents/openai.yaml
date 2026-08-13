@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD to Tickets"
+  short_description: "Cria PRDs e tickets verticais"
+  default_prompt: "Use $prd-to-tickets para transformar um requisito ou épico em uma PRD detalhada e tickets aprováveis."
