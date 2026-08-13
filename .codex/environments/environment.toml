@@ -6,7 +6,25 @@ name = "engancha"
 script = """
 set -eu
 
+required_node_major=20
+node_major="$(node -p 'process.versions.node.split(".")[0]')"
+
+if [ "$node_major" -lt "$required_node_major" ]; then
+  echo "Node.js >= ${required_node_major} is required; found $(node --version)" >&2
+  exit 1
+fi
+
 if [ ! -f .env ]; then
   cp .env.example .env
+fi
+
+if [ ! -x node_modules/.bin/tsx ]; then
+  npm ci
+fi
+
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+  docker compose up -d postgres redis
+else
+  echo "Docker is unavailable; skipping PostgreSQL/Redis startup."
 fi
 """

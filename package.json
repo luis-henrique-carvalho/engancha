@@ -19,11 +19,14 @@
     "api:start": "npm run start --workspace=@engancha/api",
     "worker:dev": "npm run dev --workspace=@engancha/worker",
     "worker:start": "npm run start --workspace=@engancha/worker",
+    "infra:up": "docker compose up -d postgres redis",
+    "infra:down": "docker compose down",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --import tsx --test tests/*.test.mjs"
+    "test": "node --import tsx --test tests/*.test.mjs",
+    "verify": "npm run typecheck && npm test && npm run lint && npm run format:check"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",
