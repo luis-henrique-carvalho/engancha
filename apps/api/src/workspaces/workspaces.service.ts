@@ -5,10 +5,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
-import type { ActiveWorkspaceResponse, WorkspaceListResponse } from '@engancha/contracts'
+import type {
+  ActiveWorkspaceResponse,
+  WorkspaceListResponse,
+  WorkspaceMembersResponse,
+} from '@engancha/contracts'
 import { PrismaService } from '../database/prisma.service'
 import type { RequestWithAuthorization } from '../authorization/authorization-context'
-import { auth } from '../auth/auth'
+import { OrganizationGateway } from './organization.gateway'
 
 type AuthenticatedRequest = RequestWithAuthorization & {
   session: NonNullable<RequestWithAuthorization['session']>
@@ -26,7 +30,10 @@ function slugify(value: string): string {
 
 @Injectable()
 export class WorkspacesService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(
+    private readonly database: PrismaService,
+    private readonly organizations: OrganizationGateway = new OrganizationGateway(),
+  ) {}
 
   async bootstrap(request: AuthenticatedRequest): Promise<ActiveWorkspaceResponse> {
     const { user } = request.session
@@ -43,14 +50,7 @@ export class WorkspacesService {
       const name = `${user.name || 'Meu'} Workspace`.slice(0, 80)
       const slug = `${slugify(user.name || 'workspace')}-${user.id.slice(0, 8)}`.slice(0, 48)
       try {
-        await auth.api.createOrganization({
-          body: {
-            userId: user.id,
-            name,
-            slug,
-            keepCurrentActiveOrganization: false,
-          },
-        })
+        await this.organizations.createOrganization({ userId: user.id, name, slug })
         membership = await this.database.client.member.findFirst({
           where: { userId: user.id, organization: { slug } },
           include: { organization: true },
@@ -126,11 +126,85 @@ export class WorkspacesService {
     return this.active(request)
   }
 
+  async create(name: string, request: RequestWithAuthorization): Promise<ActiveWorkspaceResponse> {
+    const { user, session } = this.requireAuthenticated(request)
+    const normalizedName = name.trim()
+    const slug = `${slugify(normalizedName).slice(0, 40)}-${user.id.slice(0, 8)}`.slice(0, 48)
+    await this.organizations.createOrganization({ name: normalizedName, slug, userId: user.id })
+    const membership = await this.database.client.member.findFirst({
+      where: { userId: user.id, organization: { slug } },
+      include: { organization: true },
+    })
+    if (!membership) throw new ConflictException('Workspace creation failed')
+    await this.database.client.session.updateMany({
+      where: { id: session.id, userId: user.id },
+      data: { activeOrganizationId: membership.organizationId },
+    })
+    session.activeOrganizationId = membership.organizationId
+    return this.toResponse(membership.organization, membership.role)
+  }
+
+  async members(request: RequestWithAuthorization): Promise<WorkspaceMembersResponse> {
+    const context = this.requireManager(request)
+    const [members, invitations] = await Promise.all([
+      this.database.client.member.findMany({
+        where: { organizationId: context.organizationId },
+        include: { user: true },
+        orderBy: { createdAt: 'asc' },
+      }),
+      this.database.client.invitation.findMany({
+        where: { organizationId: context.organizationId, status: 'pending' },
+        orderBy: { createdAt: 'asc' },
+      }),
+    ])
+    return [
+      ...members.map((member) => ({
+        id: member.id,
+        name: member.user.name || member.user.email,
+        email: member.user.email,
+        emailVerified: member.user.emailVerified,
+        role: this.toMemberRole(member.role),
+        status: 'active' as const,
+      })),
+      ...invitations.map((invitation) => ({
+        id: invitation.id,
+        name: 'Convite pendente',
+        email: invitation.email,
+        emailVerified: false,
+        role: this.toMemberRole(invitation.role),
+        status: 'invited' as const,
+      })),
+    ]
+  }
+
+  async invite(email: string, request: RequestWithAuthorization): Promise<{ id: string }> {
+    const context = this.requireManager(request)
+    const invitation = await this.organizations.createInvitation({
+      email: email.trim().toLowerCase(),
+      organizationId: context.organizationId,
+      headers: request.headers,
+    })
+    return { id: invitation.id }
+  }
+
   private requireAuthenticated(request: RequestWithAuthorization): AuthenticatedRequest['session'] {
     const session = request.session
     if (!session) throw new UnauthorizedException('Authentication required')
     if (!session.user.emailVerified) throw new ForbiddenException('Email verification required')
     return session
+  }
+
+  private requireManager(request: RequestWithAuthorization) {
+    const context = request.authorizationContext
+    if (!context) throw new ConflictException('Workspace context unavailable')
+    if (context.role !== 'owner' && context.role !== 'admin') {
+      throw new ForbiddenException('Workspace management requires owner or admin role')
+    }
+    return context
+  }
+
+  private toMemberRole(role: string | null): 'owner' | 'admin' | 'member' {
+    return role === 'owner' || role === 'admin' ? role : 'member'
   }
 
   private toResponse(organization: { id: string; name: string; slug: string }, role: string) {

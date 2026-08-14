@@ -1,4 +1,4 @@
-import { LayoutDashboard } from 'lucide-react'
+import { LayoutDashboard, UsersRound } from 'lucide-react'
 import type { ActiveWorkspaceResponse } from '@engancha/contracts'
 import type { SidebarData, User } from '../types'
 
@@ -19,6 +19,11 @@ export function createSidebarData({ user, workspace }: SidebarDataInput): Sideba
             title: 'Workspace',
             url: '/workspace',
             icon: LayoutDashboard,
+          },
+          {
+            title: 'Pessoas',
+            url: '/users',
+            icon: UsersRound,
           },
         ],
       },

@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { Building2, ChevronsUpDown, Loader2 } from 'lucide-react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import { Building2, ChevronsUpDown, Loader2, Plus } from 'lucide-react'
 import type { ActiveWorkspaceResponse, WorkspaceListResponse } from '@engancha/contracts'
 import { apiFetch } from '@/lib/api-client'
 import {
@@ -16,6 +17,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 type TeamSwitcherProps = {
   workspace: ActiveWorkspaceResponse
@@ -24,6 +35,9 @@ type TeamSwitcherProps = {
 
 export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps) {
   const { isMobile } = useSidebar()
+  const [createOpen, setCreateOpen] = useState(false)
+  const [name, setName] = useState('')
+  const queryClient = useQueryClient()
   const workspaces = useQuery({
     queryKey: ['workspaces'],
     queryFn: () => apiFetch<WorkspaceListResponse>('/workspaces'),
@@ -36,6 +50,24 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
       }),
     onSuccess: onWorkspaceChange,
   })
+  const createWorkspace = useMutation({
+    mutationFn: (workspaceName: string) =>
+      apiFetch<ActiveWorkspaceResponse>('/workspaces', {
+        method: 'POST',
+        body: JSON.stringify({ name: workspaceName }),
+      }),
+    onSuccess: async (created) => {
+      onWorkspaceChange(created)
+      setName('')
+      setCreateOpen(false)
+      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+    },
+  })
+
+  const submitWorkspace = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    createWorkspace.mutate(name)
+  }
 
   return (
     <SidebarMenu>
@@ -96,9 +128,46 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
                 <DropdownMenuItem disabled>Não foi possível trocar o workspace.</DropdownMenuItem>
               </>
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => setCreateOpen(true)}>
+              <Plus /> Criar workspace
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Criar workspace</DialogTitle>
+            <DialogDescription>
+              Você será definido como owner e este workspace passará a ser o ativo.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={submitWorkspace} className="grid gap-4">
+            <Input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Nome do workspace"
+              minLength={2}
+              maxLength={80}
+              required
+            />
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCreateOpen(false)}
+                disabled={createWorkspace.isPending}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={createWorkspace.isPending}>
+                {createWorkspace.isPending ? 'Criando…' : 'Criar workspace'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </SidebarMenu>
   )
 }

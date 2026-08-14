@@ -16,8 +16,9 @@ export type AuthorizationContext = {
 }
 
 export type RequestWithAuthorization = {
+  headers?: Record<string, string | string[] | undefined>
   session?: {
-    user: { id: string; name?: string; emailVerified?: boolean }
+    user: { id: string; name?: string; email?: string; emailVerified?: boolean }
     session: { id: string; activeOrganizationId?: string | null }
   } | null
   authorizationContext?: AuthorizationContext

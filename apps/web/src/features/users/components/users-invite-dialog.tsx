@@ -1,5 +1,4 @@
 import { useUsers } from './users-provider'
-import { useUsersForm } from '../hooks/use-users-form'
 import { useUsersMutations } from '../hooks/use-users-mutations'
 import {
   Dialog,
@@ -11,34 +10,21 @@ import {
 } from '#/components/ui/dialog'
 import { Button } from '#/components/ui/button'
 import { Input } from '#/components/ui/input'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '#/components/ui/form'
-import { toast } from 'sonner'
 import { useState } from 'react'
 
 export function UsersInviteDialog() {
-  const { open, setOpen } = useUsers()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const form = useUsersForm()
+  const { open, setOpen, workspaceId } = useUsers()
+  const [email, setEmail] = useState('')
+  const { inviteMember, isInviting } = useUsersMutations(workspaceId)
 
   const handleClose = () => {
     setOpen(null)
-    form.reset()
+    setEmail('')
   }
 
-  const onSubmit = async (values: { name: string; email: string }) => {
-    setIsSubmitting(true)
-    // Simulate sending invite
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setIsSubmitting(false)
-    toast.success(`Invitation sent successfully to ${values.email}`)
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    await inviteMember(email)
     handleClose()
   }
 
@@ -46,62 +32,28 @@ export function UsersInviteDialog() {
     <Dialog open={open === 'invite'} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Invite User</DialogTitle>
+          <DialogTitle>Convidar pessoa</DialogTitle>
           <DialogDescription>
-            Send an invitation link to a user. They will receive an email with
-            instructions.
+            A pessoa entra como membro após autenticar e confirmar o mesmo e-mail.
           </DialogDescription>
         </DialogHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter user's name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="user@example.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Sending Invite...' : 'Send Invitation'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <Input
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="pessoa@empresa.com"
+            required
+          />
+          <DialogFooter className="pt-4">
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isInviting}>
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={isInviting}>
+              {isInviting ? 'Enviando…' : 'Enviar convite'}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

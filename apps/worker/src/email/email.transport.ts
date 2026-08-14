@@ -18,7 +18,12 @@ export class ResendEmailTransport {
       return 'mocked'
     }
 
-    const subject = job.type === 'verification' ? 'Confirme seu e-mail' : 'Redefina sua senha'
+    const subject =
+      job.type === 'verification'
+        ? 'Confirme seu e-mail'
+        : job.type === 'organization-invitation'
+          ? 'Convite para um workspace'
+          : 'Redefina sua senha'
     const result = await this.resend.emails.send({
       from: process.env.RESEND_FROM ?? 'Engancha <onboarding@example.com>',
       to: job.to,

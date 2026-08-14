@@ -1,10 +1,5 @@
-import { getRouteApi } from '@tanstack/react-router'
-import { ConfigDrawer } from '#/components/config-drawer'
-import { Header } from '#/components/layout/header'
-import { Main } from '#/components/layout/main'
-import { ProfileDropdown } from '#/components/profile-dropdown'
-import { Search } from '#/components/search'
-import { ThemeSwitch } from '#/components/theme-switch'
+import { RefreshCw } from 'lucide-react'
+import { Button } from '#/components/ui/button'
 import { UsersDialogs } from '../components/users-dialogs'
 import { UsersPrimaryButtons } from '../components/users-primary-buttons'
 import { UsersProvider } from '../components/users-provider'
@@ -12,46 +7,41 @@ import { UsersTable } from '../components/users-table'
 import { useUsersList } from '../hooks/use-users'
 import { userUiSchema } from '../data/schema'
 
-const route = getRouteApi('/_authenticated/users/')
+type UsersViewProps = { canManage: boolean; workspaceId: string }
 
-export function UsersView() {
-  const search = route.useSearch()
-  const navigate = route.useNavigate()
-  const params = {
-    page: search.page ?? 1,
-    limit: search.limit ?? 20,
-    query: search.query?.trim() || undefined,
-    emailVerified: search.emailVerified,
-  }
-  const { data, isLoading } = useUsersList(params)
-  const users = userUiSchema.array().parse(data?.items ?? [])
+export function UsersView({ canManage, workspaceId }: UsersViewProps) {
+  const members = useUsersList(workspaceId, canManage)
+  const users = userUiSchema.array().parse(members.data ?? [])
+
+  if (!canManage) return null
 
   return (
-    <UsersProvider>
-      <Header fixed>
-        <Search className="me-auto" />
-        <ThemeSwitch />
-        <ConfigDrawer />
-      </Header>
-
-      <Main className="flex flex-1 flex-col gap-4 sm:gap-6">
+    <UsersProvider workspaceId={workspaceId}>
+      <section className="rounded-lg border bg-card">
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">User List</h2>
-            <p className="text-muted-foreground">
-              Manage your users and their roles here.
-            </p>
+          <div className="p-5">
+            <h2 className="text-lg font-semibold">Pessoas</h2>
+            <p className="text-sm text-muted-foreground">Membros e convites do workspace ativo.</p>
           </div>
-          <UsersPrimaryButtons />
+          <div className="flex items-center gap-2 p-5">
+            {members.isError ? (
+              <Button variant="outline" size="sm" onClick={() => void members.refetch()}>
+                <RefreshCw /> Tentar novamente
+              </Button>
+            ) : null}
+            <UsersPrimaryButtons />
+          </div>
         </div>
-        <UsersTable
-          data={users}
-          total={data?.meta.total ?? 0}
-          search={search}
-          navigate={navigate as any}
-          isLoading={isLoading}
-        />
-      </Main>
+        {members.isError ? (
+          <p className="border-t p-5 text-sm text-destructive">
+            Não foi possível carregar as pessoas deste workspace.
+          </p>
+        ) : (
+          <div className="border-t">
+            <UsersTable data={users} isLoading={members.isLoading} />
+          </div>
+        )}
+      </section>
 
       <UsersDialogs />
     </UsersProvider>

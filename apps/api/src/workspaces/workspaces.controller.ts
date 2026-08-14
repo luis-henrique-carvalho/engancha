@@ -5,6 +5,8 @@ import {
 } from '../authorization/authorization-context'
 import { WorkspacesService } from './workspaces.service'
 import { SwitchActiveWorkspaceDto } from './dto/switch-active-workspace.dto'
+import { CreateWorkspaceDto } from './dto/create-workspace.dto'
+import { CreateInvitationDto } from './dto/create-invitation.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -20,6 +22,11 @@ export class WorkspacesController {
     return this.workspaces.list(request)
   }
 
+  @Post()
+  create(@Body() body: CreateWorkspaceDto, @Req() request: RequestWithAuthorization) {
+    return this.workspaces.create(body.name, request)
+  }
+
   @Post('active')
   setActive(@Body() body: SwitchActiveWorkspaceDto, @Req() request: RequestWithAuthorization) {
     return this.workspaces.setActive(body.organizationId, request)
@@ -29,6 +36,18 @@ export class WorkspacesController {
   @UseGuards(AuthorizationContextGuard)
   active(@Req() request: RequestWithAuthorization) {
     return this.workspaces.active(request)
+  }
+
+  @Get('active/members')
+  @UseGuards(AuthorizationContextGuard)
+  members(@Req() request: RequestWithAuthorization) {
+    return this.workspaces.members(request)
+  }
+
+  @Post('active/invitations')
+  @UseGuards(AuthorizationContextGuard)
+  invite(@Body() body: CreateInvitationDto, @Req() request: RequestWithAuthorization) {
+    return this.workspaces.invite(body.email, request)
   }
 
   @Get(':id')

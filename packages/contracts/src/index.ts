@@ -54,7 +54,7 @@ export const emailDeliveryJobSchema = z
   .object({
     version: z.literal(contractsVersion),
     correlationId: correlationIdSchema,
-    type: z.enum(['verification', 'password-reset']),
+    type: z.enum(['verification', 'password-reset', 'organization-invitation']),
     to: emailAddressSchema,
     actionUrl: emailActionUrlSchema,
   })
@@ -64,7 +64,7 @@ export type EmailDeliveryJob = z.infer<typeof emailDeliveryJobSchema>
 
 export const developmentEmailOutboxEntrySchema = z
   .object({
-    type: z.enum(['verification', 'password-reset']),
+    type: z.enum(['verification', 'password-reset', 'organization-invitation']),
     actionUrl: emailActionUrlSchema,
   })
   .strict()
@@ -106,3 +106,27 @@ export const switchActiveWorkspaceRequestSchema = z
   .strict()
 
 export type SwitchActiveWorkspaceRequest = z.infer<typeof switchActiveWorkspaceRequestSchema>
+
+export const createWorkspaceRequestSchema = z
+  .object({ name: z.string().trim().min(2).max(80) })
+  .strict()
+
+export type CreateWorkspaceRequest = z.infer<typeof createWorkspaceRequestSchema>
+
+export const invitationRequestSchema = z.object({ email: emailAddressSchema }).strict()
+export type InvitationRequest = z.infer<typeof invitationRequestSchema>
+
+export const workspaceMemberSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().min(1).max(255),
+    email: emailAddressSchema,
+    emailVerified: z.boolean(),
+    role: z.enum(['owner', 'admin', 'member']),
+    status: z.enum(['active', 'invited']),
+  })
+  .strict()
+
+export type WorkspaceMember = z.infer<typeof workspaceMemberSchema>
+export const workspaceMembersResponseSchema = z.array(workspaceMemberSchema)
+export type WorkspaceMembersResponse = z.infer<typeof workspaceMembersResponseSchema>

@@ -1,26 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import useDialogState from '#/hooks/use-dialog-state'
-import type { User } from '../data/schema'
 
-type UsersDialogType = 'invite' | 'add' | 'edit' | 'delete'
+type UsersDialogType = 'invite'
 
 type UsersContextType = {
   open: UsersDialogType | null
   setOpen: (str: UsersDialogType | null) => void
-  currentRow: User | null
-  setCurrentRow: React.Dispatch<React.SetStateAction<User | null>>
+  workspaceId: string
 }
 
 const UsersContext = React.createContext<UsersContextType | null>(null)
 
-export function UsersProvider({ children }: { children: React.ReactNode }) {
+export function UsersProvider({
+  children,
+  workspaceId,
+}: {
+  children: React.ReactNode
+  workspaceId: string
+}) {
   const [open, setOpen] = useDialogState<UsersDialogType>(null)
-  const [currentRow, setCurrentRow] = useState<User | null>(null)
 
   return (
-    <UsersContext.Provider value={{ open, setOpen, currentRow, setCurrentRow }}>
-      {children}
-    </UsersContext.Provider>
+    <UsersContext.Provider value={{ open, setOpen, workspaceId }}>{children}</UsersContext.Provider>
   )
 }
 

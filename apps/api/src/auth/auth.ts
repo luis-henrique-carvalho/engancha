@@ -69,7 +69,23 @@ export const auth = betterAuth({
     },
     encryptOAuthTokens: true,
   },
-  plugins: [organization()],
+  plugins: [
+    organization({
+      requireEmailVerificationOnInvitation: true,
+      sendInvitationEmail: async (invitation) => {
+        await enqueueEmailDelivery({
+          version: 'v1',
+          correlationId: `organization-invitation-${invitation.id}`,
+          type: 'organization-invitation',
+          to: invitation.email,
+          actionUrl: new URL(
+            `/accept-invitation?invitationId=${invitation.id}`,
+            webOrigin,
+          ).toString(),
+        })
+      },
+    }),
+  ],
   rateLimit: {
     enabled: true,
     window: 900,

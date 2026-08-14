@@ -1,10 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
+  createWorkspaceRequestSchema,
   developmentEmailOutboxEntrySchema,
   developmentEmailOutboxKey,
   emailDeliveryJobSchema,
+  invitationRequestSchema,
   switchActiveWorkspaceRequestSchema,
+  workspaceMembersResponseSchema,
   workspaceListResponseSchema,
 } from '@engancha/contracts'
 import { processEmailDeliveryJob } from '../apps/worker/src/email/email.job.ts'
@@ -136,6 +139,98 @@ test('workspace contracts expose only frontend-safe memberships and a bounded sw
   assert.equal(
     workspaceListResponseSchema.safeParse([{ id: 'org-a', name: 'Alpha', slug: 'alpha' }]).success,
     false,
+  )
+})
+
+test('workspace membership contracts only permit safe workspace creation and member invitations', () => {
+  assert.equal(createWorkspaceRequestSchema.safeParse({ name: 'Produto Brasil' }).success, true)
+  assert.equal(createWorkspaceRequestSchema.safeParse({ name: '' }).success, false)
+  assert.equal(invitationRequestSchema.safeParse({ email: 'ana@example.com' }).success, true)
+  assert.equal(
+    invitationRequestSchema.safeParse({ email: 'ana@example.com', role: 'owner' }).success,
+    false,
+  )
+  assert.equal(
+    workspaceMembersResponseSchema.safeParse([
+      {
+        id: 'member-1',
+        name: 'Ana',
+        email: 'ana@example.com',
+        emailVerified: true,
+        role: 'owner',
+        status: 'active',
+      },
+      {
+        id: 'invitation-1',
+        name: 'Convite pendente',
+        email: 'bia@example.com',
+        emailVerified: false,
+        role: 'member',
+        status: 'invited',
+      },
+    ]).success,
+    true,
+  )
+})
+
+test('workspace management lists only active-organization people and blocks members from invitations', async () => {
+  const database = {
+    client: {
+      member: {
+        findMany: async ({ where }) => {
+          assert.deepEqual(where, { organizationId: 'org-active' })
+          return [
+            {
+              id: 'member-1',
+              role: 'owner',
+              user: { name: 'Ana', email: 'ana@example.com', emailVerified: true },
+            },
+          ]
+        },
+      },
+      invitation: {
+        findMany: async ({ where }) => {
+          assert.deepEqual(where, { organizationId: 'org-active', status: 'pending' })
+          return [{ id: 'invite-1', email: 'bia@example.com', role: 'member' }]
+        },
+      },
+    },
+  }
+  const gateway = {
+    createOrganization: async () => null,
+    createInvitation: async () => ({ id: 'invite-2' }),
+  }
+  const service = new WorkspacesService(database, gateway)
+  const managerRequest = {
+    authorizationContext: { organizationId: 'org-active', role: 'owner' },
+    session: { user: { id: 'user-1', emailVerified: true }, session: { id: 'session-1' } },
+  }
+
+  assert.deepEqual(await service.members(managerRequest), [
+    {
+      id: 'member-1',
+      name: 'Ana',
+      email: 'ana@example.com',
+      emailVerified: true,
+      role: 'owner',
+      status: 'active',
+    },
+    {
+      id: 'invite-1',
+      name: 'Convite pendente',
+      email: 'bia@example.com',
+      emailVerified: false,
+      role: 'member',
+      status: 'invited',
+    },
+  ])
+
+  await assert.rejects(
+    service.invite('bia@example.com', {
+      ...managerRequest,
+      authorizationContext: { organizationId: 'org-active', role: 'member' },
+    }),
+    (error) => error?.getStatus?.() === 403,
   )
 })
 
