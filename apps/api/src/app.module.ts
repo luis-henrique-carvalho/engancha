@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { BullModule } from '@nestjs/bullmq'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from './app.controller'
 import { apiEnvSchema, validateApiEnvironment } from './config/runtime-env'
@@ -13,6 +14,9 @@ import {
 } from './infrastructure/infrastructure-health.service'
 import { createRedisProbe } from './infrastructure/redis-probe'
 import { Pool } from 'pg'
+import { VerificationController } from './verification/verification.controller'
+import { VerificationService } from './verification/verification.service'
+import { queueNames, verificationJobOptions } from '@engancha/contracts'
 
 @Module({
   imports: [
@@ -22,8 +26,19 @@ import { Pool } from 'pg'
       validate: validateApiEnvironment,
       validationOptions: { allowUnknown: true, abortEarly: false },
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: { url: config.getOrThrow<string>('redisUrl') },
+      }),
+    }),
+    BullModule.registerQueue({
+      name: queueNames.verification,
+      defaultJobOptions: verificationJobOptions,
+    }),
   ],
-  controllers: [AppController, HealthController],
+  controllers: [AppController, HealthController, VerificationController],
   providers: [
     { provide: StructuredLogger, useFactory: () => new StructuredLogger('api') },
     {
@@ -58,6 +73,7 @@ import { Pool } from 'pg'
         new InfrastructureHealthService(postgres, redisProbe),
       inject: [POSTGRES_POOL, REDIS_PROBE],
     },
+    VerificationService,
   ],
   exports: [RuntimeLifecycleService],
 })

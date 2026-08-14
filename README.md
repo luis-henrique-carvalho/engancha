@@ -26,7 +26,7 @@ O workspace usa npm e mantém o lockfile na raiz. Os pacotes locais são:
 PostgreSQL e Redis são provisionados separadamente das aplicações pelo Docker Compose:
 
 ```bash
-docker compose up -d
+npm run infra:up
 docker compose ps
 ```
 
@@ -39,12 +39,12 @@ curl -i http://localhost:3001/api/v1/health/ready
 
 `/health/live` confirma que a API está viva. `/health/ready` retorna `200` somente quando a aplicação, PostgreSQL e Redis estão disponíveis; quando uma dependência falha, retorna `503` com apenas o estado (`up`/`down`), sem URLs ou credenciais.
 
-O worker executa o mesmo probe de Redis antes de registrar o evento `ready`. Se Redis estiver indisponível, o processo termina com `Redis dependency unavailable` e não anuncia prontidão.
+O worker executa o mesmo probe de Redis antes de registrar o evento `ready`, aguarda o consumidor BullMQ ficar pronto e processa a fila técnica `verification`. Se Redis estiver indisponível, o processo termina com `Redis dependency unavailable` e não anuncia prontidão. Os eventos `job_received`, `job_processing`, `job_succeeded`, `job_retry` e `job_failed_definitive` carregam `jobId` e `correlationId` quando disponíveis.
 
 Para parar a infraestrutura local:
 
 ```bash
-docker compose down
+npm run infra:down
 ```
 
 Os volumes nomeados não são removidos por esse comando. A fundação não cria schema, migrations ou dados de domínio.
@@ -73,6 +73,11 @@ npm run typecheck
 npm run lint
 npm run format:check
 npm test
+npm run verify
 ```
+
+`npm run verify` executa typecheck, testes, lint e verificação de formatação em uma única etapa.
+
+As regras para configurar filas, criar producers e consumers, validar jobs e tratar o shutdown estão em [`docs/NESTJS-BULLMQ-BEST-PRACTICES.md`](docs/NESTJS-BULLMQ-BEST-PRACTICES.md).
 
 O shell web é independente da API e do worker nesta fatia; os processos backend apenas confirmam que seus entrypoints locais estão disponíveis para os próximos tickets.

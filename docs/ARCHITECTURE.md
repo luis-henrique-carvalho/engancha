@@ -404,6 +404,8 @@ Jobs deverão possuir:
 - logs estruturados;
 - atualização de status da execução no PostgreSQL.
 
+As aplicações devem usar a integração oficial `@nestjs/bullmq`: `BullModule.forRootAsync()` para a conexão, `BullModule.registerQueue()` para o registro, `@InjectQueue()` para producers e `@Processor()`/`WorkerHost` para consumers. As regras detalhadas estão em [`docs/NESTJS-BULLMQ-BEST-PRACTICES.md`](NESTJS-BULLMQ-BEST-PRACTICES.md).
+
 O envio de e-mail de confirmação, reset de senha e futuros convites do Organization Plugin passará pela fila `email-delivery`, usando Resend no processor.
 
 ## 10. Fluxo principal do MVP

@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
 import { StructuredLogger } from './common/structured-logger'
 import { RedisReadinessService } from './infrastructure/redis-readiness.service'
+import { VerificationProcessor } from './verification/verification.worker'
 
 async function bootstrap(): Promise<void> {
   const logger = new StructuredLogger('worker')
@@ -13,17 +14,8 @@ async function bootstrap(): Promise<void> {
   app.enableShutdownHooks()
   const config = app.get(ConfigService)
   await app.get(RedisReadinessService).assertReady()
+  await app.get(VerificationProcessor).worker.waitUntilReady()
   logger.event('ready', { environment: config.get('nodeEnv') })
-
-  const keepAlive = setInterval(() => undefined, 60_000)
-  try {
-    await new Promise<void>((resolve) => {
-      process.once('SIGINT', resolve)
-      process.once('SIGTERM', resolve)
-    })
-  } finally {
-    clearInterval(keepAlive)
-  }
 }
 
 void bootstrap().catch((error: unknown) => {

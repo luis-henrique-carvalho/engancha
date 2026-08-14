@@ -1,6 +1,6 @@
 ---
 title: "API enfileira job de verificação"
-status: "needs-triage"
+status: "done"
 type: "AFK"
 parent: "docs/prds/local-executable-monorepo-foundation.md"
 blocked_by:
@@ -19,12 +19,12 @@ Adicionar à API um endpoint de verificação claramente separado dos contratos 
 
 ## Acceptance criteria
 
-- [ ] O endpoint é acessível somente no escopo de desenvolvimento configurado para a fundação.
-- [ ] Payloads inválidos são rejeitados antes de qualquer enfileiramento.
-- [ ] Payloads válidos são publicados na fila BullMQ correta com o contrato versionado.
-- [ ] A resposta permite correlacionar a solicitação ao job sem expor segredos ou payloads arbitrários.
-- [ ] Falhas de Redis ou da fila retornam erro estruturado e observável.
-- [ ] Testes cobrem sucesso, entrada inválida e falha de enfileiramento.
+- [x] O endpoint é acessível somente no escopo de desenvolvimento configurado para a fundação.
+- [x] Payloads inválidos são rejeitados antes de qualquer enfileiramento.
+- [x] Payloads válidos são publicados na fila BullMQ correta com o contrato versionado.
+- [x] A resposta permite correlacionar a solicitação ao job sem expor segredos ou payloads arbitrários.
+- [x] Falhas de Redis ou da fila retornam erro estruturado e observável.
+- [x] Testes cobrem sucesso, entrada inválida e falha de enfileiramento.
 
 ## Blocked by
 
@@ -33,4 +33,29 @@ Adicionar à API um endpoint de verificação claramente separado dos contratos 
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
+Implementado em 2026-08-13.
+
+### Comportamento entregue
+
+- `POST /api/v1/dev/verification` fica disponível somente em `development` e `test`; em produção retorna `404`.
+- O corpo deve ser o envelope estrito `VerificationJob` `v1`. A validação Zod ocorre antes de chamar BullMQ.
+- Jobs válidos são publicados na fila técnica `verification` com `verificationJobOptions` (`3` tentativas, backoff exponencial e retenção limitada).
+- A resposta contém somente `jobId` e `correlationId`. Falhas de fila/Redis retornam `503` com mensagem pública sanitizada.
+
+### Arquivos principais
+
+- `apps/api/src/verification/verification.controller.ts`
+- `apps/api/src/verification/verification.service.ts`
+- `apps/api/src/verification/verification.enqueuer.ts`
+- `apps/api/src/app.module.ts`
+- `apps/api/src/verification/verification.environment.ts`
+- `tests/api-verification.test.mjs`
+- `apps/api/package.json` e `package-lock.json`
+
+### Validações executadas
+
+- `npm run typecheck` — todos os workspaces passaram.
+- `npm test` — 5 subtestes passaram, incluindo sucesso, rejeição antes do enfileiramento, ambiente de produção e falha de fila.
+- `npm run lint` — passou.
+- `npm run format:check` — passou.
+- `npm run build --workspace=@engancha/api` — passou.
