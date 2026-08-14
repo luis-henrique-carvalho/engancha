@@ -100,7 +100,7 @@ function WorkspacePage() {
   }
 
   return (
-    <AuthenticatedLayout user={sidebarUser} workspace={workspace}>
+    <AuthenticatedLayout user={sidebarUser} workspace={workspace} onWorkspaceChange={setWorkspace}>
       <Header fixed>
         <div className="me-auto min-w-0">
           <p className="truncate text-sm font-semibold">{workspace.name}</p>

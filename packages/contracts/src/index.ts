@@ -94,3 +94,15 @@ export const activeWorkspaceResponseSchema = z
   .strict()
 
 export type ActiveWorkspaceResponse = z.infer<typeof activeWorkspaceResponseSchema>
+
+export const workspaceListResponseSchema = z.array(activeWorkspaceResponseSchema)
+
+export type WorkspaceListResponse = z.infer<typeof workspaceListResponseSchema>
+
+export const switchActiveWorkspaceRequestSchema = z
+  .object({
+    organizationId: z.string().trim().min(1).max(255),
+  })
+  .strict()
+
+export type SwitchActiveWorkspaceRequest = z.infer<typeof switchActiveWorkspaceRequestSchema>

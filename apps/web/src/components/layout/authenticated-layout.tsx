@@ -13,16 +13,22 @@ type AuthenticatedLayoutProps = {
   children?: React.ReactNode
   user: User
   workspace: ActiveWorkspaceResponse
+  onWorkspaceChange: (workspace: ActiveWorkspaceResponse) => void
 }
 
-export function AuthenticatedLayout({ children, user, workspace }: AuthenticatedLayoutProps) {
+export function AuthenticatedLayout({
+  children,
+  user,
+  workspace,
+  onWorkspaceChange,
+}: AuthenticatedLayoutProps) {
   const defaultOpen = getCookie('sidebar_state') !== 'false'
   return (
     <SearchProvider>
       <LayoutProvider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <SkipToMain />
-          <AppSidebar user={user} workspace={workspace} />
+          <AppSidebar user={user} workspace={workspace} onWorkspaceChange={onWorkspaceChange} />
           <SidebarInset
             className={cn(
               // Set content container, so we can use container queries

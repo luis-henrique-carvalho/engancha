@@ -4,10 +4,13 @@ import {
   developmentEmailOutboxEntrySchema,
   developmentEmailOutboxKey,
   emailDeliveryJobSchema,
+  switchActiveWorkspaceRequestSchema,
+  workspaceListResponseSchema,
 } from '@engancha/contracts'
 import { processEmailDeliveryJob } from '../apps/worker/src/email/email.job.ts'
 import { AuthorizationContextGuard } from '../apps/api/src/authorization/authorization-context.ts'
 import { DevelopmentEmailOutboxController } from '../apps/api/src/development-email-outbox/development-email-outbox.controller.ts'
+import { WorkspacesService } from '../apps/api/src/workspaces/workspaces.service.ts'
 
 const validJob = {
   version: 'v1',
@@ -115,5 +118,81 @@ test('authorization guard rejects missing, unverified, and context-less sessions
   await assert.rejects(
     guard.canActivate(context({ user: { id: 'u', emailVerified: true }, session: {} })),
     (error) => error?.getStatus?.() === 409,
+  )
+})
+
+test('workspace contracts expose only frontend-safe memberships and a bounded switch request', () => {
+  assert.equal(
+    workspaceListResponseSchema.safeParse([
+      { id: 'org-a', name: 'Alpha', slug: 'alpha', role: 'owner' },
+    ]).success,
+    true,
+  )
+  assert.equal(
+    switchActiveWorkspaceRequestSchema.safeParse({ organizationId: 'org-a' }).success,
+    true,
+  )
+  assert.equal(switchActiveWorkspaceRequestSchema.safeParse({ organizationId: '' }).success, false)
+  assert.equal(
+    workspaceListResponseSchema.safeParse([{ id: 'org-a', name: 'Alpha', slug: 'alpha' }]).success,
+    false,
+  )
+})
+
+test('workspace member lists memberships and switches only the current session to a member organization', async () => {
+  const updates = []
+  const database = {
+    client: {
+      member: {
+        findMany: async () => [
+          {
+            organization: { id: 'org-b', name: 'Beta', slug: 'beta' },
+            role: 'member',
+          },
+          {
+            organization: { id: 'org-a', name: 'Alpha', slug: 'alpha' },
+            role: 'owner',
+          },
+        ],
+        findUnique: async ({ where }) =>
+          where.organizationId_userId.organizationId === 'org-b'
+            ? {
+                organizationId: 'org-b',
+                organization: { id: 'org-b', name: 'Beta', slug: 'beta' },
+                role: 'member',
+              }
+            : null,
+      },
+      session: {
+        updateMany: async (value) => {
+          updates.push(value)
+          return { count: 1 }
+        },
+      },
+    },
+  }
+  const service = new WorkspacesService(database)
+  const request = {
+    session: {
+      user: { id: 'user-1', emailVerified: true },
+      session: { id: 'session-1', activeOrganizationId: 'org-a' },
+    },
+  }
+
+  assert.deepEqual(await service.list(request), [
+    { id: 'org-a', name: 'Alpha', slug: 'alpha', role: 'owner' },
+    { id: 'org-b', name: 'Beta', slug: 'beta', role: 'member' },
+  ])
+  assert.deepEqual(await service.setActive('org-b', request), {
+    id: 'org-b',
+    name: 'Beta',
+    slug: 'beta',
+    role: 'member',
+  })
+  assert.deepEqual(request.session.session.activeOrganizationId, 'org-b')
+  assert.deepEqual(updates[0].where, { id: 'session-1', userId: 'user-1' })
+  await assert.rejects(
+    service.setActive('org-other', request),
+    (error) => error?.getStatus?.() === 404,
   )
 })

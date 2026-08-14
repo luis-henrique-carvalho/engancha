@@ -17,16 +17,17 @@ import type { User } from './types'
 type AppSidebarProps = {
   user: User
   workspace: ActiveWorkspaceResponse
+  onWorkspaceChange: (workspace: ActiveWorkspaceResponse) => void
 }
 
-export function AppSidebar({ user, workspace }: AppSidebarProps) {
+export function AppSidebar({ user, workspace, onWorkspaceChange }: AppSidebarProps) {
   const { collapsible, variant } = useLayout()
   const sidebarData = createSidebarData({ user, workspace })
 
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>
-        <TeamSwitcher workspace={workspace} />
+        <TeamSwitcher workspace={workspace} onWorkspaceChange={onWorkspaceChange} />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (

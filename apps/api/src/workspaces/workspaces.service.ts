@@ -1,5 +1,11 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
-import type { ActiveWorkspaceResponse } from '@engancha/contracts'
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common'
+import type { ActiveWorkspaceResponse, WorkspaceListResponse } from '@engancha/contracts'
 import { PrismaService } from '../database/prisma.service'
 import type { RequestWithAuthorization } from '../authorization/authorization-context'
 import { auth } from '../auth/auth'
@@ -78,12 +84,53 @@ export class WorkspacesService {
     return this.toResponse(organization, context.role)
   }
 
+  async list(request: RequestWithAuthorization): Promise<WorkspaceListResponse> {
+    const { user } = this.requireAuthenticated(request)
+    const memberships = await this.database.client.member.findMany({
+      where: { userId: user.id },
+      include: { organization: true },
+      orderBy: { organization: { name: 'asc' } },
+    })
+    const workspaces = memberships.map((membership) =>
+      this.toResponse(membership.organization, membership.role),
+    )
+    workspaces.sort((left, right) => left.name.localeCompare(right.name))
+    return workspaces
+  }
+
+  async setActive(
+    organizationId: string,
+    request: RequestWithAuthorization,
+  ): Promise<ActiveWorkspaceResponse> {
+    const { user, session } = this.requireAuthenticated(request)
+    const membership = await this.database.client.member.findUnique({
+      where: { organizationId_userId: { organizationId, userId: user.id } },
+      include: { organization: true },
+    })
+    if (!membership) throw new NotFoundException()
+
+    const updated = await this.database.client.session.updateMany({
+      where: { id: session.id, userId: user.id },
+      data: { activeOrganizationId: membership.organizationId },
+    })
+    if (updated.count !== 1) throw new UnauthorizedException('Authentication required')
+    session.activeOrganizationId = membership.organizationId
+    return this.toResponse(membership.organization, membership.role)
+  }
+
   async byId(id: string, request: RequestWithAuthorization): Promise<ActiveWorkspaceResponse> {
     const context = request.authorizationContext
     if (!context || context.organizationId !== id) {
       throw new NotFoundException()
     }
     return this.active(request)
+  }
+
+  private requireAuthenticated(request: RequestWithAuthorization): AuthenticatedRequest['session'] {
+    const session = request.session
+    if (!session) throw new UnauthorizedException('Authentication required')
+    if (!session.user.emailVerified) throw new ForbiddenException('Email verification required')
+    return session
   }
 
   private toResponse(organization: { id: string; name: string; slug: string }, role: string) {
