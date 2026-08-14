@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 
 import { isVerificationEndpointEnabled } from '../apps/api/src/verification/verification.environment.ts'
 import { enqueueVerificationJob } from '../apps/api/src/verification/verification.enqueuer.ts'
+import { VerificationJobPipe } from '../apps/api/src/verification/verification-job.pipe.ts'
 
 const validJob = { version: 'v1', correlationId: 'request-123', payload: {} }
 
@@ -37,6 +38,16 @@ test('rejects an invalid job before touching the queue', async () => {
     (error) => error?.getStatus?.() === 400,
   )
   assert.equal(calls, 0)
+})
+
+test('validates the HTTP body with the shared verification contract pipe', () => {
+  const pipe = new VerificationJobPipe()
+
+  assert.deepEqual(pipe.transform(validJob), validJob)
+  assert.throws(
+    () => pipe.transform({ ...validJob, payload: { secret: 'do-not-accept' } }),
+    (error) => error?.getStatus?.() === 400 && error.message === 'Invalid verification job',
+  )
 })
 
 test('returns a structured unavailable error when Redis or BullMQ fails', async () => {

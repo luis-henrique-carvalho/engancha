@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run web:dev",
+    "dev": "concurrently --names web,api,worker --kill-others-on-fail \"npm run web:dev\" \"npm run api:dev\" \"npm run worker:dev\"",
     "web:dev": "npm run dev --workspace=@engancha/web",
     "web:build": "npm run build --workspace=@engancha/web",
     "web:preview": "npm run preview --workspace=@engancha/web",
@@ -29,9 +29,10 @@
     "verify": "npm run typecheck && npm test && npm run lint && npm run format:check"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.10",
     "@eslint/js": "^9.33.0",
+    "@nestjs/cli": "^11.0.10",
     "@types/node": "^24.3.0",
+    "concurrently": "^9.2.4",
     "eslint": "^9.33.0",
     "globals": "^16.3.0",
     "prettier": "3.6.2",

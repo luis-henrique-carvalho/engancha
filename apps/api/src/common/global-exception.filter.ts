@@ -1,13 +1,7 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  HttpStatus,
-  LoggerService,
-} from '@nestjs/common'
-import { randomUUID } from 'node:crypto'
-import type { Request, Response } from 'express'
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
+import type { Response } from 'express'
+import { type RequestWithContext } from './request-context.middleware'
+import { StructuredLogger } from './structured-logger'
 
 type ErrorResponse = {
   statusCode: number
@@ -20,13 +14,14 @@ type ErrorResponse = {
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: LoggerService) {}
+  constructor(private readonly logger: Pick<StructuredLogger, 'event'>) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const http = host.switchToHttp()
-    const request = http.getRequest<Request>()
+    const request = http.getRequest<RequestWithContext>()
     const response = http.getResponse<Response>()
-    const requestId = this.requestId(request)
+    const requestId = request.requestId ?? 'unknown'
+    const path = request.path
     const isHttpException = exception instanceof HttpException
     const statusCode = isHttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
     const body: ErrorResponse = {
@@ -35,25 +30,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message: isHttpException ? this.publicMessage(exception) : 'Internal server error',
       requestId,
       timestamp: new Date().toISOString(),
-      path: request.url,
+      path,
     }
 
     response.setHeader('x-request-id', requestId)
     response.status(statusCode).json(body)
-    this.logger.error(
-      JSON.stringify({
-        service: 'api',
-        event: 'request_error',
-        requestId,
-        statusCode,
-        path: request.url,
-      }),
-    )
-  }
-
-  private requestId(request: Request): string {
-    const header = request.headers['x-request-id']
-    return typeof header === 'string' && header.length > 0 ? header.slice(0, 128) : randomUUID()
+    this.logger.event('request_error', {
+      requestId,
+      statusCode,
+      path,
+      errorType: exception instanceof Error ? exception.name : 'UnknownError',
+    })
   }
 
   private publicMessage(exception: HttpException): string {

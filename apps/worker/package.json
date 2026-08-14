@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "nest start --watch --entryFile apps/worker/src/main",
     "start": "npm run build && node dist/apps/worker/src/main.js",
     "start:prod": "node dist/apps/worker/src/main.js",
     "typecheck": "tsc --noEmit -p tsconfig.json"

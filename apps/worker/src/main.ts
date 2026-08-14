@@ -7,9 +7,10 @@ import { RedisReadinessService } from './infrastructure/redis-readiness.service'
 import { VerificationProcessor } from './verification/verification.worker'
 
 async function bootstrap(): Promise<void> {
-  const logger = new StructuredLogger('worker')
+  const app = await NestFactory.createApplicationContext(AppModule, { logger: false })
+  const logger = app.get(StructuredLogger)
+  app.useLogger(logger)
   logger.event('bootstrap_started')
-  const app = await NestFactory.createApplicationContext(AppModule, { logger })
 
   app.enableShutdownHooks()
   const config = app.get(ConfigService)
@@ -18,8 +19,7 @@ async function bootstrap(): Promise<void> {
   logger.event('ready', { environment: config.get('nodeEnv') })
 }
 
-void bootstrap().catch((error: unknown) => {
-  const message = error instanceof Error ? error.message : 'Unknown bootstrap error'
-  console.error(JSON.stringify({ service: 'worker', event: 'bootstrap_failed', message }))
+void bootstrap().catch(() => {
+  console.error('[worker] bootstrap_failed')
   process.exitCode = 1
 })

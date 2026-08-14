@@ -4,13 +4,17 @@ Este repositório usa a integração oficial `@nestjs/bullmq`. A configuração 
 
 Referências oficiais:
 
+- [NestJS Modules](https://docs.nestjs.com/modules)
 - [NestJS Queues](https://docs.nestjs.com/techniques/queues)
+- [NestJS Validation](https://docs.nestjs.com/techniques/validation)
 - [NestJS Lifecycle Events](https://docs.nestjs.com/fundamentals/lifecycle-events)
 
 ## Regras do projeto
 
 ### Configuração
 
+- Mantenha `AppModule` como composição: ele configura recursos globais e importa módulos de feature; não registre controllers ou providers de features diretamente nele.
+- Cada feature expõe seu próprio `*.module.ts`, com controllers e providers relacionados; exporte somente providers consumidos por outros módulos.
 - Configure Redis uma vez com `BullModule.forRootAsync()` e injete `ConfigService`.
 - Registre cada fila com `BullModule.registerQueue({ name })`.
 - Use os nomes centralizados em `packages/contracts`; não repita literais de fila em controllers, services ou processors.
@@ -19,7 +23,7 @@ Referências oficiais:
 ### Produtores
 
 - Injete filas com `@InjectQueue(queueName)` em um service de aplicação.
-- Valide o payload com o contrato compartilhado antes de chamar `queue.add()`.
+- Valide o corpo HTTP em um `PipeTransform` baseado no contrato compartilhado e valide novamente antes de chamar `queue.add()` para preservar o limite quando o service for reutilizado fora do HTTP.
 - Mantenha retry, backoff e retenção explícitos nas opções padrão registradas em `BullModule.registerQueue()`; use opções no `add()` somente para exceções específicas do job.
 - Retorne apenas identificadores seguros para HTTP; não devolva payloads arbitrários ou credenciais.
 
@@ -47,7 +51,11 @@ Referências oficiais:
 
 ## Aplicação neste monorepo
 
-- A API configura e registra a fila em `apps/api/src/app.module.ts` e injeta a fila em `VerificationService`.
+- `apps/api/src/app.module.ts` compõe `CoreModule`, `InfrastructureModule`, `HealthModule` e `VerificationModule`.
+- `apps/api/src/common/core.module.ts` disponibiliza logging, lifecycle e guard de shutdown como componentes transversais.
+- `apps/api/src/infrastructure/infrastructure.module.ts` encapsula os providers PostgreSQL/Redis e exporta `InfrastructureHealthService`.
+- `apps/api/src/health/health.module.ts` reúne o health controller e suas dependências de infraestrutura/lifecycle.
+- `apps/api/src/verification/verification.module.ts` registra a fila técnica, o controller, o pipe Zod e `VerificationService`; o service injeta a fila com `@InjectQueue`.
 - O worker configura a mesma fila em `apps/worker/src/app.module.ts`.
 - O consumidor está em `apps/worker/src/verification/verification.worker.ts`.
 - A lógica validável sem boot do NestJS está em `apps/worker/src/verification/verification.job.ts`.

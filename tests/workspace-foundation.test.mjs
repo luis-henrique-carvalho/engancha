@@ -48,6 +48,31 @@ test('workspace dependency boundaries stay explicit', async () => {
   assert.deepEqual(contracts.peerDependencies ?? {}, {})
 })
 
+test('API composes health, infrastructure, and verification as feature modules', async () => {
+  const appModule = await readFile(path.join(root, 'apps/api/src/app.module.ts'), 'utf8')
+  const verificationModule = await readFile(
+    path.join(root, 'apps/api/src/verification/verification.module.ts'),
+    'utf8',
+  )
+  const healthModule = await readFile(
+    path.join(root, 'apps/api/src/health/health.module.ts'),
+    'utf8',
+  )
+  const infrastructureModule = await readFile(
+    path.join(root, 'apps/api/src/infrastructure/infrastructure.module.ts'),
+    'utf8',
+  )
+
+  assert.match(appModule, /CoreModule/)
+  assert.match(appModule, /HealthModule/)
+  assert.match(appModule, /InfrastructureModule/)
+  assert.match(appModule, /VerificationModule/)
+  assert.match(verificationModule, /controllers: \[VerificationController\]/)
+  assert.match(verificationModule, /providers: \[VerificationJobPipe, VerificationService\]/)
+  assert.match(healthModule, /controllers: \[HealthController\]/)
+  assert.match(infrastructureModule, /exports: \[InfrastructureHealthService\]/)
+})
+
 test('the web shell is static and keeps a generated route tree', async () => {
   const rootRoute = await readFile(path.join(root, 'apps/web/src/routes/__root.tsx'), 'utf8')
   const indexRoute = await readFile(path.join(root, 'apps/web/src/routes/index.tsx'), 'utf8')

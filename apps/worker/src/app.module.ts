@@ -13,6 +13,7 @@ import { VerificationProcessor } from './verification/verification.worker'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['../../.env', '.env'],
       validationSchema: workerEnvSchema,
       validate: validateWorkerEnvironment,
       validationOptions: { allowUnknown: true, abortEarly: false },

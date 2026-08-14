@@ -1,6 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common'
 import type { Response } from 'express'
 import { RuntimeLifecycleService } from '../common/runtime-lifecycle.service'
+import { SkipShutdownGuard } from '../common/skip-shutdown-guard.decorator'
 import {
   HealthReport,
   InfrastructureHealthService,
@@ -14,6 +15,7 @@ export class HealthController {
   ) {}
 
   @Get('live')
+  @SkipShutdownGuard()
   liveness(): Pick<HealthReport, 'status' | 'service' | 'timestamp'> {
     return {
       status: 'ok',
