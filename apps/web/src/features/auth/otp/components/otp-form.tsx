@@ -14,18 +14,10 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  InputOTPSeparator,
-} from '@/components/ui/input-otp'
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'
 
 const formSchema = z.object({
-  otp: z
-    .string()
-    .min(6, 'Please enter the 6-digit code.')
-    .max(6, 'Please enter the 6-digit code.'),
+  otp: z.string().min(6, 'Please enter the 6-digit code.').max(6, 'Please enter the 6-digit code.'),
 })
 
 type OtpFormProps = React.HTMLAttributes<HTMLFormElement>
@@ -39,7 +31,6 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
     defaultValues: { otp: '' },
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const otp = form.watch('otp')
 
   function onSubmit(data: z.infer<typeof formSchema>) {
@@ -61,10 +52,10 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
       >
         <FormField
           control={form.control}
-          name='otp'
+          name="otp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='sr-only'>One-Time Password</FormLabel>
+              <FormLabel className="sr-only">One-Time Password</FormLabel>
               <FormControl>
                 <InputOTP
                   maxLength={6}
@@ -91,7 +82,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={otp.length < 6 || isLoading}>
+        <Button className="mt-2" disabled={otp.length < 6 || isLoading}>
           Verify
         </Button>
       </form>

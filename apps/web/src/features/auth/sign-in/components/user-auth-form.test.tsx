@@ -76,12 +76,8 @@ describe('UserAuthForm', () => {
     it('shows validation messages when submitting empty form', async () => {
       await userEvent.click(signInButton)
 
-      await expect
-        .element(screen.getByText(FORM_MESSAGES.emailEmpty))
-        .toBeInTheDocument()
-      await expect
-        .element(screen.getByText(FORM_MESSAGES.passwordEmpty))
-        .toBeInTheDocument()
+      await expect.element(screen.getByText(FORM_MESSAGES.emailEmpty)).toBeInTheDocument()
+      await expect.element(screen.getByText(FORM_MESSAGES.passwordEmpty)).toBeInTheDocument()
     })
 
     it('authenticates and navigates to default route on success', async () => {
@@ -97,23 +93,19 @@ describe('UserAuthForm', () => {
           accountNo: expect.any(String),
           role: expect.any(Array),
           exp: expect.any(Number),
-        })
+        }),
       )
       expect(setAccessTokenMock).toHaveBeenCalledOnce()
       expect(setAccessTokenMock).toHaveBeenCalledWith('mock-access-token')
 
-      await vi.waitFor(() =>
-        expect(navigate).toHaveBeenCalledWith({ to: '/', replace: true })
-      )
+      await vi.waitFor(() => expect(navigate).toHaveBeenCalledWith({ to: '/', replace: true }))
     })
   })
 
   it('navigates to redirectTo when provided', async () => {
     vi.clearAllMocks()
 
-    const { getByRole, getByLabelText } = await render(
-      <UserAuthForm redirectTo='/settings' />
-    )
+    const { getByRole, getByLabelText } = await render(<UserAuthForm redirectTo="/settings" />)
 
     await userEvent.fill(getByRole('textbox', { name: /Email/i }), 'a@b.com')
     await userEvent.fill(getByLabelText('Password'), '1234567')
@@ -127,7 +119,7 @@ describe('UserAuthForm', () => {
       expect(navigate).toHaveBeenCalledWith({
         to: '/settings',
         replace: true,
-      })
+      }),
     )
   })
 })

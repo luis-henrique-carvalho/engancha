@@ -7,7 +7,6 @@ graphify-out
 docs
 AGENTS.md
 apps/web/src/routeTree.gen.ts
-apps/web/src/features/
 apps/web/src/assets/
 apps/web/src/components/ui/
 apps/web/src/components/data-table/

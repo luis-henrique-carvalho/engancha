@@ -35,18 +35,14 @@ describe('ForgotPasswordForm', () => {
 
   it('shows validation when submitting empty form', async () => {
     await userEvent.click(continueButton)
-    await expect
-      .element(screen.getByText(/^Please enter your email\.$/i))
-      .toBeInTheDocument()
+    await expect.element(screen.getByText(/^Please enter your email\.$/i)).toBeInTheDocument()
   })
 
   it('resets the form and navigates to /otp on success', async () => {
     await userEvent.fill(emailInput, 'a@b.com')
     await userEvent.click(continueButton)
 
-    await vi.waitFor(() =>
-      expect(navigateMock).toHaveBeenCalledWith({ to: '/otp' })
-    )
+    await vi.waitFor(() => expect(navigateMock).toHaveBeenCalledWith({ to: '/otp' }))
 
     // Form should reset on success
     await expect.element(emailInput).toHaveValue('')

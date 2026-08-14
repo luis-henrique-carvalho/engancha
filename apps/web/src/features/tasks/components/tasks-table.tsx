@@ -65,7 +65,6 @@ export function TasksTable({ data }: DataTableProps) {
     ],
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -108,12 +107,12 @@ export function TasksTable({ data }: DataTableProps) {
     <div
       className={cn(
         'max-sm:has-[div[role="toolbar"]]:mb-16', // Add margin bottom to the table on mobile when the toolbar is visible
-        'flex flex-1 flex-col gap-4'
+        'flex flex-1 flex-col gap-4',
       )}
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter by title or ID...'
+        searchPlaceholder="Filter by title or ID..."
         filters={[
           {
             columnId: 'status',
@@ -127,8 +126,8 @@ export function TasksTable({ data }: DataTableProps) {
           },
         ]}
       />
-      <div className='overflow-hidden rounded-md border'>
-        <Table className='min-w-xl'>
+      <div className="overflow-hidden rounded-md border">
+        <Table className="min-w-xl">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -139,15 +138,12 @@ export function TasksTable({ data }: DataTableProps) {
                       colSpan={header.colSpan}
                       className={cn(
                         header.column.columnDef.meta?.className,
-                        header.column.columnDef.meta?.thClassName
+                        header.column.columnDef.meta?.thClassName,
                       )}
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   )
                 })}
@@ -157,32 +153,23 @@ export function TasksTable({ data }: DataTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={cn(
                         cell.column.columnDef.meta?.className,
-                        cell.column.columnDef.meta?.tdClassName
+                        cell.column.columnDef.meta?.tdClassName,
                       )}
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
@@ -190,7 +177,7 @@ export function TasksTable({ data }: DataTableProps) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} className='mt-auto' />
+      <DataTablePagination table={table} className="mt-auto" />
       <DataTableBulkActions table={table} />
     </div>
   )

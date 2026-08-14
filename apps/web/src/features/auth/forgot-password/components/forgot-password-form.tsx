@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
 import { ArrowRight, Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
-import { sleep, cn } from '@/lib/utils'
+import { authClient, webCallbackUrl } from '@/lib/auth-client'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -19,35 +18,29 @@ import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
   email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email.' : undefined),
+    error: (issue) => (issue.input === '' ? 'Informe seu e-mail.' : 'Informe um e-mail válido.'),
   }),
 })
 
-export function ForgotPasswordForm({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLFormElement>) {
-  const navigate = useNavigate()
+export function ForgotPasswordForm({ className, ...props }: React.HTMLAttributes<HTMLFormElement>) {
   const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState('')
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '' },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-
-    toast.promise(sleep(2000), {
-      loading: 'Sending email...',
-      success: () => {
-        setIsLoading(false)
-        form.reset()
-        navigate({ to: '/otp' })
-        return `Email sent to ${data.email}`
-      },
-      error: 'Error',
-    })
+    await authClient
+      .requestPasswordReset({
+        email: data.email,
+        redirectTo: webCallbackUrl('/auth/reset-password'),
+      })
+      .catch(() => undefined)
+    setIsLoading(false)
+    setMessage('Se este endereço estiver cadastrado, você receberá instruções em alguns instantes.')
   }
 
   return (
@@ -59,20 +52,25 @@ export function ForgotPasswordForm({
       >
         <FormField
           control={form.control}
-          name='email'
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder="nome@exemplo.com" autoComplete="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={isLoading}>
-          Continue
-          {isLoading ? <Loader2 className='animate-spin' /> : <ArrowRight />}
+        {message && (
+          <p className="text-sm text-muted-foreground" role="status">
+            {message}
+          </p>
+        )}
+        <Button className="mt-2" disabled={isLoading}>
+          Enviar instruções
+          {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
         </Button>
       </form>
     </Form>

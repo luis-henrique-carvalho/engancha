@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { Logo } from '@/assets/logo'
 
 type AuthLayoutProps = {
@@ -6,14 +7,20 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className='container grid h-svh max-w-none items-center justify-center'>
-      <div className='mx-auto flex w-full flex-col justify-center space-y-2 py-8 sm:p-8'>
-        <div className='mb-4 flex items-center justify-center'>
-          <Logo className='me-2' />
-          <h1 className='text-xl font-medium'>Shadcn Admin</h1>
+    <main className="container grid min-h-svh max-w-none items-center justify-center py-8">
+      <div className="mx-auto flex w-full max-w-sm flex-col justify-center space-y-2">
+        <div className="mb-4 flex items-center justify-center">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xl font-medium tracking-tight"
+            aria-label="Voltar para a página inicial do Engancha"
+          >
+            <Logo className="size-6" />
+            <span>Engancha</span>
+          </Link>
         </div>
         {children}
       </div>
-    </div>
+    </main>
   )
 }

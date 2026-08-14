@@ -18,9 +18,11 @@ body {
   min-width: 320px;
 }
 
-button,
-a {
-  color: inherit;
+@layer base {
+  button,
+  a {
+    color: inherit;
+  }
 }
 
 .foundation-shell {

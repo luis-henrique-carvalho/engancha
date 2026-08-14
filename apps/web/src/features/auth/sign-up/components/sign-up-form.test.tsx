@@ -13,7 +13,7 @@ const FORM_MESSAGES = {
 const toastPromise = vi.hoisted(() =>
   vi.fn((p: Promise<unknown>, opts: { success?: () => unknown }) => {
     p.then(() => opts.success?.())
-  })
+  }),
 )
 
 vi.mock('sonner', () => ({ toast: { promise: toastPromise } }))
@@ -49,15 +49,9 @@ describe('SignUpForm', () => {
   it('shows validation messages when submitting empty form', async () => {
     await userEvent.click(submitButton)
 
-    await expect
-      .element(screen.getByText(FORM_MESSAGES.emailEmpty))
-      .toBeInTheDocument()
-    await expect
-      .element(screen.getByText(FORM_MESSAGES.passwordEmpty))
-      .toBeInTheDocument()
-    await expect
-      .element(screen.getByText(FORM_MESSAGES.confirmPasswordEmpty))
-      .toBeInTheDocument()
+    await expect.element(screen.getByText(FORM_MESSAGES.emailEmpty)).toBeInTheDocument()
+    await expect.element(screen.getByText(FORM_MESSAGES.passwordEmpty)).toBeInTheDocument()
+    await expect.element(screen.getByText(FORM_MESSAGES.confirmPasswordEmpty)).toBeInTheDocument()
   })
 
   it('shows a mismatch error when passwords do not match', async () => {
@@ -66,9 +60,7 @@ describe('SignUpForm', () => {
     await userEvent.fill(confirmPasswordInput, '7654321')
 
     await userEvent.click(submitButton)
-    await expect
-      .element(screen.getByText(FORM_MESSAGES.passwordMismatch))
-      .toBeInTheDocument()
+    await expect.element(screen.getByText(FORM_MESSAGES.passwordMismatch)).toBeInTheDocument()
   })
 
   it('disables submit while submitting and re-enables after timeout', async () => {
