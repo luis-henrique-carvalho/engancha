@@ -21,15 +21,15 @@ export const verificationJobSchema = z
 
 export type VerificationJob = z.infer<typeof verificationJobSchema>
 
-export const queueNames = {
-  verification: 'verification',
-  emailDelivery: 'email-delivery',
-  automationExecution: 'automation-execution',
-  messageDelivery: 'message-delivery',
-  analytics: 'analytics',
+export const QUEUE_NAMES = {
+  VERIFICATION: 'verification',
+  EMAIL_DELIVERY: 'email-delivery',
+  AUTOMATION_EXECUTION: 'automation-execution',
+  MESSAGE_DELIVERY: 'message-delivery',
+  ANALYTICS: 'analytics',
 } as const
 
-export type QueueName = (typeof queueNames)[keyof typeof queueNames]
+export type QueueName = (typeof QUEUE_NAMES)[keyof typeof QUEUE_NAMES]
 
 export const verificationJobOptions = {
   attempts: 3,
