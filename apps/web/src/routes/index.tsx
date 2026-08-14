@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -37,6 +37,14 @@ function HomePage() {
               Web shell online
             </span>
             <span className="status-note">TanStack Start · port 3000</span>
+          </div>
+          <div className="hero-actions">
+            <Link className="primary-button" to="/auth/register">
+              Criar meu acesso
+            </Link>
+            <Link className="text-button" to="/auth/login">
+              Já tenho uma conta
+            </Link>
           </div>
         </div>
 

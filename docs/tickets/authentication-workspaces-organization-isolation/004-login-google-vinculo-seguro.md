@@ -1,6 +1,6 @@
 ---
 title: "Login Google e vínculo seguro de contas"
-status: "needs-triage"
+status: "in-progress"
 type: "HITL"
 parent: "docs/prds/authentication-workspaces-organization-isolation.md"
 blocked_by:
@@ -34,4 +34,4 @@ Entregar o acionamento e os estados de OAuth na tela de login. A ausência de cr
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, URIs revisadas, comportamento de linking, arquivos principais e validações executadas.
+Implementado em `apps/api/src/auth/auth.ts` e na tela `apps/web/src/routes/auth.login.tsx`: provider só é habilitado com credenciais presentes, e-mail verificado é obrigatório e linking bloqueia e-mails diferentes. Testes automatizados de callback/linking e smoke no Google Cloud Console permanecem pendentes de credenciais e URIs autorizadas.

@@ -1,6 +1,6 @@
 ---
 title: "Workspace padrão e contexto ativo"
-status: "needs-triage"
+status: "in-progress"
 type: "AFK"
 parent: "docs/prds/authentication-workspaces-organization-isolation.md"
 blocked_by:
@@ -20,13 +20,13 @@ Expor um contexto seguro de workspace ativo ao frontend, sempre derivado da sess
 
 ## Acceptance criteria
 
-- [ ] O bootstrap ocorre somente para sessão válida e e-mail confirmado; identidades pendentes não criam Organization.
-- [ ] O primeiro acesso cria uma única Organization padrão e membership `owner` com nome e slug válidos.
+- [x] O bootstrap ocorre somente para sessão válida e e-mail confirmado; identidades pendentes não criam Organization.
+- [x] O primeiro acesso cria uma única Organization padrão e membership `owner` com nome e slug válidos.
 - [ ] Tentativas concorrentes ou repetidas retornam/reutilizam o mesmo workspace e não deixam Organizations ou memberships duplicados.
-- [ ] A Organization resultante é definida explicitamente como ativa na sessão Better Auth.
-- [ ] O endpoint/contexto de workspace retorna somente a Organization ativa cuja membership do usuário continua válida.
-- [ ] O layout mostra o nome do workspace e oferece estados acessíveis de carregamento, ausência, erro e recuperação.
-- [ ] O seletor é somente informativo no MVP de workspace único, mantendo extensão futura para troca pelo Organization Plugin.
+- [x] A Organization resultante é definida explicitamente como ativa na sessão Better Auth.
+- [x] O endpoint/contexto de workspace retorna somente a Organization ativa cuja membership do usuário continua válida.
+- [x] O layout mostra o nome do workspace e oferece estados acessíveis de carregamento, ausência, erro e recuperação.
+- [x] O seletor é somente informativo no MVP de workspace único, mantendo extensão futura para troca pelo Organization Plugin.
 - [ ] Testes de integração cobrem criação, owner membership, sessão ativa, idempotência concorrente e recuperação de contexto inválido.
 
 ## Blocked by
@@ -35,4 +35,4 @@ Expor um contexto seguro de workspace ativo ao frontend, sempre derivado da sess
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, regra de slug, estratégia de idempotência, contratos, arquivos principais e validações executadas.
+Implementado em `apps/api/src/workspaces` com `POST /api/v1/workspaces/bootstrap`, `GET /api/v1/workspaces/active` e `GET /api/v1/workspaces/:id`; bootstrap cria/reutiliza Organization, membership owner e atualiza `activeOrganizationId`. A web exibe o workspace e retry. Smoke local confirmou cadastro verificado, sessão, bootstrap 201 e contexto ativo 200. Teste concorrente formal permanece pendente.

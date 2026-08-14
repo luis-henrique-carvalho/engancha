@@ -122,22 +122,24 @@ O shell web é independente da API e do worker nesta fatia; os processos backend
 
 O [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin) é somente uma referência de padrões visuais. Ele não é dependência, submódulo ou arquivo do Engancha: a ausência dele não altera os comandos de instalação, web, API, worker ou infraestrutura acima.
 
-Para mantê-lo isolado, clone-o como diretório irmão do repositório, com histórico superficial. A partir da raiz do Engancha:
+Para mantê-lo isolado de qualquer clone ou worktree do Engancha, mantenha-o em um local estável de dados do usuário, com histórico superficial. Por padrão, use `$XDG_DATA_HOME/engancha/shadcn-admin-reference` (ou `~/.local/share/engancha/shadcn-admin-reference` quando `XDG_DATA_HOME` não estiver definido). Defina `ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR` se preferir outro diretório externo:
 
 ```bash
-cd ..
-git clone --depth 1 https://github.com/satnaing/shadcn-admin.git shadcn-admin-reference
-cd shadcn-admin-reference
+reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
+mkdir -p "$(dirname "$reference_dir")"
+git clone --depth 1 https://github.com/satnaing/shadcn-admin.git "$reference_dir"
+cd "$reference_dir"
 ```
 
 Não execute `npm install` nem copie arquivos desse clone para o monorepo apenas para consulta. Quando um ticket de frontend precisar de um padrão, porte ou adapte explicitamente os arquivos necessários para `apps/web`, respeitando as convenções e o runtime do Engancha.
 
 ### Grafo separado da referência
 
-Gere e atualize o grafo sempre dentro do clone. Isso cria `shadcn-admin-reference/graphify-out/`, sem alterar o `graphify-out/` do Engancha:
+Gere e atualize o grafo sempre dentro do clone. Isso cria `shadcn-admin-reference/graphify-out/`, sem alterar o `graphify-out/` do Engancha nem depender da localização da worktree:
 
 ```bash
-# dentro de ../shadcn-admin-reference
+reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
+cd "$reference_dir"
 graphify .
 graphify update .
 ```
@@ -158,7 +160,7 @@ Abra os arquivos retornados pelo grafo e transfira apenas o padrão necessário;
 Da raiz do Engancha, após gerar os dois grafos, confirme que o grafo do produto não contém o caminho absoluto da referência:
 
 ```bash
-reference_dir="$(cd ../shadcn-admin-reference && pwd)"
+reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
 if rg -F --quiet "$reference_dir" graphify-out/graph.json; then
   echo "Falha: o grafo do Engancha contém a referência externa."
   exit 1

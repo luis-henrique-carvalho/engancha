@@ -14,9 +14,10 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
-- Antes de criar ou alterar uma tela, fluxo ou componente de frontend, consulte a referência local `../shadcn-admin-reference` pelo seu grafo separado:
+- Antes de criar ou alterar uma tela, fluxo ou componente de frontend, consulte a referência local pelo seu grafo separado. O local padrão é `$XDG_DATA_HOME/engancha/shadcn-admin-reference` (ou `~/.local/share/engancha/shadcn-admin-reference`), com suporte a sobrescrita por `ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR`:
   ```bash
-  cd ../shadcn-admin-reference
+  reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
+  cd "$reference_dir"
   graphify query "<padrão visual ou de interação a implementar>"
   ```
   Use-a para investigar a composição do dashboard, sidebar, navegação, tema, responsividade e componentes shadcn. Porte ou adapte explicitamente apenas os padrões necessários para `apps/web`; nunca importe o runtime Vite, dependências, arquivos ou `graphify-out/` da referência para o Engancha. Se o clone não existir, ele continua opcional; consulte o procedimento no `README.md` antes de seguir sem a referência.

@@ -29,7 +29,7 @@ None - can start immediately.
 
 ## Result
 
-Documentado no `README.md` o uso opcional de `satnaing/shadcn-admin` como referência visual. O clone é superficial e fica em um diretório irmão (`../shadcn-admin-reference`), portanto não integra o workspace, as dependências, os arquivos versionados nem o runtime do Engancha.
+Documentado no `README.md` o uso opcional de `satnaing/shadcn-admin` como referência visual. O clone é superficial e fica em um diretório externo estável (`$XDG_DATA_HOME/engancha/shadcn-admin-reference`, com sobrescrita por `ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR`), portanto não integra o workspace, as dependências, os arquivos versionados nem o runtime do Engancha — inclusive quando o projeto está em uma worktree.
 
 O procedimento gera e atualiza o `graphify-out/` dentro do próprio clone e inclui consultas direcionadas a sidebar, tema, navegação e componentes. A documentação determina que padrões sejam portados ou adaptados explicitamente para `apps/web`, sem importar o runtime Vite ou dependências da referência.
 
@@ -39,4 +39,4 @@ Validações executadas:
 
 - revisão de `.gitignore`: `graphify-out/` é ignorado tanto na raiz quanto em subdiretórios;
 - revisão dos scripts do workspace no `README.md`: web, API, worker e infraestrutura não dependem do clone opcional;
-- adicionada uma verificação reproduzível com `rg` que falha se o caminho absoluto de `../shadcn-admin-reference` aparecer em `Engancha/graphify-out/graph.json`.
+- adicionada uma verificação reproduzível com `rg` que falha se o caminho externo configurado da referência aparecer em `Engancha/graphify-out/graph.json`.

@@ -19,13 +19,15 @@
     "api:start": "npm run start --workspace=@engancha/api",
     "worker:dev": "npm run dev --workspace=@engancha/worker",
     "worker:start": "npm run start --workspace=@engancha/worker",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
     "infra:up": "docker compose up -d postgres redis",
     "infra:down": "docker compose down",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --import tsx --test tests/*.test.mjs",
+    "test": "node --import tsx --test --test-concurrency=1 --test-force-exit tests/*.test.mjs",
     "verify": "npm run typecheck && npm test && npm run lint && npm run format:check"
   },
   "devDependencies": {

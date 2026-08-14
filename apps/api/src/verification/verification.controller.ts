@@ -1,4 +1,5 @@
 import { Body, Controller, NotFoundException, Post } from '@nestjs/common'
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth'
 import { ConfigService } from '@nestjs/config'
 import type { VerificationJob } from '@engancha/contracts'
 import { isVerificationEndpointEnabled } from './verification.environment'
@@ -6,6 +7,7 @@ import { VerificationJobPipe } from './verification-job.pipe'
 import { VerificationService } from './verification.service'
 
 @Controller('dev/verification')
+@AllowAnonymous()
 export class VerificationController {
   constructor(
     private readonly config: ConfigService,

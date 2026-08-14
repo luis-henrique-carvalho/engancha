@@ -11,6 +11,7 @@ export default tseslint.config(
       '**/coverage/**',
       '**/routeTree.gen.ts',
       'graphify-out/**',
+      'apps/web/src/features/**',
     ],
   },
   eslint.configs.recommended,

@@ -13,7 +13,7 @@ export async function enqueueVerificationJob(
 
   const job = parsed.data
   try {
-    const queued = await queue.add(QUEUE_NAMES.VERIFICATION, job)
+    const queued = await queue.add(QUEUE_NAMES.verification, job)
     if (queued.id === undefined || queued.id === null) {
       throw new Error('Queue returned no job identifier')
     }
