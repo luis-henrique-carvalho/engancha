@@ -130,3 +130,31 @@ export const workspaceMemberSchema = z
 export type WorkspaceMember = z.infer<typeof workspaceMemberSchema>
 export const workspaceMembersResponseSchema = z.array(workspaceMemberSchema)
 export type WorkspaceMembersResponse = z.infer<typeof workspaceMembersResponseSchema>
+
+export const workspaceMembersListRequestSchema = z
+  .object({
+    page: z.coerce.number().int().min(1).max(10_000).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    query: z.string().trim().max(120).optional(),
+    role: z.array(z.enum(['owner', 'admin', 'member'])).optional(),
+    status: z.array(z.enum(['active', 'invited'])).optional(),
+  })
+  .strict()
+
+export type WorkspaceMembersListRequest = z.infer<typeof workspaceMembersListRequestSchema>
+
+export const workspaceMembersListResponseSchema = z
+  .object({
+    items: workspaceMembersResponseSchema,
+    meta: z
+      .object({
+        page: z.number().int().min(1),
+        limit: z.number().int().min(1),
+        total: z.number().int().min(0),
+        totalPages: z.number().int().min(0),
+      })
+      .strict(),
+  })
+  .strict()
+
+export type WorkspaceMembersListResponse = z.infer<typeof workspaceMembersListResponseSchema>

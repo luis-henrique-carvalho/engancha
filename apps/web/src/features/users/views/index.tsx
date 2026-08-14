@@ -1,47 +1,68 @@
-import { RefreshCw } from 'lucide-react'
-import { Button } from '#/components/ui/button'
+import { ConfigDrawer } from '#/components/config-drawer'
+import { Header } from '#/components/layout/header'
+import { ProfileDropdown } from '#/components/profile-dropdown'
+import { Search } from '#/components/search'
+import { ThemeSwitch } from '#/components/theme-switch'
 import { UsersDialogs } from '../components/users-dialogs'
 import { UsersPrimaryButtons } from '../components/users-primary-buttons'
 import { UsersProvider } from '../components/users-provider'
 import { UsersTable } from '../components/users-table'
 import { useUsersList } from '../hooks/use-users'
 import { userUiSchema } from '../data/schema'
+import type { WorkspaceMembersListRequest } from '@engancha/contracts'
 
-type UsersViewProps = { canManage: boolean; workspaceId: string }
+type UsersViewProps = {
+  canManage: boolean
+  workspaceId: string
+  params: WorkspaceMembersListRequest
+  onParamsChange: (params: WorkspaceMembersListRequest) => void
+}
 
-export function UsersView({ canManage, workspaceId }: UsersViewProps) {
-  const members = useUsersList(workspaceId, canManage)
-  const users = userUiSchema.array().parse(members.data ?? [])
+export function UsersHeader() {
+  return (
+    <Header fixed>
+      <Search className="me-auto" />
+      <ThemeSwitch />
+      <ConfigDrawer />
+      <ProfileDropdown />
+    </Header>
+  )
+}
+
+export function UsersView({ canManage, workspaceId, params, onParamsChange }: UsersViewProps) {
+  const members = useUsersList(workspaceId, params, canManage)
+  const users = userUiSchema.array().parse(members.data?.items ?? [])
 
   if (!canManage) return null
 
   return (
     <UsersProvider workspaceId={workspaceId}>
-      <section className="rounded-lg border bg-card">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <div className="p-5">
-            <h2 className="text-lg font-semibold">Pessoas</h2>
-            <p className="text-sm text-muted-foreground">Membros e convites do workspace ativo.</p>
-          </div>
-          <div className="flex items-center gap-2 p-5">
-            {members.isError ? (
-              <Button variant="outline" size="sm" onClick={() => void members.refetch()}>
-                <RefreshCw /> Tentar novamente
-              </Button>
-            ) : null}
-            <UsersPrimaryButtons />
-          </div>
-        </div>
-        {members.isError ? (
-          <p className="border-t p-5 text-sm text-destructive">
-            Não foi possível carregar as pessoas deste workspace.
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Lista de pessoas</h2>
+          <p className="text-muted-foreground">
+            Gerencie os membros e convites do workspace ativo.
           </p>
-        ) : (
-          <div className="border-t">
-            <UsersTable data={users} isLoading={members.isLoading} />
-          </div>
-        )}
-      </section>
+        </div>
+        <UsersPrimaryButtons />
+      </div>
+
+      <UsersTable
+        data={users}
+        isLoading={members.isLoading}
+        meta={
+          members.data?.meta ?? {
+            page: params.page,
+            limit: params.limit,
+            total: 0,
+            totalPages: 0,
+          }
+        }
+        filters={params}
+        onFiltersChange={(filters) => onParamsChange({ ...params, ...filters, page: 1 })}
+        onPageChange={(page) => onParamsChange({ ...params, page })}
+        onPageSizeChange={(limit) => onParamsChange({ ...params, limit, page: 1 })}
+      />
 
       <UsersDialogs />
     </UsersProvider>

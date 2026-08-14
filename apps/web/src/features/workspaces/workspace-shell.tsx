@@ -12,8 +12,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export function WorkspaceShell({
   children,
+  header,
+  mainClassName = 'gap-6',
 }: {
   children: (workspace: ActiveWorkspaceResponse) => React.ReactNode
+  header?: React.ReactNode
+  mainClassName?: string
 }) {
   const navigate = useNavigate()
   const session = authClient.useSession()
@@ -82,23 +86,25 @@ export function WorkspaceShell({
       workspace={workspace}
       onWorkspaceChange={setWorkspace}
     >
-      <Header fixed>
-        <div className="me-auto min-w-0">
-          <p className="truncate text-sm font-semibold">{workspace.name}</p>
-          <p className="truncate text-xs text-muted-foreground">{workspace.slug}</p>
-        </div>
-        <ThemeSwitch />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() =>
-            void authClient.signOut().then(() => navigate({ to: '/auth/login', replace: true }))
-          }
-        >
-          Sair
-        </Button>
-      </Header>
-      <Main fixed className="gap-6">
+      {header ?? (
+        <Header fixed>
+          <div className="me-auto min-w-0">
+            <p className="truncate text-sm font-semibold">{workspace.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{workspace.slug}</p>
+          </div>
+          <ThemeSwitch />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              void authClient.signOut().then(() => navigate({ to: '/auth/login', replace: true }))
+            }
+          >
+            Sair
+          </Button>
+        </Header>
+      )}
+      <Main fixed className={mainClassName}>
         {children(workspace)}
       </Main>
     </AuthenticatedLayout>

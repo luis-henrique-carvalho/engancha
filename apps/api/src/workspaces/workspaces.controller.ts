@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
   AuthorizationContextGuard,
   type RequestWithAuthorization,
@@ -7,6 +7,7 @@ import { WorkspacesService } from './workspaces.service'
 import { SwitchActiveWorkspaceDto } from './dto/switch-active-workspace.dto'
 import { CreateWorkspaceDto } from './dto/create-workspace.dto'
 import { CreateInvitationDto } from './dto/create-invitation.dto'
+import { ListWorkspaceMembersDto } from './dto/list-workspace-members.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -40,8 +41,8 @@ export class WorkspacesController {
 
   @Get('active/members')
   @UseGuards(AuthorizationContextGuard)
-  members(@Req() request: RequestWithAuthorization) {
-    return this.workspaces.members(request)
+  members(@Query() query: ListWorkspaceMembersDto, @Req() request: RequestWithAuthorization) {
+    return this.workspaces.members(query, request)
   }
 
   @Post('active/invitations')

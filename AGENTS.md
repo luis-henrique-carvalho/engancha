@@ -24,6 +24,16 @@ Rules:
 
 ## Workflow de desenvolvimento
 
+## Convenção obrigatória de features web
+
+`apps/web/src/features/users` é a referência canônica para features do
+frontend. Toda feature nova ou refatorada deve usar `views/`, `components/`,
+`hooks/` e `services/` (e `data/` quando necessário), conforme
+`apps/web/src/features/README.md`. Não criar acesso HTTP, query keys ou
+mutations em rotas, views ou componentes; essas responsabilidades pertencem a
+`services/` e `hooks/`. Qualquer exceção deve ser registrada em uma decisão
+arquitetural antes de ser implementada.
+
 Para novas funcionalidades ou épicos:
 
 1. Use `prd-to-tickets` para analisar o requisito, resolver decisões pendentes, criar a PRD e propor tickets.

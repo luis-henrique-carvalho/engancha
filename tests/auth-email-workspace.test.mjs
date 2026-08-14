@@ -206,24 +206,25 @@ test('workspace management lists only active-organization people and blocks memb
     session: { user: { id: 'user-1', emailVerified: true }, session: { id: 'session-1' } },
   }
 
-  assert.deepEqual(await service.members(managerRequest), [
+  assert.deepEqual(
+    await service.members(
+      { page: 1, limit: 1, query: 'bia', role: ['member'], status: ['invited'] },
+      managerRequest,
+    ),
     {
-      id: 'member-1',
-      name: 'Ana',
-      email: 'ana@example.com',
-      emailVerified: true,
-      role: 'owner',
-      status: 'active',
+      items: [
+        {
+          id: 'invite-1',
+          name: 'Convite pendente',
+          email: 'bia@example.com',
+          emailVerified: false,
+          role: 'member',
+          status: 'invited',
+        },
+      ],
+      meta: { page: 1, limit: 1, total: 1, totalPages: 1 },
     },
-    {
-      id: 'invite-1',
-      name: 'Convite pendente',
-      email: 'bia@example.com',
-      emailVerified: false,
-      role: 'member',
-      status: 'invited',
-    },
-  ])
+  )
 
   await assert.rejects(
     service.invite('bia@example.com', {

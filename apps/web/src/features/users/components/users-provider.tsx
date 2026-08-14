@@ -20,16 +20,15 @@ export function UsersProvider({
 }) {
   const [open, setOpen] = useDialogState<UsersDialogType>(null)
 
-  return (
-    <UsersContext.Provider value={{ open, setOpen, workspaceId }}>{children}</UsersContext.Provider>
-  )
+  return <UsersContext value={{ open, setOpen, workspaceId }}>{children}</UsersContext>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUsers = () => {
   const usersContext = React.useContext(UsersContext)
 
   if (!usersContext) {
-    throw new Error('useUsers must be used within a <UsersProvider>')
+    throw new Error('useUsers has to be used within <UsersContext>')
   }
 
   return usersContext

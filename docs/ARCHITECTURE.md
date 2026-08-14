@@ -504,6 +504,26 @@ Responsabilidades:
 - URL/search params: filtros e paginação que precisem ser compartilháveis.
 - shadcn/ui: componentes acessíveis e consistentes.
 
+### Convenção obrigatória de features
+
+Cada domínio do produto em `apps/web/src/features/<feature>` segue a estrutura
+canônica de `features/users`:
+
+```text
+views/       composição da página e do fluxo
+components/  UI local, providers e diálogos
+hooks/       queries, mutations e orquestração
+services/    API, query keys e invalidações
+data/        schemas e dados estáticos, quando necessários
+```
+
+As dependências seguem a direção `views → hooks → services`; componentes podem
+ser usados por views e não acessam a API. Rotas apenas validam parâmetros e
+compõem a view pública da feature. Essa regra permite trocar a UI sem mover
+acesso a dados, manter cache e invalidações próximos ao domínio e impedir que
+integrações HTTP se espalhem pela aplicação. O guia executável para novas
+features está em `apps/web/src/features/README.md`.
+
 O dashboard terá:
 
 - métricas principais;

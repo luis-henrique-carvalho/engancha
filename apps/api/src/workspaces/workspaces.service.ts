@@ -8,7 +8,8 @@ import {
 import type {
   ActiveWorkspaceResponse,
   WorkspaceListResponse,
-  WorkspaceMembersResponse,
+  WorkspaceMembersListRequest,
+  WorkspaceMembersListResponse,
 } from '@engancha/contracts'
 import { PrismaService } from '../database/prisma.service'
 import type { RequestWithAuthorization } from '../authorization/authorization-context'
@@ -144,7 +145,10 @@ export class WorkspacesService {
     return this.toResponse(membership.organization, membership.role)
   }
 
-  async members(request: RequestWithAuthorization): Promise<WorkspaceMembersResponse> {
+  async members(
+    input: WorkspaceMembersListRequest,
+    request: RequestWithAuthorization,
+  ): Promise<WorkspaceMembersListResponse> {
     const context = this.requireManager(request)
     const [members, invitations] = await Promise.all([
       this.database.client.member.findMany({
@@ -157,7 +161,7 @@ export class WorkspacesService {
         orderBy: { createdAt: 'asc' },
       }),
     ])
-    return [
+    const people = [
       ...members.map((member) => ({
         id: member.id,
         name: member.user.name || member.user.email,
@@ -175,6 +179,24 @@ export class WorkspacesService {
         status: 'invited' as const,
       })),
     ]
+    const query = input.query?.toLocaleLowerCase()
+    const filtered = people.filter((person) => {
+      if (input.role?.length && !input.role.includes(person.role)) return false
+      if (input.status?.length && !input.status.includes(person.status)) return false
+      return (
+        !query ||
+        person.name.toLocaleLowerCase().includes(query) ||
+        person.email.toLocaleLowerCase().includes(query)
+      )
+    })
+    const total = filtered.length
+    const totalPages = total === 0 ? 0 : Math.ceil(total / input.limit)
+    const page = totalPages === 0 ? 1 : Math.min(input.page, totalPages)
+    const start = (page - 1) * input.limit
+    return {
+      items: filtered.slice(start, start + input.limit),
+      meta: { page, limit: input.limit, total, totalPages },
+    }
   }
 
   async invite(email: string, request: RequestWithAuthorization): Promise<{ id: string }> {
