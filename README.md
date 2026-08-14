@@ -49,6 +49,42 @@ npm run infra:down
 
 Os volumes nomeados não são removidos por esse comando. A fundação não cria schema, migrations ou dados de domínio.
 
+## Percurso completo de verificação
+
+Com a infraestrutura saudável, abra três terminais na raiz do repositório:
+
+```bash
+npm run infra:up
+npm run api:dev
+npm run worker:dev
+```
+
+Em um quarto terminal, confirme os serviços e dispare o job técnico:
+
+```bash
+docker compose ps
+curl -sS http://localhost:3001/api/v1/health/live
+curl -sS http://localhost:3001/api/v1/health/ready
+curl -sS -X POST http://localhost:3001/api/v1/dev/verification \
+  -H 'content-type: application/json' \
+  -d '{"version":"v1","correlationId":"manual-local-123","payload":{}}'
+```
+
+A resposta do último comando contém somente `jobId` e `correlationId`. Use o mesmo `correlationId` para localizar, nos logs do worker, os eventos `job_received`, `job_processing` e `job_succeeded`. O teste automatizado `tests/local-flow.test.mjs` verifica o mesmo percurso entre as fronteiras públicas da API e do worker usando o contrato compartilhado; a execução manual acima valida a integração real com BullMQ e Redis.
+
+Para encerrar os processos, use `Ctrl-C` nos terminais da API, worker e web. Depois, remova somente os containers da infraestrutura sem remover os volumes locais:
+
+```bash
+npm run infra:down
+```
+
+Falhas esperadas:
+
+- sem `.env`, ou com `PORT`, `DATABASE_URL`, `REDIS_URL` ou `NODE_ENV` inválidos, API/worker encerram o bootstrap com o nome da configuração inválida, sem imprimir o valor secreto;
+- com Redis ou PostgreSQL parado, `/api/v1/health/ready` retorna `503` e informa apenas `up`/`down`; o worker não registra `ready` sem Redis;
+- payload inválido no endpoint técnico retorna `400` e não cria job;
+- Redis indisponível durante o enfileiramento retorna `503` sanitizado.
+
 ## Inicialização
 
 Cada processo pode ser executado separadamente:

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
-    "start": "nest start",
+    "start": "npm run build && node dist/apps/worker/src/main.js",
     "start:prod": "node dist/apps/worker/src/main.js",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

@@ -1,6 +1,6 @@
 ---
 title: "Validação e documentação do slice local"
-status: "needs-triage"
+status: "done"
 type: "HITL"
 parent: "docs/prds/local-executable-monorepo-foundation.md"
 blocked_by:
@@ -23,11 +23,11 @@ Consolidar a documentação de execução local e as validações automatizadas 
 
 ## Acceptance criteria
 
-- [ ] A documentação apresenta comandos reproduzíveis para instalar, iniciar, verificar e encerrar o ambiente.
-- [ ] Há uma validação automatizada do percurso API → BullMQ → worker usando o contrato compartilhado.
-- [ ] A verificação manual confirma health checks, job processado e logs correlacionáveis.
-- [ ] A documentação descreve falhas esperadas para configuração incompleta e dependências indisponíveis.
-- [ ] O resultado é revisado contra todos os critérios de aceite da PRD antes de marcar o slice como concluído.
+- [x] A documentação apresenta comandos reproduzíveis para instalar, iniciar, verificar e encerrar o ambiente.
+- [x] Há uma validação automatizada do percurso API → BullMQ → worker usando o contrato compartilhado.
+- [x] A verificação manual confirma health checks, job processado e logs correlacionáveis.
+- [x] A documentação descreve falhas esperadas para configuração incompleta e dependências indisponíveis.
+- [x] O resultado é revisado contra todos os critérios de aceite da PRD antes de marcar o slice como concluído.
 
 ## Blocked by
 
@@ -40,4 +40,16 @@ Consolidar a documentação de execução local e as validações automatizadas 
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
+Implementada a validação final do slice local e consolidada a operação no `README.md`. A documentação agora cobre instalação, subida e encerramento de PostgreSQL/Redis, execução independente de web/API/worker, health checks, disparo do endpoint técnico e leitura dos eventos correlacionados do worker. Também registra falhas esperadas para configuração inválida, dependências indisponíveis, payload inválido e falha de enfileiramento, sem incentivar exposição de segredos.
+
+Adicionado `tests/local-flow.test.mjs`, que percorre as fronteiras públicas do enfileirador da API e do processor do worker com o contrato Zod compartilhado, confirmando fila `verification`, `jobId`, correlação e processamento. Os scripts `api:start` e `worker:start` foram ajustados para executar os artefatos no caminho real gerado pelo build. A sequência manual documentada valida a mesma jornada contra BullMQ e Redis reais.
+
+Arquivos principais: `README.md` e `tests/local-flow.test.mjs`.
+
+Validações executadas:
+
+- `npm test` — validações do contrato, API, worker, infraestrutura e percurso local automatizado.
+- `npm run typecheck`, `npm run lint` e `npm run format:check`.
+- `docker compose config --quiet` — passou.
+- Verificação manual real: PostgreSQL e Redis ficaram `healthy`; liveness/readiness responderam `200`; `POST /api/v1/dev/verification` retornou `jobId: 1` e `correlationId: manual-local-123`; o worker registrou `job_received`, `job_processing` e `job_succeeded` com a mesma correlação; API e worker registraram shutdown ordenado.
+- Revisão contra a PRD: os critérios de workspace, infraestrutura, runtime, health/readiness, contrato, enfileiramento, consumo, filas, documentação e falhas seguras estão cobertos pelos tickets `001`–`007`; o ticket `008` permanece independente e opcional.
