@@ -20,7 +20,7 @@ Referências oficiais:
 
 - Injete filas com `@InjectQueue(queueName)` em um service de aplicação.
 - Valide o payload com o contrato compartilhado antes de chamar `queue.add()`.
-- Mantenha retry, backoff e retenção explícitos no contrato ou nas opções padrão da fila.
+- Mantenha retry, backoff e retenção explícitos nas opções padrão registradas em `BullModule.registerQueue()`; use opções no `add()` somente para exceções específicas do job.
 - Retorne apenas identificadores seguros para HTTP; não devolva payloads arbitrários ou credenciais.
 
 ### Consumidores

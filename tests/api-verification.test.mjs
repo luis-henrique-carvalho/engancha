@@ -19,16 +19,7 @@ test('enqueues a valid development verification job and returns safe correlation
   )
 
   assert.deepEqual(result, { jobId: 'job-42', correlationId: 'request-123' })
-  assert.deepEqual(calls[0], [
-    'verification',
-    validJob,
-    {
-      attempts: 3,
-      backoff: { type: 'exponential', delay: 1_000 },
-      removeOnComplete: { age: 3_600, count: 100 },
-      removeOnFail: { age: 86_400, count: 100 },
-    },
-  ])
+  assert.deepEqual(calls[0], ['verification', validJob])
   assert.doesNotMatch(JSON.stringify(result), /secret|password|payload/)
 })
 
