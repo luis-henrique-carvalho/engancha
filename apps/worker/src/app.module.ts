@@ -6,6 +6,7 @@ import { CoreModule } from './common/core.module'
 import { WorkerConfigModule } from './config/worker-config.module'
 import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { VerificationModule } from './verification/verification.module'
+import { EmailModule } from './email/email.module'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VerificationModule } from './verification/verification.module'
     CoreModule,
     InfrastructureModule,
     VerificationModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

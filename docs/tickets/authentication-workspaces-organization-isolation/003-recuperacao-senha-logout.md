@@ -1,6 +1,6 @@
 ---
 title: "Recuperação de senha e logout"
-status: "needs-triage"
+status: "in-progress"
 type: "AFK"
 parent: "docs/prds/authentication-workspaces-organization-isolation.md"
 blocked_by:
@@ -34,4 +34,4 @@ Adicionar logout ao cliente e à API Better Auth, removendo a sessão atual e re
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, política de sessão adotada, contratos, arquivos principais e validações executadas.
+Implementado no cliente Better Auth com telas de solicitação, reset, mensagens neutras, estados de erro e logout em `apps/web/src/routes/auth.*` e `apps/web/src/routes/workspace.tsx`. Reset expira em 1 hora e revoga sessões existentes (`revokeSessionsOnPasswordReset: true`). Testes E2E de token/reset e logout ainda precisam ser adicionados.

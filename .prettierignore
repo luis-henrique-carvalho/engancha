@@ -8,3 +8,4 @@ docs
 AGENTS.md
 apps/web/src/routeTree.gen.ts
 package-lock.json
+apps/api/src/generated/prisma/

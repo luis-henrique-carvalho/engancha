@@ -8,7 +8,7 @@ import { VerificationService } from './verification.service'
 @Module({
   imports: [
     BullModule.registerQueue({
-      name: QUEUE_NAMES.VERIFICATION,
+      name: QUEUE_NAMES.verification,
       defaultJobOptions: verificationJobOptions,
     }),
   ],

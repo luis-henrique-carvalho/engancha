@@ -1,6 +1,6 @@
 ---
 title: "Guard de Organization e isolamento multi-tenant"
-status: "needs-triage"
+status: "in-progress"
 type: "AFK"
 parent: "docs/prds/authentication-workspaces-organization-isolation.md"
 blocked_by:
@@ -20,7 +20,7 @@ Entregar um endpoint ou recurso protegido mínimo que comprove a fronteira: um m
 
 ## Acceptance criteria
 
-- [ ] Uma abstração reutilizável resolve `userId`, `organizationId` ativo e membership a partir da sessão no limite da API.
+- [x] Uma abstração reutilizável resolve `userId`, `organizationId` ativo e membership a partir da sessão no limite da API.
 - [ ] Rotas públicas de Better Auth e health checks continuam acessíveis sem o guard de produto.
 - [ ] Rotas de produto exigem usuário confirmado, sessão válida, Organization ativa e membership atual.
 - [ ] Um `organizationId` enviado pelo cliente não substitui nem amplia o contexto resolvido no servidor.
@@ -35,4 +35,4 @@ Entregar um endpoint ou recurso protegido mínimo que comprove a fronteira: um m
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contrato de contexto, política de erro, arquivos principais e validações executadas.
+Implementado em `apps/api/src/authorization/authorization-context.ts` e integrado ao módulo de workspaces. O guard deriva contexto da sessão, exige e-mail confirmado/membership e retorna as políticas `401`, `403`, `409` e `404`; `GET /api/v1/workspaces/:id` não aceita tenant arbitrário. Testes unitários cobrem contexto válido, sessão ausente, e-mail não confirmado e contexto ausente; E2E com dois usuários/Organizations permanece pendente.

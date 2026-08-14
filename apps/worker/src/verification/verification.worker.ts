@@ -14,7 +14,7 @@ import {
 } from './verification.job'
 
 @Injectable()
-@Processor(QUEUE_NAMES.VERIFICATION, { concurrency: 1 })
+@Processor(QUEUE_NAMES.verification, { concurrency: 1 })
 export class VerificationProcessor extends WorkerHost {
   constructor(
     @Inject(WORKER_LOGGER) private readonly logger: EventLogger,

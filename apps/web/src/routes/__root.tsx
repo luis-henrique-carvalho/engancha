@@ -15,7 +15,7 @@ export const Route = createRootRoute({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      { title: 'Engancha · Local foundation' },
+      { title: 'Engancha · Acesso' },
     ],
     links: [{ rel: 'stylesheet', href: appStyles }],
   }),
@@ -24,7 +24,7 @@ export const Route = createRootRoute({
 
 function RootDocument() {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>

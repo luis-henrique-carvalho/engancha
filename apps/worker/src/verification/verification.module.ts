@@ -6,7 +6,7 @@ import { VerificationProcessor } from './verification.worker'
 import { VERIFICATION_EXECUTOR, verificationExecutor } from './verification.job'
 
 @Module({
-  imports: [CoreModule, BullModule.registerQueue({ name: QUEUE_NAMES.VERIFICATION })],
+  imports: [CoreModule, BullModule.registerQueue({ name: QUEUE_NAMES.verification })],
   providers: [
     { provide: VERIFICATION_EXECUTOR, useValue: verificationExecutor },
     VerificationProcessor,

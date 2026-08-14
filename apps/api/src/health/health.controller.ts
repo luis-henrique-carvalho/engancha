@@ -1,4 +1,5 @@
 import { Controller, Get, Res } from '@nestjs/common'
+import { AllowAnonymous } from '@thallesp/nestjs-better-auth'
 import type { Response } from 'express'
 import { RuntimeLifecycleService } from '../common/runtime-lifecycle.service'
 import { SkipShutdownGuard } from '../common/skip-shutdown-guard.decorator'
@@ -8,6 +9,7 @@ import {
 } from '../infrastructure/infrastructure-health.service'
 
 @Controller('health')
+@AllowAnonymous()
 export class HealthController {
   constructor(
     private readonly health: InfrastructureHealthService,

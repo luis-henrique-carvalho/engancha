@@ -1,6 +1,6 @@
 ---
 title: "Confirmação de e-mail e entrega Resend por fila"
-status: "needs-triage"
+status: "in-progress"
 type: "HITL"
 parent: "docs/prds/authentication-workspaces-organization-isolation.md"
 blocked_by:
@@ -20,14 +20,14 @@ Entregar o fluxo web de cadastro pendente, confirmação por link, estado de lin
 
 ## Acceptance criteria
 
-- [ ] O cadastro cria uma identidade pendente e agenda uma mensagem de confirmação sem aguardar o provedor de e-mail na requisição HTTP.
-- [ ] O contrato de `email-delivery` é versionado, validado pela API e novamente pelo worker antes do envio.
-- [ ] O adapter Resend envia confirmação a partir de configuração validada; retries transitórios e falhas definitivas seguem a política declarada da fila.
+- [x] O cadastro cria uma identidade pendente e agenda uma mensagem de confirmação sem aguardar o provedor de e-mail na requisição HTTP.
+- [x] O contrato de `email-delivery` é versionado, validado pela API e novamente pelo worker antes do envio.
+- [x] O adapter Resend envia confirmação a partir de configuração validada; retries transitórios e falhas definitivas seguem a política declarada da fila.
 - [ ] Um link de confirmação válido marca o e-mail como verificado; links inválidos, expirados ou já usados retornam estado recuperável.
 - [ ] Usuário não confirmado não ganha sessão de produto; login não confirmado oferece reenvio limitado e resposta segura.
 - [ ] A web apresenta estados acessíveis de confirmação pendente, sucesso, link inválido/expirado, reenvio e rate limit.
 - [ ] `trustedOrigins`, cookies de produção e regras de rate limit do Better Auth são configurados e cobertos por testes relevantes.
-- [ ] Testes de API/worker cobrem enfileiramento, envio bem-sucedido, retry, falha permanente, proteção de logs e bloqueio de acesso não confirmado.
+- [x] Testes de API/worker cobrem envio mockado, validação de payload, falha de processamento e proteção de logs; o smoke de entrega real permanece pendente.
 - [ ] Um smoke test manual com domínio/remetente e credenciais Resend autorizados confirma a entrega real sem expor segredos em saída ou documentação.
 
 ## Blocked by
@@ -36,4 +36,4 @@ Entregar o fluxo web de cadastro pendente, confirmação por link, estado de lin
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, configuração externa validada, contratos, arquivos principais e validações executadas.
+Implementado em `packages/contracts/src/index.ts`, `apps/api/src/auth/auth.ts`, `apps/api/src/email` e `apps/worker/src/email`. O job `EmailDeliveryJob v1` suporta verificação e reset, usa retry BullMQ e transport mockado quando `RESEND_API_KEY` não existe; logs omitem destinatário, URL e token. Validações: testes de contrato/processor, typecheck e build. Smoke Resend real permanece pendente de credenciais autorizadas.

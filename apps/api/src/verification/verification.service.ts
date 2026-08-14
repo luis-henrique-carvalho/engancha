@@ -7,7 +7,7 @@ import { enqueueVerificationJob } from './verification.enqueuer'
 @Injectable()
 export class VerificationService {
   constructor(
-    @InjectQueue(QUEUE_NAMES.VERIFICATION) private readonly queue: Queue<VerificationJob>,
+    @InjectQueue(QUEUE_NAMES.verification) private readonly queue: Queue<VerificationJob>,
   ) {}
 
   enqueue(input: unknown): Promise<{ jobId: string; correlationId: string }> {
