@@ -62,6 +62,21 @@ export const emailDeliveryJobSchema = z
 
 export type EmailDeliveryJob = z.infer<typeof emailDeliveryJobSchema>
 
+export const developmentEmailOutboxEntrySchema = z
+  .object({
+    type: z.enum(['verification', 'password-reset']),
+    actionUrl: emailActionUrlSchema,
+  })
+  .strict()
+
+export type DevelopmentEmailOutboxEntry = z.infer<typeof developmentEmailOutboxEntrySchema>
+
+export const DEVELOPMENT_EMAIL_OUTBOX_TTL_SECONDS = 3_600
+
+export function developmentEmailOutboxKey(correlationId: string): string {
+  return `development:email-outbox:${correlationId}`
+}
+
 export const emailDeliveryJobOptions = {
   attempts: 4,
   backoff: { type: 'exponential', delay: 2_000 },

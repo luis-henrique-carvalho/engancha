@@ -11,6 +11,7 @@ import { HealthModule } from './health/health.module'
 import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { VerificationModule } from './verification/verification.module'
 import { WorkspacesModule } from './workspaces/workspaces.module'
+import { DevelopmentEmailOutboxModule } from './development-email-outbox/development-email-outbox.module'
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { WorkspacesModule } from './workspaces/workspaces.module'
     HealthModule,
     VerificationModule,
     WorkspacesModule,
+    DevelopmentEmailOutboxModule,
   ],
   controllers: [AppController],
 })

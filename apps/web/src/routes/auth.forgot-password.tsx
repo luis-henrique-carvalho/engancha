@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { authClient } from '../lib/auth-client'
+import { authClient, webCallbackUrl } from '../lib/auth-client'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
@@ -15,7 +15,7 @@ function ForgotPasswordPage() {
     event.preventDefault()
     setLoading(true)
     await authClient
-      .requestPasswordReset({ email, redirectTo: '/auth/reset-password' })
+      .requestPasswordReset({ email, redirectTo: webCallbackUrl('/auth/reset-password') })
       .catch(() => undefined)
     setLoading(false)
     setMessage('Se este endereço estiver cadastrado, você receberá instruções em alguns instantes.')

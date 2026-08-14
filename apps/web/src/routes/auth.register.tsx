@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { authClient } from '../lib/auth-client'
+import { authClient, webCallbackUrl } from '../lib/auth-client'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
@@ -17,7 +17,9 @@ function RegisterPage() {
     event.preventDefault()
     setLoading(true)
     setError('')
-    const result = await authClient.signUp.email(form).catch(() => ({ error: true }))
+    const result = await authClient.signUp
+      .email({ ...form, callbackURL: webCallbackUrl('/workspace') })
+      .catch(() => ({ error: true }))
     setLoading(false)
     if ('error' in result && result.error) {
       setError('Não foi possível criar a conta. Verifique os dados informados.')

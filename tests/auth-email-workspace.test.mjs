@@ -1,8 +1,13 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { emailDeliveryJobSchema } from '@engancha/contracts'
+import {
+  developmentEmailOutboxEntrySchema,
+  developmentEmailOutboxKey,
+  emailDeliveryJobSchema,
+} from '@engancha/contracts'
 import { processEmailDeliveryJob } from '../apps/worker/src/email/email.job.ts'
 import { AuthorizationContextGuard } from '../apps/api/src/authorization/authorization-context.ts'
+import { DevelopmentEmailOutboxController } from '../apps/api/src/development-email-outbox/development-email-outbox.controller.ts'
 
 const validJob = {
   version: 'v1',
@@ -18,6 +23,40 @@ test('email delivery contract accepts actions and rejects extra or malformed dat
   assert.equal(
     emailDeliveryJobSchema.safeParse({ ...validJob, unexpected: 'secret' }).success,
     false,
+  )
+})
+
+test('development email outbox retains only the action needed to continue', () => {
+  const entry = {
+    type: 'verification',
+    actionUrl: 'http://localhost:3001/api/auth/verify-email?token=secret-token',
+  }
+
+  assert.equal(developmentEmailOutboxEntrySchema.safeParse(entry).success, true)
+  assert.equal(
+    developmentEmailOutboxEntrySchema.safeParse({ ...entry, to: 'person@example.com' }).success,
+    false,
+  )
+  assert.equal(
+    developmentEmailOutboxKey('auth-verification-user-1'),
+    'development:email-outbox:auth-verification-user-1',
+  )
+})
+
+test('development email outbox is retrievable only outside production', async () => {
+  const entry = {
+    type: 'verification',
+    actionUrl: 'http://localhost:3001/api/auth/verify-email?token=secret-token',
+  }
+  const outbox = { find: async () => entry }
+  const development = new DevelopmentEmailOutboxController({ get: () => 'development' }, outbox)
+
+  assert.deepEqual(await development.find('auth-verification-user-1'), entry)
+
+  const production = new DevelopmentEmailOutboxController({ get: () => 'production' }, outbox)
+  await assert.rejects(
+    production.find('auth-verification-user-1'),
+    (error) => error?.getStatus?.() === 404,
   )
 })
 

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Resend } from 'resend'
 import type { EmailDeliveryJob } from '@engancha/contracts'
 import type { EmailTransport } from './email.job'
+import { DevelopmentEmailOutbox } from './development-email-outbox'
 
 @Injectable()
 export class ResendEmailTransport {
@@ -9,8 +10,13 @@ export class ResendEmailTransport {
     ? new Resend(process.env.RESEND_API_KEY)
     : undefined
 
+  constructor(private readonly developmentOutbox: DevelopmentEmailOutbox) {}
+
   async send(job: EmailDeliveryJob): Promise<'sent' | 'mocked'> {
-    if (!this.resend) return 'mocked'
+    if (!this.resend) {
+      await this.developmentOutbox.store(job)
+      return 'mocked'
+    }
 
     const subject = job.type === 'verification' ? 'Confirme seu e-mail' : 'Redefina sua senha'
     const result = await this.resend.emails.send({

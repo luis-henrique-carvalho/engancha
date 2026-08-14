@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { authClient } from '../lib/auth-client'
+import { authClient, webCallbackUrl } from '../lib/auth-client'
 import { Button } from '../components/ui/button'
 
 export const Route = createFileRoute('/auth/verify-email')({
@@ -16,7 +16,7 @@ function VerifyEmailPage() {
   async function resend() {
     setLoading(true)
     const result = await authClient
-      .sendVerificationEmail({ email, callbackURL: '/workspace' })
+      .sendVerificationEmail({ email, callbackURL: webCallbackUrl('/workspace') })
       .catch(() => ({ error: true }))
     setLoading(false)
     setMessage(

@@ -5,6 +5,7 @@ import { CoreModule } from '../common/core.module'
 import { EMAIL_TRANSPORT } from './email.job'
 import { ResendEmailTransport } from './email.transport'
 import { EmailDeliveryProcessor } from './email.worker'
+import { DevelopmentEmailOutbox } from './development-email-outbox'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EmailDeliveryProcessor } from './email.worker'
     }),
   ],
   providers: [
+    DevelopmentEmailOutbox,
     ResendEmailTransport,
     {
       provide: EMAIL_TRANSPORT,
