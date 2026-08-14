@@ -87,6 +87,13 @@ export function UsersTable({
       <DataTableToolbar
         table={table}
         searchPlaceholder="Buscar por nome ou e-mail..."
+        onReset={() =>
+          onFiltersChange({
+            query: undefined,
+            role: undefined,
+            status: undefined,
+          })
+        }
         filters={[
           {
             columnId: 'role',

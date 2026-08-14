@@ -9,6 +9,7 @@ type DataTableToolbarProps<TData> = {
   table: Table<TData>
   searchPlaceholder?: string
   searchKey?: string
+  onReset?: () => void
   filters?: {
     columnId: string
     title: string
@@ -24,6 +25,7 @@ export function DataTableToolbar<TData>({
   table,
   searchPlaceholder = 'Filter...',
   searchKey,
+  onReset,
   filters = [],
 }: DataTableToolbarProps<TData>) {
   const isFiltered =
@@ -69,6 +71,10 @@ export function DataTableToolbar<TData>({
           <Button
             variant='ghost'
             onClick={() => {
+              if (onReset) {
+                onReset()
+                return
+              }
               table.resetColumnFilters()
               table.setGlobalFilter('')
             }}
