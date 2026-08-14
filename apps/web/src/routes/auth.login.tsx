@@ -1,6 +1,9 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '../lib/auth-client'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
 
 export const Route = createFileRoute('/auth/login')({ component: LoginPage })
 
@@ -39,38 +42,40 @@ function LoginPage() {
       <h1 id="login-title">Entre no seu workspace.</h1>
       <p className="auth-lede">Use seu e-mail confirmado para continuar.</p>
       <form className="auth-form" onSubmit={submit}>
-        <label>
+        <Label htmlFor="login-email">
           E-mail
-          <input
+          <Input
+            id="login-email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
             autoComplete="email"
           />
-        </label>
-        <label>
+        </Label>
+        <Label htmlFor="login-password">
           Senha
-          <input
+          <Input
+            id="login-password"
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
             autoComplete="current-password"
           />
-        </label>
+        </Label>
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
-        <button className="primary-button" disabled={loading}>
+        <Button className="primary-button" disabled={loading}>
           {loading ? 'Entrando…' : 'Entrar'}
-        </button>
+        </Button>
       </form>
-      <button className="secondary-button" type="button" onClick={googleLogin}>
+      <Button className="secondary-button" type="button" variant="outline" onClick={googleLogin}>
         Continuar com Google
-      </button>
+      </Button>
       <div className="auth-links">
         <Link to="/auth/forgot-password">Esqueci minha senha</Link>
         <Link to="/auth/register">Criar conta</Link>

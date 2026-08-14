@@ -1,6 +1,9 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '../lib/auth-client'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
 
 export const Route = createFileRoute('/auth/register')({ component: RegisterPage })
 
@@ -32,28 +35,31 @@ function RegisterPage() {
       <h1 id="register-title">Crie seu acesso.</h1>
       <p className="auth-lede">Você receberá um link para confirmar este endereço.</p>
       <form className="auth-form" onSubmit={submit}>
-        <label>
+        <Label htmlFor="register-name">
           Nome
-          <input
+          <Input
+            id="register-name"
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
             required
             autoComplete="name"
           />
-        </label>
-        <label>
+        </Label>
+        <Label htmlFor="register-email">
           E-mail
-          <input
+          <Input
+            id="register-email"
             type="email"
             value={form.email}
             onChange={(event) => setForm({ ...form, email: event.target.value })}
             required
             autoComplete="email"
           />
-        </label>
-        <label>
+        </Label>
+        <Label htmlFor="register-password">
           Senha
-          <input
+          <Input
+            id="register-password"
             type="password"
             value={form.password}
             onChange={(event) => setForm({ ...form, password: event.target.value })}
@@ -61,15 +67,15 @@ function RegisterPage() {
             minLength={8}
             autoComplete="new-password"
           />
-        </label>
+        </Label>
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
-        <button className="primary-button" disabled={loading}>
+        <Button className="primary-button" disabled={loading}>
           {loading ? 'Criando…' : 'Criar conta'}
-        </button>
+        </Button>
       </form>
       <p className="auth-footnote">
         Já tem acesso? <Link to="/auth/login">Entrar</Link>

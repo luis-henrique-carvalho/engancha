@@ -1,5 +1,5 @@
-import { useNavigate, useLocation } from '@tanstack/react-router'
-import { useAuthStore } from '@/stores/auth-store'
+import { useNavigate } from '@tanstack/react-router'
+import { authClient } from '@/lib/auth-client'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 
 interface SignOutDialogProps {
@@ -9,17 +9,10 @@ interface SignOutDialogProps {
 
 export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
   const navigate = useNavigate()
-  const location = useLocation()
-  const { auth } = useAuthStore()
 
   const handleSignOut = () => {
-    auth.reset()
-    // Preserve current location for redirect after sign-in
-    const currentPath = location.href
-    navigate({
-      to: '/sign-in',
-      search: { redirect: currentPath },
-      replace: true,
+    void authClient.signOut().finally(() => {
+      void navigate({ to: '/auth/login', replace: true })
     })
   }
 
@@ -27,12 +20,13 @@ export function SignOutDialog({ open, onOpenChange }: SignOutDialogProps) {
     <ConfirmDialog
       open={open}
       onOpenChange={onOpenChange}
-      title='Sign out'
-      desc='Are you sure you want to sign out? You will need to sign in again to access your account.'
-      confirmText='Sign out'
+      title="Sair da conta"
+      desc="Sua sessão atual será encerrada neste navegador."
+      confirmText="Sair"
+      cancelBtnText="Cancelar"
       destructive
       handleConfirm={handleSignOut}
-      className='sm:max-w-sm'
+      className="sm:max-w-sm"
     />
   )
 }

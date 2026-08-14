@@ -1,6 +1,9 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '../lib/auth-client'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
 
 export const Route = createFileRoute('/auth/forgot-password')({ component: ForgotPasswordPage })
 
@@ -26,24 +29,25 @@ function ForgotPasswordPage() {
       <h1 id="forgot-title">Recupere o acesso.</h1>
       <p className="auth-lede">Informe o e-mail da sua conta.</p>
       <form className="auth-form" onSubmit={submit}>
-        <label>
+        <Label htmlFor="forgot-email">
           E-mail
-          <input
+          <Input
+            id="forgot-email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
             autoComplete="email"
           />
-        </label>
+        </Label>
         {message && (
           <p className="success-message" role="status">
             {message}
           </p>
         )}
-        <button className="primary-button" disabled={loading}>
+        <Button className="primary-button" disabled={loading}>
           {loading ? 'Enviando…' : 'Enviar instruções'}
-        </button>
+        </Button>
       </form>
       <Link to="/auth/login">Voltar para o login</Link>
     </section>

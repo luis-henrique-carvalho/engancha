@@ -19,7 +19,7 @@ const DirectionContext = createContext<DirectionContextType | null>(null)
 
 export function DirectionProvider({ children }: { children: React.ReactNode }) {
   const [dir, _setDir] = useState<Direction>(
-    () => (getCookie(DIRECTION_COOKIE_NAME) as Direction) || DEFAULT_DIRECTION
+    () => (getCookie(DIRECTION_COOKIE_NAME) as Direction) || DEFAULT_DIRECTION,
   )
 
   useEffect(() => {
@@ -51,7 +51,6 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useDirection() {
   const context = useContext(DirectionContext)
   if (!context) {

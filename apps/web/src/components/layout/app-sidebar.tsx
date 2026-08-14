@@ -1,3 +1,4 @@
+import type { ActiveWorkspaceResponse } from '@engancha/contracts'
 import { useLayout } from '@/context/layout-provider'
 import {
   Sidebar,
@@ -7,21 +8,25 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 // import { AppTitle } from './app-title'
-import { sidebarData } from './data/sidebar-data'
+import { createSidebarData } from './data/sidebar-data'
 import { NavGroup } from './nav-group'
 import { NavUser } from './nav-user'
 import { TeamSwitcher } from './team-switcher'
+import type { User } from './types'
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  user: User
+  workspace: ActiveWorkspaceResponse
+}
+
+export function AppSidebar({ user, workspace }: AppSidebarProps) {
   const { collapsible, variant } = useLayout()
+  const sidebarData = createSidebarData({ user, workspace })
+
   return (
     <Sidebar collapsible={collapsible} variant={variant}>
       <SidebarHeader>
-        <TeamSwitcher teams={sidebarData.teams} />
-
-        {/* Replace <TeamSwitch /> with the following <AppTitle />
-         /* if you want to use the normal app title instead of TeamSwitch dropdown */}
-        {/* <AppTitle /> */}
+        <TeamSwitcher workspace={workspace} />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (

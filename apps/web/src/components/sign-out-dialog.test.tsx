@@ -29,9 +29,7 @@ describe('SignOutDialog', () => {
   })
 
   it('calls auth.reset and navigates to sign-in with current location as redirect', async () => {
-    const { getByRole } = await render(
-      <SignOutDialog open onOpenChange={vi.fn()} />
-    )
+    const { getByRole } = await render(<SignOutDialog open onOpenChange={vi.fn()} />)
 
     await userEvent.click(getByRole('button', { name: /^Sign out$/i }))
 
@@ -44,9 +42,7 @@ describe('SignOutDialog', () => {
   })
 
   it('does not call reset or navigate when Cancel is clicked', async () => {
-    const { getByRole } = await render(
-      <SignOutDialog open onOpenChange={vi.fn()} />
-    )
+    const { getByRole } = await render(<SignOutDialog open onOpenChange={vi.fn()} />)
 
     await userEvent.click(getByRole('button', { name: /^Cancel$/i }))
 

@@ -5,10 +5,18 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ES2022",
+    "baseUrl": ".",
     "skipLibCheck": true,
     "strictNullChecks": true,
     "allowImportingTsExtensions": true,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "#/*": ["./src/*"],
+      "@engancha/contracts": ["../../packages/contracts/src/index.ts"],
+      "@engancha/contracts/*": ["../../packages/contracts/src/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test-utils/**", "src/features/**"]
 }

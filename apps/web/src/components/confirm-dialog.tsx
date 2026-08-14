@@ -22,10 +22,7 @@ type ConfirmDialogProps = {
   isLoading?: boolean
   className?: string
   children?: React.ReactNode
-} & (
-  | { form: string; handleConfirm?: undefined }
-  | { form?: undefined; handleConfirm: () => void }
-)
+} & ({ form: string; handleConfirm?: undefined } | { form?: undefined; handleConfirm: () => void })
 
 export function ConfirmDialog(props: ConfirmDialogProps) {
   const {
@@ -45,7 +42,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
   return (
     <AlertDialog {...actions}>
       <AlertDialogContent className={cn(className && className)}>
-        <AlertDialogHeader className='text-start'>
+        <AlertDialogHeader className="text-start">
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription asChild>
             <div>{desc}</div>
@@ -53,9 +50,7 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
         </AlertDialogHeader>
         {children}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>
-            {cancelBtnText ?? 'Cancel'}
-          </AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{cancelBtnText ?? 'Cancel'}</AlertDialogCancel>
           <Button
             type={form ? 'submit' : 'button'}
             form={form}

@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '../lib/auth-client'
+import { Button } from '../components/ui/button'
 
 export const Route = createFileRoute('/auth/verify-email')({
   validateSearch: (search: Record<string, unknown>) => ({ email: String(search.email ?? '') }),
@@ -34,9 +35,9 @@ function VerifyEmailPage() {
       <h1 id="verify-title">Confirme seu e-mail.</h1>
       <p className="auth-lede">{message}</p>
       <p className="muted">{email || 'Seu endereço'}</p>
-      <button className="primary-button" onClick={resend} disabled={loading}>
+      <Button className="primary-button" onClick={resend} disabled={loading}>
         {loading ? 'Enviando…' : 'Reenviar confirmação'}
-      </button>
+      </Button>
       <div className="auth-links">
         <Link to="/auth/login">Voltar para o login</Link>
       </div>

@@ -43,12 +43,9 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
     _setFont(fonts[0])
   }
 
-  return (
-    <FontContext value={{ font, setFont, resetFont }}>{children}</FontContext>
-  )
+  return <FontContext value={{ font, setFont, resetFont }}>{children}</FontContext>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useFont = () => {
   const context = useContext(FontContext)
   if (!context) {

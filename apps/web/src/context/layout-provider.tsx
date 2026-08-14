@@ -44,11 +44,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
 
   const setCollapsible = (newCollapsible: Collapsible) => {
     _setCollapsible(newCollapsible)
-    setCookie(
-      LAYOUT_COLLAPSIBLE_COOKIE_NAME,
-      newCollapsible,
-      LAYOUT_COOKIE_MAX_AGE
-    )
+    setCookie(LAYOUT_COLLAPSIBLE_COOKIE_NAME, newCollapsible, LAYOUT_COOKIE_MAX_AGE)
   }
 
   const setVariant = (newVariant: Variant) => {
@@ -75,7 +71,6 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
 }
 
 // Define the hook for the provider
-// eslint-disable-next-line react-refresh/only-export-components
 export function useLayout() {
   const context = useContext(LayoutContext)
   if (!context) {

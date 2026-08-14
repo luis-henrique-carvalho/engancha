@@ -1,6 +1,9 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { authClient } from '../lib/auth-client'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
 
 export const Route = createFileRoute('/auth/reset-password')({ component: ResetPasswordPage })
 
@@ -34,9 +37,10 @@ function ResetPasswordPage() {
       </p>
       <h1 id="reset-title">Defina uma nova senha.</h1>
       <form className="auth-form" onSubmit={submit}>
-        <label>
+        <Label htmlFor="reset-password">
           Nova senha
-          <input
+          <Input
+            id="reset-password"
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
@@ -44,7 +48,7 @@ function ResetPasswordPage() {
             required
             autoComplete="new-password"
           />
-        </label>
+        </Label>
         {error && (
           <p className="form-error" role="alert">
             {error}
@@ -55,9 +59,9 @@ function ResetPasswordPage() {
             {message}
           </p>
         )}
-        <button className="primary-button" disabled={loading}>
+        <Button className="primary-button" disabled={loading}>
           {loading ? 'Salvando…' : 'Atualizar senha'}
-        </button>
+        </Button>
       </form>
       <Link to="/auth/login">Voltar para o login</Link>
     </section>

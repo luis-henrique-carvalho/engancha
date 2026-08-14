@@ -38,21 +38,19 @@ export function ThemeProvider({
   storageKey = THEME_COOKIE_NAME,
   ...props
 }: ThemeProviderProps) {
-  const [theme, _setTheme] = useState<Theme>(
-    () => (getCookie(storageKey) as Theme) || defaultTheme
-  )
+  const [theme, _setTheme] = useState<Theme>(() => (getCookie(storageKey) as Theme) || defaultTheme)
 
   // Optimized: Memoize the resolved theme calculation to prevent unnecessary re-computations
   const resolvedTheme = useMemo((): ResolvedTheme => {
-    if (theme === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+    if (theme === 'system' && typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
     return theme as ResolvedTheme
   }, [theme])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const root = window.document.documentElement
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
@@ -100,7 +98,6 @@ export function ThemeProvider({
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeContext)
 
