@@ -98,17 +98,23 @@ As quatro filas iniciais são declaradas com nomes centralizados. Somente a veri
 
 ## Acceptance Criteria
 
-- [ ] O repositório possui workspace npm e os quatro pacotes previstos pela arquitetura, com dependências respeitando as fronteiras entre web, API, worker e contracts.
-- [ ] PostgreSQL e Redis sobem por Docker Compose e possuem health checks funcionais.
-- [ ] Web, API e worker podem ser iniciados por comandos documentados; API e worker são processos NestJS independentes.
-- [ ] A API aplica prefixo `/api/v1`, valida configuração de ambiente, registra erros de forma estruturada e encerra ordenadamente.
-- [ ] A API oferece health check que reflete disponibilidade de PostgreSQL e Redis sem expor segredos.
-- [ ] `packages/contracts` exporta schema Zod versionado para o job de verificação sem depender de NestJS, Prisma, Redis ou BullMQ.
-- [ ] A API valida e enfileira um job de verificação no BullMQ, e o worker o consome com logs correlacionáveis.
-- [ ] As filas `email-delivery`, `automation-execution`, `message-delivery` e `analytics` estão centralmente declaradas para uso futuro.
-- [ ] A documentação registra como manter o clone opcional do `shadcn-admin` fora do monorepo, gerar seu grafo separado e consultá-lo sem contaminar o grafo do Engancha.
-- [ ] Uma configuração local incompleta ou uma dependência indisponível falha de forma clara e segura.
-- [ ] Há validações automatizadas adequadas para contratos e para o percurso API → fila → worker, além de instruções de execução manual.
+- [x] O repositório possui workspace npm e os quatro pacotes previstos pela arquitetura, com dependências respeitando as fronteiras entre web, API, worker e contracts.
+- [x] PostgreSQL e Redis sobem por Docker Compose e possuem health checks funcionais.
+- [x] Web, API e worker podem ser iniciados por comandos documentados; API e worker são processos NestJS independentes.
+- [x] A API aplica prefixo `/api/v1`, valida configuração de ambiente, registra erros de forma estruturada e encerra ordenadamente.
+- [x] A API oferece health check que reflete disponibilidade de PostgreSQL e Redis sem expor segredos.
+- [x] `packages/contracts` exporta schema Zod versionado para o job de verificação sem depender de NestJS, Prisma, Redis ou BullMQ.
+- [x] A API valida e enfileira um job de verificação no BullMQ, e o worker o consome com logs correlacionáveis.
+- [x] As filas `email-delivery`, `automation-execution`, `message-delivery` e `analytics` estão centralmente declaradas para uso futuro.
+- [x] A documentação registra como manter o clone opcional do `shadcn-admin` fora do monorepo, gerar seu grafo separado e consultá-lo sem contaminar o grafo do Engancha.
+- [x] Uma configuração local incompleta ou uma dependência indisponível falha de forma clara e segura.
+- [x] Há validações automatizadas adequadas para contratos e para o percurso API → fila → worker, além de instruções de execução manual.
+
+### Completion record
+
+Todos os tickets `001`–`008` estão concluídos. A validação final confirmou `npm test` (30 testes), `npm run typecheck` e `npm run lint`. A execução manual de infraestrutura, health checks e percurso API → BullMQ → worker está registrada no ticket `007`.
+
+`npm run format:check` ainda aponta estilo divergente em `apps/worker/src/common/runtime-lifecycle.service.ts` e `apps/worker/src/verification/verification.job.ts`; são arquivos preexistentes fora das mudanças de fechamento e não impedem os critérios funcionais desta PRD.
 
 ## Implementation Decisions
 

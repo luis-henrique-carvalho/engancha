@@ -35,7 +35,7 @@ Implementado em 2026-08-13 na branch `feat/004-contrato-do-job-e-registro-de-fil
 ### Comportamento entregue
 
 - `verificationJobSchema` valida um envelope estrito `{ version, correlationId, payload }`, com versão `v1`, correlação limitada a um identificador seguro e payload técnico mínimo sem campos de domínio.
-- `queueNames` centraliza as filas `verification`, `email-delivery`, `automation-execution`, `message-delivery` e `analytics`, sem duplicar literais nos consumidores futuros.
+- `QUEUE_NAMES` centraliza as filas `verification`, `email-delivery`, `automation-execution`, `message-delivery` e `analytics`, sem duplicar literais nos consumidores futuros.
 - `verificationJobOptions` exporta `attempts: 3`, backoff exponencial de 1 segundo e retenção limitada para jobs concluídos e falhos.
 - `@engancha/contracts` usa somente Zod como dependência de runtime; não importa NestJS, Prisma, Redis ou BullMQ.
 

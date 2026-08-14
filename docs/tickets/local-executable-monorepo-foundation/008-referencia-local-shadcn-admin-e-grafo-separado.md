@@ -1,6 +1,6 @@
 ---
 title: "Referência local do shadcn-admin e grafo separado"
-status: "needs-triage"
+status: "done"
 type: "AFK"
 parent: "docs/prds/local-executable-monorepo-foundation.md"
 blocked_by: []
@@ -17,11 +17,11 @@ Documentar o procedimento opcional para manter um clone superficial do `shadcn-a
 
 ## Acceptance criteria
 
-- [ ] O clone de referência usa um diretório externo ao monorepo e não é adicionado aos arquivos ou dependências do produto.
-- [ ] O procedimento de geração e atualização do grafo separado está documentado.
-- [ ] A documentação explica como consultar padrões de sidebar, tema, navegação e componentes.
-- [ ] A ausência do clone não impede a inicialização do web, API, worker ou infraestrutura.
-- [ ] Uma verificação confirma que o grafo do Engancha não indexa o diretório da referência por padrão.
+- [x] O clone de referência usa um diretório externo ao monorepo e não é adicionado aos arquivos ou dependências do produto.
+- [x] O procedimento de geração e atualização do grafo separado está documentado.
+- [x] A documentação explica como consultar padrões de sidebar, tema, navegação e componentes.
+- [x] A ausência do clone não impede a inicialização do web, API, worker ou infraestrutura.
+- [x] Uma verificação confirma que o grafo do Engancha não indexa o diretório da referência por padrão.
 
 ## Blocked by
 
@@ -29,4 +29,14 @@ None - can start immediately.
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, contratos, arquivos principais, decisões e validações executadas.
+Documentado no `README.md` o uso opcional de `satnaing/shadcn-admin` como referência visual. O clone é superficial e fica em um diretório irmão (`../shadcn-admin-reference`), portanto não integra o workspace, as dependências, os arquivos versionados nem o runtime do Engancha.
+
+O procedimento gera e atualiza o `graphify-out/` dentro do próprio clone e inclui consultas direcionadas a sidebar, tema, navegação e componentes. A documentação determina que padrões sejam portados ou adaptados explicitamente para `apps/web`, sem importar o runtime Vite ou dependências da referência.
+
+Arquivos principais: `README.md` e este ticket.
+
+Validações executadas:
+
+- revisão de `.gitignore`: `graphify-out/` é ignorado tanto na raiz quanto em subdiretórios;
+- revisão dos scripts do workspace no `README.md`: web, API, worker e infraestrutura não dependem do clone opcional;
+- adicionada uma verificação reproduzível com `rg` que falha se o caminho absoluto de `../shadcn-admin-reference` aparecer em `Engancha/graphify-out/graph.json`.

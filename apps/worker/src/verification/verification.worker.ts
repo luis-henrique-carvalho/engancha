@@ -1,7 +1,7 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq'
 import { Inject, Injectable } from '@nestjs/common'
 import { Job } from 'bullmq'
-import { queueNames } from '@engancha/contracts'
+import { QUEUE_NAMES } from '@engancha/contracts'
 import { WORKER_LOGGER } from '../common/worker-logger.token'
 import type { EventLogger } from '../common/runtime-lifecycle.service'
 import {
@@ -14,7 +14,7 @@ import {
 } from './verification.job'
 
 @Injectable()
-@Processor(queueNames.verification, { concurrency: 1 })
+@Processor(QUEUE_NAMES.VERIFICATION, { concurrency: 1 })
 export class VerificationProcessor extends WorkerHost {
   constructor(
     @Inject(WORKER_LOGGER) private readonly logger: EventLogger,

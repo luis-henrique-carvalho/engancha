@@ -117,3 +117,53 @@ npm run verify
 As regras para configurar filas, criar producers e consumers, validar jobs e tratar o shutdown estão em [`docs/NESTJS-BULLMQ-BEST-PRACTICES.md`](docs/NESTJS-BULLMQ-BEST-PRACTICES.md).
 
 O shell web é independente da API e do worker nesta fatia; os processos backend apenas confirmam que seus entrypoints locais estão disponíveis para os próximos tickets.
+
+## Referência visual opcional: shadcn-admin
+
+O [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin) é somente uma referência de padrões visuais. Ele não é dependência, submódulo ou arquivo do Engancha: a ausência dele não altera os comandos de instalação, web, API, worker ou infraestrutura acima.
+
+Para mantê-lo isolado, clone-o como diretório irmão do repositório, com histórico superficial. A partir da raiz do Engancha:
+
+```bash
+cd ..
+git clone --depth 1 https://github.com/satnaing/shadcn-admin.git shadcn-admin-reference
+cd shadcn-admin-reference
+```
+
+Não execute `npm install` nem copie arquivos desse clone para o monorepo apenas para consulta. Quando um ticket de frontend precisar de um padrão, porte ou adapte explicitamente os arquivos necessários para `apps/web`, respeitando as convenções e o runtime do Engancha.
+
+### Grafo separado da referência
+
+Gere e atualize o grafo sempre dentro do clone. Isso cria `shadcn-admin-reference/graphify-out/`, sem alterar o `graphify-out/` do Engancha:
+
+```bash
+# dentro de ../shadcn-admin-reference
+graphify .
+graphify update .
+```
+
+Consulte o grafo da referência no mesmo diretório. Exemplos úteis:
+
+```bash
+graphify query "Where are the sidebar layout and menu groups defined?"
+graphify query "How are light, dark, and system themes selected and persisted?"
+graphify query "How is navigation structured across dashboard routes?"
+graphify query "Which shadcn components are used by the dashboard shell?"
+```
+
+Abra os arquivos retornados pelo grafo e transfira apenas o padrão necessário; não importe o runtime Vite, as dependências ou o grafo da referência para `apps/web`.
+
+### Verificação de isolamento
+
+Da raiz do Engancha, após gerar os dois grafos, confirme que o grafo do produto não contém o caminho absoluto da referência:
+
+```bash
+reference_dir="$(cd ../shadcn-admin-reference && pwd)"
+if rg -F --quiet "$reference_dir" graphify-out/graph.json; then
+  echo "Falha: o grafo do Engancha contém a referência externa."
+  exit 1
+fi
+echo "OK: grafos isolados."
+```
+
+O resultado esperado é `OK: grafos isolados.`. Para comparar os dois projetos, gere uma análise combinada somente em um diretório temporário e descarte-a depois; não a salve em `Engancha/graphify-out/`.

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 
 import {
   contractsVersion,
-  queueNames,
+  QUEUE_NAMES,
   verificationJobOptions,
   verificationJobSchema,
 } from '@engancha/contracts'
@@ -37,14 +37,14 @@ test('rejects invalid verification jobs deterministically', () => {
 
 test('exports the version and central queue registry', () => {
   assert.equal(contractsVersion, 'v1')
-  assert.deepEqual(queueNames, {
+  assert.deepEqual(QUEUE_NAMES, {
     verification: 'verification',
     emailDelivery: 'email-delivery',
     automationExecution: 'automation-execution',
     messageDelivery: 'message-delivery',
     analytics: 'analytics',
   })
-  assert.equal(new Set(Object.values(queueNames)).size, Object.values(queueNames).length)
+  assert.equal(new Set(Object.values(QUEUE_NAMES)).size, Object.values(QUEUE_NAMES).length)
 })
 
 test('exposes conservative retry, backoff, and retention options', () => {
