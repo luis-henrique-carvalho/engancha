@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
   AuthorizationContextGuard,
   type RequestWithAuthorization,
@@ -11,7 +11,7 @@ import { ListWorkspaceMembersDto } from './dto/list-workspace-members.dto'
 
 @Controller('workspaces')
 export class WorkspacesController {
-  constructor(private readonly workspaces: WorkspacesService) {}
+  constructor(@Inject(WorkspacesService) private readonly workspaces: WorkspacesService) {}
 
   @Post('bootstrap')
   bootstrap(@Req() request: RequestWithAuthorization) {

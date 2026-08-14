@@ -1,6 +1,7 @@
 import {
   ConflictException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -32,12 +33,12 @@ function slugify(value: string): string {
 @Injectable()
 export class WorkspacesService {
   constructor(
-    private readonly database: PrismaService,
-    private readonly organizations: OrganizationGateway = new OrganizationGateway(),
+    @Inject(PrismaService) private readonly database: PrismaService,
+    @Inject(OrganizationGateway) private readonly organizations: OrganizationGateway,
   ) {}
 
   async bootstrap(request: AuthenticatedRequest): Promise<ActiveWorkspaceResponse> {
-    const { user } = request.session
+    const { user, session } = this.requireAuthenticated(request)
     if (!user.emailVerified) throw new ConflictException('Email verification required')
 
     const existing = await this.database.client.member.findFirst({
@@ -68,10 +69,10 @@ export class WorkspacesService {
     if (!membership) throw new ConflictException('Workspace bootstrap failed')
 
     await this.database.client.session.updateMany({
-      where: { id: request.session.session.id, userId: user.id },
+      where: { id: session.id, userId: user.id },
       data: { activeOrganizationId: membership.organizationId },
     })
-    request.session.session.activeOrganizationId = membership.organizationId
+    session.activeOrganizationId = membership.organizationId
     return this.toResponse(membership.organization, membership.role)
   }
 

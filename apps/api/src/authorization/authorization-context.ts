@@ -3,6 +3,7 @@ import {
   ConflictException,
   ExecutionContext,
   ForbiddenException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common'
@@ -26,7 +27,7 @@ export type RequestWithAuthorization = {
 
 @Injectable()
 export class AuthorizationContextGuard implements CanActivate {
-  constructor(private readonly database: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly database: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<RequestWithAuthorization>()

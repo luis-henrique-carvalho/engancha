@@ -35,4 +35,4 @@ Expor um contexto seguro de workspace ativo ao frontend, sempre derivado da sess
 
 ## Result
 
-Implementado em `apps/api/src/workspaces` com `POST /api/v1/workspaces/bootstrap`, `GET /api/v1/workspaces/active` e `GET /api/v1/workspaces/:id`; bootstrap cria/reutiliza Organization, membership owner e atualiza `activeOrganizationId`. A web exibe o workspace e retry. Smoke local confirmou cadastro verificado, sessão, bootstrap 201 e contexto ativo 200. Teste concorrente formal permanece pendente.
+Implementado em `apps/api/src/workspaces` com `POST /api/v1/workspaces/bootstrap`, `GET /api/v1/workspaces/active` e `GET /api/v1/workspaces/:id`; bootstrap cria/reutiliza Organization, membership owner e atualiza `activeOrganizationId`. A web exibe o workspace e retry. `tests/phase2-e2e.test.mjs` executa dois bootstraps concorrentes para a mesma sessão e confirma um único workspace retornado e listado.

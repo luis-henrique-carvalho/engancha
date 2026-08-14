@@ -34,4 +34,4 @@ Entregar o acionamento e os estados de OAuth na tela de login. A ausência de cr
 
 ## Result
 
-Implementado em `apps/api/src/auth/auth.ts` e na tela `apps/web/src/routes/auth.login.tsx`: provider só é habilitado com credenciais presentes, e-mail verificado é obrigatório e linking bloqueia e-mails diferentes. Testes automatizados de callback/linking e smoke no Google Cloud Console permanecem pendentes de credenciais e URIs autorizadas.
+Implementado em `apps/api/src/auth/auth.ts` e na tela `apps/web/src/routes/auth.login.tsx`: provider só é habilitado com credenciais presentes, e-mail verificado é obrigatório e linking bloqueia e-mails diferentes. Para ativar em um ambiente, configurar `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BETTER_AUTH_URL` e `WEB_ORIGIN`; registrar no Google Cloud a redirect URI `${BETTER_AUTH_URL}/api/auth/callback/google` e a origem web em `trustedOrigins`. Testes automatizados de callback/linking e smoke no Google Cloud Console permanecem pendentes de credenciais e URIs autorizadas.

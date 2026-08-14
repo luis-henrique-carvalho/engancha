@@ -34,4 +34,4 @@ Adicionar logout ao cliente e à API Better Auth, removendo a sessão atual e re
 
 ## Result
 
-Implementado no cliente Better Auth com telas de solicitação, reset, mensagens neutras, estados de erro e logout em `apps/web/src/routes/auth.*` e `apps/web/src/routes/workspace.tsx`. Reset expira em 1 hora e revoga sessões existentes (`revokeSessionsOnPasswordReset: true`). Testes E2E de token/reset e logout ainda precisam ser adicionados.
+Implementado no cliente Better Auth com telas de solicitação, reset, mensagens neutras, estados de erro e logout em `apps/web/src/routes/auth.*` e `apps/web/src/routes/workspace.tsx`. Reset expira em 1 hora e revoga sessões existentes (`revokeSessionsOnPasswordReset: true`). `tests/phase2-e2e.test.mjs` valida confirmação, reset por token, invalidação da sessão anterior e logout contra a API e infraestrutura local.

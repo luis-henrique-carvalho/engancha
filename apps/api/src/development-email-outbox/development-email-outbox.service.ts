@@ -1,4 +1,4 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common'
+import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
   developmentEmailOutboxEntrySchema,
@@ -13,7 +13,7 @@ export class DevelopmentEmailOutboxService implements OnModuleDestroy {
   private readonly client: RedisClientType
   private connectPromise: Promise<void> | undefined
 
-  constructor(config: ConfigService<ApiRuntimeConfig, true>) {
+  constructor(@Inject(ConfigService) config: ConfigService<ApiRuntimeConfig, true>) {
     this.client = createClient({ url: config.get('redisUrl', { infer: true }) })
   }
 

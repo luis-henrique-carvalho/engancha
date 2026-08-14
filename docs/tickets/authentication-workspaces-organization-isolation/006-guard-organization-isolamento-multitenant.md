@@ -35,4 +35,4 @@ Entregar um endpoint ou recurso protegido mínimo que comprove a fronteira: um m
 
 ## Result
 
-Implementado em `apps/api/src/authorization/authorization-context.ts` e integrado ao módulo de workspaces. O guard deriva contexto da sessão, exige e-mail confirmado/membership e retorna as políticas `401`, `403`, `409` e `404`; `GET /api/v1/workspaces/:id` não aceita tenant arbitrário. Testes unitários cobrem contexto válido, sessão ausente, e-mail não confirmado e contexto ausente; E2E com dois usuários/Organizations permanece pendente.
+Implementado em `apps/api/src/authorization/authorization-context.ts` e integrado ao módulo de workspaces. O guard deriva contexto da sessão, exige e-mail confirmado/membership e retorna as políticas `401`, `403`, `409` e `404`; `GET /api/v1/workspaces/:id` não aceita tenant arbitrário. Além dos testes unitários, `tests/phase2-e2e.test.mjs` cria dois usuários e duas Organizations, bloqueia leitura/troca por ID alheio e confirma que uma membership removida invalida o contexto ativo.

@@ -20,7 +20,7 @@
 | Arquitetura           | ✅ Aprovada — versão 1.1                      |
 | Requisitos funcionais | ✅ Definidos — revisão contínua               |
 | Roadmap               | ✅ Criado                                     |
-| Código                | ✅ Fase 1 concluída — pronto para a Fase 2    |
+| Código                | 🟡 Fase 2 em validação externa                |
 | Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
 | Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
@@ -181,7 +181,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 ## Fase 2 — Autenticação e workspaces
 
-**Status:** ⏳ NÃO INICIADA  
+**Status:** 🟡 EM VALIDAÇÃO EXTERNA
 **Épicos:** EPIC-01 e EPIC-02  
 **Objetivo:** permitir acesso seguro e isolamento por Organization.
 
@@ -220,7 +220,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Critério de conclusão:** usuário consegue cadastrar, confirmar e-mail, entrar com e-mail/senha ou Google e acessar um workspace isolado.
 
-**Bloqueios:** credenciais OAuth do Google e credenciais do Resend serão necessárias para testes completos.
+**Bloqueios:** os fluxos locais são cobertos por `npm run test:e2e`. Ainda são necessárias credenciais OAuth do Google e credenciais/domínio autorizados do Resend para os smoke tests externos.
 
 ---
 

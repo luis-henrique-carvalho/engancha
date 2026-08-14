@@ -20,10 +20,11 @@ export function UsersProvider({
 }) {
   const [open, setOpen] = useDialogState<UsersDialogType>(null)
 
-  return <UsersContext value={{ open, setOpen, workspaceId }}>{children}</UsersContext>
+  return (
+    <UsersContext.Provider value={{ open, setOpen, workspaceId }}>{children}</UsersContext.Provider>
+  )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useUsers = () => {
   const usersContext = React.useContext(UsersContext)
 
