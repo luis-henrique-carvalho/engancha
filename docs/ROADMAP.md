@@ -20,7 +20,7 @@
 | Arquitetura           | ✅ Aprovada — versão 1.1                      |
 | Requisitos funcionais | ✅ Definidos — revisão contínua               |
 | Roadmap               | ✅ Criado                                     |
-| Código                | 🚧 Fase 1 em preparação                       |
+| Código                | ✅ Fase 1 concluída — pronto para a Fase 2    |
 | Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
 | Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
@@ -116,7 +116,7 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 ## Fase 1 — Fundação do monorepo e infraestrutura
 
-**Status:** 🚧 EM ANDAMENTO  
+**Status:** ✅ CONCLUÍDA
 **Épicos:** base técnica compartilhada  
 **Objetivo:** criar uma base executável com web, API, worker, banco e filas.
 
@@ -124,58 +124,58 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 ### Monorepo
 
-- [ ] Criar workspace npm.
-- [ ] Criar `apps/web`.
-- [ ] Criar `apps/api`.
-- [ ] Criar `apps/worker`.
-- [ ] Criar `packages/contracts`.
-- [ ] Configurar TypeScript, ESLint e Prettier.
-- [ ] Definir aliases e regras de dependência entre pacotes.
+- [x] Criar workspace npm.
+- [x] Criar `apps/web`.
+- [x] Criar `apps/api`.
+- [x] Criar `apps/worker`.
+- [x] Criar `packages/contracts`.
+- [x] Configurar TypeScript, ESLint e Prettier.
+- [x] Definir aliases e regras de dependência entre pacotes.
 
 ### Frontend base
 
-- [ ] Inicializar TanStack Start.
-- [ ] Configurar TanStack Router.
-- [ ] Configurar Tailwind CSS.
-- [ ] Adicionar shadcn/ui.
-- [ ] Portar layout visual de referência do template Satnaing.
-- [ ] Criar shell inicial com sidebar, header e tema claro/escuro.
+- [x] Inicializar TanStack Start.
+- [x] Configurar TanStack Router.
+- [x] Configurar Tailwind CSS.
+- [x] Criar shell estático mínimo e independente da API e do worker.
+
+`shadcn/ui`, o port do layout da referência Satnaing e o shell de produto com sidebar, header e tema foram adiados para tickets de frontend. A referência local do `shadcn-admin` e seu grafo separado estão disponíveis para orientar essa implementação, sem se tornarem dependências do monorepo.
 
 ### Backend base
 
-- [ ] Inicializar NestJS API.
-- [ ] Inicializar NestJS worker.
-- [ ] Configurar `ConfigModule` e validação de ambiente.
-- [ ] Configurar prefixo `/api/v1`.
-- [ ] Configurar tratamento global de erros.
-- [ ] Configurar logging estruturado básico.
-- [ ] Configurar graceful shutdown.
+- [x] Inicializar NestJS API.
+- [x] Inicializar NestJS worker.
+- [x] Configurar `ConfigModule` e validação de ambiente.
+- [x] Configurar prefixo `/api/v1`.
+- [x] Configurar tratamento global de erros.
+- [x] Configurar logging estruturado básico.
+- [x] Configurar graceful shutdown.
 
 ### Dados e infraestrutura local
 
-- [ ] Configurar PostgreSQL no Docker Compose.
-- [ ] Configurar Redis no Docker Compose.
-- [ ] Configurar Prisma.
-- [ ] Criar estratégia de migrations.
-- [ ] Configurar BullMQ.
-- [ ] Criar filas iniciais:
-  - [ ] `email-delivery`.
-  - [ ] `automation-execution`.
-  - [ ] `message-delivery`.
-  - [ ] `analytics`.
-- [ ] Criar health checks da API, worker, PostgreSQL e Redis.
-- [ ] Criar `.env.example`.
+- [x] Configurar PostgreSQL no Docker Compose.
+- [x] Configurar Redis no Docker Compose.
+- [x] Configurar BullMQ.
+- [x] Criar filas iniciais:
+  - [x] `email-delivery`.
+  - [x] `automation-execution`.
+  - [x] `message-delivery`.
+  - [x] `analytics`.
+- [x] Criar health checks da API, worker, PostgreSQL e Redis.
+- [x] Criar `.env.example`.
+
+Prisma, schema e migrations permanecem deliberadamente adiados até existir persistência de domínio; serão tratados nas fases de autenticação e automações.
 
 ### Contratos
 
-- [ ] Criar schemas base com Zod.
-- [ ] Criar contratos de eventos versionados.
-- [ ] Criar contratos de jobs BullMQ.
-- [ ] Criar convenções de erro da API.
+- [x] Criar schemas base com Zod.
+- [x] Criar contratos de eventos versionados.
+- [x] Criar contratos de jobs BullMQ.
+- [x] Criar convenções de erro da API.
 
-**Critério de conclusão:** `web`, `api` e `worker` iniciam localmente com Docker Compose, conectam ao PostgreSQL/Redis e executam um job de teste.
+**Critério de conclusão:** ✅ `web`, `api` e `worker` iniciam localmente com Docker Compose, conectam ao PostgreSQL/Redis e executam um job de teste.
 
-**Bloqueios:** nenhum registrado.
+**Bloqueios:** nenhum. A PRD [Fundação executável local do monorepo](./prds/local-executable-monorepo-foundation.md) e os tickets `001`–`008` foram concluídos em 2026-08-13. A validação final registrou 30 testes aprovados, typecheck e lint aprovados; o format check global possui duas divergências preexistentes no worker, fora da fundação funcional.
 
 ---
 
