@@ -1,12 +1,14 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq'
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { Job } from 'bullmq'
 import { queueNames } from '@engancha/contracts'
-import { StructuredLogger } from '../common/structured-logger'
+import { WORKER_LOGGER } from '../common/worker-logger.token'
+import type { EventLogger } from '../common/runtime-lifecycle.service'
 import {
   logVerificationFailure,
   logVerificationSuccess,
   processVerificationJob,
+  VERIFICATION_EXECUTOR,
   type VerificationExecutor,
   type VerificationResult,
 } from './verification.job'
@@ -14,12 +16,10 @@ import {
 @Injectable()
 @Processor(queueNames.verification, { concurrency: 1 })
 export class VerificationProcessor extends WorkerHost {
-  execute: VerificationExecutor = async (job) => ({
-    status: 'processed',
-    correlationId: job.correlationId,
-  })
-
-  constructor(private readonly logger: StructuredLogger) {
+  constructor(
+    @Inject(WORKER_LOGGER) private readonly logger: EventLogger,
+    @Inject(VERIFICATION_EXECUTOR) private readonly execute: VerificationExecutor,
+  ) {
     super()
   }
 

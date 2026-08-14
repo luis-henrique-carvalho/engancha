@@ -1,11 +1,13 @@
-import { Injectable, OnApplicationShutdown, BeforeApplicationShutdown } from '@nestjs/common'
-import { StructuredLogger } from './structured-logger'
+import { Inject, Injectable, OnApplicationShutdown, BeforeApplicationShutdown } from '@nestjs/common'
+import { WORKER_LOGGER } from './worker-logger.token'
+
+export type EventLogger = { event(event: string, details?: Record<string, unknown>): void }
 
 @Injectable()
 export class RuntimeLifecycleService implements BeforeApplicationShutdown, OnApplicationShutdown {
   private shuttingDown = false
 
-  constructor(private readonly logger: Pick<StructuredLogger, 'event'>) {}
+  constructor(@Inject(WORKER_LOGGER) private readonly logger: EventLogger) {}
 
   get isShuttingDown(): boolean {
     return this.shuttingDown

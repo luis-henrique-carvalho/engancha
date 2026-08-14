@@ -1,9 +1,15 @@
 import { Job, UnrecoverableError } from 'bullmq'
 import { verificationJobSchema, type VerificationJob } from '@engancha/contracts'
-import { StructuredLogger } from '../common/structured-logger'
+import type { EventLogger } from '../common/runtime-lifecycle.service'
 
 export type VerificationResult = { status: 'processed'; correlationId: string }
 export type VerificationExecutor = (job: VerificationJob) => Promise<VerificationResult>
+export const VERIFICATION_EXECUTOR = Symbol('VERIFICATION_EXECUTOR')
+
+export const verificationExecutor: VerificationExecutor = async (job) => ({
+  status: 'processed',
+  correlationId: job.correlationId,
+})
 
 function correlationFrom(job: Job<unknown> | undefined): string {
   const candidate = job?.data
@@ -23,7 +29,7 @@ function correlationFrom(job: Job<unknown> | undefined): string {
 
 export async function processVerificationJob(
   job: Job<unknown>,
-  logger: Pick<StructuredLogger, 'event'>,
+  logger: EventLogger,
   execute: VerificationExecutor,
 ): Promise<VerificationResult> {
   const correlationId = correlationFrom(job)
@@ -46,7 +52,7 @@ export async function processVerificationJob(
 export function logVerificationFailure(
   job: Job<unknown> | undefined,
   error: Error,
-  logger: Pick<StructuredLogger, 'event'>,
+  logger: EventLogger,
 ): void {
   const attemptsMade = job?.attemptsMade ?? 0
   const attempts = job?.opts.attempts ?? 1
@@ -63,7 +69,7 @@ export function logVerificationFailure(
 
 export function logVerificationSuccess(
   job: Job<unknown>,
-  logger: Pick<StructuredLogger, 'event'>,
+  logger: EventLogger,
 ): void {
   logger.event('job_succeeded', {
     jobId: String(job.id),

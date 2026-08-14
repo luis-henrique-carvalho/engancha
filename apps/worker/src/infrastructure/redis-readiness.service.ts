@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import type { RedisProbe } from './redis-probe'
 
-export const REDIS_PROBE = 'WORKER_REDIS_PROBE'
+export const REDIS_PROBE = Symbol('WORKER_REDIS_PROBE')
 
 @Injectable()
 export class RedisReadinessService {
-  constructor(private readonly redisProbe: RedisProbe) {}
+  constructor(@Inject(REDIS_PROBE) private readonly redisProbe: RedisProbe) {}
 
   async assertReady(): Promise<void> {
     try {
