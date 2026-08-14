@@ -1,9 +1,14 @@
 import { BadRequestException, ServiceUnavailableException } from '@nestjs/common'
-import { verificationJobOptions, verificationJobSchema } from '@engancha/contracts'
-import { type VerificationQueue } from './verification.queue'
+import { Queue } from 'bullmq'
+import {
+  queueNames,
+  verificationJobOptions,
+  verificationJobSchema,
+  type VerificationJob,
+} from '@engancha/contracts'
 
 export async function enqueueVerificationJob(
-  queue: VerificationQueue,
+  queue: Pick<Queue<VerificationJob>, 'add'>,
   input: unknown,
 ): Promise<{ jobId: string; correlationId: string }> {
   const parsed = verificationJobSchema.safeParse(input)
@@ -13,7 +18,7 @@ export async function enqueueVerificationJob(
 
   const job = parsed.data
   try {
-    const queued = await queue.add('verification', job, verificationJobOptions)
+    const queued = await queue.add(queueNames.verification, job, verificationJobOptions)
     if (queued.id === undefined || queued.id === null) {
       throw new Error('Queue returned no job identifier')
     }

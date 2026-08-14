@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { BullModule } from '@nestjs/bullmq'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from './app.controller'
 import { apiEnvSchema, validateApiEnvironment } from './config/runtime-env'
@@ -15,11 +16,7 @@ import { createRedisProbe } from './infrastructure/redis-probe'
 import { Pool } from 'pg'
 import { VerificationController } from './verification/verification.controller'
 import { VerificationService } from './verification/verification.service'
-import {
-  VERIFICATION_QUEUE,
-  VerificationQueueLifecycle,
-  createVerificationQueue,
-} from './verification/verification.queue'
+import { queueNames, verificationJobOptions } from '@engancha/contracts'
 
 @Module({
   imports: [
@@ -28,6 +25,17 @@ import {
       validationSchema: apiEnvSchema,
       validate: validateApiEnvironment,
       validationOptions: { allowUnknown: true, abortEarly: false },
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connection: { url: config.getOrThrow<string>('redisUrl') },
+      }),
+    }),
+    BullModule.registerQueue({
+      name: queueNames.verification,
+      defaultJobOptions: verificationJobOptions,
     }),
   ],
   controllers: [AppController, HealthController, VerificationController],
@@ -65,18 +73,7 @@ import {
         new InfrastructureHealthService(postgres, redisProbe),
       inject: [POSTGRES_POOL, REDIS_PROBE],
     },
-    {
-      provide: VERIFICATION_QUEUE,
-      useFactory: (config: ConfigService) => createVerificationQueue(config),
-      inject: [ConfigService],
-    },
     VerificationService,
-    {
-      provide: VerificationQueueLifecycle,
-      useFactory: (queue: ReturnType<typeof createVerificationQueue>) =>
-        new VerificationQueueLifecycle(queue),
-      inject: [VERIFICATION_QUEUE],
-    },
   ],
   exports: [RuntimeLifecycleService],
 })

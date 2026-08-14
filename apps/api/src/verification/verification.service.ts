@@ -1,10 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { VERIFICATION_QUEUE, type VerificationQueue } from './verification.queue'
+import { InjectQueue } from '@nestjs/bullmq'
+import { Injectable } from '@nestjs/common'
+import { Queue } from 'bullmq'
+import { queueNames, type VerificationJob } from '@engancha/contracts'
 import { enqueueVerificationJob } from './verification.enqueuer'
 
 @Injectable()
 export class VerificationService {
-  constructor(@Inject(VERIFICATION_QUEUE) private readonly queue: VerificationQueue) {}
+  constructor(
+    @InjectQueue(queueNames.verification) private readonly queue: Queue<VerificationJob>,
+  ) {}
 
   enqueue(input: unknown): Promise<{ jobId: string; correlationId: string }> {
     return enqueueVerificationJob(this.queue, input)

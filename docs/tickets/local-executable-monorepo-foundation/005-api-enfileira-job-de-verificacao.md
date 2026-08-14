@@ -47,7 +47,7 @@ Implementado em 2026-08-13.
 - `apps/api/src/verification/verification.controller.ts`
 - `apps/api/src/verification/verification.service.ts`
 - `apps/api/src/verification/verification.enqueuer.ts`
-- `apps/api/src/verification/verification.queue.ts`
+- `apps/api/src/app.module.ts`
 - `apps/api/src/verification/verification.environment.ts`
 - `tests/api-verification.test.mjs`
 - `apps/api/package.json` e `package-lock.json`
