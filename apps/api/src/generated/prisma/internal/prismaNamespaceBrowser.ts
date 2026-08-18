@@ -56,6 +56,12 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Organization: 'Organization',
+  SimulatedContent: 'SimulatedContent',
+  Automation: 'Automation',
+  AutomationRevision: 'AutomationRevision',
+  AutomationTarget: 'AutomationTarget',
+  AutomationTrigger: 'AutomationTrigger',
+  AutomationAction: 'AutomationAction',
   Member: 'Member',
   Invitation: 'Invitation'
 } as const
@@ -148,6 +154,82 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const SimulatedContentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  provider: 'provider',
+  mode: 'mode',
+  contentType: 'contentType',
+  title: 'title',
+  externalContentId: 'externalContentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SimulatedContentScalarFieldEnum = (typeof SimulatedContentScalarFieldEnum)[keyof typeof SimulatedContentScalarFieldEnum]
+
+
+export const AutomationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  createdByUserId: 'createdByUserId',
+  status: 'status',
+  currentPublishedRevisionId: 'currentPublishedRevisionId',
+  activeContentId: 'activeContentId',
+  activeKeywordNormalized: 'activeKeywordNormalized',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  publishedAt: 'publishedAt',
+  pausedAt: 'pausedAt'
+} as const
+
+export type AutomationScalarFieldEnum = (typeof AutomationScalarFieldEnum)[keyof typeof AutomationScalarFieldEnum]
+
+
+export const AutomationRevisionScalarFieldEnum = {
+  id: 'id',
+  automationId: 'automationId',
+  version: 'version',
+  status: 'status',
+  name: 'name',
+  createdAt: 'createdAt',
+  publishedAt: 'publishedAt'
+} as const
+
+export type AutomationRevisionScalarFieldEnum = (typeof AutomationRevisionScalarFieldEnum)[keyof typeof AutomationRevisionScalarFieldEnum]
+
+
+export const AutomationTargetScalarFieldEnum = {
+  id: 'id',
+  revisionId: 'revisionId',
+  simulatedContentId: 'simulatedContentId'
+} as const
+
+export type AutomationTargetScalarFieldEnum = (typeof AutomationTargetScalarFieldEnum)[keyof typeof AutomationTargetScalarFieldEnum]
+
+
+export const AutomationTriggerScalarFieldEnum = {
+  id: 'id',
+  revisionId: 'revisionId',
+  type: 'type',
+  keyword: 'keyword',
+  keywordNormalized: 'keywordNormalized'
+} as const
+
+export type AutomationTriggerScalarFieldEnum = (typeof AutomationTriggerScalarFieldEnum)[keyof typeof AutomationTriggerScalarFieldEnum]
+
+
+export const AutomationActionScalarFieldEnum = {
+  id: 'id',
+  revisionId: 'revisionId',
+  position: 'position',
+  type: 'type',
+  config: 'config'
+} as const
+
+export type AutomationActionScalarFieldEnum = (typeof AutomationActionScalarFieldEnum)[keyof typeof AutomationActionScalarFieldEnum]
+
+
 export const MemberScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -181,6 +263,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -195,4 +284,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

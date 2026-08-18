@@ -123,7 +123,15 @@ organization 1:N channel_connection
 organization 1:N external_event
 ```
 
-### 5.2 Automation
+### 5.2 Automação e revisões de configuração
+
+Nesta fase, `Automation` é a identidade e o estado operacional; `AutomationRevision` contém a configuração editável ou publicada. Cada automação possui no máximo uma revisão `DRAFT`, e revisões `PUBLISHED` são imutáveis e servem como fonte do snapshot de execução da Fase 4.
+
+`AutomationTarget` liga a revisão a exatamente um `SimulatedContent` publicável. `AutomationTrigger` e `AutomationAction` pertencem à revisão. A projeção de conteúdo e palavra-chave ativa fica em `Automation` apenas para garantir unicidade entre automações ativas no workspace.
+
+O catálogo `SimulatedContent` é isolado por organization e representa `INSTAGRAM` em modo `SIMULATED`, tipo `POST` neste recorte.
+
+### 5.3 Automation
 
 Configuração reutilizável criada pelo usuário.
 
@@ -157,7 +165,7 @@ Regras:
 (organizationId, updatedAt)
 ```
 
-### 5.3 AutomationTrigger
+### 5.4 AutomationTrigger
 
 Gatilho que inicia a automação. O MVP possui um trigger de comentário por palavra-chave por automação.
 
@@ -185,7 +193,7 @@ Constraint:
 UNIQUE (automationId, type)
 ```
 
-### 5.4 AutomationAction
+### 5.5 AutomationAction
 
 Ações ordenadas executadas quando o trigger corresponde.
 
@@ -243,7 +251,7 @@ Constraint:
 UNIQUE (automationId, position)
 ```
 
-### 5.5 AutomationExecution
+### 5.6 AutomationExecution
 
 Uma tentativa de executar uma automação para um evento recebido.
 

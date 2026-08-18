@@ -10,6 +10,7 @@ type ErrorResponse = {
   requestId: string
   timestamp: string
   path: string
+  issues?: unknown
 }
 
 @Catch()
@@ -26,12 +27,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const statusCode = isHttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
     const body: ErrorResponse = {
       statusCode,
-      code: isHttpException ? `HTTP_${statusCode}` : 'INTERNAL_ERROR',
+      code: isHttpException ? this.publicCode(exception, statusCode) : 'INTERNAL_ERROR',
       message: isHttpException ? this.publicMessage(exception) : 'Internal server error',
       requestId,
       timestamp: new Date().toISOString(),
       path,
     }
+    const payload = isHttpException ? exception.getResponse() : undefined
+    if (payload && typeof payload === 'object' && 'issues' in payload) body.issues = payload.issues
 
     response.setHeader('x-request-id', requestId)
     response.status(statusCode).json(body)
@@ -41,6 +44,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       path,
       errorType: exception instanceof Error ? exception.name : 'UnknownError',
     })
+  }
+
+  private publicCode(exception: HttpException, statusCode: number): string {
+    const payload = exception.getResponse()
+    return payload &&
+      typeof payload === 'object' &&
+      'code' in payload &&
+      typeof payload.code === 'string'
+      ? payload.code
+      : `HTTP_${statusCode}`
   }
 
   private publicMessage(exception: HttpException): string {

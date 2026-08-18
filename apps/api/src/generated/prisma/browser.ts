@@ -43,6 +43,36 @@ export type Verification = Prisma.VerificationModel
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model SimulatedContent
+ * 
+ */
+export type SimulatedContent = Prisma.SimulatedContentModel
+/**
+ * Model Automation
+ * 
+ */
+export type Automation = Prisma.AutomationModel
+/**
+ * Model AutomationRevision
+ * 
+ */
+export type AutomationRevision = Prisma.AutomationRevisionModel
+/**
+ * Model AutomationTarget
+ * 
+ */
+export type AutomationTarget = Prisma.AutomationTargetModel
+/**
+ * Model AutomationTrigger
+ * 
+ */
+export type AutomationTrigger = Prisma.AutomationTriggerModel
+/**
+ * Model AutomationAction
+ * 
+ */
+export type AutomationAction = Prisma.AutomationActionModel
+/**
  * Model Member
  * 
  */

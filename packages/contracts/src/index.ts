@@ -158,3 +158,80 @@ export const workspaceMembersListResponseSchema = z
   .strict()
 
 export type WorkspaceMembersListResponse = z.infer<typeof workspaceMembersListResponseSchema>
+
+export const automationStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'])
+export const automationActionSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('PUBLIC_REPLY'), text: z.string().trim().min(1).max(1000) }).strict(),
+  z.object({ type: z.literal('PRIVATE_REPLY'), text: z.string().trim().min(1).max(1000) }).strict(),
+  z
+    .object({
+      type: z.literal('LINK'),
+      url: z.string().url().max(2048),
+      label: z.string().trim().min(1).max(80).default('Abrir link'),
+    })
+    .strict(),
+  z
+    .object({ type: z.literal('CAPTURE_EMAIL'), prompt: z.string().trim().min(1).max(300) })
+    .strict(),
+])
+export type AutomationAction = z.infer<typeof automationActionSchema>
+
+export function normalizeAutomationKeyword(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[-]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+}
+
+export function validatePublishableAutomation(input: {
+  name?: string | null
+  targetId?: string | null
+  keyword?: string | null
+  actions: unknown[]
+}): string[] {
+  const issues: string[] = []
+  if (!input.name?.trim()) issues.push('name')
+  if (!input.targetId) issues.push('targetId')
+  if (!input.keyword?.trim()) issues.push('keyword')
+  const parsed = z.array(automationActionSchema).safeParse(input.actions)
+  if (!parsed.success) return [...issues, 'actions']
+  const types = parsed.data.map((action) => action.type)
+  if (types.at(-1) !== 'LINK' && types.at(-1) !== 'CAPTURE_EMAIL') issues.push('actions')
+  if (types.slice(0, -1).some((type) => type !== 'PUBLIC_REPLY' && type !== 'PRIVATE_REPLY'))
+    issues.push('actions')
+  if (types.filter((type) => type === 'LINK' || type === 'CAPTURE_EMAIL').length !== 1)
+    issues.push('actions')
+  return [...new Set(issues)]
+}
+
+const automationBaseSchema = z
+  .object({ name: z.string().trim().min(1).max(80).optional() })
+  .strict()
+export const createAutomationRequestSchema = automationBaseSchema
+export type CreateAutomationRequest = z.infer<typeof createAutomationRequestSchema>
+export const patchAutomationRequestSchema = z
+  .object({
+    name: z.string().trim().min(1).max(80).nullable().optional(),
+    targetId: z.string().min(1).nullable().optional(),
+    keyword: z.string().trim().min(1).max(120).nullable().optional(),
+    actions: z.array(automationActionSchema).max(3).nullable().optional(),
+  })
+  .strict()
+export type PatchAutomationRequest = z.infer<typeof patchAutomationRequestSchema>
+export const createSimulatedContentRequestSchema = z
+  .object({
+    title: z.string().trim().min(1).max(160),
+    externalContentId: z.string().trim().min(1).max(255),
+  })
+  .strict()
+export type CreateSimulatedContentRequest = z.infer<typeof createSimulatedContentRequestSchema>
+export const paginationRequestSchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+  })
+  .strict()
+export type PaginationRequest = z.infer<typeof paginationRequestSchema>

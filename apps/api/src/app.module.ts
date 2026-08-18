@@ -12,6 +12,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { VerificationModule } from './verification/verification.module'
 import { WorkspacesModule } from './workspaces/workspaces.module'
 import { DevelopmentEmailOutboxModule } from './development-email-outbox/development-email-outbox.module'
+import { AutomationsModule } from './automations/automations.module'
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { DevelopmentEmailOutboxModule } from './development-email-outbox/develop
     VerificationModule,
     WorkspacesModule,
     DevelopmentEmailOutboxModule,
+    AutomationsModule,
   ],
   controllers: [AppController],
 })

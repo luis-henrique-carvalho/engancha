@@ -9,7 +9,59 @@
 * 🟢 You can import this file directly.
 */
 
+export const AutomationStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type AutomationStatus = (typeof AutomationStatus)[keyof typeof AutomationStatus]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const AutomationRevisionStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type AutomationRevisionStatus = (typeof AutomationRevisionStatus)[keyof typeof AutomationRevisionStatus]
+
+
+export const AutomationTriggerType = {
+  COMMENT_KEYWORD: 'COMMENT_KEYWORD'
+} as const
+
+export type AutomationTriggerType = (typeof AutomationTriggerType)[keyof typeof AutomationTriggerType]
+
+
+export const AutomationActionType = {
+  PUBLIC_REPLY: 'PUBLIC_REPLY',
+  PRIVATE_REPLY: 'PRIVATE_REPLY',
+  LINK: 'LINK',
+  CAPTURE_EMAIL: 'CAPTURE_EMAIL',
+  APPLY_TAG: 'APPLY_TAG'
+} as const
+
+export type AutomationActionType = (typeof AutomationActionType)[keyof typeof AutomationActionType]
+
+
+export const ContentProvider = {
+  INSTAGRAM: 'INSTAGRAM'
+} as const
+
+export type ContentProvider = (typeof ContentProvider)[keyof typeof ContentProvider]
+
+
+export const ContentMode = {
+  SIMULATED: 'SIMULATED',
+  REAL: 'REAL'
+} as const
+
+export type ContentMode = (typeof ContentMode)[keyof typeof ContentMode]
+
+
+export const ContentType = {
+  POST: 'POST'
+} as const
+
+export type ContentType = (typeof ContentType)[keyof typeof ContentType]
