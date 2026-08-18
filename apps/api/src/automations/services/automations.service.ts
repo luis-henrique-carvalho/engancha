@@ -201,36 +201,50 @@ export class AutomationsService {
           data: { automationId: automation.id, version: 1 },
         }),
       )
-    return this.automations.transaction(async (tx) => {
-      const revision = await tx.automationRevision.create({
-        data: { automationId: automation.id, version: published.version + 1, name: published.name },
+    try {
+      return await this.automations.transaction(async (tx) => {
+        const revision = await tx.automationRevision.create({
+          data: {
+            automationId: automation.id,
+            version: published.version + 1,
+            name: published.name,
+          },
+        })
+        if (published.target)
+          await tx.automationTarget.create({
+            data: {
+              revisionId: revision.id,
+              contentId: published.target.contentId,
+            },
+          })
+        if (published.trigger)
+          await tx.automationTrigger.create({
+            data: {
+              revisionId: revision.id,
+              keyword: published.trigger.keyword,
+              keywordNormalized: published.trigger.keywordNormalized,
+            },
+          })
+        if (published.actions.length)
+          await tx.automationAction.createMany({
+            data: published.actions.map((action: any) => ({
+              revisionId: revision.id,
+              position: action.position,
+              type: action.type,
+              config: action.config as never,
+            })),
+          })
+        return revision
       })
-      if (published.target)
-        await tx.automationTarget.create({
-          data: {
-            revisionId: revision.id,
-            contentId: published.target.contentId,
-          },
-        })
-      if (published.trigger)
-        await tx.automationTrigger.create({
-          data: {
-            revisionId: revision.id,
-            keyword: published.trigger.keyword,
-            keywordNormalized: published.trigger.keywordNormalized,
-          },
-        })
-      if (published.actions.length)
-        await tx.automationAction.createMany({
-          data: published.actions.map((action: any) => ({
-            revisionId: revision.id,
-            position: action.position,
-            type: action.type,
-            config: action.config as never,
-          })),
-        })
-      return revision
-    })
+    } catch (error) {
+      if (!this.isUnique(error)) throw error
+      const concurrent = await this.automations.find(automation.id, automation.organizationId)
+      const concurrentDraft = concurrent?.revisions.find(
+        (revision: any) => revision.status === 'DRAFT',
+      )
+      if (concurrentDraft) return concurrentDraft
+      throw error
+    }
   }
   private present(automation: any) {
     const draft = automation.revisions.find((revision: any) => revision.status === 'DRAFT')
