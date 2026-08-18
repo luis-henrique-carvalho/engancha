@@ -70,16 +70,16 @@ model Verification {
 }
 
 model Organization {
-  id                String             @id
-  name              String
-  slug              String             @unique
-  logo              String?
-  metadata          String?
-  createdAt         DateTime           @default(now())
-  members           Member[]
-  invitations       Invitation[]
-  automations       Automation[]
-  simulatedContents SimulatedContent[]
+  id          String       @id
+  name        String
+  slug        String       @unique
+  logo        String?
+  metadata    String?
+  createdAt   DateTime     @default(now())
+  members     Member[]
+  invitations Invitation[]
+  automations Automation[]
+  contents    Content[]
 }
 
 enum AutomationStatus {
@@ -108,6 +108,7 @@ enum AutomationActionType {
 
 enum ContentProvider {
   INSTAGRAM
+  TIKTOK
 }
 
 enum ContentMode {
@@ -117,9 +118,10 @@ enum ContentMode {
 
 enum ContentType {
   POST
+  VIDEO
 }
 
-model SimulatedContent {
+model Content {
   id                String             @id @default(uuid())
   organizationId    String
   provider          ContentProvider    @default(INSTAGRAM)
@@ -174,11 +176,11 @@ model AutomationRevision {
 }
 
 model AutomationTarget {
-  id                 String             @id @default(uuid())
-  revisionId         String             @unique
-  simulatedContentId String
-  revision           AutomationRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
-  simulatedContent   SimulatedContent   @relation(fields: [simulatedContentId], references: [id])
+  id         String             @id @default(uuid())
+  revisionId String             @unique
+  contentId  String
+  revision   AutomationRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  content    Content            @relation(fields: [contentId], references: [id])
 }
 
 model AutomationTrigger {

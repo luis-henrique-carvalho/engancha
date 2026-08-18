@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
-  createSimulatedContentRequestSchema,
+  createContentRequestSchema,
   paginationRequestSchema,
-  type CreateSimulatedContentRequest,
+  type CreateContentRequest,
   type PaginationRequest,
 } from '@engancha/contracts'
 import {
@@ -22,8 +22,7 @@ export class SimulatedContentsController {
     return this.contents.list(request.authorizationContext!, query)
   }
   @Post() create(
-    @Body(new ZodValidationPipe(createSimulatedContentRequestSchema))
-    body: CreateSimulatedContentRequest,
+    @Body(new ZodValidationPipe(createContentRequestSchema)) body: CreateContentRequest,
     @Req() request: RequestWithAuthorization,
   ) {
     return this.contents.create(request.authorizationContext!, body)

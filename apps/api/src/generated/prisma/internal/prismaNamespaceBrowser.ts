@@ -56,7 +56,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Organization: 'Organization',
-  SimulatedContent: 'SimulatedContent',
+  Content: 'Content',
   Automation: 'Automation',
   AutomationRevision: 'AutomationRevision',
   AutomationTarget: 'AutomationTarget',
@@ -154,7 +154,7 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
-export const SimulatedContentScalarFieldEnum = {
+export const ContentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   provider: 'provider',
@@ -166,7 +166,7 @@ export const SimulatedContentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type SimulatedContentScalarFieldEnum = (typeof SimulatedContentScalarFieldEnum)[keyof typeof SimulatedContentScalarFieldEnum]
+export type ContentScalarFieldEnum = (typeof ContentScalarFieldEnum)[keyof typeof ContentScalarFieldEnum]
 
 
 export const AutomationScalarFieldEnum = {
@@ -202,7 +202,7 @@ export type AutomationRevisionScalarFieldEnum = (typeof AutomationRevisionScalar
 export const AutomationTargetScalarFieldEnum = {
   id: 'id',
   revisionId: 'revisionId',
-  simulatedContentId: 'simulatedContentId'
+  contentId: 'contentId'
 } as const
 
 export type AutomationTargetScalarFieldEnum = (typeof AutomationTargetScalarFieldEnum)[keyof typeof AutomationTargetScalarFieldEnum]

@@ -12,41 +12,24 @@ import {
   type PaginationRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
-import { PrismaService } from '../../database/prisma.service'
 import type { AuthorizationContext } from '../../authorization/authorization-context'
+import { ContentProviderRegistry } from '../providers/content-provider.port'
+import { CONTENT_REPOSITORY, type ContentRepository } from '../repositories/content.repository'
+import {
+  AUTOMATION_REPOSITORY,
+  type AutomationRepository,
+} from '../repositories/automation.repository'
+import { Inject } from '@nestjs/common'
 
-const include = {
-  revisions: {
-    include: {
-      target: { include: { simulatedContent: true } },
-      trigger: true,
-      actions: { orderBy: { position: 'asc' } },
-    },
-    orderBy: { version: 'desc' },
-  },
-  currentPublishedRevision: {
-    include: {
-      target: { include: { simulatedContent: true } },
-      trigger: true,
-      actions: { orderBy: { position: 'asc' } },
-    },
-  },
-} as const
 @Injectable()
 export class AutomationsService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(
+    @Inject(AUTOMATION_REPOSITORY) private readonly automations: AutomationRepository,
+    @Inject(CONTENT_REPOSITORY) private readonly contents: ContentRepository,
+    private readonly providers: ContentProviderRegistry,
+  ) {}
   async list(context: AuthorizationContext, input: PaginationRequest) {
-    const where = { organizationId: context.organizationId }
-    const [items, total] = await Promise.all([
-      this.database.client.automation.findMany({
-        where,
-        include,
-        orderBy: { updatedAt: 'desc' },
-        skip: (input.page - 1) * input.limit,
-        take: input.limit,
-      }),
-      this.database.client.automation.count({ where }),
-    ])
+    const { items, total } = await this.automations.list(context.organizationId, input)
     return {
       items: items.map((item) => this.present(item)),
       meta: {
@@ -58,14 +41,7 @@ export class AutomationsService {
     }
   }
   async create(context: AuthorizationContext, input: CreateAutomationRequest) {
-    const automation = await this.database.client.automation.create({
-      data: {
-        organizationId: context.organizationId,
-        createdByUserId: context.userId,
-        revisions: { create: { version: 1, name: input.name } },
-      },
-      include,
-    })
+    const automation = await this.automations.create(context.organizationId, context.userId, input)
     return this.present(automation)
   }
   async get(context: AuthorizationContext, id: string) {
@@ -77,22 +53,23 @@ export class AutomationsService {
     const draft = await this.ensureDraft(automation)
     const data: Record<string, unknown> = {}
     if ('name' in input) data.name = input.name
-    await this.database.client.$transaction(async (tx) => {
+    await this.automations.transaction(async (tx) => {
       if (Object.keys(data).length)
         await tx.automationRevision.update({ where: { id: draft.id }, data })
 
       if ('targetId' in input) {
         if (input.targetId === null)
           await tx.automationTarget.deleteMany({ where: { revisionId: draft.id } })
-        else {
-          const content = await tx.simulatedContent.findFirst({
-            where: { id: input.targetId, organizationId: context.organizationId },
-          })
+        else if (input.targetId !== undefined) {
+          const content = await this.contents.findInOrganization(
+            input.targetId,
+            context.organizationId,
+          )
           if (!content) throw new NotFoundException()
           await tx.automationTarget.upsert({
             where: { revisionId: draft.id },
-            create: { revisionId: draft.id, simulatedContentId: content.id },
-            update: { simulatedContentId: content.id },
+            create: { revisionId: draft.id, contentId: content.id },
+            update: { contentId: content.id },
           })
         }
       }
@@ -132,15 +109,21 @@ export class AutomationsService {
     const automation = await this.find(context, id)
     this.ensureMutable(automation.status)
     const draft = await this.ensureDraft(automation)
-    const complete = await this.database.client.automationRevision.findUniqueOrThrow({
-      where: { id: draft.id },
-      include: { target: true, trigger: true, actions: { orderBy: { position: 'asc' } } },
-    })
+    const complete = await this.automations.transaction((tx) =>
+      tx.automationRevision.findUniqueOrThrow({
+        where: { id: draft.id },
+        include: {
+          target: { include: { content: true } },
+          trigger: true,
+          actions: { orderBy: { position: 'asc' } },
+        },
+      }),
+    )
     const issues = validatePublishableAutomation({
       name: complete.name,
-      targetId: complete.target?.simulatedContentId,
+      targetId: complete.target?.contentId,
       keyword: complete.trigger?.keyword,
-      actions: complete.actions.map((action) => action.config),
+      actions: complete.actions.map((action: any) => action.config),
     })
     if (issues.length)
       throw new UnprocessableEntityException({
@@ -148,8 +131,12 @@ export class AutomationsService {
         message: 'Automation is not publishable',
         issues,
       })
+    this.providers.assertPublishable(
+      complete.target!.content.provider,
+      complete.actions.map((action: any) => action.config as AutomationAction),
+    )
     try {
-      await this.database.client.$transaction(async (tx) => {
+      await this.automations.transaction(async (tx) => {
         await tx.automationRevision.update({
           where: { id: draft.id },
           data: { status: 'PUBLISHED', publishedAt: new Date() },
@@ -159,7 +146,7 @@ export class AutomationsService {
           data: {
             status: 'ACTIVE',
             currentPublishedRevisionId: draft.id,
-            activeContentId: complete.target!.simulatedContentId,
+            activeContentId: complete.target!.contentId,
             activeKeywordNormalized: complete.trigger!.keywordNormalized,
             publishedAt: new Date(),
             pausedAt: null,
@@ -179,22 +166,21 @@ export class AutomationsService {
   async pause(context: AuthorizationContext, id: string) {
     const automation = await this.find(context, id)
     this.ensureMutable(automation.status)
-    await this.database.client.automation.update({
-      where: { id },
-      data: {
-        status: 'PAUSED',
-        activeContentId: null,
-        activeKeywordNormalized: null,
-        pausedAt: new Date(),
-      },
-    })
+    await this.automations.transaction((tx) =>
+      tx.automation.update({
+        where: { id },
+        data: {
+          status: 'PAUSED',
+          activeContentId: null,
+          activeKeywordNormalized: null,
+          pausedAt: new Date(),
+        },
+      }),
+    )
     return this.get(context, id)
   }
   private async find(context: AuthorizationContext, id: string) {
-    const result = await this.database.client.automation.findFirst({
-      where: { id, organizationId: context.organizationId },
-      include,
-    })
+    const result = await this.automations.find(id, context.organizationId)
     if (!result) throw new NotFoundException()
     return result
   }
@@ -206,14 +192,16 @@ export class AutomationsService {
       })
   }
   private async ensureDraft(automation: Awaited<ReturnType<AutomationsService['find']>>) {
-    const draft = automation.revisions.find((revision) => revision.status === 'DRAFT')
+    const draft = automation.revisions.find((revision: any) => revision.status === 'DRAFT')
     if (draft) return draft
     const published = automation.currentPublishedRevision
     if (!published)
-      return this.database.client.automationRevision.create({
-        data: { automationId: automation.id, version: 1 },
-      })
-    return this.database.client.$transaction(async (tx) => {
+      return this.automations.transaction((tx) =>
+        tx.automationRevision.create({
+          data: { automationId: automation.id, version: 1 },
+        }),
+      )
+    return this.automations.transaction(async (tx) => {
       const revision = await tx.automationRevision.create({
         data: { automationId: automation.id, version: published.version + 1, name: published.name },
       })
@@ -221,7 +209,7 @@ export class AutomationsService {
         await tx.automationTarget.create({
           data: {
             revisionId: revision.id,
-            simulatedContentId: published.target.simulatedContentId,
+            contentId: published.target.contentId,
           },
         })
       if (published.trigger)
@@ -234,7 +222,7 @@ export class AutomationsService {
         })
       if (published.actions.length)
         await tx.automationAction.createMany({
-          data: published.actions.map((action) => ({
+          data: published.actions.map((action: any) => ({
             revisionId: revision.id,
             position: action.position,
             type: action.type,
@@ -267,7 +255,7 @@ export class AutomationsService {
       id: revision.id,
       version: revision.version,
       name: revision.name,
-      target: revision.target?.simulatedContent ?? null,
+      target: revision.target?.content ?? null,
       keyword: revision.trigger?.keyword ?? null,
       actions: revision.actions.map((action: any) => action.config as AutomationAction),
     }

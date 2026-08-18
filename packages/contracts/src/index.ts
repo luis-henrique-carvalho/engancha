@@ -221,13 +221,16 @@ export const patchAutomationRequestSchema = z
   })
   .strict()
 export type PatchAutomationRequest = z.infer<typeof patchAutomationRequestSchema>
-export const createSimulatedContentRequestSchema = z
+export const createContentRequestSchema = z
   .object({
     title: z.string().trim().min(1).max(160),
     externalContentId: z.string().trim().min(1).max(255),
+    provider: z.enum(['INSTAGRAM', 'TIKTOK']).default('INSTAGRAM'),
+    mode: z.enum(['SIMULATED', 'REAL']).default('SIMULATED'),
+    contentType: z.enum(['POST', 'VIDEO']).default('POST'),
   })
   .strict()
-export type CreateSimulatedContentRequest = z.infer<typeof createSimulatedContentRequestSchema>
+export type CreateContentRequest = z.infer<typeof createContentRequestSchema>
 export const paginationRequestSchema = z
   .object({
     page: z.coerce.number().int().min(1).default(1),

@@ -27,19 +27,19 @@ export type AggregateAutomationTarget = {
 export type AutomationTargetMinAggregateOutputType = {
   id: string | null
   revisionId: string | null
-  simulatedContentId: string | null
+  contentId: string | null
 }
 
 export type AutomationTargetMaxAggregateOutputType = {
   id: string | null
   revisionId: string | null
-  simulatedContentId: string | null
+  contentId: string | null
 }
 
 export type AutomationTargetCountAggregateOutputType = {
   id: number
   revisionId: number
-  simulatedContentId: number
+  contentId: number
   _all: number
 }
 
@@ -47,19 +47,19 @@ export type AutomationTargetCountAggregateOutputType = {
 export type AutomationTargetMinAggregateInputType = {
   id?: true
   revisionId?: true
-  simulatedContentId?: true
+  contentId?: true
 }
 
 export type AutomationTargetMaxAggregateInputType = {
   id?: true
   revisionId?: true
-  simulatedContentId?: true
+  contentId?: true
 }
 
 export type AutomationTargetCountAggregateInputType = {
   id?: true
   revisionId?: true
-  simulatedContentId?: true
+  contentId?: true
   _all?: true
 }
 
@@ -138,7 +138,7 @@ export type AutomationTargetGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type AutomationTargetGroupByOutputType = {
   id: string
   revisionId: string
-  simulatedContentId: string
+  contentId: string
   _count: AutomationTargetCountAggregateOutputType | null
   _min: AutomationTargetMinAggregateOutputType | null
   _max: AutomationTargetMaxAggregateOutputType | null
@@ -165,17 +165,17 @@ export type AutomationTargetWhereInput = {
   NOT?: Prisma.AutomationTargetWhereInput | Prisma.AutomationTargetWhereInput[]
   id?: Prisma.StringFilter<"AutomationTarget"> | string
   revisionId?: Prisma.StringFilter<"AutomationTarget"> | string
-  simulatedContentId?: Prisma.StringFilter<"AutomationTarget"> | string
+  contentId?: Prisma.StringFilter<"AutomationTarget"> | string
   revision?: Prisma.XOR<Prisma.AutomationRevisionScalarRelationFilter, Prisma.AutomationRevisionWhereInput>
-  simulatedContent?: Prisma.XOR<Prisma.SimulatedContentScalarRelationFilter, Prisma.SimulatedContentWhereInput>
+  content?: Prisma.XOR<Prisma.ContentScalarRelationFilter, Prisma.ContentWhereInput>
 }
 
 export type AutomationTargetOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   revisionId?: Prisma.SortOrder
-  simulatedContentId?: Prisma.SortOrder
+  contentId?: Prisma.SortOrder
   revision?: Prisma.AutomationRevisionOrderByWithRelationInput
-  simulatedContent?: Prisma.SimulatedContentOrderByWithRelationInput
+  content?: Prisma.ContentOrderByWithRelationInput
 }
 
 export type AutomationTargetWhereUniqueInput = Prisma.AtLeast<{
@@ -184,15 +184,15 @@ export type AutomationTargetWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AutomationTargetWhereInput | Prisma.AutomationTargetWhereInput[]
   OR?: Prisma.AutomationTargetWhereInput[]
   NOT?: Prisma.AutomationTargetWhereInput | Prisma.AutomationTargetWhereInput[]
-  simulatedContentId?: Prisma.StringFilter<"AutomationTarget"> | string
+  contentId?: Prisma.StringFilter<"AutomationTarget"> | string
   revision?: Prisma.XOR<Prisma.AutomationRevisionScalarRelationFilter, Prisma.AutomationRevisionWhereInput>
-  simulatedContent?: Prisma.XOR<Prisma.SimulatedContentScalarRelationFilter, Prisma.SimulatedContentWhereInput>
+  content?: Prisma.XOR<Prisma.ContentScalarRelationFilter, Prisma.ContentWhereInput>
 }, "id" | "revisionId">
 
 export type AutomationTargetOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   revisionId?: Prisma.SortOrder
-  simulatedContentId?: Prisma.SortOrder
+  contentId?: Prisma.SortOrder
   _count?: Prisma.AutomationTargetCountOrderByAggregateInput
   _max?: Prisma.AutomationTargetMaxOrderByAggregateInput
   _min?: Prisma.AutomationTargetMinOrderByAggregateInput
@@ -204,37 +204,37 @@ export type AutomationTargetScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AutomationTargetScalarWhereWithAggregatesInput | Prisma.AutomationTargetScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AutomationTarget"> | string
   revisionId?: Prisma.StringWithAggregatesFilter<"AutomationTarget"> | string
-  simulatedContentId?: Prisma.StringWithAggregatesFilter<"AutomationTarget"> | string
+  contentId?: Prisma.StringWithAggregatesFilter<"AutomationTarget"> | string
 }
 
 export type AutomationTargetCreateInput = {
   id?: string
   revision: Prisma.AutomationRevisionCreateNestedOneWithoutTargetInput
-  simulatedContent: Prisma.SimulatedContentCreateNestedOneWithoutTargetsInput
+  content: Prisma.ContentCreateNestedOneWithoutTargetsInput
 }
 
 export type AutomationTargetUncheckedCreateInput = {
   id?: string
   revisionId: string
-  simulatedContentId: string
+  contentId: string
 }
 
 export type AutomationTargetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revision?: Prisma.AutomationRevisionUpdateOneRequiredWithoutTargetNestedInput
-  simulatedContent?: Prisma.SimulatedContentUpdateOneRequiredWithoutTargetsNestedInput
+  content?: Prisma.ContentUpdateOneRequiredWithoutTargetsNestedInput
 }
 
 export type AutomationTargetUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revisionId?: Prisma.StringFieldUpdateOperationsInput | string
-  simulatedContentId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AutomationTargetCreateManyInput = {
   id?: string
   revisionId: string
-  simulatedContentId: string
+  contentId: string
 }
 
 export type AutomationTargetUpdateManyMutationInput = {
@@ -244,7 +244,7 @@ export type AutomationTargetUpdateManyMutationInput = {
 export type AutomationTargetUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revisionId?: Prisma.StringFieldUpdateOperationsInput | string
-  simulatedContentId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type AutomationTargetListRelationFilter = {
@@ -265,60 +265,60 @@ export type AutomationTargetNullableScalarRelationFilter = {
 export type AutomationTargetCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   revisionId?: Prisma.SortOrder
-  simulatedContentId?: Prisma.SortOrder
+  contentId?: Prisma.SortOrder
 }
 
 export type AutomationTargetMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   revisionId?: Prisma.SortOrder
-  simulatedContentId?: Prisma.SortOrder
+  contentId?: Prisma.SortOrder
 }
 
 export type AutomationTargetMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   revisionId?: Prisma.SortOrder
-  simulatedContentId?: Prisma.SortOrder
+  contentId?: Prisma.SortOrder
 }
 
-export type AutomationTargetCreateNestedManyWithoutSimulatedContentInput = {
-  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput> | Prisma.AutomationTargetCreateWithoutSimulatedContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput[]
-  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput | Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput[]
-  createMany?: Prisma.AutomationTargetCreateManySimulatedContentInputEnvelope
+export type AutomationTargetCreateNestedManyWithoutContentInput = {
+  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput> | Prisma.AutomationTargetCreateWithoutContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutContentInput[]
+  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutContentInput | Prisma.AutomationTargetCreateOrConnectWithoutContentInput[]
+  createMany?: Prisma.AutomationTargetCreateManyContentInputEnvelope
   connect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
 }
 
-export type AutomationTargetUncheckedCreateNestedManyWithoutSimulatedContentInput = {
-  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput> | Prisma.AutomationTargetCreateWithoutSimulatedContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput[]
-  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput | Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput[]
-  createMany?: Prisma.AutomationTargetCreateManySimulatedContentInputEnvelope
+export type AutomationTargetUncheckedCreateNestedManyWithoutContentInput = {
+  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput> | Prisma.AutomationTargetCreateWithoutContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutContentInput[]
+  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutContentInput | Prisma.AutomationTargetCreateOrConnectWithoutContentInput[]
+  createMany?: Prisma.AutomationTargetCreateManyContentInputEnvelope
   connect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
 }
 
-export type AutomationTargetUpdateManyWithoutSimulatedContentNestedInput = {
-  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput> | Prisma.AutomationTargetCreateWithoutSimulatedContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput[]
-  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput | Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput[]
-  upsert?: Prisma.AutomationTargetUpsertWithWhereUniqueWithoutSimulatedContentInput | Prisma.AutomationTargetUpsertWithWhereUniqueWithoutSimulatedContentInput[]
-  createMany?: Prisma.AutomationTargetCreateManySimulatedContentInputEnvelope
+export type AutomationTargetUpdateManyWithoutContentNestedInput = {
+  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput> | Prisma.AutomationTargetCreateWithoutContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutContentInput[]
+  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutContentInput | Prisma.AutomationTargetCreateOrConnectWithoutContentInput[]
+  upsert?: Prisma.AutomationTargetUpsertWithWhereUniqueWithoutContentInput | Prisma.AutomationTargetUpsertWithWhereUniqueWithoutContentInput[]
+  createMany?: Prisma.AutomationTargetCreateManyContentInputEnvelope
   set?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   disconnect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   delete?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   connect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
-  update?: Prisma.AutomationTargetUpdateWithWhereUniqueWithoutSimulatedContentInput | Prisma.AutomationTargetUpdateWithWhereUniqueWithoutSimulatedContentInput[]
-  updateMany?: Prisma.AutomationTargetUpdateManyWithWhereWithoutSimulatedContentInput | Prisma.AutomationTargetUpdateManyWithWhereWithoutSimulatedContentInput[]
+  update?: Prisma.AutomationTargetUpdateWithWhereUniqueWithoutContentInput | Prisma.AutomationTargetUpdateWithWhereUniqueWithoutContentInput[]
+  updateMany?: Prisma.AutomationTargetUpdateManyWithWhereWithoutContentInput | Prisma.AutomationTargetUpdateManyWithWhereWithoutContentInput[]
   deleteMany?: Prisma.AutomationTargetScalarWhereInput | Prisma.AutomationTargetScalarWhereInput[]
 }
 
-export type AutomationTargetUncheckedUpdateManyWithoutSimulatedContentNestedInput = {
-  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput> | Prisma.AutomationTargetCreateWithoutSimulatedContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput[]
-  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput | Prisma.AutomationTargetCreateOrConnectWithoutSimulatedContentInput[]
-  upsert?: Prisma.AutomationTargetUpsertWithWhereUniqueWithoutSimulatedContentInput | Prisma.AutomationTargetUpsertWithWhereUniqueWithoutSimulatedContentInput[]
-  createMany?: Prisma.AutomationTargetCreateManySimulatedContentInputEnvelope
+export type AutomationTargetUncheckedUpdateManyWithoutContentNestedInput = {
+  create?: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput> | Prisma.AutomationTargetCreateWithoutContentInput[] | Prisma.AutomationTargetUncheckedCreateWithoutContentInput[]
+  connectOrCreate?: Prisma.AutomationTargetCreateOrConnectWithoutContentInput | Prisma.AutomationTargetCreateOrConnectWithoutContentInput[]
+  upsert?: Prisma.AutomationTargetUpsertWithWhereUniqueWithoutContentInput | Prisma.AutomationTargetUpsertWithWhereUniqueWithoutContentInput[]
+  createMany?: Prisma.AutomationTargetCreateManyContentInputEnvelope
   set?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   disconnect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   delete?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
   connect?: Prisma.AutomationTargetWhereUniqueInput | Prisma.AutomationTargetWhereUniqueInput[]
-  update?: Prisma.AutomationTargetUpdateWithWhereUniqueWithoutSimulatedContentInput | Prisma.AutomationTargetUpdateWithWhereUniqueWithoutSimulatedContentInput[]
-  updateMany?: Prisma.AutomationTargetUpdateManyWithWhereWithoutSimulatedContentInput | Prisma.AutomationTargetUpdateManyWithWhereWithoutSimulatedContentInput[]
+  update?: Prisma.AutomationTargetUpdateWithWhereUniqueWithoutContentInput | Prisma.AutomationTargetUpdateWithWhereUniqueWithoutContentInput[]
+  updateMany?: Prisma.AutomationTargetUpdateManyWithWhereWithoutContentInput | Prisma.AutomationTargetUpdateManyWithWhereWithoutContentInput[]
   deleteMany?: Prisma.AutomationTargetScalarWhereInput | Prisma.AutomationTargetScalarWhereInput[]
 }
 
@@ -354,40 +354,40 @@ export type AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AutomationTargetUpdateToOneWithWhereWithoutRevisionInput, Prisma.AutomationTargetUpdateWithoutRevisionInput>, Prisma.AutomationTargetUncheckedUpdateWithoutRevisionInput>
 }
 
-export type AutomationTargetCreateWithoutSimulatedContentInput = {
+export type AutomationTargetCreateWithoutContentInput = {
   id?: string
   revision: Prisma.AutomationRevisionCreateNestedOneWithoutTargetInput
 }
 
-export type AutomationTargetUncheckedCreateWithoutSimulatedContentInput = {
+export type AutomationTargetUncheckedCreateWithoutContentInput = {
   id?: string
   revisionId: string
 }
 
-export type AutomationTargetCreateOrConnectWithoutSimulatedContentInput = {
+export type AutomationTargetCreateOrConnectWithoutContentInput = {
   where: Prisma.AutomationTargetWhereUniqueInput
-  create: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput>
+  create: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput>
 }
 
-export type AutomationTargetCreateManySimulatedContentInputEnvelope = {
-  data: Prisma.AutomationTargetCreateManySimulatedContentInput | Prisma.AutomationTargetCreateManySimulatedContentInput[]
+export type AutomationTargetCreateManyContentInputEnvelope = {
+  data: Prisma.AutomationTargetCreateManyContentInput | Prisma.AutomationTargetCreateManyContentInput[]
   skipDuplicates?: boolean
 }
 
-export type AutomationTargetUpsertWithWhereUniqueWithoutSimulatedContentInput = {
+export type AutomationTargetUpsertWithWhereUniqueWithoutContentInput = {
   where: Prisma.AutomationTargetWhereUniqueInput
-  update: Prisma.XOR<Prisma.AutomationTargetUpdateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedUpdateWithoutSimulatedContentInput>
-  create: Prisma.XOR<Prisma.AutomationTargetCreateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedCreateWithoutSimulatedContentInput>
+  update: Prisma.XOR<Prisma.AutomationTargetUpdateWithoutContentInput, Prisma.AutomationTargetUncheckedUpdateWithoutContentInput>
+  create: Prisma.XOR<Prisma.AutomationTargetCreateWithoutContentInput, Prisma.AutomationTargetUncheckedCreateWithoutContentInput>
 }
 
-export type AutomationTargetUpdateWithWhereUniqueWithoutSimulatedContentInput = {
+export type AutomationTargetUpdateWithWhereUniqueWithoutContentInput = {
   where: Prisma.AutomationTargetWhereUniqueInput
-  data: Prisma.XOR<Prisma.AutomationTargetUpdateWithoutSimulatedContentInput, Prisma.AutomationTargetUncheckedUpdateWithoutSimulatedContentInput>
+  data: Prisma.XOR<Prisma.AutomationTargetUpdateWithoutContentInput, Prisma.AutomationTargetUncheckedUpdateWithoutContentInput>
 }
 
-export type AutomationTargetUpdateManyWithWhereWithoutSimulatedContentInput = {
+export type AutomationTargetUpdateManyWithWhereWithoutContentInput = {
   where: Prisma.AutomationTargetScalarWhereInput
-  data: Prisma.XOR<Prisma.AutomationTargetUpdateManyMutationInput, Prisma.AutomationTargetUncheckedUpdateManyWithoutSimulatedContentInput>
+  data: Prisma.XOR<Prisma.AutomationTargetUpdateManyMutationInput, Prisma.AutomationTargetUncheckedUpdateManyWithoutContentInput>
 }
 
 export type AutomationTargetScalarWhereInput = {
@@ -396,17 +396,17 @@ export type AutomationTargetScalarWhereInput = {
   NOT?: Prisma.AutomationTargetScalarWhereInput | Prisma.AutomationTargetScalarWhereInput[]
   id?: Prisma.StringFilter<"AutomationTarget"> | string
   revisionId?: Prisma.StringFilter<"AutomationTarget"> | string
-  simulatedContentId?: Prisma.StringFilter<"AutomationTarget"> | string
+  contentId?: Prisma.StringFilter<"AutomationTarget"> | string
 }
 
 export type AutomationTargetCreateWithoutRevisionInput = {
   id?: string
-  simulatedContent: Prisma.SimulatedContentCreateNestedOneWithoutTargetsInput
+  content: Prisma.ContentCreateNestedOneWithoutTargetsInput
 }
 
 export type AutomationTargetUncheckedCreateWithoutRevisionInput = {
   id?: string
-  simulatedContentId: string
+  contentId: string
 }
 
 export type AutomationTargetCreateOrConnectWithoutRevisionInput = {
@@ -427,30 +427,30 @@ export type AutomationTargetUpdateToOneWithWhereWithoutRevisionInput = {
 
 export type AutomationTargetUpdateWithoutRevisionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  simulatedContent?: Prisma.SimulatedContentUpdateOneRequiredWithoutTargetsNestedInput
+  content?: Prisma.ContentUpdateOneRequiredWithoutTargetsNestedInput
 }
 
 export type AutomationTargetUncheckedUpdateWithoutRevisionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  simulatedContentId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type AutomationTargetCreateManySimulatedContentInput = {
+export type AutomationTargetCreateManyContentInput = {
   id?: string
   revisionId: string
 }
 
-export type AutomationTargetUpdateWithoutSimulatedContentInput = {
+export type AutomationTargetUpdateWithoutContentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revision?: Prisma.AutomationRevisionUpdateOneRequiredWithoutTargetNestedInput
 }
 
-export type AutomationTargetUncheckedUpdateWithoutSimulatedContentInput = {
+export type AutomationTargetUncheckedUpdateWithoutContentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revisionId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type AutomationTargetUncheckedUpdateManyWithoutSimulatedContentInput = {
+export type AutomationTargetUncheckedUpdateManyWithoutContentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   revisionId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -460,57 +460,57 @@ export type AutomationTargetUncheckedUpdateManyWithoutSimulatedContentInput = {
 export type AutomationTargetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   revisionId?: boolean
-  simulatedContentId?: boolean
+  contentId?: boolean
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationTarget"]>
 
 export type AutomationTargetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   revisionId?: boolean
-  simulatedContentId?: boolean
+  contentId?: boolean
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationTarget"]>
 
 export type AutomationTargetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   revisionId?: boolean
-  simulatedContentId?: boolean
+  contentId?: boolean
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["automationTarget"]>
 
 export type AutomationTargetSelectScalar = {
   id?: boolean
   revisionId?: boolean
-  simulatedContentId?: boolean
+  contentId?: boolean
 }
 
-export type AutomationTargetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "revisionId" | "simulatedContentId", ExtArgs["result"]["automationTarget"]>
+export type AutomationTargetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "revisionId" | "contentId", ExtArgs["result"]["automationTarget"]>
 export type AutomationTargetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }
 export type AutomationTargetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }
 export type AutomationTargetIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   revision?: boolean | Prisma.AutomationRevisionDefaultArgs<ExtArgs>
-  simulatedContent?: boolean | Prisma.SimulatedContentDefaultArgs<ExtArgs>
+  content?: boolean | Prisma.ContentDefaultArgs<ExtArgs>
 }
 
 export type $AutomationTargetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AutomationTarget"
   objects: {
     revision: Prisma.$AutomationRevisionPayload<ExtArgs>
-    simulatedContent: Prisma.$SimulatedContentPayload<ExtArgs>
+    content: Prisma.$ContentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     revisionId: string
-    simulatedContentId: string
+    contentId: string
   }, ExtArgs["result"]["automationTarget"]>
   composites: {}
 }
@@ -906,7 +906,7 @@ readonly fields: AutomationTargetFieldRefs;
 export interface Prisma__AutomationTargetClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   revision<T extends Prisma.AutomationRevisionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AutomationRevisionDefaultArgs<ExtArgs>>): Prisma.Prisma__AutomationRevisionClient<runtime.Types.Result.GetResult<Prisma.$AutomationRevisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  simulatedContent<T extends Prisma.SimulatedContentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SimulatedContentDefaultArgs<ExtArgs>>): Prisma.Prisma__SimulatedContentClient<runtime.Types.Result.GetResult<Prisma.$SimulatedContentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  content<T extends Prisma.ContentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContentDefaultArgs<ExtArgs>>): Prisma.Prisma__ContentClient<runtime.Types.Result.GetResult<Prisma.$ContentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -938,7 +938,7 @@ export interface Prisma__AutomationTargetClient<T, Null = never, ExtArgs extends
 export interface AutomationTargetFieldRefs {
   readonly id: Prisma.FieldRef<"AutomationTarget", 'String'>
   readonly revisionId: Prisma.FieldRef<"AutomationTarget", 'String'>
-  readonly simulatedContentId: Prisma.FieldRef<"AutomationTarget", 'String'>
+  readonly contentId: Prisma.FieldRef<"AutomationTarget", 'String'>
 }
     
 

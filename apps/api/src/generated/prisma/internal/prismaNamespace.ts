@@ -402,7 +402,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Organization: 'Organization',
-  SimulatedContent: 'SimulatedContent',
+  Content: 'Content',
   Automation: 'Automation',
   AutomationRevision: 'AutomationRevision',
   AutomationTarget: 'AutomationTarget',
@@ -425,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "organization" | "simulatedContent" | "automation" | "automationRevision" | "automationTarget" | "automationTrigger" | "automationAction" | "member" | "invitation"
+    modelProps: "user" | "session" | "account" | "verification" | "organization" | "content" | "automation" | "automationRevision" | "automationTarget" | "automationTrigger" | "automationAction" | "member" | "invitation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -799,77 +799,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    SimulatedContent: {
-      payload: Prisma.$SimulatedContentPayload<ExtArgs>
-      fields: Prisma.SimulatedContentFieldRefs
+    Content: {
+      payload: Prisma.$ContentPayload<ExtArgs>
+      fields: Prisma.ContentFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.SimulatedContentFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload> | null
+          args: Prisma.ContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.SimulatedContentFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         findFirst: {
-          args: Prisma.SimulatedContentFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload> | null
+          args: Prisma.ContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.SimulatedContentFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         findMany: {
-          args: Prisma.SimulatedContentFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>[]
+          args: Prisma.ContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>[]
         }
         create: {
-          args: Prisma.SimulatedContentCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         createMany: {
-          args: Prisma.SimulatedContentCreateManyArgs<ExtArgs>
+          args: Prisma.ContentCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.SimulatedContentCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>[]
+          args: Prisma.ContentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>[]
         }
         delete: {
-          args: Prisma.SimulatedContentDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         update: {
-          args: Prisma.SimulatedContentUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         deleteMany: {
-          args: Prisma.SimulatedContentDeleteManyArgs<ExtArgs>
+          args: Prisma.ContentDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.SimulatedContentUpdateManyArgs<ExtArgs>
+          args: Prisma.ContentUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.SimulatedContentUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>[]
+          args: Prisma.ContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>[]
         }
         upsert: {
-          args: Prisma.SimulatedContentUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SimulatedContentPayload>
+          args: Prisma.ContentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContentPayload>
         }
         aggregate: {
-          args: Prisma.SimulatedContentAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSimulatedContent>
+          args: Prisma.ContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContent>
         }
         groupBy: {
-          args: Prisma.SimulatedContentGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SimulatedContentGroupByOutputType>[]
+          args: Prisma.ContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContentGroupByOutputType>[]
         }
         count: {
-          args: Prisma.SimulatedContentCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SimulatedContentCountAggregateOutputType> | number
+          args: Prisma.ContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContentCountAggregateOutputType> | number
         }
       }
     }
@@ -1502,7 +1502,7 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
-export const SimulatedContentScalarFieldEnum = {
+export const ContentScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   provider: 'provider',
@@ -1514,7 +1514,7 @@ export const SimulatedContentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 } as const
 
-export type SimulatedContentScalarFieldEnum = (typeof SimulatedContentScalarFieldEnum)[keyof typeof SimulatedContentScalarFieldEnum]
+export type ContentScalarFieldEnum = (typeof ContentScalarFieldEnum)[keyof typeof ContentScalarFieldEnum]
 
 
 export const AutomationScalarFieldEnum = {
@@ -1550,7 +1550,7 @@ export type AutomationRevisionScalarFieldEnum = (typeof AutomationRevisionScalar
 export const AutomationTargetScalarFieldEnum = {
   id: 'id',
   revisionId: 'revisionId',
-  simulatedContentId: 'simulatedContentId'
+  contentId: 'contentId'
 } as const
 
 export type AutomationTargetScalarFieldEnum = (typeof AutomationTargetScalarFieldEnum)[keyof typeof AutomationTargetScalarFieldEnum]
@@ -1979,7 +1979,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   organization?: Prisma.OrganizationOmit
-  simulatedContent?: Prisma.SimulatedContentOmit
+  content?: Prisma.ContentOmit
   automation?: Prisma.AutomationOmit
   automationRevision?: Prisma.AutomationRevisionOmit
   automationTarget?: Prisma.AutomationTargetOmit

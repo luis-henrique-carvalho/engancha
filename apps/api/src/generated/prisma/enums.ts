@@ -46,7 +46,8 @@ export type AutomationActionType = (typeof AutomationActionType)[keyof typeof Au
 
 
 export const ContentProvider = {
-  INSTAGRAM: 'INSTAGRAM'
+  INSTAGRAM: 'INSTAGRAM',
+  TIKTOK: 'TIKTOK'
 } as const
 
 export type ContentProvider = (typeof ContentProvider)[keyof typeof ContentProvider]
@@ -61,7 +62,8 @@ export type ContentMode = (typeof ContentMode)[keyof typeof ContentMode]
 
 
 export const ContentType = {
-  POST: 'POST'
+  POST: 'POST',
+  VIDEO: 'VIDEO'
 } as const
 
 export type ContentType = (typeof ContentType)[keyof typeof ContentType]

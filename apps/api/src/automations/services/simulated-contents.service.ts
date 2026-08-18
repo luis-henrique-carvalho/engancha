@@ -1,22 +1,13 @@
-import { ConflictException, Injectable } from '@nestjs/common'
-import type { CreateSimulatedContentRequest, PaginationRequest } from '@engancha/contracts'
-import { PrismaService } from '../../database/prisma.service'
+import { ConflictException, Inject, Injectable } from '@nestjs/common'
+import type { CreateContentRequest, PaginationRequest } from '@engancha/contracts'
 import type { AuthorizationContext } from '../../authorization/authorization-context'
+import { CONTENT_REPOSITORY, type ContentRepository } from '../repositories/content.repository'
 
 @Injectable()
 export class SimulatedContentsService {
-  constructor(private readonly database: PrismaService) {}
+  constructor(@Inject(CONTENT_REPOSITORY) private readonly contents: ContentRepository) {}
   async list(context: AuthorizationContext, input: PaginationRequest) {
-    const where = { organizationId: context.organizationId }
-    const [items, total] = await Promise.all([
-      this.database.client.simulatedContent.findMany({
-        where,
-        orderBy: { updatedAt: 'desc' },
-        skip: (input.page - 1) * input.limit,
-        take: input.limit,
-      }),
-      this.database.client.simulatedContent.count({ where }),
-    ])
+    const { items, total } = await this.contents.list(context.organizationId, input)
     return {
       items,
       meta: {
@@ -27,15 +18,9 @@ export class SimulatedContentsService {
       },
     }
   }
-  async create(context: AuthorizationContext, input: CreateSimulatedContentRequest) {
+  async create(context: AuthorizationContext, input: CreateContentRequest) {
     try {
-      return await this.database.client.simulatedContent.create({
-        data: {
-          organizationId: context.organizationId,
-          title: input.title,
-          externalContentId: input.externalContentId,
-        },
-      })
+      return await this.contents.create(context.organizationId, input)
     } catch (error) {
       if (this.isUnique(error))
         throw new ConflictException({

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   automationActionSchema,
+  createContentRequestSchema,
   normalizeAutomationKeyword,
   validatePublishableAutomation,
 } from '@engancha/contracts'
@@ -27,4 +28,8 @@ test('aceita somente resposta pública, DM e uma ação final publicável', () =
     [],
   )
   assert.throws(() => automationActionSchema.parse({ type: 'APPLY_TAG', tagName: 'x' }))
+})
+
+test('conteúdo permanece neutro de provider para suportar novos canais', () => {
+  assert.equal(createContentRequestSchema.parse({ title: 'Vídeo', externalContentId: 't-1', provider: 'TIKTOK', contentType: 'VIDEO' }).provider, 'TIKTOK')
 })

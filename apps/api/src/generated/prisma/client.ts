@@ -65,10 +65,10 @@ export type Verification = Prisma.VerificationModel
  */
 export type Organization = Prisma.OrganizationModel
 /**
- * Model SimulatedContent
+ * Model Content
  * 
  */
-export type SimulatedContent = Prisma.SimulatedContentModel
+export type Content = Prisma.ContentModel
 /**
  * Model Automation
  * 
