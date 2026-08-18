@@ -176,6 +176,40 @@ export const automationActionSchema = z.discriminatedUnion('type', [
 ])
 export type AutomationAction = z.infer<typeof automationActionSchema>
 
+export const publishableAutomationSchema = z
+  .object({
+    name: z.string().trim().min(1).max(80),
+    targetId: z.string().min(1),
+    keyword: z.string().trim().min(1).max(120),
+    actions: z.array(automationActionSchema).min(1).max(3),
+  })
+  .strict()
+  .superRefine((automation, context) => {
+    const types = automation.actions.map((action) => action.type)
+    const terminalActions = types.filter((type) => type === 'LINK' || type === 'CAPTURE_EMAIL')
+
+    if (types.at(-1) !== 'LINK' && types.at(-1) !== 'CAPTURE_EMAIL')
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['actions'],
+        message: 'The final action must be LINK or CAPTURE_EMAIL',
+      })
+    if (types.slice(0, -1).some((type) => type !== 'PUBLIC_REPLY' && type !== 'PRIVATE_REPLY'))
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['actions'],
+        message: 'Only reply actions may precede the final action',
+      })
+    if (terminalActions.length !== 1)
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['actions'],
+        message: 'Exactly one final action is required',
+      })
+  })
+
+export type PublishableAutomation = z.infer<typeof publishableAutomationSchema>
+
 export function normalizeAutomationKeyword(value: string): string {
   return value
     .normalize('NFKD')
@@ -192,19 +226,9 @@ export function validatePublishableAutomation(input: {
   keyword?: string | null
   actions: unknown[]
 }): string[] {
-  const issues: string[] = []
-  if (!input.name?.trim()) issues.push('name')
-  if (!input.targetId) issues.push('targetId')
-  if (!input.keyword?.trim()) issues.push('keyword')
-  const parsed = z.array(automationActionSchema).safeParse(input.actions)
-  if (!parsed.success) return [...issues, 'actions']
-  const types = parsed.data.map((action) => action.type)
-  if (types.at(-1) !== 'LINK' && types.at(-1) !== 'CAPTURE_EMAIL') issues.push('actions')
-  if (types.slice(0, -1).some((type) => type !== 'PUBLIC_REPLY' && type !== 'PRIVATE_REPLY'))
-    issues.push('actions')
-  if (types.filter((type) => type === 'LINK' || type === 'CAPTURE_EMAIL').length !== 1)
-    issues.push('actions')
-  return [...new Set(issues)]
+  const parsed = publishableAutomationSchema.safeParse(input)
+  if (parsed.success) return []
+  return [...new Set(parsed.error.issues.map((issue) => String(issue.path[0] ?? 'actions')))]
 }
 
 const automationBaseSchema = z
@@ -231,6 +255,65 @@ export const createContentRequestSchema = z
   })
   .strict()
 export type CreateContentRequest = z.infer<typeof createContentRequestSchema>
+
+const responseDateTimeSchema = z.string().datetime({ offset: true })
+export const contentResponseSchema = z
+  .object({
+    id: z.string().min(1),
+    organizationId: z.string().min(1),
+    title: z.string().min(1).max(160),
+    externalContentId: z.string().min(1).max(255),
+    provider: z.enum(['INSTAGRAM', 'TIKTOK']),
+    mode: z.enum(['SIMULATED', 'REAL']),
+    contentType: z.enum(['POST', 'VIDEO']),
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type ContentResponse = z.infer<typeof contentResponseSchema>
+
+export const automationRevisionResponseSchema = z
+  .object({
+    id: z.string().min(1),
+    version: z.number().int().min(1),
+    name: z.string().nullable(),
+    target: contentResponseSchema.nullable(),
+    keyword: z.string().nullable(),
+    actions: z.array(automationActionSchema),
+  })
+  .strict()
+export type AutomationRevisionResponse = z.infer<typeof automationRevisionResponseSchema>
+
+export const automationResponseSchema = z
+  .object({
+    id: z.string().min(1),
+    status: automationStatusSchema,
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+    hasUnpublishedChanges: z.boolean(),
+    executionCount: z.number().int().min(0),
+    leadCount: z.number().int().min(0),
+    draft: automationRevisionResponseSchema.nullable(),
+    published: automationRevisionResponseSchema.nullable(),
+    current: automationRevisionResponseSchema.nullable(),
+  })
+  .strict()
+export type AutomationResponse = z.infer<typeof automationResponseSchema>
+
+export const automationListResponseSchema = z
+  .object({
+    items: z.array(automationResponseSchema),
+    meta: z
+      .object({
+        page: z.number().int().min(1),
+        limit: z.number().int().min(1),
+        total: z.number().int().min(0),
+        totalPages: z.number().int().min(0),
+      })
+      .strict(),
+  })
+  .strict()
+export type AutomationListResponse = z.infer<typeof automationListResponseSchema>
 export const paginationRequestSchema = z
   .object({
     page: z.coerce.number().int().min(1).default(1),

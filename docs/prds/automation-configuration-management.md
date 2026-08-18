@@ -84,11 +84,11 @@ AutomationRevision
 ├── AutomationTrigger (exactly one)
 └── AutomationAction[] (ordered)
 
-SimulatedContent
+Content
 └── organizationId, provider, mode, contentType, stable content identifier, title
 ```
 
-- Uma `Automation` e um `SimulatedContent` nunca existem sem `organizationId`.
+- Uma `Automation` e um `Content` nunca existem sem `organizationId`.
 - Toda revisão publicada é imutável. Há no máximo uma revisão em rascunho editável por automação.
 - Uma revisão em rascunho pode ser incompleta; uma publicada não.
 - O conteúdo-alvo é um conceito normalizado, não um campo `instagramPostId`. No modo real, ele poderá referenciar uma `ChannelConnection` e um identificador externo fornecido pelo adapter.

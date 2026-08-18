@@ -106,7 +106,7 @@ before(async () => {
 
   const [{ AppModule }, { prisma: prismaClient }] = await Promise.all([
     import('../apps/api/src/app.module.ts'),
-    import('../apps/api/src/database/client.ts'),
+    import('../apps/api/src/platform/database/client.ts'),
   ])
   prisma = prismaClient
   queue = new Queue(QUEUE_NAMES.emailDelivery, { connection: { url: process.env.REDIS_URL } })

@@ -3,7 +3,7 @@ import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
-import { StructuredLogger } from './common/structured-logger'
+import { StructuredLogger } from './platform/runtime/structured-logger'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { logger: false, bodyParser: false })

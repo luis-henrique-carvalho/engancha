@@ -11,9 +11,9 @@ import {
   workspaceListResponseSchema,
 } from '@engancha/contracts'
 import { processEmailDeliveryJob } from '../apps/worker/src/email/email.job.ts'
-import { AuthorizationContextGuard } from '../apps/api/src/authorization/authorization-context.ts'
-import { DevelopmentEmailOutboxController } from '../apps/api/src/development-email-outbox/development-email-outbox.controller.ts'
-import { WorkspacesService } from '../apps/api/src/workspaces/workspaces.service.ts'
+import { AuthorizationContextGuard } from '../apps/api/src/platform/security/authorization-context.ts'
+import { DevelopmentEmailOutboxController } from '../apps/api/src/modules/development-email-outbox/api/http/development-email-outbox.controller.ts'
+import { WorkspacesService } from '../apps/api/src/modules/workspaces/application/workspaces.service.ts'
 
 const validJob = {
   version: 'v1',

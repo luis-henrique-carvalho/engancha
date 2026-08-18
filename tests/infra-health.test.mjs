@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { InfrastructureHealthService } from '../apps/api/src/infrastructure/infrastructure-health.service.ts'
+import { InfrastructureHealthService } from '../apps/api/src/platform/health/infrastructure-health.service.ts'
 import { RedisReadinessService } from '../apps/worker/src/infrastructure/redis-readiness.service.ts'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -44,7 +44,7 @@ test('API readiness returns 503 and safe dependency states when a dependency is 
   assert.doesNotMatch(JSON.stringify(report), /super-secret|redis\.internal/)
 
   const healthController = await readFile(
-    path.join(root, 'apps/api/src/health/health.controller.ts'),
+    path.join(root, 'apps/api/src/modules/health/api/http/health.controller.ts'),
     'utf8',
   )
   assert.match(healthController, /: 503/)

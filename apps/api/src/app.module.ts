@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common'
 import { BullModule } from '@nestjs/bullmq'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AppController } from './app.controller'
-import { apiEnvSchema, validateApiEnvironment } from './config/runtime-env'
-import { CoreModule } from './common/core.module'
+import { apiEnvSchema, validateApiEnvironment } from './platform/config/runtime-env'
+import { PlatformModule } from './platform/platform.module'
 import { AuthModule } from '@thallesp/nestjs-better-auth'
-import { auth } from './auth/auth'
-import { DatabaseModule } from './database/database.module'
-import { HealthModule } from './health/health.module'
-import { InfrastructureModule } from './infrastructure/infrastructure.module'
-import { VerificationModule } from './verification/verification.module'
-import { WorkspacesModule } from './workspaces/workspaces.module'
-import { DevelopmentEmailOutboxModule } from './development-email-outbox/development-email-outbox.module'
-import { AutomationsModule } from './automations/automations.module'
+import { auth } from './integrations/auth/auth'
+import { DatabaseModule } from './platform/database/database.module'
+import { HealthModule } from './modules/health/health.module'
+import { InfrastructureModule } from './platform/health/infrastructure.module'
+import { VerificationModule } from './modules/verification/verification.module'
+import { WorkspacesModule } from './modules/workspaces/workspaces.module'
+import { DevelopmentEmailOutboxModule } from './modules/development-email-outbox/development-email-outbox.module'
+import { AutomationsModule } from './modules/automations/automations.module'
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { AutomationsModule } from './automations/automations.module'
         connection: { url: config.getOrThrow<string>('redisUrl') },
       }),
     }),
-    CoreModule,
+    PlatformModule,
     InfrastructureModule,
     HealthModule,
     VerificationModule,

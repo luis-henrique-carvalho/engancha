@@ -1,9 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { isVerificationEndpointEnabled } from '../apps/api/src/verification/verification.environment.ts'
-import { enqueueVerificationJob } from '../apps/api/src/verification/verification.enqueuer.ts'
-import { VerificationJobPipe } from '../apps/api/src/verification/verification-job.pipe.ts'
+import { isVerificationEndpointEnabled } from '../apps/api/src/modules/verification/application/verification.environment.ts'
+import { enqueueVerificationJob } from '../apps/api/src/modules/verification/application/verification.enqueuer.ts'
+import { VerificationJobPipe } from '../apps/api/src/modules/verification/api/http/verification-job.pipe.ts'
 
 const validJob = { version: 'v1', correlationId: 'request-123', payload: {} }
 

@@ -1,17 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { validateApiEnvironment } from '../apps/api/src/config/runtime-env.ts'
+import { validateApiEnvironment } from '../apps/api/src/platform/config/runtime-env.ts'
 import { validateWorkerEnvironment } from '../apps/worker/src/config/runtime-env.ts'
-import { RuntimeLifecycleService as ApiLifecycle } from '../apps/api/src/common/runtime-lifecycle.service.ts'
+import { RuntimeLifecycleService as ApiLifecycle } from '../apps/api/src/platform/runtime/runtime-lifecycle.service.ts'
 import { RuntimeLifecycleService as WorkerLifecycle } from '../apps/worker/src/common/runtime-lifecycle.service.ts'
-import { GlobalExceptionFilter } from '../apps/api/src/common/global-exception.filter.ts'
-import { resolveRequestId } from '../apps/api/src/common/request-context.middleware.ts'
-import { ShutdownGuard } from '../apps/api/src/common/shutdown.guard.ts'
-import { SkipShutdownGuard } from '../apps/api/src/common/skip-shutdown-guard.decorator.ts'
+import { GlobalExceptionFilter } from '../apps/api/src/platform/http/global-exception.filter.ts'
+import { resolveRequestId } from '../apps/api/src/platform/http/request-context.middleware.ts'
+import { ShutdownGuard } from '../apps/api/src/platform/runtime/shutdown.guard.ts'
+import { SkipShutdownGuard } from '../apps/api/src/platform/runtime/skip-shutdown-guard.decorator.ts'
 import {
   formatLogEvent,
   shouldSuppressNestStartupLog,
-} from '../apps/api/src/common/structured-logger.ts'
+} from '../apps/api/src/platform/runtime/structured-logger.ts'
 import { Reflector } from '@nestjs/core'
 
 test('API configuration rejects missing and invalid values without echoing secrets', () => {
