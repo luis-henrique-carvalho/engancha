@@ -1,5 +1,6 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common'
 import {
+  contentListResponseSchema,
   contentResponseSchema,
   type CreateContentRequest,
   type PaginationRequest,
@@ -12,7 +13,7 @@ export class SimulatedContentsService {
   constructor(@Inject(CONTENT_REPOSITORY) private readonly contents: ContentRepository) {}
   async list(context: AuthorizationContext, input: PaginationRequest) {
     const { items, total } = await this.contents.list(context.organizationId, input)
-    return {
+    return contentListResponseSchema.parse({
       items: items.map((content) => this.present(content)),
       meta: {
         page: input.page,
@@ -20,7 +21,7 @@ export class SimulatedContentsService {
         total,
         totalPages: total ? Math.ceil(total / input.limit) : 0,
       },
-    }
+    })
   }
 
   async create(context: AuthorizationContext, input: CreateContentRequest) {

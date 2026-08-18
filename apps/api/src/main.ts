@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
 import { StructuredLogger } from './platform/runtime/structured-logger'
+import { configureOpenApi } from './platform/http/openapi'
+import { apiOpenApiRegistrars } from './openapi'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, { logger: false, bodyParser: false })
@@ -17,6 +19,11 @@ async function bootstrap(): Promise<void> {
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   )
   const config = app.get(ConfigService)
+  configureOpenApi(
+    app,
+    config.getOrThrow<'development' | 'test' | 'production'>('nodeEnv'),
+    apiOpenApiRegistrars,
+  )
   app.enableCors({ origin: config.getOrThrow<string>('webOrigin'), credentials: true })
   const port = config.getOrThrow<number>('port')
   await app.listen(port)

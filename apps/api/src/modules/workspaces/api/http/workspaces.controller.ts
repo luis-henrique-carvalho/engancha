@@ -4,10 +4,17 @@ import {
   type RequestWithAuthorization,
 } from '../../../../platform/security/authorization-context'
 import { WorkspacesService } from '../../application/workspaces.service'
-import { SwitchActiveWorkspaceDto } from './dto/switch-active-workspace.dto'
-import { CreateWorkspaceDto } from './dto/create-workspace.dto'
-import { CreateInvitationDto } from './dto/create-invitation.dto'
-import { ListWorkspaceMembersDto } from './dto/list-workspace-members.dto'
+import {
+  createWorkspaceRequestSchema,
+  invitationRequestSchema,
+  switchActiveWorkspaceRequestSchema,
+  workspaceMembersListRequestSchema,
+  type CreateWorkspaceRequest,
+  type InvitationRequest,
+  type SwitchActiveWorkspaceRequest,
+  type WorkspaceMembersListRequest,
+} from '@engancha/contracts'
+import { ZodValidationPipe } from '../../../../platform/http/zod-validation.pipe'
 
 @Controller('workspaces')
 export class WorkspacesController {
@@ -24,12 +31,19 @@ export class WorkspacesController {
   }
 
   @Post()
-  create(@Body() body: CreateWorkspaceDto, @Req() request: RequestWithAuthorization) {
+  create(
+    @Body(new ZodValidationPipe(createWorkspaceRequestSchema)) body: CreateWorkspaceRequest,
+    @Req() request: RequestWithAuthorization,
+  ) {
     return this.workspaces.create(body.name, request)
   }
 
   @Post('active')
-  setActive(@Body() body: SwitchActiveWorkspaceDto, @Req() request: RequestWithAuthorization) {
+  setActive(
+    @Body(new ZodValidationPipe(switchActiveWorkspaceRequestSchema))
+    body: SwitchActiveWorkspaceRequest,
+    @Req() request: RequestWithAuthorization,
+  ) {
     return this.workspaces.setActive(body.organizationId, request)
   }
 
@@ -41,13 +55,20 @@ export class WorkspacesController {
 
   @Get('active/members')
   @UseGuards(AuthorizationContextGuard)
-  members(@Query() query: ListWorkspaceMembersDto, @Req() request: RequestWithAuthorization) {
+  members(
+    @Query(new ZodValidationPipe(workspaceMembersListRequestSchema))
+    query: WorkspaceMembersListRequest,
+    @Req() request: RequestWithAuthorization,
+  ) {
     return this.workspaces.members(query, request)
   }
 
   @Post('active/invitations')
   @UseGuards(AuthorizationContextGuard)
-  invite(@Body() body: CreateInvitationDto, @Req() request: RequestWithAuthorization) {
+  invite(
+    @Body(new ZodValidationPipe(invitationRequestSchema)) body: InvitationRequest,
+    @Req() request: RequestWithAuthorization,
+  ) {
     return this.workspaces.invite(body.email, request)
   }
 

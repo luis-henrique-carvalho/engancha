@@ -71,6 +71,50 @@ export const developmentEmailOutboxEntrySchema = z
 
 export type DevelopmentEmailOutboxEntry = z.infer<typeof developmentEmailOutboxEntrySchema>
 
+export const statusResponseSchema = z
+  .object({
+    status: z.literal('ok'),
+    service: z.literal('api'),
+  })
+  .strict()
+
+export type StatusResponse = z.infer<typeof statusResponseSchema>
+
+const healthDependencyStateSchema = z.object({ status: z.enum(['up', 'down']) }).strict()
+
+export const healthReportSchema = z
+  .object({
+    status: z.enum(['ok', 'error']),
+    service: z.literal('api'),
+    checks: z
+      .object({
+        application: healthDependencyStateSchema,
+        postgres: healthDependencyStateSchema,
+        redis: healthDependencyStateSchema,
+      })
+      .strict(),
+    timestamp: z.string().datetime({ offset: true }),
+  })
+  .strict()
+
+export type HealthReportResponse = z.infer<typeof healthReportSchema>
+
+export const livenessResponseSchema = healthReportSchema.pick({
+  status: true,
+  service: true,
+  timestamp: true,
+})
+export type LivenessResponse = z.infer<typeof livenessResponseSchema>
+
+export const verificationEnqueueResponseSchema = z
+  .object({
+    jobId: z.string().min(1),
+    correlationId: correlationIdSchema,
+  })
+  .strict()
+
+export type VerificationEnqueueResponse = z.infer<typeof verificationEnqueueResponseSchema>
+
 export const DEVELOPMENT_EMAIL_OUTBOX_TTL_SECONDS = 3_600
 
 export function developmentEmailOutboxKey(correlationId: string): string {
@@ -271,6 +315,22 @@ export const contentResponseSchema = z
   })
   .strict()
 export type ContentResponse = z.infer<typeof contentResponseSchema>
+
+export const contentListResponseSchema = z
+  .object({
+    items: z.array(contentResponseSchema),
+    meta: z
+      .object({
+        page: z.number().int().min(1),
+        limit: z.number().int().min(1),
+        total: z.number().int().min(0),
+        totalPages: z.number().int().min(0),
+      })
+      .strict(),
+  })
+  .strict()
+
+export type ContentListResponse = z.infer<typeof contentListResponseSchema>
 
 export const automationRevisionResponseSchema = z
   .object({

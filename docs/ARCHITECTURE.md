@@ -239,29 +239,34 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 │   │   └── package.json
 │   │
 │   ├── api/
+│   │   ├── generated/
+│   │   │   └── prisma/
 │   │   ├── src/
 │   │   │   ├── main.ts
 │   │   │   ├── app.module.ts
-│   │   │   ├── config/
-│   │   │   ├── common/
-│   │   │   │   ├── guards/
-│   │   │   │   ├── filters/
-│   │   │   │   ├── pipes/
-│   │   │   │   └── interceptors/
-│   │   │   ├── infrastructure/
+│   │   │   ├── platform/             # recursos transversais da API
+│   │   │   │   ├── config/
 │   │   │   │   ├── database/
-│   │   │   │   ├── redis/
-│   │   │   │   ├── bullmq/
-│   │   │   │   ├── email/
-│   │   │   │   └── bull-board/
+│   │   │   │   ├── health/
+│   │   │   │   ├── http/
+│   │   │   │   ├── runtime/
+│   │   │   │   ├── security/
+│   │   │   │   └── platform.module.ts
+│   │   │   ├── integrations/         # adaptadores de sistemas externos
+│   │   │   │   ├── auth/
+│   │   │   │   └── email/
 │   │   │   └── modules/
-│   │   │       ├── auth/
 │   │   │       ├── workspaces/
 │   │   │       ├── automations/
-│   │   │       ├── conversations/
-│   │   │       ├── contacts/
-│   │   │       ├── analytics/
-│   │   │       └── simulation/
+│   │   │       │   ├── api/http/
+│   │   │       │   ├── application/
+│   │   │       │   ├── domain/ports/
+│   │   │       │   └── infrastructure/
+│   │   │       │       ├── persistence/
+│   │   │       │       └── providers/
+│   │   │       ├── development-email-outbox/
+│   │   │       ├── health/
+│   │   │       └── verification/
 │   │   └── package.json
 │   │
 │   └── worker/
@@ -297,6 +302,15 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 ```
 
 O template Satnaing será usado como referência e fonte de componentes visuais shadcn. A aplicação web será criada com TanStack Start; não será acoplada ao runtime Vite original do template.
+
+Na API, `platform` contém preocupações transversais — configuração, banco,
+segurança, HTTP, lifecycle e health de infraestrutura — e não contém regras de
+negócio. `integrations` concentra adaptadores para serviços externos, como
+Better Auth e e-mail. Cada diretório em `modules` é um contexto de negócio:
+`api/http` recebe a requisição, `application` orquestra casos de uso, `domain`
+declara regras e portas, e `infrastructure` implementa adaptadores específicos
+do contexto, como repositórios Prisma e providers de conteúdo. Módulos menores
+podem omitir camadas que não tenham responsabilidade concreta.
 
 ## 8. Domínios e módulos
 

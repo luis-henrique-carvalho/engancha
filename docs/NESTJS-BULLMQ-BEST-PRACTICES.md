@@ -51,11 +51,15 @@ Referências oficiais:
 
 ## Aplicação neste monorepo
 
-- `apps/api/src/app.module.ts` compõe `CoreModule`, `InfrastructureModule`, `HealthModule` e `VerificationModule`.
-- `apps/api/src/common/core.module.ts` disponibiliza logging, lifecycle e guard de shutdown como componentes transversais.
-- `apps/api/src/infrastructure/infrastructure.module.ts` encapsula os providers PostgreSQL/Redis e exporta `InfrastructureHealthService`.
-- `apps/api/src/health/health.module.ts` reúne o health controller e suas dependências de infraestrutura/lifecycle.
-- `apps/api/src/verification/verification.module.ts` registra a fila técnica, o controller, o pipe Zod e `VerificationService`; o service injeta a fila com `@InjectQueue`.
+- `apps/api/src/app.module.ts` é a composição da API: configura recursos globais e importa `PlatformModule`, os módulos de infraestrutura/health e os módulos de negócio.
+- `apps/api/src/platform/platform.module.ts` disponibiliza logging, lifecycle, middleware de contexto HTTP, filtro global de exceções e guard de shutdown.
+- `apps/api/src/platform/database/` encapsula Prisma; `apps/api/src/platform/health/` reúne os probes de PostgreSQL/Redis e exporta `InfrastructureHealthService`.
+- Adaptadores de serviços externos ficam em `apps/api/src/integrations/`, por exemplo Better Auth em `integrations/auth/` e despacho de e-mail em `integrations/email/`.
+- A documentação OpenAPI usa schemas Zod como fonte dos corpos, parâmetros e respostas. `apps/api/src/platform/http/openapi.ts` aplica somente as políticas globais e serve Swagger em desenvolvimento/teste; cada contexto registra suas operações ao lado dos controllers, em `modules/<contexto>/api/http/openapi.ts`.
+- Cada contexto de negócio fica em `apps/api/src/modules/<contexto>/`. Controllers HTTP pertencem a `api/http/`, casos de uso a `application/`, contratos e portas a `domain/`, e adaptadores próprios a `infrastructure/`.
+- `apps/api/src/modules/health/health.module.ts` reúne o health controller e suas dependências de infraestrutura/lifecycle.
+- `apps/api/src/modules/verification/verification.module.ts` registra a fila técnica, o controller, o pipe Zod e `VerificationService`; o service injeta a fila com `@InjectQueue`.
+- `apps/api/src/modules/automations/` aplica a mesma divisão: portas de repositório/provider em `domain/ports`, implementações Prisma e Instagram em `infrastructure/`, e casos de uso em `application/`.
 - O worker configura a mesma fila em `apps/worker/src/app.module.ts`.
 - O consumidor está em `apps/worker/src/verification/verification.worker.ts`.
 - A lógica validável sem boot do NestJS está em `apps/worker/src/verification/verification.job.ts`.

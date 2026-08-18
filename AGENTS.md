@@ -24,6 +24,19 @@ Rules:
 
 ## Workflow de desenvolvimento
 
+## Legibilidade do código
+
+Ao criar ou refatorar código, use uma linha em branco para separar blocos lógicos
+e facilitar a leitura visual. Em especial:
+
+- Separe construtor, métodos públicos e métodos privados de uma classe.
+- Dentro de métodos não triviais, separe etapas distintas, como carregar dados,
+  validar regras, persistir mudanças e montar a resposta.
+- Não separe decorators da declaração que decoram, imports que pertencem ao mesmo
+  grupo, nem expressões curtas e coesas. A quebra de linha deve comunicar uma
+  mudança de intenção, não criar espaçamento arbitrário.
+- Preserve o formato final aplicado pelo Prettier.
+
 ## Convenção obrigatória de features web
 
 `apps/web/src/features/users` é a referência canônica para features do
