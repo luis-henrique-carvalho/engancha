@@ -122,31 +122,49 @@ O shell web é independente da API e do worker nesta fatia; os processos backend
 
 O [satnaing/shadcn-admin](https://github.com/satnaing/shadcn-admin) é somente uma referência de padrões visuais. Ele não é dependência, submódulo ou arquivo do Engancha: a ausência dele não altera os comandos de instalação, web, API, worker ou infraestrutura acima.
 
-Para mantê-lo isolado de qualquer clone ou worktree do Engancha, mantenha-o em um local estável de dados do usuário, com histórico superficial. Por padrão, use `$XDG_DATA_HOME/engancha/shadcn-admin-reference` (ou `~/.local/share/engancha/shadcn-admin-reference` quando `XDG_DATA_HOME` não estiver definido). Defina `ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR` se preferir outro diretório externo:
+Para mantê-lo isolado de qualquer clone ou worktree do Engancha, mantenha **um único clone compartilhado** em um local estável de dados do usuário, com histórico superficial. Por padrão, use `$XDG_DATA_HOME/engancha/shadcn-admin-reference` (ou `~/.local/share/engancha/shadcn-admin-reference` quando `XDG_DATA_HOME` não estiver definido).
+
+> Não coloque a referência em `docs/`, não a adicione como submódulo e não a ignore via `.gitignore`: cada worktree possui seu próprio diretório de trabalho, enquanto um submódulo exige `.gitmodules` e um gitlink versionados. O diretório externo abaixo é compartilhado por todas as worktrees e não participa dos commits do Engancha.
+
+Defina `ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR` somente se precisar substituir esse diretório comum. Execute este bootstrap de qualquer worktree; ele cria o clone na primeira vez e o atualiza nas execuções seguintes:
 
 ```bash
 reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
 mkdir -p "$(dirname "$reference_dir")"
-git clone --depth 1 https://github.com/satnaing/shadcn-admin.git "$reference_dir"
-cd "$reference_dir"
+if [ -d "$reference_dir/.git" ]; then
+  git -C "$reference_dir" fetch --depth 1 origin
+  git -C "$reference_dir" switch --detach origin/HEAD
+else
+  git clone --depth 1 https://github.com/satnaing/shadcn-admin.git "$reference_dir"
+fi
 ```
 
-Não execute `npm install` nem copie arquivos desse clone para o monorepo apenas para consulta. Quando um ticket de frontend precisar de um padrão, porte ou adapte explicitamente os arquivos necessários para `apps/web`, respeitando as convenções e o runtime do Engancha.
+Após o bootstrap, use `cd "$reference_dir"` apenas dentro de um subshell ou terminal dedicado. Assim, a worktree do Engancha continua sendo o diretório de trabalho do terminal. Não execute `npm install` nem copie arquivos desse clone para o monorepo apenas para consulta. Quando um ticket de frontend precisar de um padrão, porte ou adapte explicitamente os arquivos necessários para `apps/web`, respeitando as convenções e o runtime do Engancha.
 
 ### Grafo separado da referência
 
-Gere e atualize o grafo sempre dentro do clone. Isso cria `shadcn-admin-reference/graphify-out/`, sem alterar o `graphify-out/` do Engancha nem depender da localização da worktree:
+Gere e atualize o grafo sempre dentro do clone. Isso cria `shadcn-admin-reference/graphify-out/`, sem alterar o `graphify-out/` do Engancha nem depender da localização da worktree. Na primeira consulta, gere o grafo; nas seguintes, faça a atualização incremental:
 
 ```bash
 reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
-cd "$reference_dir"
-graphify .
-graphify update .
+if [ -f "$reference_dir/graphify-out/graph.json" ]; then
+  (
+    cd "$reference_dir"
+    graphify update .
+  )
+else
+  (
+    cd "$reference_dir"
+    graphify .
+  )
+fi
 ```
 
 Consulte o grafo da referência no mesmo diretório. Exemplos úteis:
 
 ```bash
+reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"
+cd "$reference_dir"
 graphify query "Where are the sidebar layout and menu groups defined?"
 graphify query "How are light, dark, and system themes selected and persisted?"
 graphify query "How is navigation structured across dashboard routes?"

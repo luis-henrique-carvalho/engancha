@@ -27,4 +27,11 @@ if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
 else
   echo "Docker is unavailable; skipping PostgreSQL/Redis startup."
 fi
+
+if ! command -v graphify >/dev/null 2>&1; then
+  echo "graphify is required to build the worktree knowledge graph." >&2
+  exit 1
+fi
+
+graphify . --no-viz
 """
