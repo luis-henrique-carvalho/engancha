@@ -31,5 +31,13 @@ test('aceita somente resposta pública, DM e uma ação final publicável', () =
 })
 
 test('conteúdo permanece neutro de provider para suportar novos canais', () => {
-  assert.equal(createContentRequestSchema.parse({ title: 'Vídeo', externalContentId: 't-1', provider: 'TIKTOK', contentType: 'VIDEO' }).provider, 'TIKTOK')
+  assert.equal(
+    createContentRequestSchema.parse({
+      title: 'Vídeo',
+      externalContentId: 't-1',
+      provider: 'TIKTOK',
+      contentType: 'VIDEO',
+    }).provider,
+    'TIKTOK',
+  )
 })

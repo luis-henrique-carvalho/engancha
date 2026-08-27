@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import type { ActiveWorkspaceResponse } from '@engancha/contracts'
 import { authClient } from '@/lib/auth-client'

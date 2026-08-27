@@ -1,80 +1,81 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, type RenderResult } from 'vitest-browser-react'
 import { type Locator, userEvent } from 'vitest/browser'
 import { SignUpForm } from './sign-up-form'
 
-const FORM_MESSAGES = {
-  emailEmpty: 'Please enter your email.',
-  passwordEmpty: 'Please enter your password.',
-  confirmPasswordEmpty: 'Please confirm your password.',
-  passwordMismatch: "Passwords don't match.",
-} as const
+const navigateMock = vi.fn()
+const signUpEmailMock = vi.fn().mockResolvedValue({ data: {} })
 
-const toastPromise = vi.hoisted(() =>
-  vi.fn((p: Promise<unknown>, opts: { success?: () => unknown }) => {
-    p.then(() => opts.success?.())
-  }),
-)
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    signUp: {
+      email: (...args: unknown[]) => signUpEmailMock(...args),
+    },
+  },
+  webCallbackUrl: (path: string) => `http://localhost:3000${path}`,
+}))
 
-vi.mock('sonner', () => ({ toast: { promise: toastPromise } }))
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@tanstack/react-router')>()
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+  }
+})
 
 describe('SignUpForm', () => {
   let screen: RenderResult
+  let nameInput: Locator
   let emailInput: Locator
   let passwordInput: Locator
-  let confirmPasswordInput: Locator
   let submitButton: Locator
 
   beforeEach(async () => {
     vi.clearAllMocks()
 
     screen = await render(<SignUpForm />)
-    emailInput = screen.getByRole('textbox', { name: /^Email$/i })
-    passwordInput = screen.getByLabelText(/^Password$/i)
-    confirmPasswordInput = screen.getByLabelText(/^Confirm Password$/i)
-    submitButton = screen.getByRole('button', { name: /^Create Account$/i })
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
+    nameInput = screen.getByRole('textbox', { name: /^Nome$/i })
+    emailInput = screen.getByRole('textbox', { name: /^E-mail$/i })
+    passwordInput = screen.getByLabelText(/^Senha$/i)
+    submitButton = screen.getByRole('button', { name: /^Criar conta$/i })
   })
 
   it('renders fields and submit button', async () => {
+    await expect.element(nameInput).toBeInTheDocument()
     await expect.element(emailInput).toBeInTheDocument()
     await expect.element(passwordInput).toBeInTheDocument()
-    await expect.element(confirmPasswordInput).toBeInTheDocument()
     await expect.element(submitButton).toBeInTheDocument()
   })
 
   it('shows validation messages when submitting empty form', async () => {
     await userEvent.click(submitButton)
 
-    await expect.element(screen.getByText(FORM_MESSAGES.emailEmpty)).toBeInTheDocument()
-    await expect.element(screen.getByText(FORM_MESSAGES.passwordEmpty)).toBeInTheDocument()
-    await expect.element(screen.getByText(FORM_MESSAGES.confirmPasswordEmpty)).toBeInTheDocument()
+    await expect.element(screen.getByText('Informe seu nome.')).toBeInTheDocument()
+    await expect.element(screen.getByText('Informe seu e-mail.')).toBeInTheDocument()
+    await expect
+      .element(screen.getByText('A senha deve ter ao menos 8 caracteres.'))
+      .toBeInTheDocument()
   })
 
-  it('shows a mismatch error when passwords do not match', async () => {
-    await userEvent.fill(emailInput, 'a@b.com')
-    await userEvent.fill(passwordInput, '1234567')
-    await userEvent.fill(confirmPasswordInput, '7654321')
+  it('submits registration and navigates to verify email', async () => {
+    await userEvent.fill(nameInput, 'Luis Silva')
+    await userEvent.fill(emailInput, 'luis@example.com')
+    await userEvent.fill(passwordInput, 'senha-forte-123')
 
     await userEvent.click(submitButton)
-    await expect.element(screen.getByText(FORM_MESSAGES.passwordMismatch)).toBeInTheDocument()
-  })
 
-  it('disables submit while submitting and re-enables after timeout', async () => {
-    vi.useFakeTimers()
+    expect(signUpEmailMock).toHaveBeenCalledWith({
+      name: 'Luis Silva',
+      email: 'luis@example.com',
+      password: 'senha-forte-123',
+      callbackURL: 'http://localhost:3000/workspace',
+    })
 
-    await userEvent.fill(emailInput, 'a@b.com')
-    await userEvent.fill(passwordInput, '1234567')
-    await userEvent.fill(confirmPasswordInput, '1234567')
-
-    await userEvent.click(submitButton)
-    await expect.element(submitButton).toBeDisabled()
-
-    await vi.advanceTimersByTimeAsync(2000)
-    await expect.element(submitButton).toBeEnabled()
-    expect(toastPromise).toHaveBeenCalledOnce()
+    await vi.waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith({
+        to: '/auth/verify-email',
+        search: { email: 'luis@example.com' },
+      })
+    })
   })
 })
