@@ -112,6 +112,8 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 **Decisão:** modelo aprovado pelo usuário em 13/08/2026. As decisões adiadas no documento foram aceitas como decisões de MVP e podem ser refinadas posteriormente sem bloquear a fundação.
 
+**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
+
 ---
 
 ## Fase 1 — Fundação do monorepo e infraestrutura
@@ -239,6 +241,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Criar repositories por domínio.
 - [ ] Criar migrations Prisma.
 - [ ] Implementar isolamento por Organization.
+- [ ] Manter `AutomationTarget.channelConnectionId=null` para conteúdo simulado e preparar o contrato para conexão real.
 
 ### API
 
@@ -254,6 +257,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 ### Formulário web
 
 - [ ] Etapa de identificação.
+- [ ] Etapa de canal e conteúdo-alvo, exibindo `Instagram — Simulador` como opção virtual no MVP.
 - [ ] Etapa de palavra-chave.
 - [ ] Etapa de resposta pública.
 - [ ] Etapa de DM.
@@ -449,6 +453,23 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 **Épico:** EPIC-09  
 **Objetivo:** substituir o adapter simulado do Instagram por integração real sem duplicar o motor de automações.
 
+**PRD:** [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md)
+
+### Fundação de canais e conexões
+
+- [ ] Criar o módulo `Channels` e suas portas de consulta.
+- [ ] Mover registry/capabilities de provider para a fronteira `Channels`.
+- [ ] Criar `ChannelConnection` com isolamento por Organization e respostas sanitizadas.
+- [ ] Adicionar `channelConnectionId` opcional a `Content` e `AutomationTarget`.
+- [ ] Manter dados simulados existentes com conexão nula na migration.
+- [ ] Implementar endpoints de listagem, detalhe, revalidação, desconexão e conteúdos da conexão.
+- [ ] Adicionar tela de integrações e estados vazio, ativo, expirado, erro e desconectado.
+- [ ] Adicionar seleção conexão → conteúdo ao editor de automações reais.
+- [ ] Validar conexão ativa, provider, workspace, conteúdo e capabilities na publicação.
+- [ ] Preservar `channelConnectionId` no snapshot de execuções reais sem copiar credenciais.
+
+### Adapter Meta e entrega real
+
 - [ ] Criar app na Meta for Developers.
 - [ ] Definir callback OAuth.
 - [ ] Implementar conexão de conta profissional.
@@ -546,3 +567,4 @@ Uma funcionalidade só deve ser marcada como concluída quando:
 | 2026-08-13 | Better Auth Organization Plugin representará workspaces                            | Prepara membros e roles futuros                             |
 | 2026-08-13 | PostgreSQL será a fonte de verdade                                                 | Redis fica restrito a cache e filas                         |
 | 2026-08-13 | Instagram será o primeiro provider, com `provider`, `mode` e capacidades separados | Permite adicionar Facebook e Twitter/X sem duplicar o motor |
+| 2026-08-27 | Cada revisão real aponta para uma `ChannelConnection` e conteúdo da mesma conta; simulação usa conexão nula | Torna o roteamento multi-conta inequívoco sem criar conexões fictícias |

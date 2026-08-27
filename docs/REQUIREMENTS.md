@@ -267,11 +267,14 @@ O sistema MUST permitir iniciar uma automação por formulário passo a passo.
 Etapas mínimas:
 
 1. identificação da automação;
-2. configuração do gatilho;
-3. resposta pública;
-4. DM;
-5. ação final;
-6. revisão e publicação.
+2. canal/conexão e conteúdo-alvo;
+3. configuração do gatilho;
+4. resposta pública;
+5. DM;
+6. ação final;
+7. revisão e publicação.
+
+No MVP simulado, a etapa de canal apresenta `Instagram — Simulador` como opção virtual e não exige uma conta externa. No modo real, a conexão deve ser escolhida antes de listar seus conteúdos.
 
 ### FR-AUTO-003 — Definir identificação da automação
 
@@ -396,6 +399,8 @@ Critérios de aceitação:
 
 Antes de publicar, o sistema MUST mostrar resumo do gatilho e das ações configuradas.
 
+O resumo também deve identificar provider, modo, conteúdo-alvo e, quando real, a conexão selecionada sem exibir credenciais.
+
 ### FR-AUTO-012 — Publicar automação
 
 **Prioridade:** P0  
@@ -408,7 +413,9 @@ Critérios de aceitação:
 - todos os campos obrigatórios devem estar válidos;
 - automação publicada deve possuir status `ACTIVE`;
 - apenas automações ativas podem ser disparadas;
-- publicação deve registrar data e versão configurada.
+- publicação deve registrar data e versão configurada;
+- publicação em modo real deve exigir uma conexão ativa do workspace e conteúdo pertencente a essa conexão;
+- publicação em modo simulado deve exigir conexão nula e conteúdo explicitamente simulado.
 
 ### FR-AUTO-013 — Pausar automação
 
@@ -786,6 +793,26 @@ OAuth, webhooks, tokens, IDs externos, limites e formatos de payload devem ficar
 
 Conversas, mensagens, contatos, leads, eventos externos e execuções devem preservar `provider`, `mode` e, quando aplicável, `channelConnectionId`.
 
+### FR-CHANNEL-006 — Separar provider de conexão
+
+`Provider` MUST ser um catálogo técnico controlado pelo sistema. Uma conta externa cadastrada pelo usuário MUST ser representada por uma `ChannelConnection`, sem reutilizar a entidade `Account` do Better Auth.
+
+### FR-CHANNEL-007 — Administrar conexões por workspace
+
+O sistema MUST listar e administrar somente as conexões do workspace ativo. Cada conexão deve informar provider, nome de exibição e estado sanitizado, sem retornar tokens ou credenciais ao frontend.
+
+Uma conta externa não pode ficar ativa em dois workspaces sem um fluxo explícito de transferência.
+
+### FR-CHANNEL-008 — Direcionar revisão para uma conexão
+
+Cada revisão de automação MUST possuir no máximo um alvo. No modo real, o alvo publicado deve referenciar exatamente uma `ChannelConnection` ativa e exatamente um conteúdo pertencente a ela.
+
+Trocar a conexão deve remover uma seleção de conteúdo incompatível. Para usar a mesma configuração em mais de uma conta, o usuário deve criar ou duplicar outra automação.
+
+### FR-CHANNEL-009 — Preservar simulação sem conexão fictícia
+
+O modo simulado MUST funcionar com `channelConnectionId=null`. A opção `Instagram — Simulador` pode ser apresentada pela interface, mas não deve criar uma linha fictícia de conexão nem armazenar credenciais.
+
 ## 6. Regras de negócio transversais
 
 ### RN-001 — Isolamento por Organization
@@ -819,6 +846,14 @@ Dados simulados devem ser identificáveis como simulação e não podem ser apre
 ### RN-008 — Contexto ativo obrigatório
 
 Operações de produto exigem usuário autenticado e Organization ativa, exceto endpoints públicos de autenticação e health check.
+
+### RN-009 — Coerência do alvo da automação
+
+Provider, modo, conexão e conteúdo de um alvo devem pertencer ao mesmo workspace e formar uma combinação coerente. No modo real, `AutomationTarget.channelConnectionId` deve corresponder a `Content.channelConnectionId`; no modo simulado, ambos devem ser nulos.
+
+### RN-010 — Conexão utilizável
+
+Uma automação real somente pode ser publicada ou iniciar nova execução quando sua conexão está `ACTIVE` e possui as capacidades exigidas pelas ações da revisão. Expiração, revogação ou desconexão não apaga revisões nem execuções históricas.
 
 ## 7. Estados funcionais
 
@@ -864,6 +899,19 @@ GET  /api/v1/workspaces
 GET  /api/v1/workspaces/active
 POST /api/v1/workspaces/active
 ```
+
+### Conexões de canais — integração real
+
+```text
+GET    /api/v1/channel-connections
+GET    /api/v1/channel-connections/:id
+POST   /api/v1/channel-connections/:provider/connect
+POST   /api/v1/channel-connections/:id/revalidate
+POST   /api/v1/channel-connections/:id/disconnect
+GET    /api/v1/channel-connections/:id/contents
+```
+
+Callbacks OAuth podem usar rotas específicas do provider, mas devem delegar ao módulo `Channels` e nunca expor tokens ao browser.
 
 ### Automações
 
@@ -954,9 +1002,9 @@ Requisitos: `FR-OPS-001` a `FR-OPS-004`.
 
 ### EPIC-09 — Integração real com Instagram/Meta (primeiro provider real)
 
-Requisitos: `FR-META-001` a `FR-META-010`.
+Requisitos: `FR-META-001` a `FR-META-010` e `FR-CHANNEL-006` a `FR-CHANNEL-009`.
 
-Este épico reutiliza o motor de automações, os contratos normalizados, as capacidades e as filas do MVP. Sua implementação adiciona OAuth, webhooks e um adapter real do Instagram/Meta, sem criar um segundo fluxo de automação. Facebook e Twitter/X poderão ser adicionados posteriormente seguindo o mesmo contrato.
+Este épico reutiliza o motor de automações, os contratos normalizados, as capacidades e as filas do MVP. Sua implementação adiciona o módulo `Channels`, lifecycle de `ChannelConnection`, seleção de conta/conteúdo, OAuth, webhooks e um adapter real do Instagram/Meta, sem criar um segundo fluxo de automação. Facebook e Twitter/X poderão ser adicionados posteriormente seguindo o mesmo contrato.
 
 ## 11. Dependências entre épicos
 

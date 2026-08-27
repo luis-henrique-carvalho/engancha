@@ -3,6 +3,7 @@ import { ArrowLeft, Bot } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AutomationEditorProvider } from '../components/automation-editor-provider'
 import { AutomationStatusBadge } from '../components/automation-status-badge'
 import { AutomationStepNav } from '../components/automation-step-nav'
 import { useAutomation } from '../hooks/use-automation'
@@ -66,42 +67,48 @@ export function AutomationEditorLayoutView({
   const name = automation.current?.name?.trim() || 'Rascunho de automação'
 
   return (
-    <div className="space-y-6" data-testid="automation-editor-layout">
-      {/* Editor Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" asChild aria-label="Voltar para a listagem">
-            <Link to="/automations" search={{ page: 1, limit: 20 }}>
-              <ArrowLeft className="size-4" />
-            </Link>
-          </Button>
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h2
-                className="text-2xl font-bold tracking-tight"
-                data-testid="automation-editor-title"
-              >
-                {name}
-              </h2>
-              <AutomationStatusBadge
-                status={automation.status}
-                hasUnpublishedChanges={automation.hasUnpublishedChanges}
-              />
+    <AutomationEditorProvider
+      workspaceId={workspaceId}
+      automationId={automationId}
+      automation={automation}
+    >
+      <div className="space-y-6" data-testid="automation-editor-layout">
+        {/* Editor Header */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" asChild aria-label="Voltar para a listagem">
+              <Link to="/automations" search={{ page: 1, limit: 20 }}>
+                <ArrowLeft className="size-4" />
+              </Link>
+            </Button>
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h2
+                  className="text-2xl font-bold tracking-tight"
+                  data-testid="automation-editor-title"
+                >
+                  {name}
+                </h2>
+                <AutomationStatusBadge
+                  status={automation.status}
+                  hasUnpublishedChanges={automation.hasUnpublishedChanges}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Configure cada etapa antes de publicar no Instagram.
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Configure cada etapa antes de publicar no Instagram.
-            </p>
           </div>
         </div>
-      </div>
 
-      <Separator />
+        <Separator />
 
-      {/* Editor Main with Guided Step Navigation */}
-      <div className="flex flex-col gap-6 md:flex-row md:gap-8">
-        <AutomationStepNav automationId={automationId} />
-        <div className="flex-1 min-w-0">{children ?? <Outlet />}</div>
+        {/* Editor Main with Guided Step Navigation */}
+        <div className="flex flex-col gap-6 md:flex-row md:gap-8">
+          <AutomationStepNav automationId={automationId} />
+          <div className="flex-1 min-w-0">{children ?? <Outlet />}</div>
+        </div>
       </div>
-    </div>
+    </AutomationEditorProvider>
   )
 }

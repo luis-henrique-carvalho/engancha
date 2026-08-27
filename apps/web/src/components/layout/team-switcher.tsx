@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 
+import { authClient } from '@/lib/auth-client'
+
 type TeamSwitcherProps = {
   workspace: ActiveWorkspaceResponse
   onWorkspaceChange: (workspace: ActiveWorkspaceResponse) => void
@@ -43,24 +45,32 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
     queryFn: () => apiFetch<WorkspaceListResponse>('/workspaces'),
   })
   const switchWorkspace = useMutation({
-    mutationFn: (organizationId: string) =>
-      apiFetch<ActiveWorkspaceResponse>('/workspaces/active', {
+    mutationFn: async (organizationId: string) => {
+      await authClient.organization.setActive({ organizationId }).catch(() => {})
+      return apiFetch<ActiveWorkspaceResponse>('/workspaces/active', {
         method: 'POST',
         body: JSON.stringify({ organizationId }),
-      }),
-    onSuccess: onWorkspaceChange,
+      })
+    },
+    onSuccess: async (nextWorkspace) => {
+      onWorkspaceChange(nextWorkspace)
+      await queryClient.invalidateQueries()
+    },
   })
   const createWorkspace = useMutation({
-    mutationFn: (workspaceName: string) =>
-      apiFetch<ActiveWorkspaceResponse>('/workspaces', {
+    mutationFn: async (workspaceName: string) => {
+      const created = await apiFetch<ActiveWorkspaceResponse>('/workspaces', {
         method: 'POST',
         body: JSON.stringify({ name: workspaceName }),
-      }),
+      })
+      await authClient.organization.setActive({ organizationId: created.id }).catch(() => {})
+      return created
+    },
     onSuccess: async (created) => {
       onWorkspaceChange(created)
       setName('')
       setCreateOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      await queryClient.invalidateQueries()
     },
   })
 

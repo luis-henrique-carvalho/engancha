@@ -41,6 +41,21 @@ export class WorkspacesService {
     const { user, session } = this.requireAuthenticated(request)
     if (!user.emailVerified) throw new ConflictException('Email verification required')
 
+    if (session.activeOrganizationId) {
+      const activeMembership = await this.database.client.member.findUnique({
+        where: {
+          organizationId_userId: {
+            organizationId: session.activeOrganizationId,
+            userId: user.id,
+          },
+        },
+        include: { organization: true },
+      })
+      if (activeMembership) {
+        return this.toResponse(activeMembership.organization, activeMembership.role)
+      }
+    }
+
     const existing = await this.database.client.member.findFirst({
       where: { userId: user.id },
       include: { organization: true },

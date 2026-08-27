@@ -292,3 +292,37 @@ test('workspace member lists memberships and switches only the current session t
     (error) => error?.getStatus?.() === 404,
   )
 })
+
+test('bootstrap retains activeOrganizationId when already present in session', async () => {
+  const database = {
+    client: {
+      member: {
+        findUnique: async ({ where }) => {
+          if (where.organizationId_userId.organizationId === 'org-custom') {
+            return {
+              id: 'member-custom',
+              role: 'admin',
+              organization: { id: 'org-custom', name: 'Custom Org', slug: 'custom-org' },
+            }
+          }
+          return null
+        },
+      },
+    },
+  }
+  const service = new WorkspacesService(database)
+  const request = {
+    session: {
+      user: { id: 'user-1', emailVerified: true },
+      session: { id: 'session-1', activeOrganizationId: 'org-custom' },
+    },
+  }
+
+  const result = await service.bootstrap(request)
+  assert.deepEqual(result, {
+    id: 'org-custom',
+    name: 'Custom Org',
+    slug: 'custom-org',
+    role: 'admin',
+  })
+})

@@ -171,6 +171,6 @@ O conteúdo simulado é uma dependência local de produto, não uma simulação 
 ## Further Notes
 
 - A introdução de revisões e de conteúdo-alvo atualiza o modelo lógico aprovado: `AutomationTrigger` e `AutomationAction` passam a pertencer a uma revisão, e não diretamente à identidade da automação. A migration e a documentação de modelo devem registrar essa evolução antes da implementação.
-- A associação a `ChannelConnection`, o catálogo de capabilities por provider, posts reais e os limites específicos de cada provider permanecem para a integração real.
+- A associação a `ChannelConnection` foi resolvida posteriormente pela PRD [Conexões de canais e direcionamento de automações](./channel-connections-automation-targeting.md): cada revisão real terá uma conexão em seu alvo, enquanto o fluxo simulado atual permanece com conexão nula. OAuth, posts reais e lifecycle da conexão continuam na integração real.
 - O estado `ARCHIVED` é preservado no enum para evolução, mas não possui endpoint ou interface nesta entrega.
 - A contagem de execuções e leads será zero até as entidades das Fases 4 e 5 existirem; nenhuma métrica derivada será persistida antecipadamente.
