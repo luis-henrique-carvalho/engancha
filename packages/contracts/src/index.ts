@@ -204,6 +204,7 @@ export const workspaceMembersListResponseSchema = z
 export type WorkspaceMembersListResponse = z.infer<typeof workspaceMembersListResponseSchema>
 
 export const automationStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED'])
+export type AutomationStatus = z.infer<typeof automationStatusSchema>
 export const automationActionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('PUBLIC_REPLY'), text: z.string().trim().min(1).max(1000) }).strict(),
   z.object({ type: z.literal('PRIVATE_REPLY'), text: z.string().trim().min(1).max(1000) }).strict(),

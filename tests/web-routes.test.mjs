@@ -19,6 +19,7 @@ test('web route tree exposes only Engancha routes', async () => {
     "'/auth/verify-email'",
     "'/workspace'",
     "'/users'",
+    "'/automations'",
   ]) {
     assert.match(source, new RegExp(route.replaceAll('/', '\\/')))
   }
@@ -31,6 +32,7 @@ test('web route tree exposes only Engancha routes', async () => {
 test('sidebar data exposes workspace people navigation without reference-only routes', async () => {
   const source = await readFile(sidebarPath, 'utf8')
   assert.match(source, /url: '\/workspace'/)
+  assert.match(source, /url: '\/automations'/)
   assert.match(source, /url: '\/users'/)
   assert.doesNotMatch(source, /tasks|apps|settings|chats|clerk|_authenticated/)
 })
