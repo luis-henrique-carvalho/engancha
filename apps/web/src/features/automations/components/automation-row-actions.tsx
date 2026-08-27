@@ -30,8 +30,9 @@ export function AutomationRowActions({ automation }: AutomationRowActionsProps) 
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem
           onClick={() => {
-            void (navigate as any)({
-              to: `/automations/${automation.id}/identification`,
+            void navigate({
+              to: '/automations/$automationId/identification',
+              params: { automationId: automation.id },
             })
           }}
         >
@@ -40,8 +41,9 @@ export function AutomationRowActions({ automation }: AutomationRowActionsProps) 
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
-            void (navigate as any)({
-              to: `/automations/${automation.id}/review`,
+            void navigate({
+              to: '/automations/$automationId/review',
+              params: { automationId: automation.id },
             })
           }}
         >

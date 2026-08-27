@@ -26,11 +26,16 @@ export default defineConfig({
   test: {
     silent: 'passed-only',
     unstubEnvs: true,
+    setupFiles: ['./src/test-setup.ts'],
     browser: {
       enabled: true,
       provider: playwright(),
       instances: [{ browser: 'chromium' }],
       headless: true,
+      viewport: {
+        width: 1280,
+        height: 720,
+      },
     },
   },
 })
