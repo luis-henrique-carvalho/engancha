@@ -15,7 +15,9 @@ import { SimulatedContentsService } from '../../application/simulated-contents.s
 @Controller('simulated-contents')
 @UseGuards(AuthorizationContextGuard)
 export class SimulatedContentsController {
-  constructor(@Inject(SimulatedContentsService) private readonly contents: SimulatedContentsService) {}
+  constructor(
+    @Inject(SimulatedContentsService) private readonly contents: SimulatedContentsService,
+  ) {}
 
   @Get() list(
     @Query(new ZodValidationPipe(paginationRequestSchema)) query: PaginationRequest,

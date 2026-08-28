@@ -9,4 +9,3 @@ function IdentificationStepPage() {
   const { automationId } = Route.useParams()
   return <IdentificationStepView automationId={automationId} />
 }
-

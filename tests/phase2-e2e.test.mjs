@@ -263,4 +263,3 @@ e2eTest('cria rascunho de automação, edita o nome e consulta no detalhe e list
   assert.equal(listResponse.body.items[0].id, automationId)
   assert.equal(listResponse.body.items[0].current.name, 'Campanha de Black Friday')
 })
-

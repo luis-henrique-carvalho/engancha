@@ -241,7 +241,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Criar repositories por domínio.
 - [ ] Criar migrations Prisma.
 - [ ] Implementar isolamento por Organization.
-- [ ] Manter `AutomationTarget.channelConnectionId=null` para conteúdo simulado e preparar o contrato para conexão real.
+- [ ] Manter conteúdos e alvos do MVP sem referência a conexão externa; nenhuma `ChannelConnection` é persistida na Fase 3.
 
 ### API
 
@@ -253,6 +253,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] `POST /api/v1/automations/:id/pause`.
 - [ ] Validar DTOs/schemas.
 - [ ] Criar respostas serializadas.
+- [ ] Restringir o contrato do MVP a `INSTAGRAM` em modo `SIMULATED`; conteúdo real e outros providers ficam para o EPIC-09.
 
 ### Formulário web
 
@@ -268,7 +269,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Publicar automação.
 - [ ] Exibir erros de validação.
 
-**Critério de conclusão:** usuário consegue criar uma automação válida, salvá-la como rascunho, publicar e pausar.
+**Critério de conclusão:** usuário consegue criar uma automação válida para `Instagram — Simulador`, salvá-la como rascunho, publicar e pausar, sem cadastrar ou selecionar uma conta externa.
 
 **Bloqueios:** nenhum esperado após conclusão da Fase 2.
 
@@ -460,8 +461,8 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Criar o módulo `Channels` e suas portas de consulta.
 - [ ] Mover registry/capabilities de provider para a fronteira `Channels`.
 - [ ] Criar `ChannelConnection` com isolamento por Organization e respostas sanitizadas.
-- [ ] Adicionar `channelConnectionId` opcional a `Content` e `AutomationTarget`.
-- [ ] Manter dados simulados existentes com conexão nula na migration.
+- [ ] Adicionar `channelConnectionId` opcional a `Content` e `AutomationTarget` por migration aditiva.
+- [ ] Inicializar os dados simulados existentes com conexão nula na migration, sem criar conexões artificiais.
 - [ ] Implementar endpoints de listagem, detalhe, revalidação, desconexão e conteúdos da conexão.
 - [ ] Adicionar tela de integrações e estados vazio, ativo, expirado, erro e desconectado.
 - [ ] Adicionar seleção conexão → conteúdo ao editor de automações reais.
