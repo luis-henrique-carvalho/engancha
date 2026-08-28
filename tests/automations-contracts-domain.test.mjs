@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  automationExecutionJobSchema,
   automationActionSchema,
   createContentRequestSchema,
   normalizeAutomationKeyword,
+  simulationCommentRequestSchema,
   validatePublishableAutomation,
 } from '@engancha/contracts'
 
@@ -39,5 +41,34 @@ test('conteúdo permanece neutro de provider para suportar novos canais', () => 
       contentType: 'VIDEO',
     }).provider,
     'TIKTOK',
+  )
+})
+
+test('aceita comentário simulado estrito e um job de execução seguro e versionado', () => {
+  const comment = {
+    contentId: 'content-1',
+    provider: 'INSTAGRAM',
+    author: 'Ana',
+    text: 'Quero o material',
+    commentId: 'instagram-comment-1',
+    idempotencyKey: 'simulation-001',
+  }
+
+  assert.deepEqual(simulationCommentRequestSchema.parse(comment), comment)
+  assert.throws(() => simulationCommentRequestSchema.parse({ ...comment, mode: 'SIMULATED' }))
+
+  assert.deepEqual(
+    automationExecutionJobSchema.parse({
+      version: 'v1',
+      correlationId: 'simulation-001',
+      executionId: 'execution-1',
+      organizationId: 'organization-1',
+    }),
+    {
+      version: 'v1',
+      correlationId: 'simulation-001',
+      executionId: 'execution-1',
+      organizationId: 'organization-1',
+    },
   )
 })

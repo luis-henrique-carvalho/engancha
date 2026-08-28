@@ -1,4 +1,5 @@
 import { registerAutomationsOpenApi } from './modules/automations/api/http/openapi'
+import { registerSimulationsOpenApi } from './modules/simulations/api/http/openapi'
 import { registerDevelopmentEmailOutboxOpenApi } from './modules/development-email-outbox/api/http/openapi'
 import { registerVerificationOpenApi } from './modules/verification/api/http/openapi'
 import { registerWorkspacesOpenApi } from './modules/workspaces/api/http/openapi'
@@ -10,4 +11,5 @@ export const apiOpenApiRegistrars = [
   registerDevelopmentEmailOutboxOpenApi,
   registerWorkspacesOpenApi,
   registerAutomationsOpenApi,
+  registerSimulationsOpenApi,
 ]

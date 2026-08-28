@@ -47,6 +47,103 @@ export const verificationJobOptions = {
   },
 } as const
 
+export const executionStatusSchema = z.enum([
+  'PENDING',
+  'PROCESSING',
+  'COMPLETED',
+  'IGNORED',
+  'FAILED',
+])
+export type ExecutionStatus = z.infer<typeof executionStatusSchema>
+
+const simulationProviderSchema = z.literal('INSTAGRAM')
+const simulationAuthorSchema = z.string().trim().min(1).max(120)
+const simulationCommentTextSchema = z.string().trim().min(1).max(1_000)
+
+export const simulationCommentRequestSchema = z
+  .object({
+    contentId: z.string().trim().min(1).max(255),
+    provider: simulationProviderSchema,
+    author: simulationAuthorSchema,
+    text: simulationCommentTextSchema,
+    commentId: z.string().trim().min(1).max(255).optional(),
+    idempotencyKey: correlationIdSchema,
+  })
+  .strict()
+export type SimulationCommentRequest = z.infer<typeof simulationCommentRequestSchema>
+
+export const automationExecutionJobSchema = z
+  .object({
+    version: z.literal(contractsVersion),
+    correlationId: correlationIdSchema,
+    executionId: z.string().min(1).max(255),
+    organizationId: z.string().min(1).max(255),
+  })
+  .strict()
+export type AutomationExecutionJob = z.infer<typeof automationExecutionJobSchema>
+
+export const automationExecutionJobOptions = {
+  attempts: 4,
+  backoff: { type: 'exponential', delay: 2_000 },
+  removeOnComplete: { age: 3_600, count: 100 },
+  removeOnFail: { age: 86_400, count: 100 },
+} as const
+
+export const simulationCommentResponseSchema = z
+  .object({
+    executionId: z.string().min(1),
+    status: executionStatusSchema,
+    simulated: z.literal(true),
+  })
+  .strict()
+export type SimulationCommentResponse = z.infer<typeof simulationCommentResponseSchema>
+
+const executionOutputSchema = z
+  .object({
+    id: z.string().min(1),
+    key: z.string().min(1),
+    position: z.number().int().min(0),
+    type: z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK_DELIVERY', 'EMAIL_CAPTURE_REQUEST']),
+    payload: z.record(z.string(), z.unknown()),
+    createdAt: z.string().datetime({ offset: true }),
+  })
+  .strict()
+
+export const simulationExecutionResponseSchema = z
+  .object({
+    id: z.string().min(1),
+    status: executionStatusSchema,
+    simulated: z.literal(true),
+    provider: simulationProviderSchema,
+    contentId: z.string().min(1),
+    input: z
+      .object({
+        author: simulationAuthorSchema,
+        text: simulationCommentTextSchema,
+        commentId: z.string().nullable(),
+        submittedAt: z.string().datetime({ offset: true }),
+      })
+      .strict(),
+    matched: z.boolean().nullable(),
+    automation: z
+      .object({
+        id: z.string().min(1),
+        revisionId: z.string().min(1),
+        version: z.number().int().min(1),
+      })
+      .strict()
+      .nullable(),
+    outputs: z.array(executionOutputSchema),
+    attempts: z.number().int().min(0),
+    error: z
+      .object({ code: z.string().min(1), message: z.string().min(1) })
+      .strict()
+      .nullable(),
+    stateVersion: z.number().int().min(1),
+  })
+  .strict()
+export type SimulationExecutionResponse = z.infer<typeof simulationExecutionResponseSchema>
+
 const emailAddressSchema = z.string().trim().email().max(320)
 const emailActionUrlSchema = z.string().url().max(2048)
 
