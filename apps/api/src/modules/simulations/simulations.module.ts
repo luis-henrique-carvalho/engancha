@@ -1,6 +1,7 @@
 import { BullModule } from '@nestjs/bullmq'
 import { Module } from '@nestjs/common'
 import { QUEUE_NAMES, automationExecutionJobOptions } from '@engancha/contracts'
+import { PlatformModule } from '../../platform/platform.module'
 import { AuthorizationContextGuard } from '../../platform/security/authorization-context'
 import { SimulationsController } from './api/http/simulations.controller'
 import { SimulationsService } from './application/simulations.service'
@@ -13,6 +14,7 @@ import { PrismaSimulationRepository } from './infrastructure/persistence/prisma-
 
 @Module({
   imports: [
+    PlatformModule,
     BullModule.registerQueue({
       name: QUEUE_NAMES.automationExecution,
       defaultJobOptions: automationExecutionJobOptions,
