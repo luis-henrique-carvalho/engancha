@@ -144,7 +144,7 @@ describe('AutomationEditorLayoutView', () => {
 
     mockGetById.mockResolvedValue(archivedAutomation)
 
-    const { getByTestId, getByText, queryByTestId } = await renderWithClient(
+    const { getByTestId, getByText } = await renderWithClient(
       <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-archived">
         <div data-testid="step-content">Formulário de Identificação</div>
       </AutomationEditorLayoutView>,
@@ -153,9 +153,7 @@ describe('AutomationEditorLayoutView', () => {
     await expect.element(getByTestId('automation-editor-archived')).toBeInTheDocument()
     await expect.element(getByText('Automação arquivada')).toBeInTheDocument()
     await expect
-      .element(
-        getByText('Esta automação foi arquivada e não pode mais ser editada ou reativada.'),
-      )
+      .element(getByText('Esta automação foi arquivada e não pode mais ser editada ou reativada.'))
       .toBeInTheDocument()
     await expect.element(getByTestId('step-content')).not.toBeInTheDocument()
   })
@@ -204,9 +202,7 @@ describe('AutomationEditorLayoutView', () => {
     )
 
     await expect.element(getByTestId('automation-status-unpublished-badge')).toBeInTheDocument()
-    await expect
-      .element(getByTestId('automation-active-unpublished-banner'))
-      .toBeInTheDocument()
+    await expect.element(getByTestId('automation-active-unpublished-banner')).toBeInTheDocument()
     await expect
       .element(
         getByText(

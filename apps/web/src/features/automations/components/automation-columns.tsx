@@ -19,9 +19,7 @@ function formatDate(dateString: string): string {
   }
 }
 
-export function createAutomationColumns(
-  workspaceId?: string,
-): ColumnDef<AutomationResponse>[] {
+export function createAutomationColumns(workspaceId?: string): ColumnDef<AutomationResponse>[] {
   return [
     {
       accessorKey: 'name',

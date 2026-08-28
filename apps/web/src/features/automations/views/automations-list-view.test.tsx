@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import type { AutomationListResponse } from '@engancha/contracts'
+import type { AutomationListResponse, AutomationResponse } from '@engancha/contracts'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { page, userEvent } from 'vitest/browser'
@@ -300,9 +300,7 @@ describe('AutomationsListView', () => {
     await userEvent.click(input)
     await userEvent.type(input, 'v')
 
-    expect(onParamsChange).toHaveBeenCalledWith(
-      expect.objectContaining({ query: 'v', page: 1 }),
-    )
+    expect(onParamsChange).toHaveBeenCalledWith(expect.objectContaining({ query: 'v', page: 1 }))
   })
 
   it('chama onParamsChange com status ao selecionar filtro de status e exibe botão Reset', async () => {

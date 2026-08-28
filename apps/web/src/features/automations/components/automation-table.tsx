@@ -7,7 +7,11 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import type { ColumnFiltersState, PaginationState } from '@tanstack/react-table'
-import type { AutomationListRequest, AutomationResponse, AutomationStatus } from '@engancha/contracts'
+import type {
+  AutomationListRequest,
+  AutomationResponse,
+  AutomationStatus,
+} from '@engancha/contracts'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -68,7 +72,9 @@ export function AutomationTable({
       onFiltersChange({ ...filters, query: String(value) || undefined }),
     onColumnFiltersChange: (next) => {
       const resolved = typeof next === 'function' ? next(columnFilters) : next
-      const status = resolved.find((f) => f.id === 'status')?.value as AutomationStatus[] | undefined
+      const status = resolved.find((f) => f.id === 'status')?.value as
+        | AutomationStatus[]
+        | undefined
       onFiltersChange({
         ...filters,
         status: status?.length ? status : undefined,

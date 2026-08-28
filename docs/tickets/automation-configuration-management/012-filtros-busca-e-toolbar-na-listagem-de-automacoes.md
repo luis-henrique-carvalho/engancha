@@ -30,13 +30,13 @@ Implementar busca textual, filtros por status e barra de ferramentas na tabela d
 
 ## Acceptance criteria
 
-- [ ] Campo de busca na listagem filtra automações por nome ou palavra-chave.
-- [ ] Filtro facetado permite selecionar um ou mais estados (`ACTIVE`, `DRAFT`, `PAUSED`).
-- [ ] Estado dos filtros e busca é refletido e sincronizado na URL via `useTableUrlState`.
-- [ ] Botão de reset restaura a listagem para o estado inicial sem filtros.
-- [ ] Backend filtra registros respeitando estritamente o isolamento multi-tenant do workspace ativo.
-- [ ] Testes de integração no backend e testes de DOM no Vitest Browser cobrindo busca, filtros e reset.
-- [ ] A seção `Result` documenta o comportamento entregue, Diagrama Mermaid caso aplicável, os principais arquivos ou contratos, Responsabilidade de cada arquivo, explicações sobre conceitos (caso aplicável e necessário), decisões e limites relevantes e as validações executadas.
+- [x] Campo de busca na listagem filtra automações por nome ou palavra-chave.
+- [x] Filtro facetado permite selecionar um ou mais estados (`ACTIVE`, `DRAFT`, `PAUSED`).
+- [x] Estado dos filtros e busca é refletido e sincronizado na URL via `useTableUrlState`.
+- [x] Botão de reset restaura a listagem para o estado inicial sem filtros.
+- [x] Backend filtra registros respeitando estritamente o isolamento multi-tenant do workspace ativo.
+- [x] Testes de integração no backend e testes de DOM no Vitest Browser cobrindo busca, filtros e reset.
+- [x] A seção `Result` documenta o comportamento entregue, Diagrama Mermaid caso aplicável, os principais arquivos ou contratos, Responsabilidade de cada arquivo, explicações sobre conceitos (caso aplicável e necessário), decisões e limites relevantes e as validações executadas.
 
 ## Blocked by
 

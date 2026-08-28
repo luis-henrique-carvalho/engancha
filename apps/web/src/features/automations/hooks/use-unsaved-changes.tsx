@@ -18,7 +18,9 @@ export function useUnsavedChanges({
   cancelText = 'Continuar editando',
 }: UseUnsavedChangesOptions) {
   const router = useRouter({ warn: false })
-  const [blockedRetry, setBlockedRetry] = useState<(() => void) | null>(null)
+  const [navigationResolver, setNavigationResolver] = useState<
+    ((shouldBlock: boolean) => void) | null
+  >(null)
 
   useEffect(() => {
     if (!isDirty) return
@@ -36,8 +38,12 @@ export function useUnsavedChanges({
   useEffect(() => {
     if (!isDirty || !router?.history) return
 
-    const unblock = router.history.block((retry: () => void) => {
-      setBlockedRetry(() => retry)
+    const unblock = router.history.block({
+      blockerFn: () =>
+        new Promise<boolean>((resolve) => {
+          setNavigationResolver(() => resolve)
+        }),
+      enableBeforeUnload: isDirty,
     })
 
     return () => {
@@ -45,17 +51,17 @@ export function useUnsavedChanges({
     }
   }, [isDirty, router?.history])
 
-  const isBlocked = blockedRetry !== null
+  const isBlocked = navigationResolver !== null
 
   const handleConfirm = () => {
-    const retry = blockedRetry
-    setBlockedRetry(null)
-    retry?.()
+    navigationResolver?.(false)
+    setNavigationResolver(null)
   }
 
   const handleCancel = (open: boolean) => {
     if (!open) {
-      setBlockedRetry(null)
+      navigationResolver?.(true)
+      setNavigationResolver(null)
     }
   }
 
@@ -75,7 +81,10 @@ export function useUnsavedChanges({
   return {
     isBlocked,
     proceed: handleConfirm,
-    reset: () => setBlockedRetry(null),
+    reset: () => {
+      navigationResolver?.(true)
+      setNavigationResolver(null)
+    },
     UnsavedChangesDialog,
   }
 }

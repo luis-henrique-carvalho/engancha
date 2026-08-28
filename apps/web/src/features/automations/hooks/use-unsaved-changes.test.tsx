@@ -2,14 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { useUnsavedChanges } from './use-unsaved-changes'
 
-let mockBlockFn: ((retry: () => void) => void) | null = null
+let mockBlockFn: (() => Promise<boolean>) | null = null
 const mockUnblock = vi.fn()
 
 vi.mock('@tanstack/react-router', () => ({
   useRouter: () => ({
     history: {
-      block: (fn: (retry: () => void) => void) => {
-        mockBlockFn = fn
+      block: ({ blockerFn }: { blockerFn: () => Promise<boolean> }) => {
+        mockBlockFn = blockerFn
         return mockUnblock
       },
     },
@@ -50,15 +50,11 @@ describe('useUnsavedChanges', () => {
     expect(removeEventListenerSpy).toHaveBeenCalledWith('beforeunload', expect.any(Function))
   })
 
-  it('renders confirmation dialog when navigation is blocked and calls retry callback on confirm', async () => {
-    const retrySpy = vi.fn()
-    const { getByTestId, getByRole, getByText } = await render(
-      <TestComponent isDirty={true} />,
-    )
+  it('renders confirmation dialog when navigation is blocked and proceeds on confirm', async () => {
+    const { getByTestId, getByRole, getByText } = await render(<TestComponent isDirty={true} />)
 
-    // Trigger router block
     expect(mockBlockFn).not.toBeNull()
-    mockBlockFn!(retrySpy)
+    const navigation = mockBlockFn!()
 
     await expect.element(getByTestId('blocked-status')).toHaveTextContent('blocked')
     await expect
@@ -75,22 +71,20 @@ describe('useUnsavedChanges', () => {
     const confirmButton = getByRole('button', { name: 'Descartar e sair' })
     await confirmButton.click()
 
-    expect(retrySpy).toHaveBeenCalledOnce()
+    await expect(navigation).resolves.toBe(false)
     await expect.element(getByTestId('blocked-status')).toHaveTextContent('unblocked')
   })
 
   it('resets blocked state when dialog is cancelled', async () => {
-    const retrySpy = vi.fn()
     const { getByRole, getByTestId } = await render(<TestComponent isDirty={true} />)
 
-    // Trigger router block
-    mockBlockFn!(retrySpy)
+    const navigation = mockBlockFn!()
     await expect.element(getByTestId('blocked-status')).toHaveTextContent('blocked')
 
     const cancelButton = getByRole('button', { name: 'Continuar editando' })
     await cancelButton.click()
 
-    expect(retrySpy).not.toHaveBeenCalled()
+    await expect(navigation).resolves.toBe(true)
     await expect.element(getByTestId('blocked-status')).toHaveTextContent('unblocked')
   })
 })

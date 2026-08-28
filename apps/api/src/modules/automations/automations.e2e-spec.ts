@@ -412,17 +412,13 @@ test('filtra automações por status via GET /automations?status=ACTIVE', async 
     .send()
   expectStatus(published, 201)
 
-  const activeOnly = await api
-    .get('/api/v1/automations?status=ACTIVE')
-    .set(scenario.headers)
+  const activeOnly = await api.get('/api/v1/automations?status=ACTIVE').set(scenario.headers)
   expectStatus(activeOnly, 200)
   assert.equal(activeOnly.body.meta.total, 1)
   assert.equal(activeOnly.body.items[0].id, toPublish.id)
   assert.equal(activeOnly.body.items[0].status, 'ACTIVE')
 
-  const draftOnly = await api
-    .get('/api/v1/automations?status=DRAFT')
-    .set(scenario.headers)
+  const draftOnly = await api.get('/api/v1/automations?status=DRAFT').set(scenario.headers)
   expectStatus(draftOnly, 200)
   assert.equal(draftOnly.body.meta.total, 1)
   assert.equal(draftOnly.body.items[0].id, draft.id)
@@ -465,23 +461,17 @@ test('filtra automações por nome via GET /automations?query=BUSCA', async () =
     })
   expectStatus(patched, 200)
 
-  const byName = await api
-    .get('/api/v1/automations?query=Verão')
-    .set(scenario.headers)
+  const byName = await api.get('/api/v1/automations?query=Verão').set(scenario.headers)
   expectStatus(byName, 200)
   assert.equal(byName.body.meta.total, 1)
   assert.equal(byName.body.items[0].id, namedOne.body.id)
 
-  const byKeyword = await api
-    .get('/api/v1/automations?query=cupom')
-    .set(scenario.headers)
+  const byKeyword = await api.get('/api/v1/automations?query=cupom').set(scenario.headers)
   expectStatus(byKeyword, 200)
   assert.equal(byKeyword.body.meta.total, 1)
   assert.equal(byKeyword.body.items[0].id, keywordOne.body.id)
 
-  const noMatch = await api
-    .get('/api/v1/automations?query=inexistente')
-    .set(scenario.headers)
+  const noMatch = await api.get('/api/v1/automations?query=inexistente').set(scenario.headers)
   expectStatus(noMatch, 200)
   assert.equal(noMatch.body.meta.total, 0)
 })

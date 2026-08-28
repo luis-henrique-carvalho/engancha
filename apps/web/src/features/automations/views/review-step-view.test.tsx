@@ -303,13 +303,9 @@ describe('ReviewStepView', () => {
       status: 'PAUSED',
     })
 
-    const { getByTestId, getByRole, getByText } = await render(
+    const { getByTestId, getByRole } = await render(
       <QueryClientProvider client={queryClient}>
-        <ReviewStepView
-          workspaceId="ws-1"
-          automationId="auto-100"
-          automation={activeAutomation}
-        />
+        <ReviewStepView workspaceId="ws-1" automationId="auto-100" automation={activeAutomation} />
       </QueryClientProvider>,
     )
 
@@ -317,9 +313,7 @@ describe('ReviewStepView', () => {
     await expect.element(pauseButton).toBeInTheDocument()
     await pauseButton.click()
 
-    await expect
-      .element(getByRole('heading', { name: 'Pausar automação' }))
-      .toBeInTheDocument()
+    await expect.element(getByRole('heading', { name: 'Pausar automação' })).toBeInTheDocument()
     const confirmButton = getByRole('button', { name: 'Pausar' })
     await confirmButton.click()
 

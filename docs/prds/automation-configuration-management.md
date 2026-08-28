@@ -115,16 +115,16 @@ O conteúdo simulado é uma dependência local de produto, não uma simulação 
 
 ## Acceptance Criteria
 
-- [ ] Um membro confirmado cria e retoma uma automação incompleta somente no workspace ativo.
-- [ ] Cada automação publicada aponta para exatamente um conteúdo simulado do mesmo workspace.
-- [ ] Uma publicação aceita apenas gatilho de comentário, resposta pública, DM e uma ação final válida de link ou captura de e-mail, na ordem definida.
-- [ ] Palavras-chave são normalizadas e duas automações ativas não podem publicar a mesma combinação de conteúdo e gatilho no mesmo workspace.
-- [ ] Editar uma automação ativa preserva a versão ativa e cria uma revisão que só produz efeito depois de nova publicação.
-- [ ] Versões publicadas anteriores permanecem consultáveis pelo domínio e não são alteradas por edição futura.
-- [ ] Pausar uma automação ativa impede seu uso futuro pela Fase 4, preservando seus dados e versão publicada.
-- [ ] Toda leitura e mutação ignora ou retorna `404` para automações de outro workspace, sem confiar em `organizationId` enviado pelo browser.
-- [ ] A interface apresenta lista, criação/edição guiada, revisão, loading, erros por campo, sucesso e controles acessíveis de publicar/pausar.
-- [ ] Testes cobrem o agregado, migration, autorização multi-tenant, contratos, transições de revisão/publicação/pausa e o percurso web de rascunho até publicação.
+- [x] Um membro confirmado cria e retoma uma automação incompleta somente no workspace ativo.
+- [x] Cada automação publicada aponta para exatamente um conteúdo simulado do mesmo workspace.
+- [x] Uma publicação aceita apenas gatilho de comentário, resposta pública, DM e uma ação final válida de link ou captura de e-mail, na ordem definida.
+- [x] Palavras-chave são normalizadas e duas automações ativas não podem publicar a mesma combinação de conteúdo e gatilho no mesmo workspace.
+- [x] Editar uma automação ativa preserva a versão ativa e cria uma revisão que só produz efeito depois de nova publicação.
+- [x] Versões publicadas anteriores permanecem consultáveis pelo domínio e não são alteradas por edição futura.
+- [x] Pausar uma automação ativa impede seu uso futuro pela Fase 4, preservando seus dados e versão publicada.
+- [x] Toda leitura e mutação ignora ou retorna `404` para automações de outro workspace, sem confiar em `organizationId` enviado pelo browser.
+- [x] A interface apresenta lista, criação/edição guiada, revisão, loading, erros por campo, sucesso e controles acessíveis de publicar/pausar.
+- [x] Testes cobrem o agregado, migration, autorização multi-tenant, contratos, transições de revisão/publicação/pausa e o percurso web de rascunho até publicação.
 
 ## Implementation Decisions
 

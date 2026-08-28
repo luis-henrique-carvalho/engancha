@@ -17,9 +17,7 @@ export const AutomationsApi = {
       Object.entries(params)
         .filter(([, value]) => value !== undefined)
         .flatMap(([key, value]) =>
-          Array.isArray(value)
-            ? value.map((item) => [key, String(item)])
-            : [[key, String(value)]],
+          Array.isArray(value) ? value.map((item) => [key, String(item)]) : [[key, String(value)]],
         ),
     )
 

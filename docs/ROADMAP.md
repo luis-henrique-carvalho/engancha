@@ -20,7 +20,7 @@
 | Arquitetura           | ✅ Aprovada — versão 1.1                      |
 | Requisitos funcionais | ✅ Definidos — revisão contínua               |
 | Roadmap               | ✅ Criado                                     |
-| Código                | 🟡 Fase 2 em validação externa                |
+| Código                | 🟡 Fase 3 concluída localmente; Fase 2 em validação externa |
 | Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
 | Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
@@ -228,50 +228,52 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 ## Fase 3 — Gestão de automações
 
-**Status:** ⏳ NÃO INICIADA  
+**Status:** ✅ CONCLUÍDA  
 **Épico:** EPIC-03  
 **Objetivo:** criar, editar, publicar e pausar automações pelo formulário guiado.
 
 ### Domínio e persistência
 
-- [ ] Modelar `Automation`.
-- [ ] Modelar `AutomationTrigger`.
-- [ ] Modelar `AutomationAction`.
-- [ ] Modelar status e versão da automação.
-- [ ] Criar repositories por domínio.
-- [ ] Criar migrations Prisma.
-- [ ] Implementar isolamento por Organization.
-- [ ] Manter conteúdos e alvos do MVP sem referência a conexão externa; nenhuma `ChannelConnection` é persistida na Fase 3.
+- [x] Modelar `Automation`.
+- [x] Modelar `AutomationTrigger`.
+- [x] Modelar `AutomationAction`.
+- [x] Modelar status e versão da automação.
+- [x] Criar repositories por domínio.
+- [x] Criar migrations Prisma.
+- [x] Implementar isolamento por Organization.
+- [x] Manter conteúdos e alvos do MVP sem referência a conexão externa; nenhuma `ChannelConnection` é persistida na Fase 3.
 
 ### API
 
-- [ ] `GET /api/v1/automations`.
-- [ ] `POST /api/v1/automations`.
-- [ ] `GET /api/v1/automations/:id`.
-- [ ] `PATCH /api/v1/automations/:id`.
-- [ ] `POST /api/v1/automations/:id/publish`.
-- [ ] `POST /api/v1/automations/:id/pause`.
-- [ ] Validar DTOs/schemas.
-- [ ] Criar respostas serializadas.
-- [ ] Restringir o contrato do MVP a `INSTAGRAM` em modo `SIMULATED`; conteúdo real e outros providers ficam para o EPIC-09.
+- [x] `GET /api/v1/automations`.
+- [x] `POST /api/v1/automations`.
+- [x] `GET /api/v1/automations/:id`.
+- [x] `PATCH /api/v1/automations/:id`.
+- [x] `POST /api/v1/automations/:id/publish`.
+- [x] `POST /api/v1/automations/:id/pause`.
+- [x] Validar DTOs/schemas.
+- [x] Criar respostas serializadas.
+- [x] Restringir o contrato do MVP a `INSTAGRAM` em modo `SIMULATED`; conteúdo real e outros providers ficam para o EPIC-09.
 
 ### Formulário web
 
-- [ ] Etapa de identificação.
-- [ ] Etapa de canal e conteúdo-alvo, exibindo `Instagram — Simulador` como opção virtual no MVP.
-- [ ] Etapa de palavra-chave.
-- [ ] Etapa de resposta pública.
-- [ ] Etapa de DM.
-- [ ] Etapa de link ou captura de e-mail.
-- [ ] Etapa de tag.
-- [ ] Etapa de revisão.
-- [ ] Salvar rascunho.
-- [ ] Publicar automação.
-- [ ] Exibir erros de validação.
+- [x] Etapa de identificação.
+- [x] Etapa de canal e conteúdo-alvo, exibindo `Instagram — Simulador` como opção virtual no MVP.
+- [x] Etapa de palavra-chave.
+- [x] Etapa de resposta pública.
+- [x] Etapa de DM.
+- [x] Etapa de link ou captura de e-mail.
+- [x] Manter a etapa de tag fora do escopo da Fase 3; ela depende das entidades de contato/lead da Fase 5.
+- [x] Etapa de revisão.
+- [x] Salvar rascunho.
+- [x] Publicar automação.
+- [x] Exibir erros de validação.
 
 **Critério de conclusão:** usuário consegue criar uma automação válida para `Instagram — Simulador`, salvá-la como rascunho, publicar e pausar, sem cadastrar ou selecionar uma conta externa.
 
 **Bloqueios:** nenhum esperado após conclusão da Fase 2.
+
+**Validação de encerramento (2026-08-27):** `npm run verify` aprovado; 10 testes de integração de automações e 189 testes web aprovados.
 
 ---
 
