@@ -1,20 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { AutomationActivityTabView } from '@/features/automations/views/automation-activity-tab-view'
 
 export const Route = createFileRoute('/automations/$automationId/activity')({
   component: AutomationActivityRoutePage,
 })
 
 function AutomationActivityRoutePage() {
+  const { automationId } = Route.useParams()
+
   return (
-    <div
-      className="flex min-h-[300px] flex-col items-center justify-center rounded-lg border border-dashed p-6 text-center"
-      data-testid="automation-activity-tab"
-    >
-      <h4 className="text-sm font-semibold">Atividade de execuções</h4>
-      <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-        O histórico de execuções e interações da automação será exibido aqui após os primeiros
-        testes.
-      </p>
+    <div data-testid="automation-activity-tab">
+      <AutomationActivityTabView automationId={automationId} />
     </div>
   )
 }

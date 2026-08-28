@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import type { AutomationListRequest } from '@engancha/contracts'
 import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
 import { AutomationsHeader } from '@/features/automations/components/automations-header'
-import { AutomationsListView } from '@/features/automations/views'
+import { AutomationsListView } from '@/features/automations/views/automations-list-view'
 import { useCreateAutomation } from '@/features/automations/hooks/use-create-automation'
 
 function selectedStatuses(value: unknown): AutomationListRequest['status'] {

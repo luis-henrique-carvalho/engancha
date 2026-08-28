@@ -8,6 +8,7 @@ import tsConfigPaths from 'vite-tsconfig-paths'
 import { playwright } from '@vitest/browser-playwright'
 
 const sourceDir = fileURLToPath(new URL('./src', import.meta.url))
+const contractsIndex = fileURLToPath(new URL('../../packages/contracts/src/index.ts', import.meta.url))
 
 export default defineConfig({
   plugins: [tanstackStart(), tailwindcss(), viteReact(), tsConfigPaths()],
@@ -15,6 +16,7 @@ export default defineConfig({
     alias: {
       '@': sourceDir,
       '#': sourceDir,
+      '@engancha/contracts': contractsIndex,
     },
   },
   server: {

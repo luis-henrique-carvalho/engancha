@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ContentStepView } from '@/features/automations/views'
+import { ContentStepView } from '@/features/automations/views/content-step-view'
 
 export const Route = createFileRoute('/automations/$automationId/content')({
   component: ContentStepPage,

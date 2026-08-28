@@ -124,6 +124,7 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
       author: values.author,
       text: values.text,
       commentId: values.commentId,
+      originAutomationId: automationId,
     })
   }
 

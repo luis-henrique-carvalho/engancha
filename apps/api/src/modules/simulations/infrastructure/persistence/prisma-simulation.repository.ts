@@ -31,6 +31,7 @@ export class PrismaSimulationRepository implements SimulationRepository {
           idempotencyKey: input.idempotencyKey,
           inputAuthor: input.author,
           inputText: input.text,
+          originAutomationId: input.originAutomationId ?? null,
           status: 'PENDING',
         },
         select: { id: true, status: true, enqueuedAt: true },
@@ -67,10 +68,44 @@ export class PrismaSimulationRepository implements SimulationRepository {
     return this.database.client.automationExecution.findFirst({
       where: { id, organizationId },
       include: {
-        automationRevision: { select: { id: true, version: true } },
+        content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
+        automationRevision: { select: { id: true, version: true, name: true } },
         outputs: { orderBy: { position: 'asc' } },
       },
     })
+  }
+
+  async list(
+    organizationId: string,
+    query: { automationId?: string; cursor?: string; limit: number },
+  ) {
+    const where: any = { organizationId }
+
+    if (query.automationId) {
+      where.OR = [{ automationId: query.automationId }, { originAutomationId: query.automationId }]
+    }
+
+    const records = await this.database.client.automationExecution.findMany({
+      where,
+      take: query.limit + 1,
+      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      include: {
+        content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
+        automationRevision: { select: { id: true, version: true, name: true } },
+        outputs: { orderBy: { position: 'asc' } },
+      },
+    })
+
+    const hasMore = records.length > query.limit
+    const items = hasMore ? records.slice(0, query.limit) : records
+    const nextCursor = hasMore && items.length > 0 ? items[items.length - 1].id : null
+
+    return {
+      items,
+      nextCursor,
+      hasMore,
+    }
   }
 
   async resetForRetry(

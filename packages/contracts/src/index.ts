@@ -68,6 +68,7 @@ export const simulationCommentRequestSchema = z
     text: simulationCommentTextSchema,
     commentId: z.string().trim().min(1).max(255).optional(),
     idempotencyKey: correlationIdSchema,
+    originAutomationId: z.string().trim().min(1).max(255).optional(),
   })
   .strict()
 export type SimulationCommentRequest = z.infer<typeof simulationCommentRequestSchema>
@@ -168,6 +169,17 @@ export const simulationExecutionResponseSchema = z
     simulated: z.literal(true),
     provider: simulationProviderSchema,
     contentId: z.string().min(1),
+    originAutomationId: z.string().nullable().optional(),
+    content: z
+      .object({
+        id: z.string().min(1),
+        title: z.string().min(1),
+        contentType: z.string().min(1),
+        externalContentId: z.string().min(1),
+      })
+      .strict()
+      .nullable()
+      .optional(),
     input: z
       .object({
         author: simulationAuthorSchema,
@@ -182,6 +194,7 @@ export const simulationExecutionResponseSchema = z
         id: z.string().min(1),
         revisionId: z.string().min(1),
         version: z.number().int().min(1),
+        name: z.string().nullable().optional(),
       })
       .strict()
       .nullable(),
@@ -192,9 +205,28 @@ export const simulationExecutionResponseSchema = z
       .strict()
       .nullable(),
     stateVersion: z.number().int().min(1),
+    createdAt: z.string().datetime({ offset: true }).optional(),
   })
   .strict()
 export type SimulationExecutionResponse = z.infer<typeof simulationExecutionResponseSchema>
+
+export const simulationExecutionListQuerySchema = z
+  .object({
+    automationId: z.string().trim().min(1).max(255).optional(),
+    cursor: z.string().trim().min(1).max(255).optional(),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+  })
+  .strict()
+export type SimulationExecutionListQuery = z.infer<typeof simulationExecutionListQuerySchema>
+
+export const simulationExecutionListResponseSchema = z
+  .object({
+    items: z.array(simulationExecutionResponseSchema),
+    nextCursor: z.string().nullable(),
+    hasMore: z.boolean(),
+  })
+  .strict()
+export type SimulationExecutionListResponse = z.infer<typeof simulationExecutionListResponseSchema>
 
 export const simulationSseHeartbeatSchema = z
   .object({

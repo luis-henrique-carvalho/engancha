@@ -5,13 +5,19 @@ import {
   Inject,
   Param,
   Post,
+  Query,
   Req,
   Sse,
   UseGuards,
   type MessageEvent,
 } from '@nestjs/common'
 import type { Observable } from 'rxjs'
-import { simulationCommentRequestSchema, type SimulationCommentRequest } from '@engancha/contracts'
+import {
+  simulationCommentRequestSchema,
+  simulationExecutionListQuerySchema,
+  type SimulationCommentRequest,
+  type SimulationExecutionListQuery,
+} from '@engancha/contracts'
 import {
   AuthorizationContextGuard,
   type RequestWithAuthorization,
@@ -30,6 +36,15 @@ export class SimulationsController {
     @Req() request: RequestWithAuthorization,
   ) {
     return this.simulations.submit(request.authorizationContext!, body)
+  }
+
+  @Get('executions')
+  list(
+    @Query(new ZodValidationPipe(simulationExecutionListQuerySchema))
+    query: SimulationExecutionListQuery,
+    @Req() request: RequestWithAuthorization,
+  ) {
+    return this.simulations.list(request.authorizationContext!, query)
   }
 
   @Get('executions/:id')

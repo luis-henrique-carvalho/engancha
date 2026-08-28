@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { FinalActionStepView } from '@/features/automations/views'
+import { FinalActionStepView } from '@/features/automations/views/final-action-step-view'
 
 export const Route = createFileRoute('/automations/$automationId/final-action')({
   component: FinalActionStepPage,

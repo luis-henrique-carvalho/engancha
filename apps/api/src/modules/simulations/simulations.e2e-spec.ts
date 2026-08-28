@@ -1108,3 +1108,101 @@ test('Recuperação HTTP após desconexão SSE: consulta estado atualizado via G
   assert.equal(events[0].data.status, 'IGNORED')
   assert.equal(events[0].data.matched, false)
 })
+
+test('GET /simulations/executions lista somente o workspace ativo, aceita filtro por automationId e usa paginação por cursor', async () => {
+  const workspaceA = await createWorkspaceScenario()
+  const workspaceB = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+
+  const contentA = await createContent(api, workspaceA)
+  const contentB = await createContent(api, workspaceB)
+
+  const automationA = await createAndPublishAutomation(api, workspaceA, contentA.id, 'PROMO')
+
+  // Cria 3 execuções no workspace A:
+  // 1: matched automationA
+  const resA1 = await api.post('/api/v1/simulations/comments').set(workspaceA.headers).send({
+    contentId: contentA.id,
+    provider: 'INSTAGRAM',
+    author: 'Alice',
+    text: 'Quero PROMO',
+    idempotencyKey: 'list-exec-001',
+    originAutomationId: automationA.automationId,
+  })
+  expectStatus(resA1, 201)
+
+  // 2: ignored (sem match), mas originAutomationId é automationA.automationId
+  const resA2 = await api.post('/api/v1/simulations/comments').set(workspaceA.headers).send({
+    contentId: contentA.id,
+    provider: 'INSTAGRAM',
+    author: 'Bob',
+    text: 'Outro assunto qualquer',
+    idempotencyKey: 'list-exec-002',
+    originAutomationId: automationA.automationId,
+  })
+  expectStatus(resA2, 201)
+
+  // 3: outra execução sem automationId vinculada
+  const resA3 = await api.post('/api/v1/simulations/comments').set(workspaceA.headers).send({
+    contentId: contentA.id,
+    provider: 'INSTAGRAM',
+    author: 'Carol',
+    text: 'Comentário sem origem de automação',
+    idempotencyKey: 'list-exec-003',
+  })
+  expectStatus(resA3, 201)
+
+  // Cria 1 execução no workspace B
+  const resB = await api.post('/api/v1/simulations/comments').set(workspaceB.headers).send({
+    contentId: contentB.id,
+    provider: 'INSTAGRAM',
+    author: 'Daniel',
+    text: 'Comentário do workspace B',
+    idempotencyKey: 'list-exec-004',
+  })
+  expectStatus(resB, 201)
+
+  // 1. Isolamento: listagem do workspace A não contém execuções do workspace B
+  const listAllA = await api.get('/api/v1/simulations/executions').set(workspaceA.headers)
+  expectStatus(listAllA, 200)
+  assert.equal(listAllA.body.items.length, 3)
+  assert.ok(listAllA.body.items.every((it: any) => it.id !== resB.body.executionId))
+  assert.equal(listAllA.body.hasMore, false)
+  assert.equal(listAllA.body.nextCursor, null)
+
+  // 2. Filtro por automationId: retorna A1 e A2 (já que A1 e A2 tem originAutomationId = automationA.automationId)
+  const listFilteredA = await api
+    .get(`/api/v1/simulations/executions?automationId=${automationA.automationId}`)
+    .set(workspaceA.headers)
+  expectStatus(listFilteredA, 200)
+  assert.equal(listFilteredA.body.items.length, 2)
+  const returnedIds = listFilteredA.body.items.map((i: any) => i.id)
+  assert.ok(returnedIds.includes(resA1.body.executionId))
+  assert.ok(returnedIds.includes(resA2.body.executionId))
+  assert.ok(!returnedIds.includes(resA3.body.executionId))
+
+  // 3. Projeção: inclui conteúdo, autor, texto, simulação, status
+  const itemA1 = listFilteredA.body.items.find((i: any) => i.id === resA1.body.executionId)
+  assert.ok(itemA1)
+  assert.equal(itemA1.simulated, true)
+  assert.equal(itemA1.input.author, 'Alice')
+  assert.equal(itemA1.input.text, 'Quero PROMO')
+  assert.ok(itemA1.content)
+  assert.equal(itemA1.content.id, contentA.id)
+  assert.equal(itemA1.originAutomationId, automationA.automationId)
+
+  // 4. Paginação por cursor estável: limit=1
+  const page1 = await api.get('/api/v1/simulations/executions?limit=1').set(workspaceA.headers)
+  expectStatus(page1, 200)
+  assert.equal(page1.body.items.length, 1)
+  assert.equal(page1.body.hasMore, true)
+  assert.ok(page1.body.nextCursor)
+  const firstId = page1.body.items[0].id
+
+  const page2 = await api
+    .get(`/api/v1/simulations/executions?limit=1&cursor=${page1.body.nextCursor}`)
+    .set(workspaceA.headers)
+  expectStatus(page2, 200)
+  assert.equal(page2.body.items.length, 1)
+  assert.notEqual(page2.body.items[0].id, firstId)
+})

@@ -10,8 +10,10 @@ import { Observable } from 'rxjs'
 import {
   AUTOMATION_EXECUTION_REQUESTED,
   simulationCommentResponseSchema,
+  simulationExecutionListResponseSchema,
   simulationExecutionResponseSchema,
   type SimulationCommentRequest,
+  type SimulationExecutionListQuery,
 } from '@engancha/contracts'
 import type { AuthorizationContext } from '../../../platform/security/authorization-context'
 import { StructuredLogger } from '../../../platform/runtime/structured-logger'
@@ -189,6 +191,30 @@ export class SimulationsService {
       executionId: id,
       status: 'PENDING',
       simulated: true,
+    })
+  }
+
+  async list(context: AuthorizationContext, query: SimulationExecutionListQuery) {
+    this.logEvent('simulation_executions_list_requested', {
+      organizationId: context.organizationId,
+      automationId: query.automationId,
+      cursor: query.cursor,
+      limit: query.limit,
+    })
+
+    const result = await this.simulations.list(context.organizationId, query)
+
+    this.logEvent('simulation_executions_listed', {
+      organizationId: context.organizationId,
+      count: result.items.length,
+      hasNextCursor: Boolean(result.nextCursor),
+      hasMore: result.hasMore,
+    })
+
+    return simulationExecutionListResponseSchema.parse({
+      items: result.items.map((item) => this.present(item)),
+      nextCursor: result.nextCursor,
+      hasMore: result.hasMore,
     })
   }
 
@@ -379,6 +405,15 @@ export class SimulationsService {
       simulated: true,
       provider: execution.provider,
       contentId: execution.contentId,
+      originAutomationId: execution.originAutomationId ?? null,
+      content: execution.content
+        ? {
+            id: execution.content.id,
+            title: execution.content.title,
+            contentType: execution.content.contentType,
+            externalContentId: execution.content.externalContentId,
+          }
+        : null,
       input: {
         author: execution.inputAuthor,
         text: execution.inputText,
@@ -392,9 +427,10 @@ export class SimulationsService {
               id: execution.automationId,
               revisionId: execution.automationRevision.id,
               version: execution.automationRevision.version,
+              name: execution.automationRevision.name ?? null,
             }
           : null,
-      outputs: execution.outputs.map((output: any) => ({
+      outputs: (execution.outputs ?? []).map((output: any) => ({
         id: output.id,
         key: output.key,
         position: output.position,
@@ -408,6 +444,7 @@ export class SimulationsService {
           ? { code: execution.errorCode, message: execution.errorMessage }
           : null,
       stateVersion: execution.stateVersion,
+      createdAt: execution.createdAt?.toISOString?.() ?? new Date().toISOString(),
     })
   }
 }
