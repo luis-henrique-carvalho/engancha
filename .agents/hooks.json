@@ -1,0 +1,11 @@
+{
+  "graphify-enforcement": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "./scripts/graphify-reminder.sh",
+        "timeout": 5
+      }
+    ]
+  }
+}
