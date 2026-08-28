@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Inject, Param, Post, Req, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Req,
+  Sse,
+  UseGuards,
+  type MessageEvent,
+} from '@nestjs/common'
+import type { Observable } from 'rxjs'
 import { simulationCommentRequestSchema, type SimulationCommentRequest } from '@engancha/contracts'
 import {
   AuthorizationContextGuard,
@@ -25,9 +37,16 @@ export class SimulationsController {
     return this.simulations.get(request.authorizationContext!, id)
   }
 
+  @Sse('executions/:id/events')
+  stream(
+    @Param('id') id: string,
+    @Req() request: RequestWithAuthorization,
+  ): Promise<Observable<MessageEvent>> {
+    return this.simulations.stream(request.authorizationContext!, id)
+  }
+
   @Post('executions/:id/retry')
   retry(@Param('id') id: string, @Req() request: RequestWithAuthorization) {
     return this.simulations.retry(request.authorizationContext!, id)
   }
 }
-

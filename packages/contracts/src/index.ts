@@ -116,9 +116,7 @@ export const channelCapabilitiesSchema = z
   .object({
     provider: z.enum(['INSTAGRAM', 'TIKTOK']),
     mode: z.enum(['SIMULATED', 'REAL']),
-    supportedActions: z.array(
-      z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL']),
-    ),
+    supportedActions: z.array(z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL'])),
     publicReply: z.boolean(),
     privateReply: z.boolean(),
     linkDelivery: z.boolean(),
@@ -197,6 +195,58 @@ export const simulationExecutionResponseSchema = z
   })
   .strict()
 export type SimulationExecutionResponse = z.infer<typeof simulationExecutionResponseSchema>
+
+export const simulationSseHeartbeatSchema = z
+  .object({
+    heartbeat: z.literal(true),
+    timestamp: z.string().datetime({ offset: true }),
+  })
+  .strict()
+export type SimulationSseHeartbeat = z.infer<typeof simulationSseHeartbeatSchema>
+
+export const simulationSseEventSchema = z.discriminatedUnion('type', [
+  z
+    .object({
+      type: z.literal('snapshot'),
+      id: z.string().min(1),
+      data: simulationExecutionResponseSchema,
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal('update'),
+      id: z.string().min(1),
+      data: simulationExecutionResponseSchema,
+    })
+    .strict(),
+  z
+    .object({
+      type: z.literal('heartbeat'),
+      data: simulationSseHeartbeatSchema,
+    })
+    .strict(),
+])
+export type SimulationSseEvent = z.infer<typeof simulationSseEventSchema>
+
+export const SIMULATION_UPDATED_EVENT = 'simulation.execution.updated.v1' as const
+
+export const simulationUpdatedEventSchema = z
+  .object({
+    type: z.literal(SIMULATION_UPDATED_EVENT).default(SIMULATION_UPDATED_EVENT),
+    version: z.literal(contractsVersion).default(contractsVersion),
+    executionId: z.string().min(1).max(255),
+    organizationId: z.string().min(1).max(255),
+    stateVersion: z.number().int().min(1),
+    status: executionStatusSchema,
+    timestamp: z.string().datetime({ offset: true }),
+  })
+  .strict()
+
+export type SimulationUpdatedEvent = z.infer<typeof simulationUpdatedEventSchema>
+
+export function simulationExecutionChannel(executionId: string): string {
+  return `simulation:execution:${executionId}`
+}
 
 const emailAddressSchema = z.string().trim().email().max(320)
 const emailActionUrlSchema = z.string().url().max(2048)

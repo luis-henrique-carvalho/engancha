@@ -19,8 +19,10 @@ import { PrismaService } from '../../platform/database/prisma.service'
 import { AutomationsModule } from '../automations/automations.module'
 import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
 import { SimulationsModule } from './simulations.module'
+import { SimulationsService } from './application/simulations.service'
 import { AutomationExecutionService } from '../../../../worker/src/automation-execution/application/automation-execution.service'
 import { PrismaAutomationExecutionRepository } from '../../../../worker/src/automation-execution/infrastructure/persistence/prisma-automation-execution.repository'
+import { RedisSimulationEventsPublisher } from '../../../../worker/src/automation-execution/infrastructure/messaging/redis-simulation-events.publisher'
 
 type WorkspaceScenario = {
   organizationId: string
@@ -801,3 +803,298 @@ test('retries concorrentes em execução FAILED: apenas um tem sucesso e o outro
   assert.deepEqual(statuses, [201, 409])
 })
 
+function parseSseEvents(raw: string): Array<{ type?: string; id?: string; data: any }> {
+  const blocks = raw.split('\n\n').filter((b) => b.trim().length > 0)
+  return blocks.map((block) => {
+    const lines = block.split('\n')
+    let type: string | undefined
+    let id: string | undefined
+    let dataStr = ''
+    for (const line of lines) {
+      if (line.startsWith('event:')) {
+        type = line.replace('event:', '').trim()
+      } else if (line.startsWith('id:')) {
+        id = line.replace('id:', '').trim()
+      } else if (line.startsWith('data:')) {
+        dataStr += (dataStr ? '\n' : '') + line.replace('data:', '').trim()
+      }
+    }
+    let data: any = null
+    try {
+      data = JSON.parse(dataStr)
+    } catch {
+      data = dataStr
+    }
+    return { type, id, data }
+  })
+}
+
+test('GET /simulations/executions/:id/events autentica sessão/workspace e retorna 404 para execução estrangeira ou inexistente', async () => {
+  const owner = await createWorkspaceScenario()
+  const other = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, owner)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(owner.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Alice',
+    text: 'Quero saber mais',
+    idempotencyKey: 'sim-sse-auth-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Execução inexistente -> 404
+  const notFoundRes = await api
+    .get('/api/v1/simulations/executions/non-existent-id/events')
+    .set(owner.headers)
+  expectStatus(notFoundRes, 404)
+
+  // Execução de outro workspace -> 404
+  const foreignRes = await api
+    .get(`/api/v1/simulations/executions/${executionId}/events`)
+    .set(other.headers)
+  expectStatus(foreignRes, 404)
+
+  // Sem headers de autorização -> 403
+  const unauthRes = await api.get(`/api/v1/simulations/executions/${executionId}/events`)
+  expectStatus(unauthRes, 403)
+})
+
+test('GET /simulations/executions/:id/events emite snapshot inicial e encerra para execução já terminal', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Alice',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-sse-term-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Marcar como COMPLETED no PostgreSQL
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: {
+      status: 'COMPLETED',
+      matched: true,
+      completedAt: new Date(),
+      stateVersion: 2,
+    },
+  })
+
+  const sseRes = await api
+    .get(`/api/v1/simulations/executions/${executionId}/events`)
+    .set(workspace.headers)
+
+  expectStatus(sseRes, 200)
+  assert.ok(sseRes.headers['content-type']?.includes('text/event-stream'))
+
+  const events = parseSseEvents(sseRes.text)
+  assert.equal(events.length, 1)
+  assert.equal(events[0].type, 'snapshot')
+  assert.equal(events[0].id, '2')
+  assert.equal(events[0].data.id, executionId)
+  assert.equal(events[0].data.status, 'COMPLETED')
+  assert.equal(events[0].data.matched, true)
+})
+
+test('GET /simulations/executions/:id/events emite snapshot inicial e atualizações monotônicas com saídas reconciliadas no PostgreSQL até estado terminal', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  const { automationId, revisionId } = await createAndPublishAutomation(
+    api,
+    workspace,
+    content.id,
+    'Material',
+  )
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Bruno',
+    text: 'Quero o material agora!',
+    idempotencyKey: 'sim-sse-flow-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Iniciar stream observável baseado em eventos para capturar snapshot e updates
+  const simulationsService = app.get(SimulationsService)
+  const streamObservable = await simulationsService.stream(
+    {
+      userId: workspace.userId,
+      organizationId: workspace.organizationId,
+      membershipId: 'test',
+      role: 'member',
+    },
+    executionId,
+    {
+      heartbeatIntervalMs: 500,
+      maxDurationMs: 2000,
+    },
+  )
+
+  const emitted: Array<any> = []
+  const streamPromise = new Promise<void>((resolve, reject) => {
+    streamObservable.subscribe({
+      next: (event: any) => emitted.push(event),
+      complete: () => resolve(),
+      error: (err: unknown) => reject(err),
+    })
+  })
+
+  // Permite que a subscription registre o snapshot e a inscrição no canal
+  await new Promise((resolve) => setTimeout(resolve, 50))
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const publisher = new RedisSimulationEventsPublisher()
+  const workerService = new AutomationExecutionService(workerRepo, publisher)
+  await workerService.consume(queued[0] as never)
+
+  await streamPromise
+
+  assert.ok(emitted.length >= 2, `Expected at least 2 events, got: ${JSON.stringify(emitted)}`)
+
+  // 1. Primeiro evento é o snapshot
+  const snapshot = emitted[0]
+  assert.equal(snapshot.type, 'snapshot')
+  assert.equal(snapshot.data.id, executionId)
+  assert.equal(snapshot.data.status, 'PENDING')
+  assert.equal(snapshot.id, '1')
+
+  // 2. Último evento é o update terminal com outputs persistidos
+  const terminal = emitted[emitted.length - 1]
+  assert.equal(terminal.type, 'update')
+  assert.equal(terminal.data.status, 'COMPLETED')
+  assert.equal(terminal.data.matched, true)
+  assert.equal(terminal.data.automation?.id, automationId)
+  assert.equal(terminal.data.automation?.revisionId, revisionId)
+  assert.equal(terminal.data.outputs.length, 2)
+  assert.equal(terminal.data.outputs[0].type, 'PUBLIC_REPLY')
+  assert.equal(terminal.data.outputs[1].type, 'LINK_DELIVERY')
+  assert.ok(Number(terminal.id) > Number(snapshot.id))
+})
+
+test('Stream SSE emite heartbeats com tipo heartbeat e não polui atividades de produto', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Clara',
+    text: 'Aguardando',
+    idempotencyKey: 'sim-sse-heartbeat-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Acessar diretamente o serviço com heartbeatIntervalMs e maxDurationMs curtos
+  const simulationsService = app.get(SimulationsService)
+  const streamObservable = await simulationsService.stream(
+    {
+      userId: workspace.userId,
+      organizationId: workspace.organizationId,
+      membershipId: 'test',
+      role: 'member',
+    },
+    executionId,
+    {
+      heartbeatIntervalMs: 80,
+      maxDurationMs: 250,
+    },
+  )
+
+  const emitted: Array<any> = []
+  await new Promise<void>((resolve, reject) => {
+    streamObservable.subscribe({
+      next: (event: any) => emitted.push(event),
+      complete: () => resolve(),
+      error: (err: unknown) => reject(err),
+    })
+  })
+
+  // Snapshot inicial
+  assert.equal(emitted[0].type, 'snapshot')
+  assert.equal(emitted[0].data.status, 'PENDING')
+
+  // Ao menos um heartbeat emitido
+  const heartbeats = emitted.filter((e) => e.type === 'heartbeat')
+  assert.ok(heartbeats.length >= 1, 'Expected at least 1 heartbeat event')
+  assert.equal(heartbeats[0].data.heartbeat, true)
+  assert.ok(typeof heartbeats[0].data.timestamp === 'string')
+
+  // Verifica que a execução no PostgreSQL continua PENDING intacta
+  const persisted = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: executionId },
+  })
+  assert.equal(persisted.status, 'PENDING')
+})
+
+test('Recuperação HTTP após desconexão SSE: consulta estado atualizado via GET e permite nova conexão', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Diego',
+    text: 'Testando desconexão',
+    idempotencyKey: 'sim-sse-reconnect-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Simula cliente conectando e cancelando subscription enquanto PENDING
+  const simulationsService = app.get(SimulationsService)
+  const firstStream = await simulationsService.stream(
+    {
+      userId: workspace.userId,
+      organizationId: workspace.organizationId,
+      membershipId: 'test',
+      role: 'member',
+    },
+    executionId,
+    {
+      heartbeatIntervalMs: 100,
+      maxDurationMs: 500,
+    },
+  )
+
+  const sub = firstStream.subscribe()
+  // Cancela a subscription (desconexão do cliente)
+  sub.unsubscribe()
+
+  // Cliente recupera estado autoritativo via HTTP GET
+  const getRes = await api
+    .get(`/api/v1/simulations/executions/${executionId}`)
+    .set(workspace.headers)
+  expectStatus(getRes, 200)
+  assert.equal(getRes.body.status, 'PENDING')
+
+  // Worker conclui a execução como IGNORED
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  await workerService.consume(queued[0] as never)
+
+  // Cliente reconecta no SSE via HTTP e recebe snapshot atualizado com estado terminal
+  const reconnectSse = await api
+    .get(`/api/v1/simulations/executions/${executionId}/events`)
+    .set(workspace.headers)
+  expectStatus(reconnectSse, 200)
+
+  const events = parseSseEvents(reconnectSse.text)
+  assert.equal(events.length, 1)
+  assert.equal(events[0].type, 'snapshot')
+  assert.equal(events[0].data.status, 'IGNORED')
+  assert.equal(events[0].data.matched, false)
+})

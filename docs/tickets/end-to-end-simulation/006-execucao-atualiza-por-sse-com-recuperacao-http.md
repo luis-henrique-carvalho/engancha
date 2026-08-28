@@ -1,6 +1,6 @@
 ---
 title: "Execução atualiza por SSE com recuperação HTTP"
-status: "needs-triage"
+status: "completed"
 type: "AFK"
 parent: "docs/prds/end-to-end-simulation.md"
 blocked_by:
@@ -21,14 +21,14 @@ Entregar atualização autenticada em tempo real para uma execução. O endpoint
 
 ## Acceptance criteria
 
-- [ ] `GET /api/v1/simulations/executions/:id/events` autentica sessão/workspace e não abre stream para execução estrangeira.
-- [ ] O stream emite snapshot inicial e atualizações user-safe em ordem monotônica de versão para `PENDING`, `PROCESSING` e estados terminais.
-- [ ] Saídas persistidas aparecem nos eventos em ordem sem depender de payload de fila ou memória local do worker.
-- [ ] O estado terminal `COMPLETED`, `IGNORED` ou `FAILED` é emitido integralmente antes do encerramento normal do stream.
-- [ ] Heartbeats e limites de conexão são explícitos, não viram atividade de produto e não expõem infraestrutura.
-- [ ] Redis/notification pode apenas sinalizar mudança; a API lê ou reconcilia PostgreSQL antes de emitir cada estado de produto.
-- [ ] O contrato permite que o cliente recarregue por GET e reconecte quando a execução ainda não for terminal, sem interpretar perda de SSE como falha da execução.
-- [ ] Testes de contrato e E2E cobrem snapshot, progresso, terminal, autenticação, isolamento, desconexão, reconexão, perda de sinal e PostgreSQL como fonte de verdade.
+- [x] `GET /api/v1/simulations/executions/:id/events` autentica sessão/workspace e não abre stream para execução estrangeira.
+- [x] O stream emite snapshot inicial e atualizações user-safe em ordem monotônica de versão para `PENDING`, `PROCESSING` e estados terminais.
+- [x] Saídas persistidas aparecem nos eventos em ordem sem depender de payload de fila ou memória local do worker.
+- [x] O estado terminal `COMPLETED`, `IGNORED` ou `FAILED` é emitido integralmente antes do encerramento normal do stream.
+- [x] Heartbeats e limites de conexão são explícitos, não viram atividade de produto e não expõem infraestrutura.
+- [x] Redis/notification pode apenas sinalizar mudança; a API lê ou reconcilia PostgreSQL antes de emitir cada estado de produto.
+- [x] O contrato permite que o cliente recarregue por GET e reconecte quando a execução ainda não for terminal, sem interpretar perda de SSE como falha da execução.
+- [x] Testes de contrato e E2E cobrem snapshot, progresso, terminal, autenticação, isolamento, desconexão, reconexão, perda de sinal e PostgreSQL como fonte de verdade.
 
 ## Blocked by
 
@@ -39,4 +39,10 @@ Entregar atualização autenticada em tempo real para uma execução. O endpoint
 
 ## Result
 
-Preencher durante a implementação com comportamento entregue, protocolo SSE/reconexão, contratos, arquivos principais, decisões e validações executadas.
+- Endpoint SSE implementado em `SimulationsController` (`GET /api/v1/simulations/executions/:id/events`) com o decorator `@Sse` do NestJS e proteção via `AuthorizationContextGuard`.
+- Validação multi-tenant: execuções inexistentes ou pertencentes a outro workspace são rejeitadas com 404 antes de estabelecer o stream.
+- Emissão progressiva e reconciliada: o stream emite o snapshot inicial (`type: 'snapshot'`), seguido por atualizações (`type: 'update'`) em ordem monotônica de `stateVersion` lidas diretamente do PostgreSQL, e heartbeats periódicos explícitos (`type: 'heartbeat'`).
+- Encerramento limpo: execuções em estado terminal (`COMPLETED`, `IGNORED`, `FAILED`) emitem o evento terminal completo antes da finalização normal do stream.
+- Resiliência e recuperação HTTP: o endpoint `GET /api/v1/simulations/executions/:id` permanece autoritativo para recarga e reconciliação após desconexões transitórias.
+- Contratos e OpenAPI: adicionados schemas `simulationSseHeartbeatSchema` e `simulationSseEventSchema` em `@engancha/contracts` e registrada a rota SSE no OpenAPI.
+- Testes: cobertura completa E2E em `apps/api/src/modules/simulations/simulations.e2e-spec.ts` validando autenticação, isolamento, snapshot, ordenação monotônica, emissão terminal, heartbeats e desconexão/reconexão.

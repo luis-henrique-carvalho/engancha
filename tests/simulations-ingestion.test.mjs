@@ -238,4 +238,3 @@ test('repetir o POST original de uma execução FAILED retorna a execução e n�
   })
   assert.equal(queued.length, 0)
 })
-

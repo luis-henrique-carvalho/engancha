@@ -94,4 +94,3 @@ export interface AutomationExecutionRepository {
     matched?: boolean
   }): Promise<void>
 }
-

@@ -1,5 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Optional } from '@nestjs/common'
 import {
+  SIMULATION_UPDATED_EVENT,
   getChannelCapabilities,
   matchesAutomationKeyword,
   type AutomationExecutionRequested,
@@ -10,6 +11,10 @@ import {
   type AutomationExecutionOutputDraft,
   type AutomationExecutionRepository,
 } from '../domain/ports/automation-execution-repository.port'
+import {
+  SIMULATION_EVENTS_PUBLISHER,
+  type SimulationEventsPublisher,
+} from '../domain/ports/simulation-events-publisher.port'
 import type {
   AutomationExecutionConsumer,
   AutomationExecutionResult,
@@ -17,10 +22,17 @@ import type {
 
 @Injectable()
 export class AutomationExecutionService implements AutomationExecutionConsumer {
+  private readonly publisher: SimulationEventsPublisher
+
   constructor(
     @Inject(AUTOMATION_EXECUTION_REPOSITORY)
     private readonly repository: AutomationExecutionRepository,
-  ) {}
+    @Optional()
+    @Inject(SIMULATION_EVENTS_PUBLISHER)
+    publisher?: SimulationEventsPublisher,
+  ) {
+    this.publisher = publisher ?? { publish: async () => {} }
+  }
 
   async consume(message: AutomationExecutionRequested): Promise<AutomationExecutionResult> {
     const claim = await this.repository.claimExecution(message.executionId, message.organizationId)
@@ -61,6 +73,16 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           reason: 'Nenhuma automação ativa corresponde ao comentário',
         })
 
+        await this.publisher.publish({
+          type: SIMULATION_UPDATED_EVENT,
+          version: 'v1',
+          executionId: claim.id,
+          organizationId: claim.organizationId,
+          stateVersion: 2,
+          status: 'IGNORED',
+          timestamp: new Date().toISOString(),
+        })
+
         return {
           executionId: claim.id,
           status: 'IGNORED',
@@ -75,6 +97,16 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           errorCode: 'AMBIGUOUS_AUTOMATION_MATCH',
           errorMessage: 'Múltiplas automações ativas correspondem ao comentário',
           matched: false,
+        })
+
+        await this.publisher.publish({
+          type: SIMULATION_UPDATED_EVENT,
+          version: 'v1',
+          executionId: claim.id,
+          organizationId: claim.organizationId,
+          stateVersion: 2,
+          status: 'FAILED',
+          timestamp: new Date().toISOString(),
         })
 
         return {
@@ -98,6 +130,16 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           errorCode: 'UNSUPPORTED_CHANNEL_ACTION',
           errorMessage: `Ação ${unsupported.type} não suportada pelo canal ${claim.provider} (${claim.mode})`,
           matched: true,
+        })
+
+        await this.publisher.publish({
+          type: SIMULATION_UPDATED_EVENT,
+          version: 'v1',
+          executionId: claim.id,
+          organizationId: claim.organizationId,
+          stateVersion: 2,
+          status: 'FAILED',
+          timestamp: new Date().toISOString(),
         })
 
         return {
@@ -190,6 +232,16 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
       outputs,
     })
 
+    await this.publisher.publish({
+      type: SIMULATION_UPDATED_EVENT,
+      version: 'v1',
+      executionId: claim.id,
+      organizationId: claim.organizationId,
+      stateVersion: 3,
+      status: 'COMPLETED',
+      timestamp: new Date().toISOString(),
+    })
+
     return {
       executionId: claim.id,
       status: 'COMPLETED',
@@ -219,7 +271,16 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
         errorCode: 'EXECUTION_FAILED',
         errorMessage: 'Falha ao processar execução',
       })
+
+      await this.publisher.publish({
+        type: SIMULATION_UPDATED_EVENT,
+        version: 'v1',
+        executionId: params.executionId,
+        organizationId: params.organizationId,
+        stateVersion: 2,
+        status: 'FAILED',
+        timestamp: new Date().toISOString(),
+      })
     }
   }
 }
-

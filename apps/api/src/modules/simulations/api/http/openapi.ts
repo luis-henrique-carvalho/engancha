@@ -41,4 +41,26 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
       404: notFound,
     },
   })
+  registry.registerPath({
+    method: 'get',
+    path: '/api/v1/simulations/executions/{id}/events',
+    tags: ['Simulations'],
+    summary: 'Assina o stream SSE de eventos em tempo real de uma execução simulada',
+    security: cookieSecurity,
+    request: { params: idParameterSchema },
+    responses: {
+      200: {
+        description: 'Stream SSE de eventos da execução simulada',
+        content: {
+          'text/event-stream': {
+            schema: {
+              type: 'string',
+              description: 'Stream SSE com snapshot inicial, updates e heartbeats',
+            },
+          },
+        },
+      },
+      404: notFound,
+    },
+  })
 }

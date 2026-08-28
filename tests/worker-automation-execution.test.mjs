@@ -87,7 +87,10 @@ test('registra eventos estruturados de retry e aciona handleJobFailure', async (
   )
 
   await processor.onFailed(validJob, new Error('Redis network blip'))
-  assert.deepEqual(events.map(({ event }) => event), ['automation_execution_job_retry'])
+  assert.deepEqual(
+    events.map(({ event }) => event),
+    ['automation_execution_job_retry'],
+  )
   assert.equal(events[0].attemptsMade, 1)
   assert.deepEqual(failureHandled, {
     executionId: 'execution-100',
@@ -101,7 +104,6 @@ test('registra eventos estruturados de retry e aciona handleJobFailure', async (
   assert.equal(events[1].event, 'automation_execution_job_failed_definitive')
   assert.equal(events[1].attemptsMade, 4)
 })
-
 
 import { AutomationExecutionService } from '../apps/worker/src/automation-execution/application/automation-execution.service.ts'
 
@@ -538,3 +540,58 @@ test('reprocessamento reutiliza snapshot e automação existentes sem consultar 
   assert.equal(completedParams.outputs[1].key, 'execution-100:1:LINK_DELIVERY')
 })
 
+test('publica evento na porta SimulationEventsPublisher ao concluir execução', async () => {
+  const publishedEvents = []
+  const publisher = {
+    publish: async (event) => {
+      publishedEvents.push(event)
+    },
+  }
+
+  const repository = {
+    claimExecution: async (executionId, organizationId) => ({
+      id: executionId,
+      organizationId,
+      contentId: 'content-1',
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      inputText: 'Material',
+      inputAuthor: 'Lucas',
+      commentId: null,
+      originAutomationId: null,
+      status: 'PROCESSING',
+      attempts: 1,
+      stateVersion: 1,
+    }),
+    findActiveCandidateAutomations: async () => [
+      {
+        id: 'auto-1',
+        organizationId: 'org-100',
+        status: 'ACTIVE',
+        currentPublishedRevision: {
+          id: 'rev-1',
+          version: 1,
+          target: { id: 'target-1', contentId: 'content-1' },
+          trigger: {
+            id: 'trig-1',
+            type: 'COMMENT_KEYWORD',
+            keyword: 'Material',
+            keywordNormalized: 'material',
+          },
+          actions: [{ id: 'act-1', position: 0, type: 'PUBLIC_REPLY', config: { text: 'Olá!' } }],
+        },
+      },
+    ],
+    saveExecutionCompleted: async () => {},
+    markIgnored: async () => {},
+    markFailed: async () => {},
+  }
+
+  const service = new AutomationExecutionService(repository, publisher)
+  await service.consume(validJob.data)
+
+  assert.equal(publishedEvents.length, 1)
+  assert.equal(publishedEvents[0].executionId, 'execution-100')
+  assert.equal(publishedEvents[0].status, 'COMPLETED')
+  assert.equal(publishedEvents[0].stateVersion, 3)
+})

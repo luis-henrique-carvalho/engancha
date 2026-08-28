@@ -22,4 +22,3 @@ export interface SimulationRepository {
   find(id: string, organizationId: string): Promise<unknown | null>
   resetForRetry(id: string, organizationId: string): Promise<CreatedSimulationExecution | null>
 }
-

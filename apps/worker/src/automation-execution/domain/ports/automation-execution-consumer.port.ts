@@ -21,4 +21,3 @@ export interface AutomationExecutionConsumer {
     error: Error
   }): Promise<void>
 }
-
