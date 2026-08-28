@@ -226,7 +226,12 @@ test('rejeita mode e provider não habilitado antes de persistir ou enfileirar',
     expectStatus(response, 400)
   }
 
-  assert.equal(await prisma.client.automationExecution.count(), 0)
+  assert.equal(
+    await prisma.client.automationExecution.count({
+      where: { organizationId: workspace.organizationId },
+    }),
+    0,
+  )
   assert.equal(queued.length, 0)
 })
 
@@ -244,7 +249,12 @@ test('retorna 503 e preserva a execução pendente para reenvio idempotente quan
     idempotencyKey: 'queue-unavailable',
   })
   expectStatus(response, 503)
-  assert.equal(await prisma.client.automationExecution.count(), 1)
+  assert.equal(
+    await prisma.client.automationExecution.count({
+      where: { organizationId: workspace.organizationId },
+    }),
+    1,
+  )
   queueAvailable = true
 
   const retry = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({

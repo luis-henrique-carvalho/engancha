@@ -341,6 +341,7 @@ The simulated Instagram input/output adapter implements the normalized ports wit
 - [006 — Execução atualiza por SSE com recuperação HTTP](../tickets/end-to-end-simulation/006-execucao-atualiza-por-sse-com-recuperacao-http.md)
 - [007 — Aba Testar apresenta experiência do seguidor](../tickets/end-to-end-simulation/007-aba-testar-apresenta-experiencia-do-seguidor.md)
 - [008 — Aba Atividade agrupa interações e recupera falhas](../tickets/end-to-end-simulation/008-aba-atividade-agrupa-interacoes-e-recupera-falhas.md)
+- [009 — Observabilidade e logs estruturados do pipeline de simulação](../tickets/end-to-end-simulation/009-observabilidade-e-logs-estruturados-do-pipeline-de-simulacao.md)
 
 ## Further Notes
 

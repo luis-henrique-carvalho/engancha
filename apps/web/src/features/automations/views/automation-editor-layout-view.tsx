@@ -1,9 +1,10 @@
-import { Link, Outlet } from '@tanstack/react-router'
-import { Archive, ArrowLeft, Bot, Info } from 'lucide-react'
+import { Link, Outlet, useLocation } from '@tanstack/react-router'
+import { Activity, Archive, ArrowLeft, Bot, Info, Play, Sliders } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 import { AutomationEditorProvider } from '../components/automation-editor-provider'
 import { AutomationStatusBadge } from '../components/automation-status-badge'
 import { AutomationStepNav } from '../components/automation-step-nav'
@@ -21,6 +22,7 @@ export function AutomationEditorLayoutView({
   children,
 }: AutomationEditorLayoutViewProps) {
   const { data: automation, isLoading, isError } = useAutomation(workspaceId, automationId)
+  const { pathname } = useLocation()
 
   if (isLoading) {
     return (
@@ -90,6 +92,9 @@ export function AutomationEditorLayoutView({
   }
 
   const name = automation.current?.name?.trim() || 'Rascunho de automação'
+  const isTestTab = pathname.endsWith('/test')
+  const isActivityTab = pathname.endsWith('/activity')
+  const isConfigTab = !isTestTab && !isActivityTab
 
   return (
     <AutomationEditorProvider
@@ -140,15 +145,72 @@ export function AutomationEditorLayoutView({
           </Alert>
         )}
 
-        <Separator />
-
-        {/* Editor Main with Guided Step Navigation */}
-        <div className="flex flex-1 flex-col space-y-6 md:space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
-          <aside className="top-0 lg:sticky lg:w-60 shrink-0">
-            <AutomationStepNav automationId={automationId} />
-          </aside>
-          <div className="flex-1 min-w-0">{children ?? <Outlet />}</div>
+        {/* Detail Navigation Tabs */}
+        <div
+          className="flex items-center gap-1 border-b pb-2 sm:gap-2"
+          role="tablist"
+          aria-label="Navegação da automação"
+          data-testid="automation-detail-tabs"
+        >
+          <Link
+            to={`/automations/${automationId}/identification` as any}
+            role="tab"
+            aria-selected={isConfigTab}
+            className={cn(
+              buttonVariants({ variant: isConfigTab ? 'secondary' : 'ghost', size: 'sm' }),
+              isConfigTab ? 'bg-secondary font-semibold text-foreground' : 'text-muted-foreground',
+              'gap-2 text-xs h-8 px-3',
+            )}
+            data-testid="tab-link-config"
+          >
+            <Sliders className="size-3.5" />
+            Configuração
+          </Link>
+          <Link
+            to={`/automations/${automationId}/test` as any}
+            role="tab"
+            aria-selected={isTestTab}
+            className={cn(
+              buttonVariants({ variant: isTestTab ? 'secondary' : 'ghost', size: 'sm' }),
+              isTestTab ? 'bg-secondary font-semibold text-foreground' : 'text-muted-foreground',
+              'gap-2 text-xs h-8 px-3',
+            )}
+            data-testid="tab-link-test"
+          >
+            <Play className="size-3.5" />
+            Testar
+          </Link>
+          <Link
+            to={`/automations/${automationId}/activity` as any}
+            role="tab"
+            aria-selected={isActivityTab}
+            className={cn(
+              buttonVariants({ variant: isActivityTab ? 'secondary' : 'ghost', size: 'sm' }),
+              isActivityTab
+                ? 'bg-secondary font-semibold text-foreground'
+                : 'text-muted-foreground',
+              'gap-2 text-xs h-8 px-3',
+            )}
+            data-testid="tab-link-activity"
+          >
+            <Activity className="size-3.5" />
+            Atividade
+          </Link>
         </div>
+
+        {/* Editor Main with Conditional Step Navigation */}
+        {isConfigTab ? (
+          <div className="flex flex-1 flex-col space-y-6 md:space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
+            <aside className="top-0 shrink-0 lg:sticky lg:w-60">
+              <AutomationStepNav automationId={automationId} />
+            </aside>
+            <div className="min-w-0 flex-1">{children ?? <Outlet />}</div>
+          </div>
+        ) : (
+          <div className="min-w-0 flex-1" data-testid="automation-tab-content">
+            {children ?? <Outlet />}
+          </div>
+        )}
       </div>
     </AutomationEditorProvider>
   )

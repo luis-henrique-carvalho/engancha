@@ -22,6 +22,7 @@ import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
 import { Route as AutomationsIndexRouteImport } from './routes/automations/index'
 import { Route as AutomationsAutomationIdRouteRouteImport } from './routes/automations/$automationId/route'
 import { Route as AutomationsAutomationIdIndexRouteImport } from './routes/automations/$automationId/index'
+import { Route as AutomationsAutomationIdActivityRouteImport } from './routes/automations/$automationId/activity'
 import { Route as AutomationsAutomationIdContentRouteImport } from './routes/automations/$automationId/content'
 import { Route as AutomationsAutomationIdDirectMessageRouteImport } from './routes/automations/$automationId/direct-message'
 import { Route as AutomationsAutomationIdFinalActionRouteImport } from './routes/automations/$automationId/final-action'
@@ -29,6 +30,7 @@ import { Route as AutomationsAutomationIdIdentificationRouteImport } from './rou
 import { Route as AutomationsAutomationIdKeywordRouteImport } from './routes/automations/$automationId/keyword'
 import { Route as AutomationsAutomationIdPublicReplyRouteImport } from './routes/automations/$automationId/public-reply'
 import { Route as AutomationsAutomationIdReviewRouteImport } from './routes/automations/$automationId/review'
+import { Route as AutomationsAutomationIdTestRouteImport } from './routes/automations/$automationId/test'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -97,6 +99,12 @@ const AutomationsAutomationIdIndexRoute =
     path: '/',
     getParentRoute: () => AutomationsAutomationIdRouteRoute,
   } as any)
+const AutomationsAutomationIdActivityRoute =
+  AutomationsAutomationIdActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
 const AutomationsAutomationIdContentRoute =
   AutomationsAutomationIdContentRouteImport.update({
     id: '/content',
@@ -139,6 +147,12 @@ const AutomationsAutomationIdReviewRoute =
     path: '/review',
     getParentRoute: () => AutomationsAutomationIdRouteRoute,
   } as any)
+const AutomationsAutomationIdTestRoute =
+  AutomationsAutomationIdTestRouteImport.update({
+    id: '/test',
+    path: '/test',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -153,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/automations/': typeof AutomationsIndexRoute
+  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
   '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
   '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
   '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
@@ -160,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
   '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
   '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
   '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -174,6 +190,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/automations': typeof AutomationsIndexRoute
+  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
   '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
   '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
   '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
@@ -181,6 +198,7 @@ export interface FileRoutesByTo {
   '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
   '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
   '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
   '/automations/$automationId': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesById {
@@ -197,6 +215,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/automations/': typeof AutomationsIndexRoute
+  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
   '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
   '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
   '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
@@ -204,6 +223,7 @@ export interface FileRoutesById {
   '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
   '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
   '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
   '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -221,6 +241,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/verify-email'
     | '/automations/'
+    | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
     | '/automations/$automationId/direct-message'
     | '/automations/$automationId/final-action'
@@ -228,6 +249,7 @@ export interface FileRouteTypes {
     | '/automations/$automationId/keyword'
     | '/automations/$automationId/public-reply'
     | '/automations/$automationId/review'
+    | '/automations/$automationId/test'
     | '/automations/$automationId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -242,6 +264,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/verify-email'
     | '/automations'
+    | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
     | '/automations/$automationId/direct-message'
     | '/automations/$automationId/final-action'
@@ -249,6 +272,7 @@ export interface FileRouteTypes {
     | '/automations/$automationId/keyword'
     | '/automations/$automationId/public-reply'
     | '/automations/$automationId/review'
+    | '/automations/$automationId/test'
     | '/automations/$automationId'
   id:
     | '__root__'
@@ -264,6 +288,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/verify-email'
     | '/automations/'
+    | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
     | '/automations/$automationId/direct-message'
     | '/automations/$automationId/final-action'
@@ -271,6 +296,7 @@ export interface FileRouteTypes {
     | '/automations/$automationId/keyword'
     | '/automations/$automationId/public-reply'
     | '/automations/$automationId/review'
+    | '/automations/$automationId/test'
     | '/automations/$automationId/'
   fileRoutesById: FileRoutesById
 }
@@ -377,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationsAutomationIdIndexRouteImport
       parentRoute: typeof AutomationsAutomationIdRouteRoute
     }
+    '/automations/$automationId/activity': {
+      id: '/automations/$automationId/activity'
+      path: '/activity'
+      fullPath: '/automations/$automationId/activity'
+      preLoaderRoute: typeof AutomationsAutomationIdActivityRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
     '/automations/$automationId/content': {
       id: '/automations/$automationId/content'
       path: '/content'
@@ -426,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AutomationsAutomationIdReviewRouteImport
       parentRoute: typeof AutomationsAutomationIdRouteRoute
     }
+    '/automations/$automationId/test': {
+      id: '/automations/$automationId/test'
+      path: '/test'
+      fullPath: '/automations/$automationId/test'
+      preLoaderRoute: typeof AutomationsAutomationIdTestRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
   }
 }
 
@@ -450,6 +490,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface AutomationsAutomationIdRouteRouteChildren {
+  AutomationsAutomationIdActivityRoute: typeof AutomationsAutomationIdActivityRoute
   AutomationsAutomationIdContentRoute: typeof AutomationsAutomationIdContentRoute
   AutomationsAutomationIdDirectMessageRoute: typeof AutomationsAutomationIdDirectMessageRoute
   AutomationsAutomationIdFinalActionRoute: typeof AutomationsAutomationIdFinalActionRoute
@@ -457,11 +498,13 @@ interface AutomationsAutomationIdRouteRouteChildren {
   AutomationsAutomationIdKeywordRoute: typeof AutomationsAutomationIdKeywordRoute
   AutomationsAutomationIdPublicReplyRoute: typeof AutomationsAutomationIdPublicReplyRoute
   AutomationsAutomationIdReviewRoute: typeof AutomationsAutomationIdReviewRoute
+  AutomationsAutomationIdTestRoute: typeof AutomationsAutomationIdTestRoute
   AutomationsAutomationIdIndexRoute: typeof AutomationsAutomationIdIndexRoute
 }
 
 const AutomationsAutomationIdRouteRouteChildren: AutomationsAutomationIdRouteRouteChildren =
   {
+    AutomationsAutomationIdActivityRoute: AutomationsAutomationIdActivityRoute,
     AutomationsAutomationIdContentRoute: AutomationsAutomationIdContentRoute,
     AutomationsAutomationIdDirectMessageRoute:
       AutomationsAutomationIdDirectMessageRoute,
@@ -473,6 +516,7 @@ const AutomationsAutomationIdRouteRouteChildren: AutomationsAutomationIdRouteRou
     AutomationsAutomationIdPublicReplyRoute:
       AutomationsAutomationIdPublicReplyRoute,
     AutomationsAutomationIdReviewRoute: AutomationsAutomationIdReviewRoute,
+    AutomationsAutomationIdTestRoute: AutomationsAutomationIdTestRoute,
     AutomationsAutomationIdIndexRoute: AutomationsAutomationIdIndexRoute,
   }
 

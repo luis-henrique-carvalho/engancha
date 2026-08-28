@@ -6,6 +6,8 @@ import {
   type AutomationExecutionRequested,
   type AutomationSnapshot,
 } from '@engancha/contracts'
+import { WORKER_LOGGER } from '../../common/worker-logger.token'
+import type { EventLogger } from '../../common/runtime-lifecycle.service'
 import {
   AUTOMATION_EXECUTION_REPOSITORY,
   type AutomationExecutionOutputDraft,
@@ -23,6 +25,7 @@ import type {
 @Injectable()
 export class AutomationExecutionService implements AutomationExecutionConsumer {
   private readonly publisher: SimulationEventsPublisher
+  private readonly logger: EventLogger
 
   constructor(
     @Inject(AUTOMATION_EXECUTION_REPOSITORY)
@@ -30,18 +33,36 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     @Optional()
     @Inject(SIMULATION_EVENTS_PUBLISHER)
     publisher?: SimulationEventsPublisher,
+    @Optional()
+    @Inject(WORKER_LOGGER)
+    logger?: EventLogger,
   ) {
     this.publisher = publisher ?? { publish: async () => {} }
+    this.logger = logger ?? { event: () => {} }
   }
 
   async consume(message: AutomationExecutionRequested): Promise<AutomationExecutionResult> {
     const claim = await this.repository.claimExecution(message.executionId, message.organizationId)
     if (!claim) {
+      this.logger.event('automation_execution_claim_skipped', {
+        organizationId: message.organizationId,
+        executionId: message.executionId,
+        reason: 'Already claimed or terminal',
+      })
+
       return {
         executionId: message.executionId,
         status: 'SKIPPED',
       }
     }
+
+    this.logger.event('automation_execution_claimed', {
+      organizationId: claim.organizationId,
+      executionId: claim.id,
+      provider: claim.provider,
+      mode: claim.mode,
+      attempts: claim.attempts,
+    })
 
     let snapshot: AutomationSnapshot
     let automationId: string
@@ -51,6 +72,13 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
       snapshot = claim.automationSnapshot
       automationId = claim.automationId
       revisionId = claim.automationRevisionId
+
+      this.logger.event('automation_execution_snapshot_reused', {
+        organizationId: claim.organizationId,
+        executionId: claim.id,
+        automationId,
+        revisionId,
+      })
     } else {
       const candidates = await this.repository.findActiveCandidateAutomations(
         claim.organizationId,
@@ -58,6 +86,12 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
         claim.provider,
         claim.mode,
       )
+
+      this.logger.event('automation_execution_matching_started', {
+        organizationId: claim.organizationId,
+        executionId: claim.id,
+        candidatesCount: candidates.length,
+      })
 
       const matching = candidates.filter((candidate) =>
         matchesAutomationKeyword(
@@ -81,6 +115,12 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           stateVersion: 2,
           status: 'IGNORED',
           timestamp: new Date().toISOString(),
+        })
+
+        this.logger.event('automation_execution_ignored', {
+          organizationId: claim.organizationId,
+          executionId: claim.id,
+          reason: 'No active automation matched keyword',
         })
 
         return {
@@ -107,6 +147,12 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           stateVersion: 2,
           status: 'FAILED',
           timestamp: new Date().toISOString(),
+        })
+
+        this.logger.event('automation_execution_ambiguous_match', {
+          organizationId: claim.organizationId,
+          executionId: claim.id,
+          matchingCount: matching.length,
         })
 
         return {
@@ -142,6 +188,14 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           timestamp: new Date().toISOString(),
         })
 
+        this.logger.event('automation_execution_unsupported_action', {
+          organizationId: claim.organizationId,
+          executionId: claim.id,
+          actionType: unsupported.type,
+          provider: claim.provider,
+          mode: claim.mode,
+        })
+
         return {
           executionId: claim.id,
           status: 'FAILED',
@@ -170,6 +224,14 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
           config: action.config as Record<string, unknown>,
         })),
       }
+
+      this.logger.event('automation_execution_matched', {
+        organizationId: claim.organizationId,
+        executionId: claim.id,
+        automationId,
+        revisionId,
+        version: snapshot.version,
+      })
     }
 
     const outputs: AutomationExecutionOutputDraft[] = snapshot.actions
@@ -223,6 +285,12 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
         }
       })
 
+    this.logger.event('automation_execution_outputs_generated', {
+      organizationId: claim.organizationId,
+      executionId: claim.id,
+      outputsCount: outputs.length,
+    })
+
     await this.repository.saveExecutionCompleted({
       executionId: claim.id,
       organizationId: claim.organizationId,
@@ -240,6 +308,15 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
       stateVersion: 3,
       status: 'COMPLETED',
       timestamp: new Date().toISOString(),
+    })
+
+    this.logger.event('automation_execution_completed', {
+      organizationId: claim.organizationId,
+      executionId: claim.id,
+      automationId,
+      revisionId,
+      outputsCount: outputs.length,
+      stateVersion: 3,
     })
 
     return {
@@ -264,6 +341,13 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
         organizationId: params.organizationId,
         attemptsMade: params.attemptsMade,
       })
+
+      this.logger.event('automation_execution_attempt_recorded', {
+        organizationId: params.organizationId,
+        executionId: params.executionId,
+        attemptsMade: params.attemptsMade,
+        maxAttempts: params.maxAttempts,
+      })
     } else {
       await this.repository.markFailed({
         executionId: params.executionId,
@@ -280,6 +364,13 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
         stateVersion: 2,
         status: 'FAILED',
         timestamp: new Date().toISOString(),
+      })
+
+      this.logger.event('automation_execution_failed_terminal', {
+        organizationId: params.organizationId,
+        executionId: params.executionId,
+        errorCode: 'EXECUTION_FAILED',
+        reason: params.error.message,
       })
     }
   }

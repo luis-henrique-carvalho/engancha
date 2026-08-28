@@ -14,6 +14,7 @@ import {
   type SimulationCommentRequest,
 } from '@engancha/contracts'
 import type { AuthorizationContext } from '../../../platform/security/authorization-context'
+import { StructuredLogger } from '../../../platform/runtime/structured-logger'
 import {
   SIMULATION_REPOSITORY,
   type SimulationRepository,
@@ -38,33 +39,82 @@ export class SimulationsService {
     @Optional()
     @Inject(SIMULATION_EVENTS_SUBSCRIBER)
     eventsSubscriber?: SimulationEventsSubscriber,
+    @Optional()
+    @Inject(StructuredLogger)
+    private readonly logger?: { event(event: string, details?: Record<string, unknown>): void },
   ) {
     this.eventsSubscriber = eventsSubscriber ?? {
       subscribe: async () => async () => {},
     }
   }
 
+  private logEvent(event: string, details: Record<string, unknown> = {}): void {
+    this.logger?.event(event, details)
+  }
+
   async submit(context: AuthorizationContext, input: SimulationCommentRequest) {
+    this.logEvent('simulation_comment_received', {
+      organizationId: context.organizationId,
+      contentId: input.contentId,
+      provider: input.provider,
+      correlationId: input.idempotencyKey,
+      hasCommentId: Boolean(input.commentId),
+    })
+
     const content = await this.simulations.findSimulatedContent(
       input.contentId,
       context.organizationId,
       input.provider,
     )
-    if (!content) throw new NotFoundException()
+    if (!content) {
+      this.logEvent('simulation_comment_rejected', {
+        organizationId: context.organizationId,
+        contentId: input.contentId,
+        provider: input.provider,
+        correlationId: input.idempotencyKey,
+        reason: 'Content not found or not in simulated mode',
+      })
+      throw new NotFoundException()
+    }
 
     const { execution, created } = await this.simulations.createOrFind(
       context.organizationId,
       input,
     )
+
+    this.logEvent(created ? 'simulation_execution_created' : 'simulation_execution_reused', {
+      organizationId: context.organizationId,
+      executionId: execution.id,
+      correlationId: input.idempotencyKey,
+      status: execution.status,
+    })
+
     if (created || !execution.enqueuedAt) {
-      await this.dispatcher.dispatch({
-        type: AUTOMATION_EXECUTION_REQUESTED,
-        version: 'v1',
-        correlationId: input.idempotencyKey,
-        executionId: execution.id,
-        organizationId: context.organizationId,
-      })
-      await this.simulations.markEnqueued(execution.id)
+      try {
+        await this.dispatcher.dispatch({
+          type: AUTOMATION_EXECUTION_REQUESTED,
+          version: 'v1',
+          correlationId: input.idempotencyKey,
+          executionId: execution.id,
+          organizationId: context.organizationId,
+        })
+        await this.simulations.markEnqueued(execution.id)
+
+        this.logEvent('simulation_execution_enqueued', {
+          organizationId: context.organizationId,
+          executionId: execution.id,
+          correlationId: input.idempotencyKey,
+          jobId: execution.id,
+        })
+      } catch (error) {
+        this.logEvent('simulation_execution_enqueue_failed', {
+          organizationId: context.organizationId,
+          executionId: execution.id,
+          correlationId: input.idempotencyKey,
+          reason: (error as Error)?.message ?? 'Dispatch failure',
+        })
+        throw error
+      }
     }
 
     return simulationCommentResponseSchema.parse({
@@ -75,10 +125,28 @@ export class SimulationsService {
   }
 
   async retry(context: AuthorizationContext, id: string) {
+    this.logEvent('simulation_execution_retry_requested', {
+      organizationId: context.organizationId,
+      executionId: id,
+    })
+
     const execution = await this.simulations.find(id, context.organizationId)
-    if (!execution) throw new NotFoundException()
+    if (!execution) {
+      this.logEvent('simulation_execution_retry_rejected', {
+        organizationId: context.organizationId,
+        executionId: id,
+        reason: 'Execution not found',
+      })
+      throw new NotFoundException()
+    }
 
     if ((execution as any).status !== 'FAILED') {
+      this.logEvent('simulation_execution_retry_rejected', {
+        organizationId: context.organizationId,
+        executionId: id,
+        status: (execution as any).status,
+        reason: 'Only failed executions can be retried',
+      })
       throw new ConflictException({
         code: 'INVALID_EXECUTION_STATE_FOR_RETRY',
         message: 'Only failed executions can be retried',
@@ -87,21 +155,35 @@ export class SimulationsService {
 
     const reset = await this.simulations.resetForRetry(id, context.organizationId)
     if (!reset) {
+      this.logEvent('simulation_execution_retry_rejected', {
+        organizationId: context.organizationId,
+        executionId: id,
+        reason: 'Could not reset execution for retry',
+      })
       throw new ConflictException({
         code: 'INVALID_EXECUTION_STATE_FOR_RETRY',
         message: 'Only failed executions can be retried',
       })
     }
 
+    const correlationId = (reset as any).idempotencyKey ?? (execution as any).idempotencyKey ?? id
+
     await this.dispatcher.dispatch({
       type: AUTOMATION_EXECUTION_REQUESTED,
       version: 'v1',
-      correlationId: (reset as any).idempotencyKey ?? (execution as any).idempotencyKey ?? id,
+      correlationId,
       executionId: id,
       organizationId: context.organizationId,
     })
 
     await this.simulations.markEnqueued(id)
+
+    this.logEvent('simulation_execution_retry_accepted', {
+      organizationId: context.organizationId,
+      executionId: id,
+      correlationId,
+      jobId: id,
+    })
 
     return simulationCommentResponseSchema.parse({
       executionId: id,
@@ -112,7 +194,20 @@ export class SimulationsService {
 
   async get(context: AuthorizationContext, id: string) {
     const execution = await this.simulations.find(id, context.organizationId)
-    if (!execution) throw new NotFoundException()
+    if (!execution) {
+      this.logEvent('simulation_execution_query_not_found', {
+        organizationId: context.organizationId,
+        executionId: id,
+      })
+      throw new NotFoundException()
+    }
+
+    this.logEvent('simulation_execution_queried', {
+      organizationId: context.organizationId,
+      executionId: id,
+      status: (execution as any).status,
+      stateVersion: (execution as any).stateVersion,
+    })
 
     return this.present(execution as any)
   }
@@ -126,7 +221,19 @@ export class SimulationsService {
     },
   ): Promise<Observable<MessageEvent>> {
     const initial = await this.simulations.find(id, context.organizationId)
-    if (!initial) throw new NotFoundException()
+    if (!initial) {
+      this.logEvent('simulation_stream_not_found', {
+        organizationId: context.organizationId,
+        executionId: id,
+      })
+      throw new NotFoundException()
+    }
+
+    this.logEvent('simulation_stream_opened', {
+      organizationId: context.organizationId,
+      executionId: id,
+      initialStatus: (initial as any).status,
+    })
 
     const heartbeatIntervalMs = options?.heartbeatIntervalMs ?? 15_000
     const maxDurationMs = options?.maxDurationMs ?? 30_000
@@ -143,7 +250,19 @@ export class SimulationsService {
         data: this.present(initial as any),
       })
 
+      this.logEvent('simulation_stream_snapshot_emitted', {
+        organizationId: context.organizationId,
+        executionId: id,
+        stateVersion: lastEmittedVersion,
+        status: lastEmittedStatus,
+      })
+
       if (['COMPLETED', 'IGNORED', 'FAILED'].includes(lastEmittedStatus)) {
+        this.logEvent('simulation_stream_completed', {
+          organizationId: context.organizationId,
+          executionId: id,
+          terminalStatus: lastEmittedStatus,
+        })
         subscriber.complete()
         return
       }
@@ -153,6 +272,10 @@ export class SimulationsService {
         subscriber.next({
           type: 'heartbeat',
           data: { heartbeat: true, timestamp: new Date().toISOString() },
+        })
+        this.logEvent('simulation_stream_heartbeat_emitted', {
+          organizationId: context.organizationId,
+          executionId: id,
         })
       }, heartbeatIntervalMs)
 
@@ -168,6 +291,10 @@ export class SimulationsService {
             // Ignora falhas no cancelamento de inscrição
           }
         }
+        this.logEvent('simulation_stream_closed', {
+          organizationId: context.organizationId,
+          executionId: id,
+        })
       }
 
       const maxDurationTimer = setTimeout(async () => {
@@ -198,7 +325,19 @@ export class SimulationsService {
               data: this.present(current as any),
             })
 
+            this.logEvent('simulation_stream_update_emitted', {
+              organizationId: context.organizationId,
+              executionId: id,
+              stateVersion,
+              status,
+            })
+
             if (['COMPLETED', 'IGNORED', 'FAILED'].includes(status)) {
+              this.logEvent('simulation_stream_completed', {
+                organizationId: context.organizationId,
+                executionId: id,
+                terminalStatus: status,
+              })
               await cleanup()
               subscriber.complete()
             }

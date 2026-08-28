@@ -5,6 +5,7 @@ import { render } from 'vitest-browser-react'
 import { ApiClientError } from '@/lib/api-client'
 import { AutomationEditorLayoutView } from './automation-editor-layout-view'
 
+let mockPathname = '/automations/auto-1/identification'
 const mockGetById = vi.fn<() => Promise<AutomationResponse>>()
 
 vi.mock('../services/automations-api', () => ({
@@ -17,7 +18,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@tanstack/react-router')>()
   return {
     ...actual,
-    useLocation: () => ({ pathname: '/automations/auto-1/identification' }),
+    useLocation: () => ({ pathname: mockPathname }),
     useNavigate: () => vi.fn(),
     Link: ({ children, to, ...props }: any) => (
       <a href={typeof to === 'string' ? to : '#'} {...props}>
@@ -47,6 +48,7 @@ function renderWithClient(ui: React.ReactElement) {
 describe('AutomationEditorLayoutView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockPathname = '/automations/auto-1/identification'
   })
 
   it('renders loading state initially', async () => {
@@ -79,7 +81,7 @@ describe('AutomationEditorLayoutView', () => {
     await expect.element(getByText('Automação não encontrada')).toBeInTheDocument()
   })
 
-  it('renders editor header, step navigation and step content when automation is loaded', async () => {
+  it('renders editor header, navigation tabs, step navigation and step content when automation is loaded', async () => {
     const mockAutomation: AutomationResponse = {
       id: 'auto-1',
       status: 'DRAFT',
@@ -118,7 +120,39 @@ describe('AutomationEditorLayoutView', () => {
     await expect.element(getByTestId('automation-editor-title')).toBeInTheDocument()
     await expect.element(getByText('Automação Black Friday')).toBeInTheDocument()
     await expect.element(getByTestId('automation-status-draft')).toBeInTheDocument()
+    await expect.element(getByTestId('automation-detail-tabs')).toBeInTheDocument()
+    await expect.element(getByTestId('tab-link-config')).toBeInTheDocument()
+    await expect.element(getByTestId('tab-link-test')).toBeInTheDocument()
+    await expect.element(getByTestId('tab-link-activity')).toBeInTheDocument()
     await expect.element(getByTestId('step-content')).toBeInTheDocument()
+  })
+
+  it('renders full-width tab content when on test tab', async () => {
+    mockPathname = '/automations/auto-1/test'
+
+    const mockAutomation: AutomationResponse = {
+      id: 'auto-1',
+      status: 'ACTIVE',
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T10:00:00.000Z',
+      hasUnpublishedChanges: false,
+      executionCount: 0,
+      leadCount: 0,
+      draft: null,
+      published: null,
+      current: null,
+    }
+
+    mockGetById.mockResolvedValue(mockAutomation)
+
+    const { getByTestId } = await renderWithClient(
+      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-1">
+        <div data-testid="test-tab-content">Conteúdo da aba Testar</div>
+      </AutomationEditorLayoutView>,
+    )
+
+    await expect.element(getByTestId('automation-tab-content')).toBeInTheDocument()
+    await expect.element(getByTestId('test-tab-content')).toBeInTheDocument()
   })
 
   it('renders blocked state when automation is archived', async () => {

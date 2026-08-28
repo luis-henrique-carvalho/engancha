@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import { CoreModule } from '../common/core.module'
 import { BullMqAutomationExecutionProcessor } from './infrastructure/messaging/bullmq-automation-execution.processor'
 import { AUTOMATION_EXECUTION_CONSUMER } from './domain/ports/automation-execution-consumer.port'
 import { AUTOMATION_EXECUTION_REPOSITORY } from './domain/ports/automation-execution-repository.port'
@@ -8,6 +9,7 @@ import { PrismaAutomationExecutionRepository } from './infrastructure/persistenc
 import { RedisSimulationEventsPublisher } from './infrastructure/messaging/redis-simulation-events.publisher'
 
 @Module({
+  imports: [CoreModule],
   providers: [
     AutomationExecutionService,
     {
