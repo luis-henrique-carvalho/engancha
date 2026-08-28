@@ -16,7 +16,10 @@ function AutomationEditorRoutePage() {
       mainClassName="flex flex-1 flex-col gap-4 sm:gap-6"
     >
       {(workspace) => (
-        <AutomationEditorLayoutView workspaceId={workspace.id} automationId={automationId} />
+        <AutomationEditorLayoutView
+          workspaceId={workspace.id}
+          automationId={automationId}
+        />
       )}
     </WorkspaceShell>
   )

@@ -44,8 +44,14 @@ export function ResetPassword() {
           <CardDescription>Escolha uma senha segura para sua conta.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4" onSubmit={submit}>
-            <Label htmlFor="reset-password" className="grid gap-2">
+          <form
+            className="grid gap-4"
+            onSubmit={submit}
+          >
+            <Label
+              htmlFor="reset-password"
+              className="grid gap-2"
+            >
               Nova senha
               <Input
                 id="reset-password"
@@ -58,12 +64,18 @@ export function ResetPassword() {
               />
             </Label>
             {error && (
-              <p className="text-sm text-destructive" role="alert">
+              <p
+                className="text-sm text-destructive"
+                role="alert"
+              >
                 {error}
               </p>
             )}
             {message && (
-              <p className="text-sm text-muted-foreground" role="status">
+              <p
+                className="text-sm text-muted-foreground"
+                role="status"
+              >
                 {message}
               </p>
             )}

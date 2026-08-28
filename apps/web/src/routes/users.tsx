@@ -26,7 +26,10 @@ function UsersPage() {
   const params = Route.useSearch()
   const navigate = Route.useNavigate()
   return (
-    <WorkspaceShell header={<UsersHeader />} mainClassName="flex flex-1 flex-col gap-4 sm:gap-6">
+    <WorkspaceShell
+      header={<UsersHeader />}
+      mainClassName="flex flex-1 flex-col gap-4 sm:gap-6"
+    >
       {(workspace) => (
         <UsersView
           workspaceId={workspace.id}

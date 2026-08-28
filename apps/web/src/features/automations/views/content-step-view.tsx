@@ -87,7 +87,10 @@ export function ContentStepView({
       description="Selecione a publicação ou reel do Instagram associado."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FormField
             control={form.control}
             name="targetId"

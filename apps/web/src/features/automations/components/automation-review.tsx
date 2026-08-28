@@ -38,9 +38,15 @@ export function AutomationReview({
         onNavigateStep={onNavigateStep}
       />
 
-      <AutomationReviewChecklist readiness={readiness} onNavigateStep={onNavigateStep} />
+      <AutomationReviewChecklist
+        readiness={readiness}
+        onNavigateStep={onNavigateStep}
+      />
 
-      <AutomationReviewSummary automation={automation} onNavigateStep={onNavigateStep} />
+      <AutomationReviewSummary
+        automation={automation}
+        onNavigateStep={onNavigateStep}
+      />
 
       <AutomationReviewPublishBar
         status={automation.status}

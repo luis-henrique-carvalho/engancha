@@ -83,7 +83,9 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     })
   }
 
-  private async resolveAutomationSnapshot(claim: any): Promise<
+  private async resolveAutomationSnapshot(
+    claim: any,
+  ): Promise<
     | { success: true; snapshot: AutomationSnapshot; automationId: string; revisionId: string }
     | { success: false; result: AutomationExecutionResult }
   > {
@@ -117,10 +119,7 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     })
 
     const matching = candidates.filter((candidate) =>
-      matchesAutomationKeyword(
-        claim.inputText,
-        candidate.currentPublishedRevision.trigger.keyword,
-      ),
+      matchesAutomationKeyword(claim.inputText, candidate.currentPublishedRevision.trigger.keyword),
     )
 
     if (matching.length === 0) {
@@ -213,7 +212,10 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     }
   }
 
-  private async handleAmbiguousMatch(claim: any, matchingCount: number): Promise<AutomationExecutionResult> {
+  private async handleAmbiguousMatch(
+    claim: any,
+    matchingCount: number,
+  ): Promise<AutomationExecutionResult> {
     await this.repository.markFailed({
       executionId: claim.id,
       organizationId: claim.organizationId,
@@ -246,7 +248,10 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     }
   }
 
-  private async handleUnsupportedAction(claim: any, actionType: string): Promise<AutomationExecutionResult> {
+  private async handleUnsupportedAction(
+    claim: any,
+    actionType: string,
+  ): Promise<AutomationExecutionResult> {
     await this.repository.markFailed({
       executionId: claim.id,
       organizationId: claim.organizationId,
@@ -281,7 +286,10 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
     }
   }
 
-  private generateExecutionOutputs(claimId: string, actions: AutomationSnapshot['actions']): AutomationExecutionOutputDraft[] {
+  private generateExecutionOutputs(
+    claimId: string,
+    actions: AutomationSnapshot['actions'],
+  ): AutomationExecutionOutputDraft[] {
     return actions
       .slice()
       .sort((a, b) => a.position - b.position)

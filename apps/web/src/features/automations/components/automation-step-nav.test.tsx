@@ -11,7 +11,10 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     useLocation: () => ({ pathname: mockPathname }),
     useNavigate: () => vi.fn(),
     Link: ({ children, to, ...props }: any) => (
-      <a href={typeof to === 'string' ? to : '#'} {...props}>
+      <a
+        href={typeof to === 'string' ? to : '#'}
+        {...props}
+      >
         {children}
       </a>
     ),

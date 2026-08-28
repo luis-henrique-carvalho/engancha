@@ -44,7 +44,10 @@ export function SimulationFollowerChat({
   const outputs = execution ? extractSimulationOutputs(execution.outputs) : {}
 
   return (
-    <Card className="h-full flex flex-col" data-testid="simulation-follower-chat-card">
+    <Card
+      className="h-full flex flex-col"
+      data-testid="simulation-follower-chat-card"
+    >
       <SimulationFollowerChatHeader
         isReconnecting={isReconnecting}
         showReset={Boolean(execution && onReset)}
@@ -100,7 +103,10 @@ function SimulationFollowerChatHeader({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CardTitle className="text-base font-semibold">Experiência do seguidor</CardTitle>
-          <Badge variant="secondary" className="text-[10px]">
+          <Badge
+            variant="secondary"
+            className="text-[10px]"
+          >
             Simulado
           </Badge>
         </div>
@@ -195,7 +201,10 @@ function SimulationFollowerJourney({
             </div>
             <span className="text-xs font-semibold text-foreground">{execution.input.author}</span>
           </div>
-          <Badge variant="outline" className="text-[10px]">
+          <Badge
+            variant="outline"
+            className="text-[10px]"
+          >
             Comentário publicado
           </Badge>
         </div>
@@ -218,7 +227,11 @@ function SimulationFollowerJourney({
       )}
 
       {execution.status === 'FAILED' && (
-        <Alert variant="destructive" className="space-y-2" data-testid="simulation-failed-alert">
+        <Alert
+          variant="destructive"
+          className="space-y-2"
+          data-testid="simulation-failed-alert"
+        >
           <div className="flex items-center gap-2">
             <AlertCircle className="size-4" />
             <AlertTitle className="text-xs font-semibold">Falha na simulação</AlertTitle>

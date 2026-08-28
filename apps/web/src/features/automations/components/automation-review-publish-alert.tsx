@@ -24,7 +24,10 @@ export function AutomationReviewPublishAlert({
   if (!errorMessage) return null
 
   return (
-    <Alert variant="destructive" data-testid="automation-publish-error-alert">
+    <Alert
+      variant="destructive"
+      data-testid="automation-publish-error-alert"
+    >
       <AlertTriangle className="h-4 w-4" />
       <AlertTitle>Não foi possível publicar a automação</AlertTitle>
       <AlertDescription className="space-y-2">

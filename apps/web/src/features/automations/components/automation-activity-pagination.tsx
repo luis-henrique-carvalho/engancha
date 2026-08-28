@@ -59,12 +59,19 @@ export function AutomationActivityPagination({
               onPageSizeChange(Number(value))
             }}
           >
-            <SelectTrigger className="h-8 w-17.5 text-xs" data-testid="activity-page-size-trigger">
+            <SelectTrigger
+              className="h-8 w-17.5 text-xs"
+              data-testid="activity-page-size-trigger"
+            >
               <SelectValue placeholder={limit} />
             </SelectTrigger>
             <SelectContent side="top">
               {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`} className="text-xs">
+                <SelectItem
+                  key={pageSize}
+                  value={`${pageSize}`}
+                  className="text-xs"
+                >
                   {pageSize}
                 </SelectItem>
               ))}
@@ -105,7 +112,10 @@ export function AutomationActivityPagination({
           </Button>
 
           {pageNumbers.map((pageNumber, index) => (
-            <div key={`${pageNumber}-${index}`} className="flex items-center">
+            <div
+              key={`${pageNumber}-${index}`}
+              className="flex items-center"
+            >
               {pageNumber === '...' ? (
                 <span className="px-1 text-xs text-muted-foreground">...</span>
               ) : (

@@ -94,7 +94,10 @@ export function IdentificationStepView({
       description="Defina o nome da automação para organização interna."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FormField
             control={form.control}
             name="name"

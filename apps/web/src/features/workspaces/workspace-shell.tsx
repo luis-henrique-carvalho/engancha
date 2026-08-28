@@ -106,7 +106,10 @@ export function WorkspaceShell({
           </Button>
         </Header>
       )}
-      <Main fixed={fixed} className={mainClassName}>
+      <Main
+        fixed={fixed}
+        className={mainClassName}
+      >
         {children(workspace)}
       </Main>
     </AuthenticatedLayout>

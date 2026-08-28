@@ -31,7 +31,10 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
   // Draft Automation Guidance
   if (automation.status === 'DRAFT') {
     return (
-      <Card className="border-dashed bg-muted/20" data-testid="automation-test-draft-guidance">
+      <Card
+        className="border-dashed bg-muted/20"
+        data-testid="automation-test-draft-guidance"
+      >
         <CardHeader>
           <div className="flex items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
@@ -50,7 +53,11 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
             Para testar a jornada do seguidor, conclua a configuração das etapas e publique uma
             versão ativa.
           </p>
-          <Button asChild size="sm" className="gap-1.5 text-xs font-semibold">
+          <Button
+            asChild
+            size="sm"
+            className="gap-1.5 text-xs font-semibold"
+          >
             <Link to={`/automations/${automationId}/review` as any}>
               <CheckCircle2 className="size-3.5" />
               Ir para Revisão e Publicação
@@ -64,7 +71,10 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
   // Paused Automation Guidance
   if (automation.status === 'PAUSED') {
     return (
-      <Card className="border-dashed bg-muted/20" data-testid="automation-test-paused-guidance">
+      <Card
+        className="border-dashed bg-muted/20"
+        data-testid="automation-test-paused-guidance"
+      >
         <CardHeader>
           <div className="flex items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
@@ -83,7 +93,11 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
             Para simular comentários e testar o fluxo de respostas, reative a automação na aba de
             configuração.
           </p>
-          <Button asChild size="sm" className="gap-1.5 text-xs font-semibold">
+          <Button
+            asChild
+            size="sm"
+            className="gap-1.5 text-xs font-semibold"
+          >
             <Link to={`/automations/${automationId}/review` as any}>
               <Play className="size-3.5" />
               Ir para Configuração
@@ -99,7 +113,10 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
 
   if (!publishedRevision || !targetContent) {
     return (
-      <Alert variant="destructive" data-testid="automation-test-no-target-alert">
+      <Alert
+        variant="destructive"
+        data-testid="automation-test-no-target-alert"
+      >
         <AlertCircle className="size-4" />
         <AlertTitle>Nenhum conteúdo vinculado</AlertTitle>
         <AlertDescription className="text-xs">

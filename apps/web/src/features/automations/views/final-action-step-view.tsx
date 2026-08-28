@@ -98,8 +98,7 @@ export function FinalActionStepView({
   const watchedValues = form.watch()
   const watchedPrompt =
     watchedValues.actionType === 'CAPTURE_EMAIL' ? (watchedValues.prompt ?? '') : ''
-  const watchedLabel =
-    watchedValues.actionType === 'LINK' ? (watchedValues.label ?? '') : ''
+  const watchedLabel = watchedValues.actionType === 'LINK' ? (watchedValues.label ?? '') : ''
 
   const { UnsavedChangesDialog } = useUnsavedChanges({
     isDirty: form.formState.isDirty,
@@ -173,18 +172,27 @@ export function FinalActionStepView({
       description="Configure o link de destino ou captura de e-mail."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FinalActionTypeSelector
             selectedType={selectedType}
             onSelectType={handleModeChange}
           />
 
           {selectedType === 'LINK' && (
-            <FinalActionLinkFields form={form} watchedLabel={watchedLabel} />
+            <FinalActionLinkFields
+              form={form}
+              watchedLabel={watchedLabel}
+            />
           )}
 
           {selectedType === 'CAPTURE_EMAIL' && (
-            <FinalActionEmailFields form={form} watchedPrompt={watchedPrompt} />
+            <FinalActionEmailFields
+              form={form}
+              watchedPrompt={watchedPrompt}
+            />
           )}
 
           <AutomationSaveBar
@@ -225,7 +233,11 @@ function FinalActionTypeSelector({
             selectedType === 'LINK' ? 'border-primary bg-primary/5' : 'border-muted bg-popover',
           )}
         >
-          <RadioGroupItem value="LINK" id="final-action-link" className="mt-0.5" />
+          <RadioGroupItem
+            value="LINK"
+            id="final-action-link"
+            className="mt-0.5"
+          />
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-semibold">
               <LinkIcon className="h-4 w-4 text-primary" />
@@ -247,7 +259,11 @@ function FinalActionTypeSelector({
               : 'border-muted bg-popover',
           )}
         >
-          <RadioGroupItem value="CAPTURE_EMAIL" id="final-action-email" className="mt-0.5" />
+          <RadioGroupItem
+            value="CAPTURE_EMAIL"
+            id="final-action-email"
+            className="mt-0.5"
+          />
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-semibold">
               <Mail className="h-4 w-4 text-primary" />

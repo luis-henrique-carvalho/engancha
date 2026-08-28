@@ -29,7 +29,10 @@ export function UsersInviteDialog() {
   }
 
   return (
-    <Dialog open={open === 'invite'} onOpenChange={handleClose}>
+    <Dialog
+      open={open === 'invite'}
+      onOpenChange={handleClose}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Convidar pessoa</DialogTitle>
@@ -37,7 +40,10 @@ export function UsersInviteDialog() {
             A pessoa entra como membro após autenticar e confirmar o mesmo e-mail.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form
+          onSubmit={onSubmit}
+          className="space-y-4"
+        >
           <Input
             type="email"
             value={email}
@@ -46,10 +52,18 @@ export function UsersInviteDialog() {
             required
           />
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isInviting}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isInviting}
+            >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isInviting}>
+            <Button
+              type="submit"
+              disabled={isInviting}
+            >
               {isInviting ? 'Enviando…' : 'Enviar convite'}
             </Button>
           </DialogFooter>

@@ -11,7 +11,10 @@ export function AutomationsPrimaryButtons({
   isCreating,
 }: AutomationsPrimaryButtonsProps) {
   return (
-    <Button onClick={onCreateClick} disabled={isCreating}>
+    <Button
+      onClick={onCreateClick}
+      disabled={isCreating}
+    >
       <Plus className="mr-2 size-4" />
       {isCreating ? 'Criando rascunho...' : 'Nova automação'}
     </Button>

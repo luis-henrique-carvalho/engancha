@@ -47,7 +47,10 @@ export function NavUser({ user }: NavUserProps) {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                  <AvatarImage
+                    src={user.image ?? undefined}
+                    alt={user.name}
+                  />
                   <AvatarFallback className="rounded-lg">{fallback}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight">
@@ -66,7 +69,10 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                    <AvatarImage
+                      src={user.image ?? undefined}
+                      alt={user.name}
+                    />
                     <AvatarFallback className="rounded-lg">{fallback}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-start text-sm leading-tight">
@@ -76,7 +82,10 @@ export function NavUser({ user }: NavUserProps) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => setOpen(true)}
+              >
                 <LogOut />
                 Sair
               </DropdownMenuItem>
@@ -85,7 +94,10 @@ export function NavUser({ user }: NavUserProps) {
         </SidebarMenuItem>
       </SidebarMenu>
 
-      <SignOutDialog open={!!open} onOpenChange={setOpen} />
+      <SignOutDialog
+        open={!!open}
+        onOpenChange={setOpen}
+      />
     </>
   )
 }

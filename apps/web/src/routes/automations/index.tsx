@@ -35,7 +35,11 @@ function AutomationsIndexPage() {
       mainClassName="flex flex-1 flex-col gap-4 sm:gap-6"
     >
       {(workspace) => (
-        <AutomationsPageContent workspaceId={workspace.id} params={params} navigate={navigate} />
+        <AutomationsPageContent
+          workspaceId={workspace.id}
+          params={params}
+          navigate={navigate}
+        />
       )}
     </WorkspaceShell>
   )

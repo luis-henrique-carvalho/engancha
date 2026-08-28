@@ -61,7 +61,11 @@ export function SignUpForm({ className, ...props }: React.HTMLAttributes<HTMLFor
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="Seu nome" autoComplete="name" {...field} />
+                <Input
+                  placeholder="Seu nome"
+                  autoComplete="name"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,7 +78,11 @@ export function SignUpForm({ className, ...props }: React.HTMLAttributes<HTMLFor
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="nome@exemplo.com" autoComplete="email" {...field} />
+                <Input
+                  placeholder="nome@exemplo.com"
+                  autoComplete="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -87,18 +95,28 @@ export function SignUpForm({ className, ...props }: React.HTMLAttributes<HTMLFor
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="********" autoComplete="new-password" {...field} />
+                <PasswordInput
+                  placeholder="********"
+                  autoComplete="new-password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         {error && (
-          <p className="text-sm text-destructive" role="alert">
+          <p
+            className="text-sm text-destructive"
+            role="alert"
+          >
             {error}
           </p>
         )}
-        <Button className="mt-2" disabled={isLoading}>
+        <Button
+          className="mt-2"
+          disabled={isLoading}
+        >
           {isLoading ? <Loader2 className="animate-spin" /> : <UserPlus />}Criar conta
         </Button>
       </form>

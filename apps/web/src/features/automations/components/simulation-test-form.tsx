@@ -73,11 +73,17 @@ export function SimulationTestForm({
   }
 
   return (
-    <Card className="h-full" data-testid="simulation-test-form-card">
+    <Card
+      className="h-full"
+      data-testid="simulation-test-form-card"
+    >
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold">Simular comentário</CardTitle>
-          <Badge variant="outline" className="gap-1 border-primary/30 text-primary">
+          <Badge
+            variant="outline"
+            className="gap-1 border-primary/30 text-primary"
+          >
             <Instagram className="size-3" />
             Instagram
           </Badge>
@@ -110,7 +116,10 @@ export function SimulationTestForm({
                 <span className="font-semibold text-foreground">
                   {content.type === 'VIDEO' ? 'Reel / Vídeo' : 'Post publicado'}
                 </span>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0"
+                >
                   Simulado
                 </Badge>
               </div>
@@ -118,7 +127,10 @@ export function SimulationTestForm({
             </div>
           </div>
         ) : (
-          <Alert variant="destructive" className="py-2 text-xs">
+          <Alert
+            variant="destructive"
+            className="py-2 text-xs"
+          >
             <AlertTitle>Conteúdo não vinculado</AlertTitle>
             <AlertDescription>
               Esta automação não possui uma publicação de destino configurada.
@@ -126,7 +138,10 @@ export function SimulationTestForm({
           </Alert>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
           {validationError && (
             <Alert
               variant="destructive"
@@ -138,7 +153,10 @@ export function SimulationTestForm({
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="sim-author" className="text-xs">
+            <Label
+              htmlFor="sim-author"
+              className="text-xs"
+            >
               Autor do comentário <span className="text-destructive">*</span>
             </Label>
             <Input
@@ -154,7 +172,10 @@ export function SimulationTestForm({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="sim-comment-id" className="text-xs">
+            <Label
+              htmlFor="sim-comment-id"
+              className="text-xs"
+            >
               Identificador do comentário (opcional)
             </Label>
             <Input
@@ -170,7 +191,10 @@ export function SimulationTestForm({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="sim-text" className="text-xs">
+            <Label
+              htmlFor="sim-text"
+              className="text-xs"
+            >
               Comentário na publicação <span className="text-destructive">*</span>
             </Label>
             <Textarea

@@ -21,10 +21,16 @@ function TestComponent({ isDirty }: { isDirty: boolean }) {
   return (
     <div>
       <span data-testid="blocked-status">{isBlocked ? 'blocked' : 'unblocked'}</span>
-      <button data-testid="proceed-btn" onClick={() => proceed?.()}>
+      <button
+        data-testid="proceed-btn"
+        onClick={() => proceed?.()}
+      >
         Proceed
       </button>
-      <button data-testid="reset-btn" onClick={() => reset?.()}>
+      <button
+        data-testid="reset-btn"
+        onClick={() => reset?.()}
+      >
         Reset
       </button>
       <UnsavedChangesDialog />

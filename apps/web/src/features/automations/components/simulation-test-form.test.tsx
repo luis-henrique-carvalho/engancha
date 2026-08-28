@@ -17,7 +17,10 @@ describe('SimulationTestForm', () => {
 
   it('renders target content preview and form inputs', async () => {
     const { getByTestId, getByText } = await render(
-      <SimulationTestForm content={mockContent} onSubmit={vi.fn()} />,
+      <SimulationTestForm
+        content={mockContent}
+        onSubmit={vi.fn()}
+      />,
     )
 
     await expect.element(getByTestId('simulation-target-content')).toBeInTheDocument()
@@ -31,7 +34,10 @@ describe('SimulationTestForm', () => {
   it('validates required fields on submit without calling onSubmit when empty', async () => {
     const onSubmit = vi.fn()
     const { getByTestId } = await render(
-      <SimulationTestForm content={mockContent} onSubmit={onSubmit} />,
+      <SimulationTestForm
+        content={mockContent}
+        onSubmit={onSubmit}
+      />,
     )
 
     const textInput = getByTestId('simulation-input-text')
@@ -47,7 +53,10 @@ describe('SimulationTestForm', () => {
   it('calls onSubmit with entered values when valid', async () => {
     const onSubmit = vi.fn()
     const { getByTestId } = await render(
-      <SimulationTestForm content={mockContent} onSubmit={onSubmit} />,
+      <SimulationTestForm
+        content={mockContent}
+        onSubmit={onSubmit}
+      />,
     )
 
     const authorInput = getByTestId('simulation-input-author')

@@ -121,7 +121,10 @@ export function AutomationActivityTabView({
   }
 
   return (
-    <div className="space-y-6" data-testid="automation-activity-tab-view">
+    <div
+      className="space-y-6"
+      data-testid="automation-activity-tab-view"
+    >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
@@ -169,7 +172,10 @@ export function AutomationActivityTabView({
       )}
 
       {error && (
-        <Alert variant="destructive" data-testid="activity-error-alert">
+        <Alert
+          variant="destructive"
+          data-testid="activity-error-alert"
+        >
           <AlertCircle className="size-4" />
           <AlertTitle className="text-xs font-semibold">Falha na consulta de atividades</AlertTitle>
           <AlertDescription className="text-xs flex items-center justify-between">
@@ -220,7 +226,10 @@ export function AutomationActivityTabView({
 
 function AutomationActivityLoadingSkeleton() {
   return (
-    <div className="space-y-4" data-testid="automation-activity-loading">
+    <div
+      className="space-y-4"
+      data-testid="automation-activity-loading"
+    >
       <div className="flex items-center justify-between">
         <Skeleton className="h-5 w-40" />
         <Skeleton className="h-8 w-24" />
@@ -245,9 +254,7 @@ function AutomationActivityFilteredEmpty({ onReset }: { onReset: () => void }) {
         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <FilterX className="size-6" />
         </div>
-        <CardTitle className="text-base font-semibold">
-          Nenhuma atividade encontrada
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">Nenhuma atividade encontrada</CardTitle>
         <CardDescription className="text-xs max-w-sm mx-auto">
           Nenhuma interação corresponde aos critérios e filtros selecionados no momento.
         </CardDescription>
@@ -277,16 +284,18 @@ function AutomationActivityEmpty({ automationId }: { automationId: string }) {
         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
           <Activity className="size-6" />
         </div>
-        <CardTitle className="text-base font-semibold">
-          Nenhuma atividade registrada
-        </CardTitle>
+        <CardTitle className="text-base font-semibold">Nenhuma atividade registrada</CardTitle>
         <CardDescription className="text-xs max-w-sm mx-auto">
           As interações simuladas com a publicação aparecerão aqui em ordem cronológica após o
           primeiro teste.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button asChild size="sm" className="gap-1.5 text-xs font-semibold">
+        <Button
+          asChild
+          size="sm"
+          className="gap-1.5 text-xs font-semibold"
+        >
           <Link to={`/automations/${automationId}/test` as any}>
             <Play className="size-3.5" />
             Fazer um teste agora

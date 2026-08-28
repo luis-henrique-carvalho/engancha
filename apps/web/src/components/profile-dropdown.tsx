@@ -20,14 +20,24 @@ export function ProfileDropdown() {
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Button
+            variant="ghost"
+            className="relative h-8 w-8 rounded-full"
+          >
             <Avatar className="h-8 w-8">
-              <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+              <AvatarImage
+                src="/avatars/01.png"
+                alt="@shadcn"
+              />
               <AvatarFallback>SN</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuContent
+          className="w-56"
+          align="end"
+          forceMount
+        >
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5">
               <p className="text-sm leading-none font-medium">satnaing</p>
@@ -41,13 +51,19 @@ export function ProfileDropdown() {
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => setOpen(true)}
+          >
             Sign out
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <SignOutDialog open={!!open} onOpenChange={setOpen} />
+      <SignOutDialog
+        open={!!open}
+        onOpenChange={setOpen}
+      />
     </>
   )
 }

@@ -55,7 +55,10 @@ export function AutomationActivityItem({
       )}
       data-testid={`activity-item-${execution.id}`}
     >
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+      >
         <div className="p-4">
           <AutomationActivityHeader
             execution={execution}
@@ -116,8 +119,7 @@ function AutomationActivityHeader({
             execution.status === 'COMPLETED' && 'bg-primary/10 text-primary',
             execution.status === 'PROCESSING' && 'bg-secondary text-secondary-foreground',
             execution.status === 'PENDING' && 'bg-muted text-muted-foreground',
-            execution.status === 'IGNORED' &&
-              'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+            execution.status === 'IGNORED' && 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
             execution.status === 'FAILED' && 'bg-destructive/10 text-destructive',
           )}
         >
@@ -131,7 +133,10 @@ function AutomationActivityHeader({
         <div className="space-y-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-semibold truncate">@{execution.input.author}</span>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-normal">
+            <Badge
+              variant="outline"
+              className="text-[10px] px-1.5 py-0 font-normal"
+            >
               <Instagram className="mr-1 size-2.5" />
               Simulado
             </Badge>
@@ -227,7 +232,10 @@ function AutomationActivityTimeline({
     >
       <h5 className="font-semibold text-xs tracking-tight text-foreground flex items-center gap-1.5">
         <span>Jornada da interação</span>
-        <Badge variant="outline" className="text-[10px] py-0 font-normal">
+        <Badge
+          variant="outline"
+          className="text-[10px] py-0 font-normal"
+        >
           Passo a passo
         </Badge>
       </h5>
@@ -310,9 +318,7 @@ function AutomationActivityTimeline({
                   {outputs.linkDelivery.buttonText || 'Acessar Link'}
                 </span>
                 <ArrowRight className="size-3" />
-                <span className="text-muted-foreground truncate">
-                  {outputs.linkDelivery.url}
-                </span>
+                <span className="text-muted-foreground truncate">{outputs.linkDelivery.url}</span>
               </div>
             </div>
           </div>

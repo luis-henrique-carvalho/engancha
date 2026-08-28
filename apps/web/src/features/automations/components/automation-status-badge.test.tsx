@@ -15,7 +15,10 @@ describe('AutomationStatusBadge', () => {
 
   it('renders unpublished changes badge when active with unpublished changes', async () => {
     const { getByText } = await render(
-      <AutomationStatusBadge status="ACTIVE" hasUnpublishedChanges={true} />,
+      <AutomationStatusBadge
+        status="ACTIVE"
+        hasUnpublishedChanges={true}
+      />,
     )
     await expect.element(getByText('Ativa')).toBeInTheDocument()
     await expect.element(getByText('Alterações pendentes')).toBeInTheDocument()

@@ -32,7 +32,11 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
       to: string
       className?: string
     }) => (
-      <a href={to} className={className} {...rest}>
+      <a
+        href={to}
+        className={className}
+        {...rest}
+      >
         {children}
       </a>
     ),

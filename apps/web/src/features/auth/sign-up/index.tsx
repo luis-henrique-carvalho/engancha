@@ -18,7 +18,10 @@ export function SignUp() {
           <CardTitle className="text-lg tracking-tight">Criar conta</CardTitle>
           <CardDescription>
             Você receberá um link para confirmar seu endereço. Já tem acesso?{' '}
-            <Link to="/auth/login" className="underline underline-offset-4 hover:text-primary">
+            <Link
+              to="/auth/login"
+              className="underline underline-offset-4 hover:text-primary"
+            >
               Entrar
             </Link>
           </CardDescription>

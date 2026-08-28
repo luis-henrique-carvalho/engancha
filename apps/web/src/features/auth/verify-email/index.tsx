@@ -40,7 +40,10 @@ export function VerifyEmail({ email }: VerifyEmailProps) {
         </CardHeader>
         <CardContent className="grid gap-4">
           <p className="text-sm text-muted-foreground">{email || 'Seu endereço de e-mail'}</p>
-          <Button onClick={resend} disabled={loading}>
+          <Button
+            onClick={resend}
+            disabled={loading}
+          >
             {loading ? 'Enviando…' : 'Reenviar confirmação'}
           </Button>
         </CardContent>

@@ -26,7 +26,10 @@ export function AutomationEditorLayoutView({
 
   if (isLoading) {
     return (
-      <div className="space-y-6" data-testid="automation-editor-loading">
+      <div
+        className="space-y-6"
+        data-testid="automation-editor-loading"
+      >
         <div className="flex items-center gap-4">
           <Skeleton className="size-9 rounded-md" />
           <div className="space-y-2">
@@ -57,8 +60,14 @@ export function AutomationEditorLayoutView({
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">
           A automação solicitada não existe ou não pertence a este workspace.
         </p>
-        <Button className="mt-6" asChild>
-          <Link to="/automations" search={{ page: 1, limit: 20 }}>
+        <Button
+          className="mt-6"
+          asChild
+        >
+          <Link
+            to="/automations"
+            search={{ page: 1, limit: 20 }}
+          >
             <ArrowLeft className="mr-2 size-4" />
             Voltar para automações
           </Link>
@@ -81,8 +90,14 @@ export function AutomationEditorLayoutView({
         <p className="mt-2 max-w-sm text-sm text-muted-foreground">
           Esta automação foi arquivada e não pode mais ser editada ou reativada.
         </p>
-        <Button className="mt-6" asChild>
-          <Link to="/automations" search={{ page: 1, limit: 20 }}>
+        <Button
+          className="mt-6"
+          asChild
+        >
+          <Link
+            to="/automations"
+            search={{ page: 1, limit: 20 }}
+          >
             <ArrowLeft className="mr-2 size-4" />
             Voltar para automações
           </Link>
@@ -102,12 +117,23 @@ export function AutomationEditorLayoutView({
       automationId={automationId}
       automation={automation}
     >
-      <div className="space-y-6" data-testid="automation-editor-layout">
+      <div
+        className="space-y-6"
+        data-testid="automation-editor-layout"
+      >
         {/* Editor Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" asChild aria-label="Voltar para a listagem">
-              <Link to="/automations" search={{ page: 1, limit: 20 }}>
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              aria-label="Voltar para a listagem"
+            >
+              <Link
+                to="/automations"
+                search={{ page: 1, limit: 20 }}
+              >
                 <ArrowLeft className="size-4" />
               </Link>
             </Button>
@@ -207,7 +233,10 @@ export function AutomationEditorLayoutView({
             <div className="min-w-0 flex-1">{children ?? <Outlet />}</div>
           </div>
         ) : (
-          <div className="min-w-0 flex-1" data-testid="automation-tab-content">
+          <div
+            className="min-w-0 flex-1"
+            data-testid="automation-tab-content"
+          >
             {children ?? <Outlet />}
           </div>
         )}

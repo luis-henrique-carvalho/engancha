@@ -73,7 +73,10 @@ export function CreateSimulatedContentDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={(val) => (!val ? handleClose() : onOpenChange(val))}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => (!val ? handleClose() : onOpenChange(val))}
+    >
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle>Criar conteúdo simulado</DialogTitle>
@@ -82,7 +85,10 @@ export function CreateSimulatedContentDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
           <div className="space-y-2">
             <Label htmlFor="simulated-content-title">Título do conteúdo</Label>
             <Input
@@ -114,7 +120,12 @@ export function CreateSimulatedContentDialog({
           {error && <p className="text-xs text-destructive">{error}</p>}
 
           <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isCreating}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isCreating}
+            >
               Cancelar
             </Button>
             <Button

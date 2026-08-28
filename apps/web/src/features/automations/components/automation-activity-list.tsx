@@ -23,9 +23,15 @@ export function AutomationActivityList({
   onLoadMore,
 }: AutomationActivityListProps) {
   return (
-    <div className="space-y-6" data-testid="automation-activity-list">
+    <div
+      className="space-y-6"
+      data-testid="automation-activity-list"
+    >
       {groups.map((group) => (
-        <div key={group.dateLabel} className="space-y-3">
+        <div
+          key={group.dateLabel}
+          className="space-y-3"
+        >
           {/* Date header */}
           <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             <Calendar className="size-3.5" />

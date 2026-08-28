@@ -70,7 +70,11 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLF
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="nome@exemplo.com" autoComplete="email" {...field} />
+                <Input
+                  placeholder="nome@exemplo.com"
+                  autoComplete="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,7 +87,11 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLF
             <FormItem className="relative">
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="********" autoComplete="current-password" {...field} />
+                <PasswordInput
+                  placeholder="********"
+                  autoComplete="current-password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
               <Link
@@ -96,7 +104,10 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLF
           )}
         />
         {error && (
-          <p className="text-sm text-destructive" role="alert">
+          <p
+            className="text-sm text-destructive"
+            role="alert"
+          >
             {error}
           </p>
         )}
@@ -114,7 +125,12 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLF
             <span className="bg-card px-2 text-muted-foreground">Ou continue com</span>
           </div>
         </div>
-        <Button variant="outline" type="button" disabled={isLoading} onClick={signInWithGoogle}>
+        <Button
+          variant="outline"
+          type="button"
+          disabled={isLoading}
+          onClick={signInWithGoogle}
+        >
           <IconGmail className="h-4 w-4" />
           Google
         </Button>

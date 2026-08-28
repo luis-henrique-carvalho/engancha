@@ -198,7 +198,10 @@ describe('SimulationFollowerChat', () => {
     }
 
     const { getByTestId, getByText } = await render(
-      <SimulationFollowerChat execution={mockExecution} onRetry={onRetry} />,
+      <SimulationFollowerChat
+        execution={mockExecution}
+        onRetry={onRetry}
+      />,
     )
 
     await expect.element(getByTestId('simulation-failed-alert')).toBeInTheDocument()
@@ -214,7 +217,10 @@ describe('SimulationFollowerChat', () => {
 
   it('renders reconnecting badge when isReconnecting is true', async () => {
     const { getByTestId } = await render(
-      <SimulationFollowerChat execution={null} isReconnecting={true} />,
+      <SimulationFollowerChat
+        execution={null}
+        isReconnecting={true}
+      />,
     )
 
     await expect.element(getByTestId('simulation-reconnecting-badge')).toBeInTheDocument()

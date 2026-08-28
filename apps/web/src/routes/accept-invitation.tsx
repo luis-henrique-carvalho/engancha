@@ -54,7 +54,10 @@ function AcceptInvitationPage() {
             </Button>
           ) : null}
           {!unavailable && !unauthenticated ? (
-            <Button onClick={() => void accept()} disabled={session.isPending || isAccepting}>
+            <Button
+              onClick={() => void accept()}
+              disabled={session.isPending || isAccepting}
+            >
               {isAccepting ? 'Aceitando…' : 'Aceitar convite'}
             </Button>
           ) : null}

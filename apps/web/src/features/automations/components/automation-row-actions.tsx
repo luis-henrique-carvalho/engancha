@@ -42,7 +42,10 @@ export function AutomationRowActions({ automation, workspaceId = '' }: Automatio
             <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuContent
+          align="end"
+          className="w-[160px]"
+        >
           {!isArchived && (
             <DropdownMenuItem
               onClick={() => {

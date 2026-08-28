@@ -23,11 +23,19 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
   return [
     {
       accessorKey: 'name',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Nome"
+        />
+      ),
       cell: ({ row }) => {
         const name = row.original.current?.name?.trim() || 'Rascunho sem nome'
         return (
-          <span className="font-medium text-foreground" data-testid="automation-name">
+          <span
+            className="font-medium text-foreground"
+            data-testid="automation-name"
+          >
             {name}
           </span>
         )
@@ -36,7 +44,12 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       accessorKey: 'status',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Status"
+        />
+      ),
       cell: ({ row }) => (
         <AutomationStatusBadge
           status={row.original.status}
@@ -47,11 +60,19 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       id: 'target',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Conteúdo" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Conteúdo"
+        />
+      ),
       cell: ({ row }) => {
         const title = row.original.current?.target?.title || '—'
         return (
-          <span className="text-muted-foreground truncate max-w-[200px] inline-block" title={title}>
+          <span
+            className="text-muted-foreground truncate max-w-[200px] inline-block"
+            title={title}
+          >
             {title}
           </span>
         )
@@ -60,7 +81,12 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       id: 'keyword',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Palavra-chave" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Palavra-chave"
+        />
+      ),
       cell: ({ row }) => {
         const keyword = row.original.current?.keyword || '—'
         return <span className="text-muted-foreground">{keyword}</span>
@@ -69,7 +95,12 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       accessorKey: 'updatedAt',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Atualização" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Atualização"
+        />
+      ),
       cell: ({ row }) => (
         <span className="text-xs text-muted-foreground whitespace-nowrap">
           {formatDate(row.original.updatedAt)}
@@ -79,7 +110,12 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       accessorKey: 'executionCount',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Execuções" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Execuções"
+        />
+      ),
       cell: ({ row }) => (
         <span className="text-sm font-mono text-center block w-full">
           {row.original.executionCount}
@@ -89,7 +125,12 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     },
     {
       accessorKey: 'leadCount',
-      header: ({ column }) => <DataTableColumnHeader column={column} title="Leads" />,
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Leads"
+        />
+      ),
       cell: ({ row }) => (
         <span className="text-sm font-mono text-center block w-full">{row.original.leadCount}</span>
       ),
@@ -98,7 +139,10 @@ export function createAutomationColumns(workspaceId?: string): ColumnDef<Automat
     {
       id: 'actions',
       cell: ({ row }) => (
-        <AutomationRowActions automation={row.original} workspaceId={workspaceId} />
+        <AutomationRowActions
+          automation={row.original}
+          workspaceId={workspaceId}
+        />
       ),
     },
   ]

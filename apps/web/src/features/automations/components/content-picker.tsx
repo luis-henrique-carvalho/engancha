@@ -52,7 +52,10 @@ export function ContentPicker({
   }
 
   return (
-    <div className="space-y-4" data-testid="content-picker">
+    <div
+      className="space-y-4"
+      data-testid="content-picker"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -79,7 +82,10 @@ export function ContentPicker({
       </div>
 
       {isLoading && (
-        <div className="space-y-2" data-testid="content-picker-loading">
+        <div
+          className="space-y-2"
+          data-testid="content-picker-loading"
+        >
           <Skeleton className="h-20 w-full rounded-lg" />
           <Skeleton className="h-20 w-full rounded-lg" />
         </div>
@@ -180,10 +186,16 @@ export function ContentPicker({
                 </div>
 
                 <div className="mt-3 flex items-center gap-1.5 pt-2 border-t border-border/50">
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 uppercase">
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] px-1.5 py-0 uppercase"
+                  >
                     {item.provider}
                   </Badge>
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 uppercase">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1.5 py-0 uppercase"
+                  >
                     {item.mode}
                   </Badge>
                 </div>

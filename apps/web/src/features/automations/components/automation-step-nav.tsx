@@ -32,8 +32,14 @@ export function AutomationStepNav({ automationId, className }: AutomationStepNav
   return (
     <>
       {/* Mobile Select */}
-      <div className="p-1 md:hidden" data-testid="automation-step-nav-mobile">
-        <Select value={currentStep.path} onValueChange={handleSelect}>
+      <div
+        className="p-1 md:hidden"
+        data-testid="automation-step-nav-mobile"
+      >
+        <Select
+          value={currentStep.path}
+          onValueChange={handleSelect}
+        >
           <SelectTrigger className="h-11 w-full">
             <SelectValue placeholder="Etapa da automação" />
           </SelectTrigger>
@@ -41,7 +47,10 @@ export function AutomationStepNav({ automationId, className }: AutomationStepNav
             {AUTOMATION_STEPS.map((step) => {
               const Icon = step.icon
               return (
-                <SelectItem key={step.id} value={step.path}>
+                <SelectItem
+                  key={step.id}
+                  value={step.path}
+                >
                   <div className="flex items-center gap-2.5 px-1 py-0.5">
                     <Icon className="size-4 text-muted-foreground" />
                     <span>{step.title}</span>

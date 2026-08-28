@@ -117,13 +117,22 @@ export function AutomationReviewSummary({
             <>
               <div className="font-semibold text-sm truncate">{current.target.title}</div>
               <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                <Badge variant="outline" className="text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="text-[10px]"
+                >
                   {current.target.provider}
                 </Badge>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="text-[10px]"
+                >
                   {current.target.contentType}
                 </Badge>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge
+                  variant="outline"
+                  className="text-[10px]"
+                >
                   {current.target.mode === 'SIMULATED' ? 'Simulado' : 'Real'}
                 </Badge>
               </div>
@@ -148,7 +157,10 @@ export function AutomationReviewSummary({
             <>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">Gatilho exato:</span>
-                <Badge variant="secondary" className="font-mono text-xs">
+                <Badge
+                  variant="secondary"
+                  className="font-mono text-xs"
+                >
                   {current.keyword}
                 </Badge>
               </div>
@@ -216,7 +228,10 @@ export function AutomationReviewSummary({
             finalAction.type === 'LINK' ? (
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px]"
+                  >
                     Link externo
                   </Badge>
                   <span className="text-xs font-semibold">{finalAction.label || 'Abrir link'}</span>
@@ -229,7 +244,10 @@ export function AutomationReviewSummary({
             ) : (
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px]"
+                  >
                     Captura de e-mail
                   </Badge>
                 </div>

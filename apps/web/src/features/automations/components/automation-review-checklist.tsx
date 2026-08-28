@@ -94,7 +94,10 @@ export function AutomationReviewChecklist({
                       <Icon className="h-4 w-4 shrink-0" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-xs font-semibold truncate" title={item.title}>
+                      <div
+                        className="text-xs font-semibold truncate"
+                        title={item.title}
+                      >
                         {item.title}
                       </div>
                       <div

@@ -112,7 +112,10 @@ export function AutomationTable({
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
-                  <TableHead key={header.id} colSpan={header.colSpan}>
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -124,7 +127,10 @@ export function AutomationTable({
           <TableBody>
             {isLoading ? (
               <TableRow data-testid="automation-table-loading">
-                <TableCell colSpan={columns.length} className="p-4">
+                <TableCell
+                  colSpan={columns.length}
+                  className="p-4"
+                >
                   <div className="space-y-2">
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />

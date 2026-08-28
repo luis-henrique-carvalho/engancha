@@ -144,7 +144,10 @@ export function UsersTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                <TableCell
+                  colSpan={3}
+                  className="h-24 text-center text-muted-foreground"
+                >
                   Ainda não há membros ou convites pendentes.
                 </TableCell>
               </TableRow>

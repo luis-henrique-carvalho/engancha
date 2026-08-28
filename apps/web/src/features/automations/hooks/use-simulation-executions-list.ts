@@ -139,13 +139,25 @@ function resolveExecutionMeta(
 }
 
 function useSimulationExecutionsQuery(params: FetcherBaseParams) {
-  const { serializedFilters, page, limit, startStreamForExecution, closeAllStreams, setExecutions } = params
+  const {
+    serializedFilters,
+    page,
+    limit,
+    startStreamForExecution,
+    closeAllStreams,
+    setExecutions,
+  } = params
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState<boolean>(false)
-  const [meta, setMeta] = useState<{ page: number; limit: number; total: number; totalPages: number }>({
+  const [meta, setMeta] = useState<{
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }>({
     page,
     limit,
     total: 0,
@@ -262,7 +274,17 @@ function useSimulationExecutionsPagination(params: {
     } finally {
       setIsLoadingMore(false)
     }
-  }, [nextCursor, isLoadingMore, hasMore, serializedFilters, attachStreams, setExecutions, setNextCursor, setHasMore, setError])
+  }, [
+    nextCursor,
+    isLoadingMore,
+    hasMore,
+    serializedFilters,
+    attachStreams,
+    setExecutions,
+    setNextCursor,
+    setHasMore,
+    setError,
+  ])
 
   return { isLoadingMore, loadMore }
 }
@@ -324,17 +346,20 @@ function useSimulationExecutionsFetcher({
   const page = options?.page ?? 1
   const limit = options?.limit ?? 20
 
-  const serializedFilters = useMemo(() => buildSerializedFilters(options), [
-    options?.automationId,
-    options?.query,
-    options?.filters?.status,
-    options?.filters?.provider,
-    options?.filters?.mode,
-    options?.filters?.contentType,
-    options?.filters?.outputType,
-    page,
-    limit,
-  ])
+  const serializedFilters = useMemo(
+    () => buildSerializedFilters(options),
+    [
+      options?.automationId,
+      options?.query,
+      options?.filters?.status,
+      options?.filters?.provider,
+      options?.filters?.mode,
+      options?.filters?.contentType,
+      options?.filters?.outputType,
+      page,
+      limit,
+    ],
+  )
 
   const {
     isLoading,
@@ -396,14 +421,10 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
   const automationId = options?.automationId
   const [executions, setExecutions] = useState<SimulationExecutionResponse[]>([])
 
-  const {
-    isReconnecting,
-    closeAllStreams,
-    closeStreamForExecution,
-    startStreamForExecution,
-  } = useSimulationStreamsPool({
-    onUpdate: (item) => updateExecutionInList(item),
-  })
+  const { isReconnecting, closeAllStreams, closeStreamForExecution, startStreamForExecution } =
+    useSimulationStreamsPool({
+      onUpdate: (item) => updateExecutionInList(item),
+    })
 
   const updateExecutionInList = useCallback(
     (item: SimulationExecutionResponse) => {

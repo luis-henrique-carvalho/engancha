@@ -30,7 +30,10 @@ export function AutomationsListView({
   const filters = { query: params.query, status: params.status }
 
   return (
-    <div className="space-y-4" data-testid="automations-list-view">
+    <div
+      className="space-y-4"
+      data-testid="automations-list-view"
+    >
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Automações</h2>
@@ -39,7 +42,10 @@ export function AutomationsListView({
           </p>
         </div>
         {onCreateClick && (
-          <AutomationsPrimaryButtons onCreateClick={onCreateClick} isCreating={isCreating} />
+          <AutomationsPrimaryButtons
+            onCreateClick={onCreateClick}
+            isCreating={isCreating}
+          />
         )}
       </div>
 

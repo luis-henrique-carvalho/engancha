@@ -38,13 +38,22 @@ export function KeywordNormalizationPreview({ keyword }: KeywordNormalizationPre
           </p>
 
           <div className="flex flex-wrap gap-1.5 pt-1">
-            <Badge variant="secondary" className="text-[10px]">
+            <Badge
+              variant="secondary"
+              className="text-[10px]"
+            >
               Sem diferenciação de maiúsculas
             </Badge>
-            <Badge variant="secondary" className="text-[10px]">
+            <Badge
+              variant="secondary"
+              className="text-[10px]"
+            >
               Acentos ignorados
             </Badge>
-            <Badge variant="secondary" className="text-[10px]">
+            <Badge
+              variant="secondary"
+              className="text-[10px]"
+            >
               Espaços unificados
             </Badge>
           </div>

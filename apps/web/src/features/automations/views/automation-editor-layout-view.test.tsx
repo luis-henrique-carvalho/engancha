@@ -21,7 +21,10 @@ vi.mock('@tanstack/react-router', async (importOriginal) => {
     useLocation: () => ({ pathname: mockPathname }),
     useNavigate: () => vi.fn(),
     Link: ({ children, to, ...props }: any) => (
-      <a href={typeof to === 'string' ? to : '#'} {...props}>
+      <a
+        href={typeof to === 'string' ? to : '#'}
+        {...props}
+      >
         {children}
       </a>
     ),
@@ -55,7 +58,10 @@ describe('AutomationEditorLayoutView', () => {
     mockGetById.mockReturnValue(new Promise(() => {}))
 
     const { getByTestId } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-1">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-1"
+      >
         <div>Conteúdo da etapa</div>
       </AutomationEditorLayoutView>,
     )
@@ -72,7 +78,10 @@ describe('AutomationEditorLayoutView', () => {
     )
 
     const { getByTestId, getByText } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-unknown">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-unknown"
+      >
         <div>Conteúdo da etapa</div>
       </AutomationEditorLayoutView>,
     )
@@ -112,7 +121,10 @@ describe('AutomationEditorLayoutView', () => {
     mockGetById.mockResolvedValue(mockAutomation)
 
     const { getByText, getByTestId } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-1">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-1"
+      >
         <div data-testid="step-content">Formulário de Identificação</div>
       </AutomationEditorLayoutView>,
     )
@@ -146,7 +158,10 @@ describe('AutomationEditorLayoutView', () => {
     mockGetById.mockResolvedValue(mockAutomation)
 
     const { getByTestId } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-1">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-1"
+      >
         <div data-testid="test-tab-content">Conteúdo da aba Testar</div>
       </AutomationEditorLayoutView>,
     )
@@ -179,7 +194,10 @@ describe('AutomationEditorLayoutView', () => {
     mockGetById.mockResolvedValue(archivedAutomation)
 
     const { getByTestId, getByText } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-archived">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-archived"
+      >
         <div data-testid="step-content">Formulário de Identificação</div>
       </AutomationEditorLayoutView>,
     )
@@ -230,7 +248,10 @@ describe('AutomationEditorLayoutView', () => {
     mockGetById.mockResolvedValue(activeWithChangesAutomation)
 
     const { getByTestId, getByText } = await renderWithClient(
-      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-active-mod">
+      <AutomationEditorLayoutView
+        workspaceId="ws-1"
+        automationId="auto-active-mod"
+      >
         <div data-testid="step-content">Formulário de Identificação</div>
       </AutomationEditorLayoutView>,
     )
