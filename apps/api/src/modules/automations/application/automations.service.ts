@@ -28,7 +28,7 @@ export class AutomationsService {
   constructor(
     @Inject(AUTOMATION_REPOSITORY) private readonly automations: AutomationRepository,
     @Inject(CONTENT_REPOSITORY) private readonly contents: ContentRepository,
-    private readonly providers: ContentProviderRegistry,
+    @Inject(ContentProviderRegistry) private readonly providers: ContentProviderRegistry,
   ) {}
 
   async list(context: AuthorizationContext, input: PaginationRequest) {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
   createContentRequestSchema,
   paginationRequestSchema,
@@ -15,7 +15,7 @@ import { SimulatedContentsService } from '../../application/simulated-contents.s
 @Controller('simulated-contents')
 @UseGuards(AuthorizationContextGuard)
 export class SimulatedContentsController {
-  constructor(private readonly contents: SimulatedContentsService) {}
+  constructor(@Inject(SimulatedContentsService) private readonly contents: SimulatedContentsService) {}
 
   @Get() list(
     @Query(new ZodValidationPipe(paginationRequestSchema)) query: PaginationRequest,

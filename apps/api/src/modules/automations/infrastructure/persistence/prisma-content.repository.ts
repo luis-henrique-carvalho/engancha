@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import type { CreateContentRequest, PaginationRequest } from '@engancha/contracts'
 import { PrismaService } from '../../../../platform/database/prisma.service'
 import type { ContentRepository } from '../../domain/ports/content.repository'
 
 @Injectable()
 export class PrismaContentRepository implements ContentRepository {
-  constructor(private readonly database: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly database: PrismaService) {}
   async list(organizationId: string, input: PaginationRequest) {
     const where = { organizationId }
     const [items, total] = await Promise.all([

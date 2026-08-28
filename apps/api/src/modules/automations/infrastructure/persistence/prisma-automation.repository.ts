@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import {
   normalizeAutomationKeyword,
   type CreateAutomationRequest,
@@ -27,7 +27,7 @@ const include = {
 } as const
 @Injectable()
 export class PrismaAutomationRepository implements AutomationRepository {
-  constructor(private readonly database: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly database: PrismaService) {}
   async list(organizationId: string, input: PaginationRequest) {
     const where = { organizationId }
     const [items, total] = await Promise.all([

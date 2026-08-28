@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
   createAutomationRequestSchema,
   paginationRequestSchema,
@@ -17,7 +17,7 @@ import { AutomationsService } from '../../application/automations.service'
 @Controller('automations')
 @UseGuards(AuthorizationContextGuard)
 export class AutomationsController {
-  constructor(private readonly automations: AutomationsService) {}
+  constructor(@Inject(AutomationsService) private readonly automations: AutomationsService) {}
   @Get() list(
     @Query(new ZodValidationPipe(paginationRequestSchema)) query: PaginationRequest,
     @Req() request: RequestWithAuthorization,
