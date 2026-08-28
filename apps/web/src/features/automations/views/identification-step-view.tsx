@@ -21,6 +21,7 @@ import {
 } from '../data/automation-step-schemas'
 import { useAutomationMutations } from '../hooks/use-automation-mutations'
 import { useAutomation } from '../hooks/use-automation'
+import { useUnsavedChanges } from '../hooks/use-unsaved-changes'
 
 interface IdentificationStepViewProps {
   workspaceId?: string
@@ -63,11 +64,16 @@ export function IdentificationStepView({
 
   const watchedName = form.watch('name') ?? ''
 
+  const { UnsavedChangesDialog } = useUnsavedChanges({
+    isDirty: form.formState.isDirty,
+  })
+
   const onSubmit = async (values: AutomationIdentificationFormValues) => {
     const trimmed = values.name?.trim()
     await patchAutomation({
       name: trimmed ? trimmed : null,
     })
+    form.reset(values)
   }
 
   const handleNext = () => {
@@ -129,6 +135,7 @@ export function IdentificationStepView({
           />
         </form>
       </Form>
+      <UnsavedChangesDialog />
     </AutomationStepSection>
   )
 }

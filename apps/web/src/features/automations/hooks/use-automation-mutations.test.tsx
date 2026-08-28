@@ -8,11 +8,13 @@ import { automationsKeys } from '../services/automations-query-keys'
 
 const mockPatch = vi.fn<() => Promise<AutomationResponse>>()
 const mockPublish = vi.fn<() => Promise<AutomationResponse>>()
+const mockPause = vi.fn<() => Promise<AutomationResponse>>()
 
 vi.mock('../services/automations-api', () => ({
   AutomationsApi: {
     patch: (...args: unknown[]) => mockPatch(...(args as [])),
     publish: (...args: unknown[]) => mockPublish(...(args as [])),
+    pause: (...args: unknown[]) => mockPause(...(args as [])),
   },
 }))
 
@@ -243,5 +245,101 @@ describe('useAutomationMutations', () => {
     })
 
     expect(toast.success).toHaveBeenCalledWith('Automação publicada com sucesso!')
+  })
+
+  it('pauses automation, updates detail cache to PAUSED, invalidates list cache and shows toast', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false, gcTime: 0 } },
+    })
+
+    const initialAutomation: AutomationResponse = {
+      id: 'auto-123',
+      status: 'ACTIVE',
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T10:00:00.000Z',
+      hasUnpublishedChanges: false,
+      executionCount: 5,
+      leadCount: 2,
+      draft: null,
+      published: {
+        id: 'rev-1',
+        version: 1,
+        name: 'Automação Ativa',
+        target: {
+          id: 'post-1',
+          organizationId: 'ws-1',
+          title: 'Post 1',
+          externalContentId: 'ig-1',
+          provider: 'INSTAGRAM',
+          mode: 'SIMULATED',
+          contentType: 'POST',
+          createdAt: '2026-08-27T10:00:00.000Z',
+          updatedAt: '2026-08-27T10:00:00.000Z',
+        },
+        keyword: 'QUERO',
+        actions: [],
+      },
+      current: {
+        id: 'rev-1',
+        version: 1,
+        name: 'Automação Ativa',
+        target: {
+          id: 'post-1',
+          organizationId: 'ws-1',
+          title: 'Post 1',
+          externalContentId: 'ig-1',
+          provider: 'INSTAGRAM',
+          mode: 'SIMULATED',
+          contentType: 'POST',
+          createdAt: '2026-08-27T10:00:00.000Z',
+          updatedAt: '2026-08-27T10:00:00.000Z',
+        },
+        keyword: 'QUERO',
+        actions: [],
+      },
+    }
+
+    const pausedAutomation: AutomationResponse = {
+      ...initialAutomation,
+      status: 'PAUSED',
+    }
+
+    queryClient.setQueryData(automationsKeys.detail('ws-1', 'auto-123'), initialAutomation)
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries')
+
+    mockPause.mockResolvedValue(pausedAutomation)
+
+    let capturedMutations: ReturnType<typeof useAutomationMutations> | undefined
+
+    const { getByTestId } = await render(
+      <QueryClientProvider client={queryClient}>
+        <TestMutationsComponent
+          workspaceId="ws-1"
+          automationId="auto-123"
+          onTrigger={(m) => {
+            capturedMutations = m
+          }}
+        />
+      </QueryClientProvider>,
+    )
+
+    await getByTestId('trigger-btn').click()
+    expect(capturedMutations).toBeDefined()
+
+    const result = await capturedMutations!.pauseAutomation()
+
+    expect(mockPause).toHaveBeenCalledWith('auto-123')
+    expect(result).toEqual(pausedAutomation)
+
+    const cachedDetail = queryClient.getQueryData<AutomationResponse>(
+      automationsKeys.detail('ws-1', 'auto-123'),
+    )
+    expect(cachedDetail?.status).toBe('PAUSED')
+
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: automationsKeys.lists('ws-1'),
+    })
+
+    expect(toast.success).toHaveBeenCalledWith('Automação pausada com sucesso')
   })
 })

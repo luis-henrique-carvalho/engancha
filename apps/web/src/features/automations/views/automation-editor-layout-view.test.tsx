@@ -120,4 +120,99 @@ describe('AutomationEditorLayoutView', () => {
     await expect.element(getByTestId('automation-status-draft')).toBeInTheDocument()
     await expect.element(getByTestId('step-content')).toBeInTheDocument()
   })
+
+  it('renders blocked state when automation is archived', async () => {
+    const archivedAutomation: AutomationResponse = {
+      id: 'auto-archived',
+      status: 'ARCHIVED',
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T10:00:00.000Z',
+      hasUnpublishedChanges: false,
+      executionCount: 50,
+      leadCount: 20,
+      draft: null,
+      published: null,
+      current: {
+        id: 'rev-archived-1',
+        version: 1,
+        name: 'Automação Antiga Arquivada',
+        target: null,
+        keyword: null,
+        actions: [],
+      },
+    }
+
+    mockGetById.mockResolvedValue(archivedAutomation)
+
+    const { getByTestId, getByText, queryByTestId } = await renderWithClient(
+      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-archived">
+        <div data-testid="step-content">Formulário de Identificação</div>
+      </AutomationEditorLayoutView>,
+    )
+
+    await expect.element(getByTestId('automation-editor-archived')).toBeInTheDocument()
+    await expect.element(getByText('Automação arquivada')).toBeInTheDocument()
+    await expect
+      .element(
+        getByText('Esta automação foi arquivada e não pode mais ser editada ou reativada.'),
+      )
+      .toBeInTheDocument()
+    await expect.element(getByTestId('step-content')).not.toBeInTheDocument()
+  })
+
+  it('renders informative banner when automation is active with unpublished changes', async () => {
+    const activeWithChangesAutomation: AutomationResponse = {
+      id: 'auto-active-mod',
+      status: 'ACTIVE',
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T12:00:00.000Z',
+      hasUnpublishedChanges: true,
+      executionCount: 12,
+      leadCount: 6,
+      draft: {
+        id: 'rev-draft-2',
+        version: 2,
+        name: 'Automação Ativa Modificada',
+        target: null,
+        keyword: 'NOVO',
+        actions: [],
+      },
+      published: {
+        id: 'rev-pub-1',
+        version: 1,
+        name: 'Automação Ativa',
+        target: null,
+        keyword: 'ANTIGO',
+        actions: [],
+      },
+      current: {
+        id: 'rev-draft-2',
+        version: 2,
+        name: 'Automação Ativa Modificada',
+        target: null,
+        keyword: 'NOVO',
+        actions: [],
+      },
+    }
+
+    mockGetById.mockResolvedValue(activeWithChangesAutomation)
+
+    const { getByTestId, getByText } = await renderWithClient(
+      <AutomationEditorLayoutView workspaceId="ws-1" automationId="auto-active-mod">
+        <div data-testid="step-content">Formulário de Identificação</div>
+      </AutomationEditorLayoutView>,
+    )
+
+    await expect.element(getByTestId('automation-status-unpublished-badge')).toBeInTheDocument()
+    await expect
+      .element(getByTestId('automation-active-unpublished-banner'))
+      .toBeInTheDocument()
+    await expect
+      .element(
+        getByText(
+          'Esta automação está ativa com alterações pendentes de publicação. A versão anterior continua ativa no Instagram até que uma nova versão seja publicada.',
+        ),
+      )
+      .toBeInTheDocument()
+  })
 })

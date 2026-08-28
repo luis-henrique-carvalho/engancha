@@ -33,6 +33,7 @@ import {
 } from '../data/automation-step-schemas'
 import { useAutomationMutations } from '../hooks/use-automation-mutations'
 import { useAutomation } from '../hooks/use-automation'
+import { useUnsavedChanges } from '../hooks/use-unsaved-changes'
 
 interface FinalActionStepViewProps {
   workspaceId?: string
@@ -105,6 +106,10 @@ export function FinalActionStepView({
     return v.actionType === 'LINK' ? (v.label ?? '') : ''
   }
 
+  const { UnsavedChangesDialog } = useUnsavedChanges({
+    isDirty: form.formState.isDirty,
+  })
+
   const handleModeChange = (newType: 'LINK' | 'CAPTURE_EMAIL') => {
     setSelectedType(newType)
     if (newType === 'LINK') {
@@ -152,6 +157,7 @@ export function FinalActionStepView({
     await patchAutomation({
       actions: updatedActions,
     })
+    form.reset(values)
   }
 
   const handleNext = () => {
@@ -327,6 +333,7 @@ export function FinalActionStepView({
           />
         </form>
       </Form>
+      <UnsavedChangesDialog />
     </AutomationStepSection>
   )
 }

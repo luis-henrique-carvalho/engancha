@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import type { AutomationResponse } from '@engancha/contracts'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -10,11 +11,12 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination } from '@/components/data-table/pagination'
-import { automationColumns } from './automation-columns'
+import { createAutomationColumns } from './automation-columns'
 
 interface AutomationTableProps {
   data: AutomationResponse[]
   columns?: ColumnDef<AutomationResponse>[]
+  workspaceId?: string
   isLoading?: boolean
   page: number
   limit: number
@@ -25,7 +27,8 @@ interface AutomationTableProps {
 
 export function AutomationTable({
   data,
-  columns = automationColumns,
+  columns,
+  workspaceId,
   isLoading = false,
   page,
   limit,
@@ -33,9 +36,14 @@ export function AutomationTable({
   onPageChange,
   onLimitChange,
 }: AutomationTableProps) {
+  const tableColumns = useMemo(() => {
+    if (columns) return columns
+    return createAutomationColumns(workspaceId)
+  }, [columns, workspaceId])
+
   const table = useReactTable({
     data,
-    columns,
+    columns: tableColumns,
     pageCount: totalPages,
     state: {
       pagination: {
@@ -77,7 +85,7 @@ export function AutomationTable({
           <TableBody>
             {isLoading ? (
               <TableRow data-testid="automation-table-loading">
-                <TableCell colSpan={columns.length} className="p-4">
+                <TableCell colSpan={tableColumns.length} className="p-4">
                   <div className="space-y-2">
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />
@@ -102,7 +110,7 @@ export function AutomationTable({
             ) : (
               <TableRow data-testid="automation-table-empty">
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={tableColumns.length}
                   className="h-24 text-center text-muted-foreground"
                 >
                   Nenhuma automação cadastrada.

@@ -11,7 +11,9 @@ export interface AutomationReviewProps {
   automationId?: string
   onNavigateStep?: (stepId: AutomationStepId) => void
   onPublish?: () => Promise<void>
+  onPause?: () => void
   isPublishing?: boolean
+  isPausing?: boolean
   publishIssues?: string[] | null
   publishErrorMessage?: string | null
 }
@@ -20,7 +22,9 @@ export function AutomationReview({
   automation,
   onNavigateStep,
   onPublish,
+  onPause,
   isPublishing = false,
+  isPausing = false,
   publishIssues = null,
   publishErrorMessage = null,
 }: AutomationReviewProps) {
@@ -41,8 +45,11 @@ export function AutomationReview({
       <AutomationReviewPublishBar
         status={automation.status}
         isReady={readiness.isReady}
+        hasUnpublishedChanges={automation.hasUnpublishedChanges}
         isPublishing={isPublishing}
+        isPausing={isPausing}
         onPublish={onPublish}
+        onPause={onPause}
       />
     </div>
   )

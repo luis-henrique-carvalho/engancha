@@ -1,5 +1,6 @@
 import { Link, Outlet } from '@tanstack/react-router'
-import { ArrowLeft, Bot } from 'lucide-react'
+import { Archive, ArrowLeft, Bot, Info } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -64,6 +65,30 @@ export function AutomationEditorLayoutView({
     )
   }
 
+  if (automation.status === 'ARCHIVED') {
+    return (
+      <div
+        className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center"
+        role="alert"
+        data-testid="automation-editor-archived"
+      >
+        <div className="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Archive className="size-7" />
+        </div>
+        <h3 className="mt-4 text-lg font-semibold tracking-tight">Automação arquivada</h3>
+        <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+          Esta automação foi arquivada e não pode mais ser editada ou reativada.
+        </p>
+        <Button className="mt-6" asChild>
+          <Link to="/automations" search={{ page: 1, limit: 20 }}>
+            <ArrowLeft className="mr-2 size-4" />
+            Voltar para automações
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
   const name = automation.current?.name?.trim() || 'Rascunho de automação'
 
   return (
@@ -100,6 +125,20 @@ export function AutomationEditorLayoutView({
             </div>
           </div>
         </div>
+
+        {automation.status === 'ACTIVE' && automation.hasUnpublishedChanges && (
+          <Alert
+            className="border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200"
+            data-testid="automation-active-unpublished-banner"
+          >
+            <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <AlertTitle>Alterações não publicadas</AlertTitle>
+            <AlertDescription className="text-xs">
+              Esta automação está ativa com alterações pendentes de publicação. A versão anterior
+              continua ativa no Instagram até que uma nova versão seja publicada.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <Separator />
 

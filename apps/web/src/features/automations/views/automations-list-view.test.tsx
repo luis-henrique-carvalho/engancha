@@ -6,11 +6,13 @@ import { userEvent } from 'vitest/browser'
 import { AutomationsListView } from './automations-list-view'
 
 const mockList = vi.fn<() => Promise<AutomationListResponse>>()
+const mockPause = vi.fn<() => Promise<AutomationResponse>>()
 const navigateMock = vi.fn()
 
 vi.mock('../services/automations-api', () => ({
   AutomationsApi: {
     list: (...args: unknown[]) => mockList(...(args as [])),
+    pause: (...args: unknown[]) => mockPause(...(args as [])),
   },
 }))
 
@@ -163,5 +165,117 @@ describe('AutomationsListView', () => {
     await expect.element(getByTestId('automation-status-active')).toBeInTheDocument()
     await expect.element(getByText('15', { exact: true })).toBeInTheDocument()
     await expect.element(getByText('8', { exact: true })).toBeInTheDocument()
+  })
+
+  it('allows pausing an active automation via confirm dialog in row actions', async () => {
+    const activeAutomation = {
+      id: 'auto-active',
+      status: 'ACTIVE' as const,
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T12:30:00.000Z',
+      hasUnpublishedChanges: false,
+      executionCount: 10,
+      leadCount: 5,
+      draft: null,
+      published: {
+        id: 'rev-1',
+        version: 1,
+        name: 'Automação Ativa',
+        target: null,
+        keyword: 'PROMO',
+        actions: [],
+      },
+      current: {
+        id: 'rev-1',
+        version: 1,
+        name: 'Automação Ativa',
+        target: null,
+        keyword: 'PROMO',
+        actions: [],
+      },
+    }
+
+    mockList.mockResolvedValue({
+      items: [activeAutomation],
+      meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    })
+
+    mockPause.mockResolvedValue({
+      ...activeAutomation,
+      status: 'PAUSED',
+    })
+
+    const { getByRole, getByText } = await renderWithClient(
+      <AutomationsListView
+        workspaceId="ws-123"
+        params={{ page: 1, limit: 20 }}
+        onParamsChange={vi.fn()}
+      />,
+    )
+
+    // Open row actions dropdown
+    const menuButton = getByRole('button', { name: 'Abrir menu de ações' })
+    await userEvent.click(menuButton)
+
+    // Check pause action is visible and click it
+    const pauseItem = getByRole('menuitem', { name: 'Pausar' })
+    await expect.element(pauseItem).toBeInTheDocument()
+    await userEvent.click(pauseItem)
+
+    // Confirm dialog should open
+    await expect.element(getByText('Pausar automação')).toBeInTheDocument()
+    await expect
+      .element(
+        getByText(
+          'Deseja pausar esta automação? Ela deixará de responder novos comentários e DMs imediatamente.',
+        ),
+      )
+      .toBeInTheDocument()
+
+    // Confirm pause
+    const confirmButton = getByRole('button', { name: 'Pausar' })
+    await userEvent.click(confirmButton)
+
+    expect(mockPause).toHaveBeenCalledWith('auto-active')
+  })
+
+  it('does not offer pause action for paused automations and hides edit for archived automations', async () => {
+    const pausedAutomation = {
+      id: 'auto-paused',
+      status: 'PAUSED' as const,
+      createdAt: '2026-08-27T10:00:00.000Z',
+      updatedAt: '2026-08-27T12:30:00.000Z',
+      hasUnpublishedChanges: false,
+      executionCount: 0,
+      leadCount: 0,
+      draft: null,
+      published: null,
+      current: {
+        id: 'rev-1',
+        version: 1,
+        name: 'Automação Pausada',
+        target: null,
+        keyword: null,
+        actions: [],
+      },
+    }
+
+    mockList.mockResolvedValue({
+      items: [pausedAutomation],
+      meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+    })
+
+    const { getByRole } = await renderWithClient(
+      <AutomationsListView
+        workspaceId="ws-123"
+        params={{ page: 1, limit: 20 }}
+        onParamsChange={vi.fn()}
+      />,
+    )
+
+    const menuButton = getByRole('button', { name: 'Abrir menu de ações' })
+    await userEvent.click(menuButton)
+
+    await expect.element(getByRole('menuitem', { name: 'Pausar' })).not.toBeInTheDocument()
   })
 })

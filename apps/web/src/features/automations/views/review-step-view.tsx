@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import type { AutomationResponse } from '@engancha/contracts'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 import { ApiClientError } from '@/lib/api-client'
 import { AutomationReview } from '../components/automation-review'
 import { AutomationStepSection } from '../components/automation-step-section'
@@ -15,6 +16,7 @@ export interface ReviewStepViewProps {
   automation?: AutomationResponse
   onNavigateStep?: (stepId: AutomationStepId) => void
   onPublished?: () => void
+  onPaused?: () => void
 }
 
 export function ReviewStepView({
@@ -23,6 +25,7 @@ export function ReviewStepView({
   automation: propAutomation,
   onNavigateStep: propOnNavigateStep,
   onPublished: propOnPublished,
+  onPaused: propOnPaused,
 }: ReviewStepViewProps = {}) {
   const context = useOptionalAutomationEditor()
   const navigate = useNavigate()
@@ -36,10 +39,14 @@ export function ReviewStepView({
   )
 
   const activeAutomation = propAutomation ?? context?.automation ?? fetchedAutomation
-  const { publishAutomation, isPublishing } = useAutomationMutations(workspaceId, automationId)
+  const { publishAutomation, isPublishing, pauseAutomation, isPausing } = useAutomationMutations(
+    workspaceId,
+    automationId,
+  )
 
   const [publishIssues, setPublishIssues] = useState<string[] | null>(null)
   const [publishErrorMessage, setPublishErrorMessage] = useState<string | null>(null)
+  const [isPauseDialogOpen, setIsPauseDialogOpen] = useState(false)
 
   const handleNavigateStep = (stepId: AutomationStepId) => {
     if (propOnNavigateStep) {
@@ -67,11 +74,30 @@ export function ReviewStepView({
         setPublishErrorMessage(
           'A automação possui requisitos obrigatórios incompletos para publicação.',
         )
+      } else if (error instanceof ApiClientError && error.code === 'AUTOMATION_TRIGGER_CONFLICT') {
+        setPublishIssues(['targetId', 'keyword'])
+        setPublishErrorMessage(
+          'Já existe outra automação ativa configurada para a mesma combinação de conteúdo e palavra-chave.',
+        )
+      } else if (error instanceof ApiClientError && error.code === 'AUTOMATION_ARCHIVED') {
+        setPublishErrorMessage(
+          'Esta automação está arquivada e não pode mais ser publicada ou modificada.',
+        )
       } else {
         setPublishErrorMessage(
           error instanceof Error ? error.message : 'Falha inesperada ao publicar a automação.',
         )
       }
+    }
+  }
+
+  const handleConfirmPause = async () => {
+    try {
+      await pauseAutomation()
+      setIsPauseDialogOpen(false)
+      propOnPaused?.()
+    } catch {
+      // Handled by toast in useAutomationMutations
     }
   }
 
@@ -87,20 +113,36 @@ export function ReviewStepView({
   }
 
   return (
-    <AutomationStepSection
-      title="Revisão e publicação"
-      description="Valide a integridade do fluxo e publique a automação."
-    >
-      <AutomationReview
-        automation={activeAutomation}
-        workspaceId={workspaceId}
-        automationId={automationId}
-        onNavigateStep={handleNavigateStep}
-        onPublish={handlePublish}
-        isPublishing={isPublishing}
-        publishIssues={publishIssues}
-        publishErrorMessage={publishErrorMessage}
+    <>
+      <AutomationStepSection
+        title="Revisão e publicação"
+        description="Valide a integridade do fluxo e publique a automação."
+      >
+        <AutomationReview
+          automation={activeAutomation}
+          workspaceId={workspaceId}
+          automationId={automationId}
+          onNavigateStep={handleNavigateStep}
+          onPublish={handlePublish}
+          onPause={() => setIsPauseDialogOpen(true)}
+          isPublishing={isPublishing}
+          isPausing={isPausing}
+          publishIssues={publishIssues}
+          publishErrorMessage={publishErrorMessage}
+        />
+      </AutomationStepSection>
+
+      <ConfirmDialog
+        open={isPauseDialogOpen}
+        onOpenChange={setIsPauseDialogOpen}
+        title="Pausar automação"
+        desc="Deseja pausar esta automação? Ela deixará de responder novos comentários e DMs imediatamente."
+        confirmText="Pausar"
+        cancelBtnText="Cancelar"
+        destructive
+        isLoading={isPausing}
+        handleConfirm={handleConfirmPause}
       />
-    </AutomationStepSection>
+    </>
   )
 }

@@ -32,10 +32,24 @@ export function useAutomationMutations(workspaceId: string, automationId: string
     },
   })
 
+  const pauseMutation = useMutation({
+    mutationFn: () => AutomationsApi.pause(automationId),
+    onSuccess: (updatedAutomation) => {
+      queryClient.setQueryData(automationsKeys.detail(workspaceId, automationId), updatedAutomation)
+      void invalidateAutomationsList(queryClient, workspaceId)
+      toast.success('Automação pausada com sucesso')
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Não foi possível pausar a automação')
+    },
+  })
+
   return {
     patchAutomation: patchMutation.mutateAsync,
     isSaving: patchMutation.isPending,
     publishAutomation: publishMutation.mutateAsync,
     isPublishing: publishMutation.isPending,
+    pauseAutomation: pauseMutation.mutateAsync,
+    isPausing: pauseMutation.isPending,
   }
 }

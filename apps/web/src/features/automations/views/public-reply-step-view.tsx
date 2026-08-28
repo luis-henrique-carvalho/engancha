@@ -22,6 +22,7 @@ import {
 } from '../data/automation-step-schemas'
 import { useAutomationMutations } from '../hooks/use-automation-mutations'
 import { useAutomation } from '../hooks/use-automation'
+import { useUnsavedChanges } from '../hooks/use-unsaved-changes'
 
 interface PublicReplyStepViewProps {
   workspaceId?: string
@@ -65,6 +66,10 @@ export function PublicReplyStepView({
 
   const watchedText = form.watch('text') ?? ''
 
+  const { UnsavedChangesDialog } = useUnsavedChanges({
+    isDirty: form.formState.isDirty,
+  })
+
   const onSubmit = async (values: AutomationPublicReplyFormValues) => {
     const updatedActions = buildUpdatedActions(currentActions, {
       publicReply: values.text,
@@ -72,6 +77,7 @@ export function PublicReplyStepView({
     await patchAutomation({
       actions: updatedActions,
     })
+    form.reset(values)
   }
 
   const handleNext = () => {
@@ -135,6 +141,7 @@ export function PublicReplyStepView({
           />
         </form>
       </Form>
+      <UnsavedChangesDialog />
     </AutomationStepSection>
   )
 }

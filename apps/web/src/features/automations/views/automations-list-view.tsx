@@ -42,6 +42,7 @@ export function AutomationsListView({
       </div>
 
       <AutomationTable
+        workspaceId={workspaceId}
         data={items}
         isLoading={automations.isLoading}
         page={meta.page}

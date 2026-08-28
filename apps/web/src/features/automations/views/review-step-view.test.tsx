@@ -6,11 +6,13 @@ import { ApiClientError } from '@/lib/api-client'
 import { ReviewStepView } from './review-step-view'
 
 const mockPublish = vi.fn<() => Promise<AutomationResponse>>()
+const mockPause = vi.fn<() => Promise<AutomationResponse>>()
 const mockNavigate = vi.fn()
 
 vi.mock('../services/automations-api', () => ({
   AutomationsApi: {
     publish: (...args: unknown[]) => mockPublish(...(args as [])),
+    pause: (...args: unknown[]) => mockPause(...(args as [])),
   },
 }))
 
@@ -287,5 +289,78 @@ describe('ReviewStepView', () => {
     await expect.element(errorAlert).toBeInTheDocument()
     await expect.element(errorAlert.getByText('Conteúdo')).toBeInTheDocument()
     await expect.element(errorAlert.getByText('Palavra-chave')).toBeInTheDocument()
+  })
+
+  it('allows pausing an active automation with confirm dialog from review view', async () => {
+    const queryClient = createTestQueryClient()
+    const activeAutomation: AutomationResponse = {
+      ...mockCompleteAutomation,
+      status: 'ACTIVE',
+      published: mockCompleteAutomation.current,
+    }
+    mockPause.mockResolvedValue({
+      ...activeAutomation,
+      status: 'PAUSED',
+    })
+
+    const { getByTestId, getByRole, getByText } = await render(
+      <QueryClientProvider client={queryClient}>
+        <ReviewStepView
+          workspaceId="ws-1"
+          automationId="auto-100"
+          automation={activeAutomation}
+        />
+      </QueryClientProvider>,
+    )
+
+    const pauseButton = getByTestId('automation-pause-button')
+    await expect.element(pauseButton).toBeInTheDocument()
+    await pauseButton.click()
+
+    await expect
+      .element(getByRole('heading', { name: 'Pausar automação' }))
+      .toBeInTheDocument()
+    const confirmButton = getByRole('button', { name: 'Pausar' })
+    await confirmButton.click()
+
+    expect(mockPause).toHaveBeenCalledWith('auto-100')
+  })
+
+  it('handles backend conflict error AUTOMATION_TRIGGER_CONFLICT and provides shortcuts', async () => {
+    const queryClient = createTestQueryClient()
+    const onNavigateStepMock = vi.fn()
+    const conflictError = new ApiClientError('Conflict on automation trigger', {
+      status: 409,
+      code: 'AUTOMATION_TRIGGER_CONFLICT',
+    })
+    mockPublish.mockRejectedValue(conflictError)
+
+    const { getByTestId } = await render(
+      <QueryClientProvider client={queryClient}>
+        <ReviewStepView
+          workspaceId="ws-1"
+          automationId="auto-100"
+          automation={mockCompleteAutomation}
+          onNavigateStep={onNavigateStepMock}
+        />
+      </QueryClientProvider>,
+    )
+
+    const publishButton = getByTestId('automation-publish-button')
+    await publishButton.click()
+
+    const errorAlert = getByTestId('automation-publish-error-alert')
+    await expect.element(errorAlert).toBeInTheDocument()
+    await expect
+      .element(
+        errorAlert.getByText(
+          'Já existe outra automação ativa configurada para a mesma combinação de conteúdo e palavra-chave.',
+        ),
+      )
+      .toBeInTheDocument()
+
+    const contentShortcut = errorAlert.getByRole('button', { name: 'Conteúdo' })
+    await contentShortcut.click()
+    expect(onNavigateStepMock).toHaveBeenCalledWith('content')
   })
 })

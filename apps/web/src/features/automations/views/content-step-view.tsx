@@ -13,6 +13,7 @@ import {
 } from '../data/automation-step-schemas'
 import { useAutomationMutations } from '../hooks/use-automation-mutations'
 import { useAutomation } from '../hooks/use-automation'
+import { useUnsavedChanges } from '../hooks/use-unsaved-changes'
 
 interface ContentStepViewProps {
   workspaceId?: string
@@ -48,9 +49,16 @@ export function ContentStepView({
     values: {
       targetId: currentTargetId,
     },
+    resetOptions: {
+      keepDirtyValues: true,
+    },
     defaultValues: {
       targetId: currentTargetId,
     },
+  })
+
+  const { UnsavedChangesDialog } = useUnsavedChanges({
+    isDirty: form.formState.isDirty,
   })
 
   const onSubmit = async (values: AutomationContentFormValues) => {
@@ -58,6 +66,7 @@ export function ContentStepView({
     await patchAutomation({
       targetId: targetId ? targetId : null,
     })
+    form.reset(values)
   }
 
   const handleNext = () => {
@@ -106,6 +115,7 @@ export function ContentStepView({
           />
         </form>
       </Form>
+      <UnsavedChangesDialog />
     </AutomationStepSection>
   )
 }
