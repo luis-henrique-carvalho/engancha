@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   automationContentSchema,
+  automationDirectMessageSchema,
+  automationFinalActionSchema,
   automationIdentificationSchema,
   automationKeywordSchema,
+  automationPublicReplySchema,
 } from './automation-step-schemas'
 
 describe('automationIdentificationSchema', () => {
@@ -73,3 +76,124 @@ describe('automationKeywordSchema', () => {
     }
   })
 })
+
+describe('automationPublicReplySchema', () => {
+  it('allows valid public reply text up to 1000 characters', () => {
+    const result = automationPublicReplySchema.safeParse({ text: 'Obrigado pelo seu comentário!' })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.text).toBe('Obrigado pelo seu comentário!')
+    }
+  })
+
+  it('allows empty or omitted text for drafts', () => {
+    expect(automationPublicReplySchema.safeParse({}).success).toBe(true)
+    expect(automationPublicReplySchema.safeParse({ text: '' }).success).toBe(true)
+    expect(automationPublicReplySchema.safeParse({ text: undefined }).success).toBe(true)
+  })
+
+  it('rejects public reply text with more than 1000 characters', () => {
+    const longText = 'a'.repeat(1001)
+    const result = automationPublicReplySchema.safeParse({ text: longText })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('1.000')
+    }
+  })
+})
+
+describe('automationDirectMessageSchema', () => {
+  it('allows valid direct message text up to 1000 characters', () => {
+    const result = automationDirectMessageSchema.safeParse({ text: 'Olá! Segue seu link promocional.' })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data.text).toBe('Olá! Segue seu link promocional.')
+    }
+  })
+
+  it('allows empty or omitted text for drafts', () => {
+    expect(automationDirectMessageSchema.safeParse({}).success).toBe(true)
+    expect(automationDirectMessageSchema.safeParse({ text: '' }).success).toBe(true)
+    expect(automationDirectMessageSchema.safeParse({ text: undefined }).success).toBe(true)
+  })
+
+  it('rejects direct message text with more than 1000 characters', () => {
+    const longText = 'm'.repeat(1001)
+    const result = automationDirectMessageSchema.safeParse({ text: longText })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('1.000')
+    }
+  })
+})
+
+describe('automationFinalActionSchema', () => {
+  it('validates LINK mode with valid URL and label', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'LINK',
+      url: 'https://exemplo.com.br/oferta',
+      label: 'Pegar desconto',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('validates LINK mode with empty URL on drafts', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'LINK',
+      url: '',
+      label: '',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects LINK mode with invalid URL', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'LINK',
+      url: 'nao-e-uma-url',
+      label: 'Clique aqui',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('URL válida')
+    }
+  })
+
+  it('rejects LINK mode with label > 80 characters', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'LINK',
+      url: 'https://exemplo.com',
+      label: 'x'.repeat(81),
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('80')
+    }
+  })
+
+  it('validates CAPTURE_EMAIL mode with valid prompt', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'CAPTURE_EMAIL',
+      prompt: 'Digite seu melhor e-mail para receber o material:',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects CAPTURE_EMAIL mode with prompt > 300 characters', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'CAPTURE_EMAIL',
+      prompt: 'e'.repeat(301),
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toContain('300')
+    }
+  })
+
+  it('validates NONE mode', () => {
+    const result = automationFinalActionSchema.safeParse({
+      actionType: 'NONE',
+    })
+    expect(result.success).toBe(true)
+  })
+})
+
