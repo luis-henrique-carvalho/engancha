@@ -79,7 +79,7 @@ function useSimulationSse({ onUpdate }: UseSimulationSseParams) {
           .then((latest) => {
             if (latest) onUpdateRef.current(latest)
           })
-          .catch(() => { })
+          .catch(() => {})
       }
     },
     [closeStream],

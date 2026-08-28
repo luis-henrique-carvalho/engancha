@@ -321,4 +321,15 @@ describe('AutomationActivityTabView', () => {
 
     expect(handleReset).toHaveBeenCalled()
   })
+
+  it('renders header and toolbar while loading cards skeleton', async () => {
+    // Keep promise pending so it stays in loading state
+    vi.mocked(SimulationsApi.listExecutions).mockImplementationOnce(() => new Promise(() => {}))
+
+    const { getByTestId } = await render(<AutomationActivityTabView automationId="auto-1" />)
+
+    await expect.element(getByTestId('activity-refresh-button')).toBeInTheDocument()
+    await expect.element(getByTestId('activity-toolbar')).toBeInTheDocument()
+    await expect.element(getByTestId('automation-activity-loading')).toBeInTheDocument()
+  })
 })

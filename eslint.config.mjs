@@ -2,6 +2,7 @@ import eslint from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import reactPlugin from 'eslint-plugin-react'
 
 export default tseslint.config(
   {
@@ -45,7 +46,23 @@ export default tseslint.config(
   },
   {
     files: ['**/*.{tsx,jsx}'],
+    plugins: {
+      react: reactPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
     rules: {
+      'react/no-multi-comp': ['error', { ignoreStateless: false }],
       'max-lines-per-function': [
         'warn',
         {
@@ -55,6 +72,12 @@ export default tseslint.config(
           IIFEs: true,
         },
       ],
+    },
+  },
+  {
+    files: ['**/components/ui/**', '**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+    rules: {
+      'react/no-multi-comp': 'off',
     },
   },
   {
