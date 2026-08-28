@@ -59,12 +59,14 @@ test('aceita comentário simulado estrito e um job de execução seguro e versio
 
   assert.deepEqual(
     automationExecutionJobSchema.parse({
+      type: 'automation.execution.requested.v1',
       version: 'v1',
       correlationId: 'simulation-001',
       executionId: 'execution-1',
       organizationId: 'organization-1',
     }),
     {
+      type: 'automation.execution.requested.v1',
       version: 'v1',
       correlationId: 'simulation-001',
       executionId: 'execution-1',

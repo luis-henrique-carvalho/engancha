@@ -4,7 +4,9 @@ import { QUEUE_NAMES, automationExecutionJobOptions } from '@engancha/contracts'
 import { AuthorizationContextGuard } from '../../platform/security/authorization-context'
 import { SimulationsController } from './api/http/simulations.controller'
 import { SimulationsService } from './application/simulations.service'
+import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
 import { SIMULATION_REPOSITORY } from './domain/ports/simulation.repository'
+import { BullMqAutomationExecutionDispatcher } from './infrastructure/messaging/bullmq-automation-execution.dispatcher'
 import { PrismaSimulationRepository } from './infrastructure/persistence/prisma-simulation.repository'
 
 @Module({
@@ -20,6 +22,8 @@ import { PrismaSimulationRepository } from './infrastructure/persistence/prisma-
     SimulationsService,
     PrismaSimulationRepository,
     { provide: SIMULATION_REPOSITORY, useExisting: PrismaSimulationRepository },
+    BullMqAutomationExecutionDispatcher,
+    { provide: AUTOMATION_EXECUTION_DISPATCHER, useExisting: BullMqAutomationExecutionDispatcher },
   ],
 })
 export class SimulationsModule {}

@@ -72,15 +72,21 @@ export const simulationCommentRequestSchema = z
   .strict()
 export type SimulationCommentRequest = z.infer<typeof simulationCommentRequestSchema>
 
-export const automationExecutionJobSchema = z
+export const AUTOMATION_EXECUTION_REQUESTED = 'automation.execution.requested.v1' as const
+
+export const automationExecutionRequestedSchema = z
   .object({
+    type: z.literal(AUTOMATION_EXECUTION_REQUESTED),
     version: z.literal(contractsVersion),
     correlationId: correlationIdSchema,
     executionId: z.string().min(1).max(255),
     organizationId: z.string().min(1).max(255),
   })
   .strict()
-export type AutomationExecutionJob = z.infer<typeof automationExecutionJobSchema>
+export type AutomationExecutionRequested = z.infer<typeof automationExecutionRequestedSchema>
+
+export const automationExecutionJobSchema = automationExecutionRequestedSchema
+export type AutomationExecutionJob = AutomationExecutionRequested
 
 export const automationExecutionJobOptions = {
   attempts: 4,

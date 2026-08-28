@@ -1,10 +1,15 @@
 import assert from 'node:assert/strict'
 import { randomUUID } from 'node:crypto'
 import { after, afterEach, before, test } from 'node:test'
-import { getQueueToken } from '@nestjs/bullmq'
-import { CanActivate, ExecutionContext, Injectable, type INestApplication } from '@nestjs/common'
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  ServiceUnavailableException,
+  type INestApplication,
+} from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import { QUEUE_NAMES, simulationExecutionResponseSchema } from '@engancha/contracts'
+import { simulationExecutionResponseSchema } from '@engancha/contracts'
 import request, { type Response } from 'supertest'
 import type { RequestWithAuthorization } from '../../platform/security/authorization-context'
 import { AuthorizationContextGuard } from '../../platform/security/authorization-context'
@@ -12,6 +17,7 @@ import { PlatformModule } from '../../platform/platform.module'
 import { DatabaseModule } from '../../platform/database/database.module'
 import { PrismaService } from '../../platform/database/prisma.service'
 import { AutomationsModule } from '../automations/automations.module'
+import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
 import { SimulationsModule } from './simulations.module'
 
 type WorkspaceScenario = {
@@ -43,7 +49,7 @@ class FeatureAuthorizationGuard implements CanActivate {
 let app: INestApplication
 let prisma: PrismaService
 let queueAvailable = true
-let queued: unknown[][] = []
+let queued: unknown[] = []
 let scenarios: WorkspaceScenario[] = []
 
 function expectStatus(response: Response, status: number): void {
@@ -100,14 +106,12 @@ before(async () => {
   })
     .overrideGuard(AuthorizationContextGuard)
     .useClass(FeatureAuthorizationGuard)
-    .overrideProvider(getQueueToken(QUEUE_NAMES.automationExecution))
+    .overrideProvider(AUTOMATION_EXECUTION_DISPATCHER)
     .useValue({
-      add: async (...args: unknown[]) => {
-        if (!queueAvailable) throw new Error('Redis unavailable')
-        queued.push(args)
-        return {
-          id: args[2] && typeof args[2] === 'object' ? (args[2] as { jobId: string }).jobId : 'job',
-        }
+      dispatch: async (message: unknown) => {
+        if (!queueAvailable)
+          throw new ServiceUnavailableException('Automation execution dispatch unavailable')
+        queued.push(message)
       },
     })
     .compile()
@@ -165,16 +169,13 @@ test('cria uma execução simulada pendente, enfileira uma vez e expõe sua proj
   expectStatus(duplicate, 201)
   assert.equal(duplicate.body.executionId, first.body.executionId)
   assert.equal(queued.length, 1)
-  assert.deepEqual(queued[0], [
-    'automation-execution',
-    {
-      version: 'v1',
-      correlationId: 'simulation-001',
-      executionId: first.body.executionId,
-      organizationId: workspace.organizationId,
-    },
-    { jobId: first.body.executionId },
-  ])
+  assert.deepEqual(queued[0], {
+    type: 'automation.execution.requested.v1',
+    version: 'v1',
+    correlationId: 'simulation-001',
+    executionId: first.body.executionId,
+    organizationId: workspace.organizationId,
+  })
 
   const projection = await api
     .get(`/api/v1/simulations/executions/${first.body.executionId}`)

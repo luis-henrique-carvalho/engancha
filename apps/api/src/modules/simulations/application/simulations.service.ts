@@ -1,26 +1,26 @@
-import { InjectQueue } from '@nestjs/bullmq'
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import {
-  QUEUE_NAMES,
+  AUTOMATION_EXECUTION_REQUESTED,
   simulationCommentResponseSchema,
   simulationExecutionResponseSchema,
-  type AutomationExecutionJob,
   type SimulationCommentRequest,
 } from '@engancha/contracts'
-import { Queue } from 'bullmq'
 import type { AuthorizationContext } from '../../../platform/security/authorization-context'
 import {
   SIMULATION_REPOSITORY,
   type SimulationRepository,
 } from '../domain/ports/simulation.repository'
-import { enqueueAutomationExecutionJob } from './simulation.enqueuer'
+import {
+  AUTOMATION_EXECUTION_DISPATCHER,
+  type AutomationExecutionDispatcher,
+} from '../domain/ports/automation-execution-dispatcher.port'
 
 @Injectable()
 export class SimulationsService {
   constructor(
     @Inject(SIMULATION_REPOSITORY) private readonly simulations: SimulationRepository,
-    @InjectQueue(QUEUE_NAMES.automationExecution)
-    private readonly queue: Queue<AutomationExecutionJob>,
+    @Inject(AUTOMATION_EXECUTION_DISPATCHER)
+    private readonly dispatcher: AutomationExecutionDispatcher,
   ) {}
 
   async submit(context: AuthorizationContext, input: SimulationCommentRequest) {
@@ -36,7 +36,8 @@ export class SimulationsService {
       input,
     )
     if (created || !execution.enqueuedAt) {
-      await enqueueAutomationExecutionJob(this.queue, {
+      await this.dispatcher.dispatch({
+        type: AUTOMATION_EXECUTION_REQUESTED,
         version: 'v1',
         correlationId: input.idempotencyKey,
         executionId: execution.id,

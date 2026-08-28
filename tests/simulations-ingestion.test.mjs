@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { ServiceUnavailableException } from '@nestjs/common'
 
 import { SimulationsService } from '../apps/api/src/modules/simulations/application/simulations.service.ts'
 
@@ -37,23 +38,20 @@ function repository(overrides = {}) {
 test('persiste uma execução pendente e enfileira somente dados seguros', async () => {
   const queued = []
   const service = new SimulationsService(repository(), {
-    add: async (...args) => queued.push(args),
+    dispatch: async (message) => queued.push(message),
   })
 
   const response = await service.submit(context, comment)
 
   assert.deepEqual(response, { executionId: 'execution-1', status: 'PENDING', simulated: true })
   assert.deepEqual(queued, [
-    [
-      'automation-execution',
-      {
-        version: 'v1',
-        correlationId: 'simulation-001',
-        executionId: 'execution-1',
-        organizationId: 'organization-1',
-      },
-      { jobId: 'execution-1' },
-    ],
+    {
+      type: 'automation.execution.requested.v1',
+      version: 'v1',
+      correlationId: 'simulation-001',
+      executionId: 'execution-1',
+      organizationId: 'organization-1',
+    },
   ])
   assert.doesNotMatch(JSON.stringify(queued), /Quero o material|Ana|content snapshot/i)
 })
@@ -75,7 +73,7 @@ test('reutiliza a execução idempotente sem criar outro ciclo de enfileiramento
         }
       },
     }),
-    { add: async (...args) => queued.push(args) },
+    { dispatch: async (message) => queued.push(message) },
   )
 
   assert.equal((await service.submit(context, comment)).executionId, 'execution-1')
@@ -96,7 +94,7 @@ test('reenvia uma execução pendente mesmo depois de uma tentativa interrompida
         created: false,
       }),
     }),
-    { add: async (...args) => queued.push(args) },
+    { dispatch: async (message) => queued.push(message) },
   )
 
   await service.submit(context, comment)
@@ -119,9 +117,10 @@ test('preserva a execução pendente quando a fila está indisponível para perm
       },
     }),
     {
-      add: async (...args) => {
-        if (!available) throw new Error('redis unavailable')
-        queued.push(args)
+      dispatch: async (message) => {
+        if (!available)
+          throw new ServiceUnavailableException('Automation execution dispatch unavailable')
+        queued.push(message)
       },
     },
   )
@@ -129,7 +128,7 @@ test('preserva a execução pendente quando a fila está indisponível para perm
   await assert.rejects(
     service.submit(context, comment),
     (error) =>
-      error?.getStatus?.() === 503 && error.message === 'Automation execution queue unavailable',
+      error?.getStatus?.() === 503 && error.message === 'Automation execution dispatch unavailable',
   )
   available = true
   assert.equal((await service.submit(context, comment)).executionId, 'execution-1')
@@ -137,7 +136,7 @@ test('preserva a execução pendente quando a fila está indisponível para perm
 })
 
 test('oculta execuções de outro workspace com 404', async () => {
-  const service = new SimulationsService(repository(), { add: async () => ({ id: 'job-1' }) })
+  const service = new SimulationsService(repository(), { dispatch: async () => {} })
 
   await assert.rejects(
     service.get(context, 'foreign-execution'),
