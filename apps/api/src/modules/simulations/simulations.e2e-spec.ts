@@ -19,6 +19,8 @@ import { PrismaService } from '../../platform/database/prisma.service'
 import { AutomationsModule } from '../automations/automations.module'
 import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
 import { SimulationsModule } from './simulations.module'
+import { AutomationExecutionService } from '../../../../worker/src/automation-execution/application/automation-execution.service'
+import { PrismaAutomationExecutionRepository } from '../../../../worker/src/automation-execution/infrastructure/persistence/prisma-automation-execution.repository'
 
 type WorkspaceScenario = {
   organizationId: string
@@ -282,4 +284,245 @@ test('aplica 404 para conteúdo e execução de outro workspace', async () => {
     .get(`/api/v1/simulations/executions/${created.body.executionId}`)
     .set(other.headers)
   expectStatus(foreignRead, 404)
+})
+
+async function createAndPublishAutomation(
+  api: ReturnType<typeof request>,
+  workspace: WorkspaceScenario,
+  contentId: string,
+  keyword: string,
+  name = 'Automação de teste',
+) {
+  const createRes = await api.post('/api/v1/automations').set(workspace.headers).send({ name })
+  expectStatus(createRes, 201)
+  const automationId = createRes.body.id
+
+  const patchRes = await api
+    .patch(`/api/v1/automations/${automationId}`)
+    .set(workspace.headers)
+    .send({
+      targetId: contentId,
+      keyword,
+      actions: [
+        { type: 'PUBLIC_REPLY', text: 'Enviando resposta!' },
+        { type: 'LINK', url: 'https://example.test/ebook', label: 'Baixar material' },
+      ],
+    })
+  expectStatus(patchRes, 200)
+
+  const publishRes = await api
+    .post(`/api/v1/automations/${automationId}/publish`)
+    .set(workspace.headers)
+    .send()
+  expectStatus(publishRes, 201)
+
+  return { automationId, revisionId: publishRes.body.published.id }
+}
+
+test('worker encontra revisão publicada, vincula automação e persiste snapshot sanitizado imutável', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  const { automationId, revisionId } = await createAndPublishAutomation(
+    api,
+    workspace,
+    content.id,
+    'Material',
+  )
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Carlos',
+    text: 'Olá! Quero o material por favor.',
+    commentId: 'comment-123',
+    idempotencyKey: 'sim-match-001',
+  })
+  expectStatus(commentRes, 201)
+  assert.equal(queued.length, 1)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[0] as never)
+
+  assert.equal(result.status, 'PROCESSING')
+  assert.equal(result.matched, true)
+  assert.equal(result.automationId, automationId)
+  assert.equal(result.revisionId, revisionId)
+
+  const projection = await api
+    .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
+    .set(workspace.headers)
+  expectStatus(projection, 200)
+  assert.equal(projection.body.status, 'PROCESSING')
+  assert.equal(projection.body.matched, true)
+  assert.equal(projection.body.automation?.id, automationId)
+  assert.equal(projection.body.automation?.revisionId, revisionId)
+  assert.equal(projection.body.automation?.version, 1)
+
+  const persisted = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: commentRes.body.executionId },
+  })
+  assert.equal(persisted.matched, true)
+  assert.equal(persisted.status, 'PROCESSING')
+  assert.deepEqual(persisted.automationSnapshot, {
+    automationId,
+    revisionId,
+    version: 1,
+    target: { contentId: content.id },
+    trigger: {
+      type: 'COMMENT_KEYWORD',
+      keyword: 'Material',
+      keywordNormalized: 'material',
+    },
+    actions: [
+      {
+        position: 0,
+        type: 'PUBLIC_REPLY',
+        config: { text: 'Enviando resposta!', type: 'PUBLIC_REPLY' },
+      },
+      {
+        position: 1,
+        type: 'LINK',
+        config: { url: 'https://example.test/ebook', label: 'Baixar material', type: 'LINK' },
+      },
+    ],
+  })
+
+  // Alterações posteriores na automação (draft, pausa) não alteram o snapshot da execução já iniciada
+  await api
+    .patch(`/api/v1/automations/${automationId}`)
+    .set(workspace.headers)
+    .send({ keyword: 'NovoKeyword' })
+  await api.post(`/api/v1/automations/${automationId}/pause`).set(workspace.headers).send()
+
+  const projectionAfterEdit = await api
+    .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
+    .set(workspace.headers)
+  expectStatus(projectionAfterEdit, 200)
+  assert.equal(projectionAfterEdit.body.automation?.id, automationId)
+  assert.equal(projectionAfterEdit.body.matched, true)
+})
+
+test('worker conclui como IGNORED sem saídas quando nenhuma automação corresponde ao comentário', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  await createAndPublishAutomation(api, workspace, content.id, 'Ebook')
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Lucas',
+    text: 'Adorei a publicação!',
+    idempotencyKey: 'sim-nomatch-001',
+  })
+  expectStatus(commentRes, 201)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[0] as never)
+
+  assert.equal(result.status, 'IGNORED')
+  assert.equal(result.matched, false)
+
+  const projection = await api
+    .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
+    .set(workspace.headers)
+  expectStatus(projection, 200)
+  assert.equal(projection.body.status, 'IGNORED')
+  assert.equal(projection.body.matched, false)
+  assert.equal(projection.body.automation, null)
+  assert.deepEqual(projection.body.outputs, [])
+})
+
+test('worker falha fechado com AMBIGUOUS_AUTOMATION_MATCH se múltiplos matches forem encontrados', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  await createAndPublishAutomation(api, workspace, content.id, 'Material', 'Auto 1')
+  await createAndPublishAutomation(api, workspace, content.id, 'Ebook', 'Auto 2')
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Lucas',
+    text: 'Quero material e ebook',
+    idempotencyKey: 'sim-ambiguous-001',
+  })
+  expectStatus(commentRes, 201)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[0] as never)
+
+  assert.equal(result.status, 'FAILED')
+  assert.equal(result.matched, false)
+  assert.equal(result.errorCode, 'AMBIGUOUS_AUTOMATION_MATCH')
+
+  const projection = await api
+    .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
+    .set(workspace.headers)
+  expectStatus(projection, 200)
+  assert.equal(projection.body.status, 'FAILED')
+  assert.equal(projection.body.error?.code, 'AMBIGUOUS_AUTOMATION_MATCH')
+  assert.equal(projection.body.automation, null)
+  assert.deepEqual(projection.body.outputs, [])
+})
+
+test('worker não seleciona automação pausada antes do claim', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  const { automationId } = await createAndPublishAutomation(api, workspace, content.id, 'Material')
+  await api.post(`/api/v1/automations/${automationId}/pause`).set(workspace.headers).send()
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Carlos',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-paused-001',
+  })
+  expectStatus(commentRes, 201)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[0] as never)
+
+  assert.equal(result.status, 'IGNORED')
+  assert.equal(result.matched, false)
+})
+
+test('claim condicional impede processamento simultâneo em workers concorrentes ou redelivery', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  await createAndPublishAutomation(api, workspace, content.id, 'Material')
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Carlos',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-concurrent-001',
+  })
+  expectStatus(commentRes, 201)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+
+  const [firstWorker, secondWorker] = await Promise.all([
+    workerService.consume(queued[0] as never),
+    workerService.consume(queued[0] as never),
+  ])
+
+  const statuses = [firstWorker.status, secondWorker.status]
+  assert.ok(statuses.includes('PROCESSING'))
+  assert.ok(statuses.includes('SKIPPED'))
+
+  const persisted = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: commentRes.body.executionId },
+  })
+  assert.equal(persisted.attempts, 1)
 })

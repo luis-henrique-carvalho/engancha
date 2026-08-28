@@ -1,11 +1,7 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq'
 import { Inject, Injectable } from '@nestjs/common'
 import { Job, UnrecoverableError } from 'bullmq'
-import {
-  QUEUE_NAMES,
-  automationExecutionRequestedSchema,
-  type AutomationExecutionRequested,
-} from '@engancha/contracts'
+import { QUEUE_NAMES, automationExecutionRequestedSchema } from '@engancha/contracts'
 import { WORKER_LOGGER } from '../../../common/worker-logger.token'
 import type { EventLogger } from '../../../common/runtime-lifecycle.service'
 import {

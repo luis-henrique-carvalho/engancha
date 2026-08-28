@@ -4,7 +4,11 @@ export const AUTOMATION_EXECUTION_CONSUMER = Symbol('AUTOMATION_EXECUTION_CONSUM
 
 export interface AutomationExecutionResult {
   executionId: string
-  status: 'COMPLETED' | 'IGNORED' | 'FAILED' | 'PENDING' | string
+  status: 'COMPLETED' | 'IGNORED' | 'FAILED' | 'PENDING' | 'PROCESSING' | 'SKIPPED' | string
+  matched?: boolean
+  automationId?: string
+  revisionId?: string
+  errorCode?: string
 }
 
 export interface AutomationExecutionConsumer {

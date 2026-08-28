@@ -26,8 +26,6 @@ test('publica uma solicitação versionada de execução por meio do adaptador B
   await dispatcher.dispatch(message)
 
   assert.deepEqual(automationExecutionRequestedSchema.parse(message), message)
-  assert.deepEqual(calls, [
-    [AUTOMATION_EXECUTION_REQUESTED, message, { jobId: 'execution-1' }],
-  ])
+  assert.deepEqual(calls, [[AUTOMATION_EXECUTION_REQUESTED, message, { jobId: 'execution-1' }]])
   assert.throws(() => automationExecutionRequestedSchema.parse({ ...message, untrusted: true }))
 })

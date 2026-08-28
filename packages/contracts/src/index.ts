@@ -358,6 +358,40 @@ export const publishableAutomationSchema = z
 
 export type PublishableAutomation = z.infer<typeof publishableAutomationSchema>
 
+export const automationSnapshotSchema = z
+  .object({
+    automationId: z.string().min(1),
+    revisionId: z.string().min(1),
+    version: z.number().int().min(1),
+    target: z
+      .object({
+        contentId: z.string().min(1),
+      })
+      .strict(),
+    trigger: z
+      .object({
+        type: z.string().min(1),
+        keyword: z.string().min(1),
+        keywordNormalized: z.string().min(1),
+      })
+      .strict(),
+    actions: z.array(
+      z
+        .object({
+          position: z.number().int().min(0),
+          type: z.string().min(1),
+          config: z.record(z.string(), z.unknown()),
+        })
+        .strict(),
+    ),
+  })
+  .strict()
+export type AutomationSnapshot = z.infer<typeof automationSnapshotSchema>
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export function normalizeAutomationKeyword(value: string): string {
   return value
     .normalize('NFKD')
@@ -366,6 +400,27 @@ export function normalizeAutomationKeyword(value: string): string {
     .trim()
     .replace(/\s+/g, ' ')
     .toLowerCase()
+}
+
+export function normalizeAutomationText(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase()
+}
+
+export function matchesAutomationKeyword(commentText: string, keyword: string): boolean {
+  const normalizedKeyword = normalizeAutomationText(keyword)
+  if (!normalizedKeyword) return false
+
+  const normalizedComment = normalizeAutomationText(commentText)
+  if (!normalizedComment) return false
+
+  const pattern = new RegExp(`(^|\\s)${escapeRegex(normalizedKeyword)}(\\s|$)`, 'i')
+  return pattern.test(normalizedComment)
 }
 
 export function validatePublishableAutomation(input: {
