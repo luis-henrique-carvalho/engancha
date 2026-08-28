@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import {
   AUTOMATION_EXECUTION_REQUESTED,
   simulationCommentResponseSchema,
@@ -53,12 +53,49 @@ export class SimulationsService {
     })
   }
 
+  async retry(context: AuthorizationContext, id: string) {
+    const execution = await this.simulations.find(id, context.organizationId)
+    if (!execution) throw new NotFoundException()
+
+    if ((execution as any).status !== 'FAILED') {
+      throw new ConflictException({
+        code: 'INVALID_EXECUTION_STATE_FOR_RETRY',
+        message: 'Only failed executions can be retried',
+      })
+    }
+
+    const reset = await this.simulations.resetForRetry(id, context.organizationId)
+    if (!reset) {
+      throw new ConflictException({
+        code: 'INVALID_EXECUTION_STATE_FOR_RETRY',
+        message: 'Only failed executions can be retried',
+      })
+    }
+
+    await this.dispatcher.dispatch({
+      type: AUTOMATION_EXECUTION_REQUESTED,
+      version: 'v1',
+      correlationId: (reset as any).idempotencyKey ?? (execution as any).idempotencyKey ?? id,
+      executionId: id,
+      organizationId: context.organizationId,
+    })
+
+    await this.simulations.markEnqueued(id)
+
+    return simulationCommentResponseSchema.parse({
+      executionId: id,
+      status: 'PENDING',
+      simulated: true,
+    })
+  }
+
   async get(context: AuthorizationContext, id: string) {
     const execution = await this.simulations.find(id, context.organizationId)
     if (!execution) throw new NotFoundException()
 
     return this.present(execution as any)
   }
+
 
   private present(execution: any) {
     return simulationExecutionResponseSchema.parse({

@@ -143,3 +143,99 @@ test('oculta execuções de outro workspace com 404', async () => {
     (error) => error?.getStatus?.() === 404,
   )
 })
+
+test('retry aceita execução FAILED do workspace e enfileira novo ciclo mantendo executionId', async () => {
+  const queued = []
+  let enqueued = false
+  const service = new SimulationsService(
+    repository({
+      find: async (id, organizationId) => ({
+        id,
+        organizationId,
+        status: 'FAILED',
+        idempotencyKey: 'sim-failed-001',
+      }),
+      resetForRetry: async (id) => ({
+        id,
+        status: 'PENDING',
+        enqueuedAt: null,
+        idempotencyKey: 'sim-failed-001',
+      }),
+      markEnqueued: async () => {
+        enqueued = true
+      },
+    }),
+    { dispatch: async (message) => queued.push(message) },
+  )
+
+  const response = await service.retry(context, 'exec-failed-1')
+
+  assert.deepEqual(response, {
+    executionId: 'exec-failed-1',
+    status: 'PENDING',
+    simulated: true,
+  })
+  assert.equal(enqueued, true)
+  assert.deepEqual(queued, [
+    {
+      type: 'automation.execution.requested.v1',
+      version: 'v1',
+      correlationId: 'sim-failed-001',
+      executionId: 'exec-failed-1',
+      organizationId: 'organization-1',
+    },
+  ])
+})
+
+test('retry rejeita execuções não FAILED (PENDING, PROCESSING, COMPLETED, IGNORED) com 409 Conflict', async () => {
+  const statuses = ['PENDING', 'PROCESSING', 'COMPLETED', 'IGNORED']
+  for (const status of statuses) {
+    const queued = []
+    const service = new SimulationsService(
+      repository({
+        find: async (id, organizationId) => ({
+          id,
+          organizationId,
+          status,
+          idempotencyKey: 'sim-status-001',
+        }),
+      }),
+      { dispatch: async (message) => queued.push(message) },
+    )
+
+    await assert.rejects(
+      service.retry(context, 'exec-1'),
+      (error) =>
+        error?.getStatus?.() === 409 &&
+        error.response?.code === 'INVALID_EXECUTION_STATE_FOR_RETRY',
+    )
+    assert.equal(queued.length, 0)
+  }
+})
+
+test('repetir o POST original de uma execução FAILED retorna a execução e não enfileira novo job', async () => {
+  const queued = []
+  const service = new SimulationsService(
+    repository({
+      createOrFind: async () => ({
+        execution: {
+          id: 'exec-failed-1',
+          status: 'FAILED',
+          enqueuedAt: new Date(),
+        },
+        created: false,
+      }),
+    }),
+    { dispatch: async (message) => queued.push(message) },
+  )
+
+  const response = await service.submit(context, comment)
+
+  assert.deepEqual(response, {
+    executionId: 'exec-failed-1',
+    status: 'FAILED',
+    simulated: true,
+  })
+  assert.equal(queued.length, 0)
+})
+

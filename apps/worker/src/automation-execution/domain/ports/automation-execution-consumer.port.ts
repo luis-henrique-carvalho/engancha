@@ -13,4 +13,12 @@ export interface AutomationExecutionResult {
 
 export interface AutomationExecutionConsumer {
   consume(message: AutomationExecutionRequested): Promise<AutomationExecutionResult>
+  handleJobFailure?(params: {
+    executionId: string
+    organizationId: string
+    attemptsMade: number
+    maxAttempts: number
+    error: Error
+  }): Promise<void>
 }
+

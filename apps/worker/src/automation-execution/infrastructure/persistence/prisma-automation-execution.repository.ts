@@ -45,6 +45,9 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         inputAuthor: true,
         commentId: true,
         originAutomationId: true,
+        automationId: true,
+        automationRevisionId: true,
+        automationSnapshot: true,
         status: true,
         attempts: true,
         stateVersion: true,
@@ -198,6 +201,24 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     })
   }
 
+  async recordAttemptFailure(params: {
+    executionId: string
+    organizationId: string
+    attemptsMade: number
+  }): Promise<void> {
+    await this.database.client.automationExecution.updateMany({
+      where: {
+        id: params.executionId,
+        organizationId: params.organizationId,
+        status: 'PROCESSING',
+      },
+      data: {
+        status: 'PENDING',
+        stateVersion: { increment: 1 },
+      },
+    })
+  }
+
   async markIgnored(params: {
     executionId: string
     organizationId: string
@@ -220,12 +241,13 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     organizationId: string
     errorCode: string
     errorMessage: string
+    matched?: boolean
   }): Promise<void> {
     await this.database.client.automationExecution.update({
       where: { id: params.executionId },
       data: {
         status: 'FAILED',
-        matched: false,
+        ...(params.matched !== undefined ? { matched: params.matched } : {}),
         completedAt: new Date(),
         errorCode: params.errorCode,
         errorMessage: params.errorMessage,
@@ -234,3 +256,4 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     })
   }
 }
+

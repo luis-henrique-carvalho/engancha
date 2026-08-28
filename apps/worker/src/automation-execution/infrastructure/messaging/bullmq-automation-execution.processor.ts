@@ -56,9 +56,14 @@ export class BullMqAutomationExecutionProcessor extends WorkerHost {
   }
 
   @OnWorkerEvent('failed')
-  onFailed(job: Job<unknown> | undefined, error: Error): void {
+  async onFailed(job: Job<unknown> | undefined, error: Error): Promise<void> {
     const attemptsMade = job?.attemptsMade ?? 0
     const attempts = job?.opts.attempts ?? 1
+    const parsed = automationExecutionRequestedSchema.safeParse(job?.data)
+    const correlationId =
+      parsed.success && parsed.data.correlationId ? parsed.data.correlationId : 'unknown'
+    const executionId =
+      parsed.success && parsed.data.executionId ? parsed.data.executionId : 'unknown'
 
     this.logger.event(
       attemptsMade < attempts
@@ -66,10 +71,32 @@ export class BullMqAutomationExecutionProcessor extends WorkerHost {
         : 'automation_execution_job_failed_definitive',
       {
         jobId: job ? String(job.id) : 'unknown',
+        correlationId,
+        executionId,
         attemptsMade,
         attempts,
         reason: error.name || error.message,
       },
     )
+
+    if (parsed.success && this.consumer.handleJobFailure) {
+      try {
+        await this.consumer.handleJobFailure({
+          executionId: parsed.data.executionId,
+          organizationId: parsed.data.organizationId,
+          attemptsMade,
+          maxAttempts: attempts,
+          error,
+        })
+      } catch (handlingError) {
+        this.logger.event('automation_execution_job_failure_handler_error', {
+          jobId: job ? String(job.id) : 'unknown',
+          correlationId,
+          executionId,
+          reason: (handlingError as Error)?.message ?? 'Unknown error',
+        })
+      }
+    }
   }
 }
+

@@ -12,6 +12,9 @@ export interface ClaimedExecution {
   inputAuthor: string
   commentId: string | null
   originAutomationId: string | null
+  automationId: string | null
+  automationRevisionId: string | null
+  automationSnapshot: AutomationSnapshot | null
   status: string
   attempts: number
   stateVersion: number
@@ -73,6 +76,11 @@ export interface AutomationExecutionRepository {
     snapshot: AutomationSnapshot
     outputs: AutomationExecutionOutputDraft[]
   }): Promise<void>
+  recordAttemptFailure(params: {
+    executionId: string
+    organizationId: string
+    attemptsMade: number
+  }): Promise<void>
   markIgnored(params: {
     executionId: string
     organizationId: string
@@ -83,5 +91,7 @@ export interface AutomationExecutionRepository {
     organizationId: string
     errorCode: string
     errorMessage: string
+    matched?: boolean
   }): Promise<void>
 }
+

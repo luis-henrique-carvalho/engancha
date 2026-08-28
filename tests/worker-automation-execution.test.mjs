@@ -73,23 +73,35 @@ test('rejeita job com payload inválido com UnrecoverableError sem acionar o con
   )
 })
 
-test('registra eventos estruturados de retry e falha definitiva', () => {
+test('registra eventos estruturados de retry e aciona handleJobFailure', async () => {
   const events = []
+  let failureHandled = null
   const processor = new BullMqAutomationExecutionProcessor(
     { event: (event, details) => events.push({ event, ...details }) },
-    { consume: async () => ({ executionId: '', status: '' }) },
+    {
+      consume: async () => ({ executionId: '', status: '' }),
+      handleJobFailure: async (params) => {
+        failureHandled = params
+      },
+    },
   )
 
-  processor.onFailed(validJob, new Error('Redis network blip'))
-  processor.onFailed({ ...validJob, attemptsMade: 4 }, new Error('Fatal error'))
-
-  assert.deepEqual(
-    events.map(({ event }) => event),
-    ['automation_execution_job_retry', 'automation_execution_job_failed_definitive'],
-  )
+  await processor.onFailed(validJob, new Error('Redis network blip'))
+  assert.deepEqual(events.map(({ event }) => event), ['automation_execution_job_retry'])
   assert.equal(events[0].attemptsMade, 1)
+  assert.deepEqual(failureHandled, {
+    executionId: 'execution-100',
+    organizationId: 'org-100',
+    attemptsMade: 1,
+    maxAttempts: 4,
+    error: failureHandled.error,
+  })
+
+  await processor.onFailed({ ...validJob, attemptsMade: 4 }, new Error('Fatal error'))
+  assert.equal(events[1].event, 'automation_execution_job_failed_definitive')
   assert.equal(events[1].attemptsMade, 4)
 })
+
 
 import { AutomationExecutionService } from '../apps/worker/src/automation-execution/application/automation-execution.service.ts'
 
@@ -407,5 +419,122 @@ test('falha fechado com AMBIGUOUS_AUTOMATION_MATCH se múltiplos matches forem e
     organizationId: 'org-100',
     errorCode: 'AMBIGUOUS_AUTOMATION_MATCH',
     errorMessage: 'Múltiplas automações ativas correspondem ao comentário',
+    matched: false,
   })
 })
+
+test('handleJobFailure grava tentativa quando tentativas não foram esgotadas', async () => {
+  let attemptFailureParams = null
+  const repository = {
+    recordAttemptFailure: async (params) => {
+      attemptFailureParams = params
+    },
+    markFailed: async () => {
+      throw new Error('Should not mark failed')
+    },
+  }
+
+  const service = new AutomationExecutionService(repository)
+  await service.handleJobFailure({
+    executionId: 'exec-1',
+    organizationId: 'org-1',
+    attemptsMade: 2,
+    maxAttempts: 4,
+    error: new Error('Network timeout'),
+  })
+
+  assert.deepEqual(attemptFailureParams, {
+    executionId: 'exec-1',
+    organizationId: 'org-1',
+    attemptsMade: 2,
+  })
+})
+
+test('handleJobFailure marca como FAILED com erro sanitizado quando tentativas são esgotadas', async () => {
+  let failedParams = null
+  const repository = {
+    recordAttemptFailure: async () => {
+      throw new Error('Should not record attempt')
+    },
+    markFailed: async (params) => {
+      failedParams = params
+    },
+  }
+
+  const service = new AutomationExecutionService(repository)
+  await service.handleJobFailure({
+    executionId: 'exec-1',
+    organizationId: 'org-1',
+    attemptsMade: 4,
+    maxAttempts: 4,
+    error: new Error('Critical connection failure'),
+  })
+
+  assert.deepEqual(failedParams, {
+    executionId: 'exec-1',
+    organizationId: 'org-1',
+    errorCode: 'EXECUTION_FAILED',
+    errorMessage: 'Falha ao processar execução',
+  })
+})
+
+test('reprocessamento reutiliza snapshot e automação existentes sem consultar candidatos novamente', async () => {
+  let findCandidatesCalled = false
+  let completedParams = null
+  const existingSnapshot = {
+    automationId: 'auto-reused',
+    revisionId: 'rev-reused',
+    version: 1,
+    target: { contentId: 'content-1' },
+    trigger: {
+      type: 'COMMENT_KEYWORD',
+      keyword: 'Material',
+      keywordNormalized: 'material',
+    },
+    actions: [
+      { position: 0, type: 'PUBLIC_REPLY', config: { text: 'Resposta reutilizada' } },
+      { position: 1, type: 'LINK', config: { url: 'https://reused.test', label: 'Abrir' } },
+    ],
+  }
+
+  const repository = {
+    claimExecution: async (executionId, organizationId) => ({
+      id: executionId,
+      organizationId,
+      contentId: 'content-1',
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      inputText: 'Quero o material',
+      inputAuthor: 'Lucas',
+      commentId: null,
+      originAutomationId: null,
+      automationId: 'auto-reused',
+      automationRevisionId: 'rev-reused',
+      automationSnapshot: existingSnapshot,
+      status: 'PROCESSING',
+      attempts: 2,
+      stateVersion: 3,
+    }),
+    findActiveCandidateAutomations: async () => {
+      findCandidatesCalled = true
+      return []
+    },
+    saveExecutionCompleted: async (params) => {
+      completedParams = params
+    },
+    markIgnored: async () => {},
+    markFailed: async () => {},
+  }
+
+  const service = new AutomationExecutionService(repository)
+  const result = await service.consume(validJob.data)
+
+  assert.equal(findCandidatesCalled, false)
+  assert.equal(result.status, 'COMPLETED')
+  assert.equal(result.automationId, 'auto-reused')
+  assert.equal(result.revisionId, 'rev-reused')
+  assert.equal(completedParams.outputs.length, 2)
+  assert.equal(completedParams.outputs[0].key, 'execution-100:0:PUBLIC_REPLY')
+  assert.equal(completedParams.outputs[1].key, 'execution-100:1:LINK_DELIVERY')
+})
+

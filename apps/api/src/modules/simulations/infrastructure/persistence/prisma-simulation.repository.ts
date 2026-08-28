@@ -73,7 +73,38 @@ export class PrismaSimulationRepository implements SimulationRepository {
     })
   }
 
+  async resetForRetry(
+    id: string,
+    organizationId: string,
+  ): Promise<{ id: string; status: any; enqueuedAt: Date | null; idempotencyKey: string } | null> {
+    const updated = await this.database.client.automationExecution.updateMany({
+      where: {
+        id,
+        organizationId,
+        status: 'FAILED',
+      },
+      data: {
+        status: 'PENDING',
+        errorCode: null,
+        errorMessage: null,
+        completedAt: null,
+        enqueuedAt: null,
+        stateVersion: { increment: 1 },
+      },
+    })
+
+    if (updated.count === 0) {
+      return null
+    }
+
+    return this.database.client.automationExecution.findUniqueOrThrow({
+      where: { id },
+      select: { id: true, status: true, enqueuedAt: true, idempotencyKey: true },
+    })
+  }
+
   private isUnique(error: unknown) {
     return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002'
   }
 }
+

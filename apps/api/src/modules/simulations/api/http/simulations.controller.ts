@@ -24,4 +24,10 @@ export class SimulationsController {
   get(@Param('id') id: string, @Req() request: RequestWithAuthorization) {
     return this.simulations.get(request.authorizationContext!, id)
   }
+
+  @Post('executions/:id/retry')
+  retry(@Param('id') id: string, @Req() request: RequestWithAuthorization) {
+    return this.simulations.retry(request.authorizationContext!, id)
+  }
 }
+

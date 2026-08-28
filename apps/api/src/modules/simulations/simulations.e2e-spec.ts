@@ -639,3 +639,165 @@ test('claim condicional impede processamento simultâneo em workers concorrentes
   })
   assert.equal(persisted.attempts, 1)
 })
+
+test('POST /executions/:id/retry reprocessa com sucesso uma execução FAILED mantendo a mesma identidade', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  const { automationId, revisionId } = await createAndPublishAutomation(
+    api,
+    workspace,
+    content.id,
+    'Material',
+  )
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Renata',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-retry-flow-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Simular falha transitória que esgotou tentativas -> FAILED
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: {
+      status: 'FAILED',
+      errorCode: 'EXECUTION_FAILED',
+      errorMessage: 'Falha ao processar execução',
+      completedAt: new Date(),
+      attempts: 4,
+    },
+  })
+
+  // Reenviar POST original da execução FAILED retorna o registro existente sem re-enfileirar
+  const duplicatePost = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Renata',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-retry-flow-001',
+  })
+  expectStatus(duplicatePost, 201)
+  assert.equal(duplicatePost.body.executionId, executionId)
+  assert.equal(duplicatePost.body.status, 'FAILED')
+  assert.equal(queued.length, 1) // apenas o dispatch inicial
+
+  // Executar retry explícito
+  const retryRes = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(workspace.headers)
+    .send()
+  expectStatus(retryRes, 201)
+  assert.equal(retryRes.body.executionId, executionId)
+  assert.equal(retryRes.body.status, 'PENDING')
+  assert.equal(retryRes.body.simulated, true)
+  assert.equal(queued.length, 2)
+
+  // Worker reprocessa o novo ciclo com sucesso
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[1] as never)
+
+  assert.equal(result.status, 'COMPLETED')
+  assert.equal(result.matched, true)
+  assert.equal(result.automationId, automationId)
+  assert.equal(result.revisionId, revisionId)
+
+  // Projeção final via GET
+  const finalProjection = await api
+    .get(`/api/v1/simulations/executions/${executionId}`)
+    .set(workspace.headers)
+  expectStatus(finalProjection, 200)
+  assert.equal(finalProjection.body.status, 'COMPLETED')
+  assert.equal(finalProjection.body.error, null)
+  assert.equal(finalProjection.body.outputs.length, 2)
+  assert.equal(finalProjection.body.outputs[0].key, `${executionId}:0:PUBLIC_REPLY`)
+  assert.equal(finalProjection.body.outputs[1].key, `${executionId}:1:LINK_DELIVERY`)
+})
+
+test('POST /executions/:id/retry rejeita estados não-FAILED e cross-workspace', async () => {
+  const owner = await createWorkspaceScenario()
+  const other = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, owner)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(owner.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Beatriz',
+    text: 'Olá',
+    idempotencyKey: 'sim-retry-states-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  // Tentativa de retry em estado PENDING -> 409
+  const pendingRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(owner.headers)
+    .send()
+  expectStatus(pendingRetry, 409)
+
+  // Tentativa de retry por outro workspace -> 404
+  const foreignRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(other.headers)
+    .send()
+  expectStatus(foreignRetry, 404)
+
+  // Atualizar para COMPLETED -> 409
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'COMPLETED' },
+  })
+  const completedRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(owner.headers)
+    .send()
+  expectStatus(completedRetry, 409)
+
+  // Atualizar para IGNORED -> 409
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'IGNORED' },
+  })
+  const ignoredRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(owner.headers)
+    .send()
+  expectStatus(ignoredRetry, 409)
+})
+
+test('retries concorrentes em execução FAILED: apenas um tem sucesso e o outro recebe 409', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Daniel',
+    text: 'Quero o material',
+    idempotencyKey: 'sim-concurrent-retry-001',
+  })
+  expectStatus(commentRes, 201)
+  const executionId = commentRes.body.executionId
+
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'FAILED', completedAt: new Date() },
+  })
+
+  const [res1, res2] = await Promise.all([
+    api.post(`/api/v1/simulations/executions/${executionId}/retry`).set(workspace.headers).send(),
+    api.post(`/api/v1/simulations/executions/${executionId}/retry`).set(workspace.headers).send(),
+  ])
+
+  const statuses = [res1.status, res2.status].sort()
+  assert.deepEqual(statuses, [201, 409])
+})
+
