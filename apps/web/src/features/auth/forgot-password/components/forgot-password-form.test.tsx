@@ -3,48 +3,53 @@ import { render, type RenderResult } from 'vitest-browser-react'
 import { userEvent, type Locator } from 'vitest/browser'
 import { ForgotPasswordForm } from './forgot-password-form'
 
-const navigateMock = vi.fn()
+const requestPasswordResetMock = vi.fn().mockResolvedValue({})
 
-vi.mock('@tanstack/react-router', async (orig) => {
-  const actual = await orig<typeof import('@tanstack/react-router')>()
-  return { ...actual, useNavigate: () => navigateMock }
-})
-
-vi.mock('@/lib/utils', async (orig) => ({
-  ...(await orig()),
-  sleep: vi.fn(() => Promise.resolve()),
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    requestPasswordReset: (...args: unknown[]) => requestPasswordResetMock(...args),
+  },
+  webCallbackUrl: (path: string) => `http://localhost:3000${path}`,
 }))
 
 describe('ForgotPasswordForm', () => {
   let screen: RenderResult
   let emailInput: Locator
-  let continueButton: Locator
+  let submitButton: Locator
 
   beforeEach(async () => {
     vi.clearAllMocks()
 
     screen = await render(<ForgotPasswordForm />)
-    emailInput = screen.getByRole('textbox', { name: /^Email$/i })
-    continueButton = screen.getByRole('button', { name: /^Continue$/i })
+    emailInput = screen.getByRole('textbox', { name: /^E-mail$/i })
+    submitButton = screen.getByRole('button', { name: /^Enviar instruções$/i })
   })
 
-  it('renders email field and continue button', async () => {
+  it('renders email field and submit button', async () => {
     await expect.element(emailInput).toBeInTheDocument()
-    await expect.element(continueButton).toBeInTheDocument()
+    await expect.element(submitButton).toBeInTheDocument()
   })
 
   it('shows validation when submitting empty form', async () => {
-    await userEvent.click(continueButton)
-    await expect.element(screen.getByText(/^Please enter your email\.$/i)).toBeInTheDocument()
+    await userEvent.click(submitButton)
+    await expect.element(screen.getByText(/^Informe seu e-mail\.$/i)).toBeInTheDocument()
   })
 
-  it('resets the form and navigates to /otp on success', async () => {
-    await userEvent.fill(emailInput, 'a@b.com')
-    await userEvent.click(continueButton)
+  it('submits password reset request and shows confirmation message', async () => {
+    await userEvent.fill(emailInput, 'user@example.com')
+    await userEvent.click(submitButton)
 
-    await vi.waitFor(() => expect(navigateMock).toHaveBeenCalledWith({ to: '/otp' }))
+    expect(requestPasswordResetMock).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      redirectTo: 'http://localhost:3000/auth/reset-password',
+    })
 
-    // Form should reset on success
-    await expect.element(emailInput).toHaveValue('')
+    await expect
+      .element(
+        screen.getByText(
+          'Se este endereço estiver cadastrado, você receberá instruções em alguns instantes.',
+        ),
+      )
+      .toBeInTheDocument()
   })
 })

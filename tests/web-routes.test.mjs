@@ -19,8 +19,17 @@ test('web route tree exposes only Engancha routes', async () => {
     "'/auth/verify-email'",
     "'/workspace'",
     "'/users'",
+    "'/automations'",
+    "'/automations/$automationId'",
+    "'/automations/$automationId/identification'",
+    "'/automations/$automationId/content'",
+    "'/automations/$automationId/keyword'",
+    "'/automations/$automationId/public-reply'",
+    "'/automations/$automationId/direct-message'",
+    "'/automations/$automationId/final-action'",
+    "'/automations/$automationId/review'",
   ]) {
-    assert.match(source, new RegExp(route.replaceAll('/', '\\/')))
+    assert.match(source, new RegExp(route.replaceAll('/', '\\/').replaceAll('$', '\\$')))
   }
 
   for (const forbidden of ['tasks', 'apps', 'settings', 'chats', 'clerk', '_authenticated']) {
@@ -31,6 +40,7 @@ test('web route tree exposes only Engancha routes', async () => {
 test('sidebar data exposes workspace people navigation without reference-only routes', async () => {
   const source = await readFile(sidebarPath, 'utf8')
   assert.match(source, /url: '\/workspace'/)
+  assert.match(source, /url: '\/automations'/)
   assert.match(source, /url: '\/users'/)
   assert.doesNotMatch(source, /tasks|apps|settings|chats|clerk|_authenticated/)
 })

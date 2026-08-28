@@ -1,12 +1,12 @@
 # Engancha — Modelo de Dados
 
-> Versão: 0.2  
+> Versão: 0.3
 > Status: aprovado para implementação  
 > Referências: [ARCHITECTURE.md](./ARCHITECTURE.md) · [REQUIREMENTS.md](./REQUIREMENTS.md)
 
 ## 1. Objetivo
 
-Este documento define o modelo lógico de dados do Engancha antes da criação do `schema.prisma`.
+Este documento define o modelo lógico de dados do Engancha e orienta a evolução versionada do `schema.prisma` e de suas migrations.
 
 O modelo precisa atender três objetivos ao mesmo tempo:
 
@@ -51,8 +51,11 @@ Os nomes e campos finais devem ser gerados/confirmados pelo Better Auth CLI e pe
 
 ```text
 automation
+automation_revision
+automation_target
 automation_trigger
 automation_action
+content
 automation_execution
 conversation
 message
@@ -64,22 +67,26 @@ external_event
 channel_connection
 ```
 
-`channel_connection` e `external_event` ficam preparados para o Instagram real e para providers futuros, mas podem permanecer sem uso no primeiro vertical slice.
+`channel_connection` e `external_event` ficam preparados para o Instagram real e para providers futuros, mas podem permanecer sem uso no primeiro vertical slice. `account` continua sendo infraestrutura do Better Auth; contas externas do produto usam exclusivamente `channel_connection`.
 
 ## 4. Diagrama lógico
 
 ```mermaid
 erDiagram
   ORGANIZATION ||--o{ AUTOMATION : owns
+  ORGANIZATION ||--o{ CONTENT : owns
   ORGANIZATION ||--o{ CONVERSATION : owns
   ORGANIZATION ||--o{ CONTACT : owns
   ORGANIZATION ||--o{ TAG : owns
   ORGANIZATION ||--o{ CHANNEL_CONNECTION : owns
   ORGANIZATION ||--o{ EXTERNAL_EVENT : receives
 
-  AUTOMATION ||--|| AUTOMATION_TRIGGER : has
-  AUTOMATION ||--o{ AUTOMATION_ACTION : contains
+  AUTOMATION ||--o{ AUTOMATION_REVISION : versions
+  AUTOMATION_REVISION ||--o| AUTOMATION_TARGET : targets
+  AUTOMATION_REVISION ||--o| AUTOMATION_TRIGGER : triggers
+  AUTOMATION_REVISION ||--o{ AUTOMATION_ACTION : contains
   AUTOMATION ||--o{ AUTOMATION_EXECUTION : creates
+  CONTENT ||--o{ AUTOMATION_TARGET : selected_by
 
   AUTOMATION_EXECUTION ||--o{ MESSAGE : produces
   AUTOMATION_EXECUTION }o--|| CONVERSATION : belongs_to
@@ -93,6 +100,8 @@ erDiagram
   CHANNEL_CONNECTION ||--o{ CONVERSATION : serves
   CHANNEL_CONNECTION ||--o{ CONTACT : identifies
   CHANNEL_CONNECTION ||--o{ EXTERNAL_EVENT : sources
+  CHANNEL_CONNECTION ||--o{ CONTENT : provides
+  CHANNEL_CONNECTION ||--o{ AUTOMATION_TARGET : routes
 ```
 
 ## 5. Entidades
@@ -116,6 +125,7 @@ Relações:
 
 ```text
 organization 1:N automation
+organization 1:N content
 organization 1:N conversation
 organization 1:N contact
 organization 1:N tag
@@ -123,80 +133,162 @@ organization 1:N channel_connection
 organization 1:N external_event
 ```
 
-### 5.2 Automation
+### 5.2 Content
 
-Configuração reutilizável criada pelo usuário.
+Conteúdo normalizado que pode receber interações e servir como alvo de uma automação. O mesmo conceito representa conteúdo simulado e conteúdo descoberto por um adapter real.
 
 ```text
 id                    UUID       PK
 organizationId        String     FK → organization.id
-name                  String
+channelConnectionId   UUID?      FK → channel_connection.id
+provider              Enum       INSTAGRAM | FACEBOOK | TWITTER
+mode                  Enum       SIMULATED | REAL
+contentType           Enum       POST | REEL | VIDEO
+title                 String
+externalContentId     String
+createdAt             DateTime
+updatedAt             DateTime
+```
+
+Regras:
+
+- conteúdo real exige `channelConnectionId` e deve usar o mesmo provider da conexão;
+- conteúdo simulado exige `channelConnectionId=null`;
+- conexão e conteúdo pertencem à mesma Organization;
+- conteúdos simulados existentes permanecem com conexão nula.
+
+Constraints lógicas:
+
+```text
+REAL:      UNIQUE (channelConnectionId, contentType, externalContentId)
+SIMULATED: UNIQUE (organizationId, provider, mode, contentType, externalContentId)
+```
+
+As constraints condicionais devem usar índices parciais ou estratégia equivalente no PostgreSQL.
+
+### 5.3 Automation
+
+Identidade e estado operacional de uma automação. A configuração mutável ou publicada permanece nas revisões.
+
+```text
+id                    UUID       PK
+organizationId        String     FK → organization.id
 status                Enum       DRAFT | ACTIVE | PAUSED | ARCHIVED
-version               Int        DEFAULT 1
-publishedVersion      Int?
 createdByUserId       String     FK lógica → user.id
+currentPublishedRevisionId UUID? FK → automation_revision.id
+activeContentId       UUID?
+activeKeywordNormalized String?
 createdAt             DateTime
 updatedAt             DateTime
 publishedAt           DateTime?
 pausedAt              DateTime?
-archivedAt            DateTime?
 ```
 
 Regras:
 
-- `organizationId` é obrigatório.
-- Apenas `ACTIVE` pode receber novos disparos.
-- `DRAFT` pode estar incompleta.
-- Publicar incrementa a versão publicada.
-- Editar uma automação não altera snapshots de execuções antigas.
+- apenas `ACTIVE` pode receber novos disparos;
+- a criação gera uma primeira revisão `DRAFT`, que pode estar incompleta;
+- a revisão publicada atual é imutável;
+- `activeContentId` e `activeKeywordNormalized` são projeções usadas para garantir conflito de gatilho entre automações ativas;
+- editar uma automação ativa cria ou reutiliza uma revisão de rascunho sem alterar a publicada.
 
 Índices:
 
 ```text
-(organizationId, status)
-(organizationId, updatedAt)
+(organizationId, status, updatedAt)
+UNIQUE (currentPublishedRevisionId)
+UNIQUE (organizationId, activeContentId, activeKeywordNormalized)
 ```
 
-### 5.3 AutomationTrigger
+A última unicidade só se aplica quando a automação está ativa e as projeções não são nulas; a migration deve usar índice parcial ou mecanismo transacional equivalente.
 
-Gatilho que inicia a automação. O MVP possui um trigger de comentário por palavra-chave por automação.
+### 5.4 AutomationRevision
+
+Configuração versionada da automação.
 
 ```text
-id              UUID       PK
-automationId    UUID       FK → automation.id
-type            Enum       COMMENT_KEYWORD
-keyword         String
-normalizedValue String
-config          Json?
-createdAt       DateTime
-updatedAt       DateTime
+id           UUID       PK
+automationId UUID       FK → automation.id
+version      Int
+status       Enum       DRAFT | PUBLISHED
+name         String?
+createdAt    DateTime
+publishedAt  DateTime?
 ```
 
 Regras:
 
-- deve existir exatamente um trigger ativo por automação no MVP;
-- `normalizedValue` é usado no matching;
-- regra recomendada: trim + lowercase + normalização Unicode definida no código;
+- existe no máximo uma revisão `DRAFT` por automação;
+- `DRAFT` pode estar incompleta;
+- `PUBLISHED` exige nome, alvo, gatilho e ações válidos e torna-se imutável;
+- alterar conexão ou conteúdo de uma automação ativa ocorre em nova revisão.
+
+Constraint:
+
+```text
+UNIQUE (automationId, version)
+```
+
+### 5.5 AutomationTarget
+
+Alvo único e versionado da automação.
+
+```text
+id                    UUID       PK
+revisionId            UUID       FK → automation_revision.id
+channelConnectionId   UUID?      FK → channel_connection.id
+contentId             UUID       FK → content.id
+```
+
+Regras:
+
+- uma revisão possui no máximo um alvo;
+- no modo real, `channelConnectionId` é obrigatório, pertence ao mesmo workspace e deve ser igual a `Content.channelConnectionId`;
+- a conexão deve estar `ACTIVE` no momento da publicação e no início de uma nova execução;
+- no modo simulado, `channelConnectionId` é nulo e o conteúdo deve ter `mode=SIMULATED`;
+- trocar a conexão invalida qualquer conteúdo de outra conexão;
+- uma revisão nunca aponta para várias conexões.
+
+Constraint:
+
+```text
+UNIQUE (revisionId)
+```
+
+### 5.6 AutomationTrigger
+
+Gatilho versionado que inicia a automação. O MVP possui um gatilho de comentário por palavra-chave.
+
+```text
+id                UUID       PK
+revisionId        UUID       FK → automation_revision.id
+type              Enum       COMMENT_KEYWORD
+keyword           String
+keywordNormalized String
+```
+
+Regras:
+
+- deve existir exatamente um gatilho para uma revisão publicada;
+- `keywordNormalized` é usado no matching;
 - a palavra original é preservada em `keyword` para exibição.
 
 Constraint:
 
 ```text
-UNIQUE (automationId, type)
+UNIQUE (revisionId)
 ```
 
-### 5.4 AutomationAction
+### 5.7 AutomationAction
 
-Ações ordenadas executadas quando o trigger corresponde.
+Ações ordenadas e versionadas executadas quando o gatilho corresponde.
 
 ```text
 id              UUID       PK
-automationId    UUID       FK → automation.id
+revisionId      UUID       FK → automation_revision.id
 position        Int
 type            Enum       PUBLIC_REPLY | PRIVATE_REPLY | LINK | CAPTURE_EMAIL | APPLY_TAG
 config          Json
-createdAt       DateTime
-updatedAt       DateTime
 ```
 
 Exemplos de `config` validados por Zod:
@@ -240,10 +332,10 @@ Exemplos de `config` validados por Zod:
 Constraint:
 
 ```text
-UNIQUE (automationId, position)
+UNIQUE (revisionId, position)
 ```
 
-### 5.5 AutomationExecution
+### 5.8 AutomationExecution
 
 Uma tentativa de executar uma automação para um evento recebido.
 
@@ -254,6 +346,7 @@ automationId          UUID       FK → automation.id
 conversationId        UUID?      FK → conversation.id
 contactId             UUID?      FK → contact.id
 sourceEventId         UUID?      FK → external_event.id
+channelConnectionId   UUID?      FK → channel_connection.id
 provider              Enum       INSTAGRAM | FACEBOOK | TWITTER
 mode                  Enum       SIMULATED | REAL
 sourceType            Enum       COMMENT | MESSAGE | INTERACTION
@@ -271,7 +364,9 @@ createdAt             DateTime
 updatedAt             DateTime
 ```
 
-`automationSnapshot` contém trigger e actions efetivamente usados na execução. Isso garante histórico imutável mesmo se a automação for editada depois.
+`automationSnapshot` contém conexão, conteúdo, trigger e actions efetivamente usados na execução, sem copiar credenciais. Isso garante histórico imutável mesmo se a automação for editada depois.
+
+Execuções reais exigem `channelConnectionId`; execuções simuladas mantêm o campo nulo.
 
 Idempotência:
 
@@ -281,7 +376,7 @@ UNIQUE (organizationId, provider, mode, sourceType, sourceExternalId)
 
 Para simulações, `sourceExternalId` deve ser gerado pelo sistema ou recebido de forma controlada. O mesmo evento simulado não deve gerar duas execuções.
 
-### 5.6 Conversation
+### 5.9 Conversation
 
 Agrupa mensagens entre um contato e o workspace em um canal específico.
 
@@ -307,7 +402,7 @@ UNIQUE (organizationId, provider, mode, channelConnectionId, externalId)
 
 `externalId` pode ser nulo para dados simulados, mas deve ser obrigatório quando uma conversa real for persistida. Para dados reais, `channelConnectionId` identifica a conta externa responsável pelo canal. Como a conexão é nula no modo simulado, a implementação deve usar índices únicos parciais ou estratégia equivalente.
 
-### 5.7 Message
+### 5.10 Message
 
 Mensagem ou resposta registrada na conversa.
 
@@ -329,7 +424,7 @@ createdAt             DateTime
 
 O campo `type` diferencia uma interação recebida, uma resposta pública, uma private reply e uma DM. Essa distinção é necessária para validar as capacidades de cada provider.
 
-### 5.8 Contact
+### 5.11 Contact
 
 Pessoa que interagiu com o workspace.
 
@@ -359,7 +454,7 @@ UNIQUE (organizationId, provider, mode, channelConnectionId, externalUserId)
 
 Como alguns valores podem ser nulos, a implementação Prisma/PostgreSQL deve usar índices únicos parciais ou estratégia equivalente para não bloquear vários contatos sem e-mail/ID externo ou sem conexão simulada. Uma pessoa em providers diferentes não deve ser presumida como a mesma identidade sem uma regra explícita de unificação.
 
-### 5.9 Lead
+### 5.12 Lead
 
 Marca que um contato forneceu dados e entrou no funil do workspace.
 
@@ -385,7 +480,7 @@ UNIQUE (organizationId, contactId)
 
 Um contato torna-se lead na primeira captura válida. Se futuramente for necessário registrar várias conversões, será criada uma tabela `lead_capture` sem quebrar o modelo atual.
 
-### 5.10 Tag
+### 5.13 Tag
 
 Etiqueta pertencente ao workspace.
 
@@ -404,7 +499,7 @@ Constraint:
 UNIQUE (organizationId, normalizedName)
 ```
 
-### 5.11 ContactTag
+### 5.14 ContactTag
 
 Relação N:N entre contatos e tags.
 
@@ -420,7 +515,7 @@ Primary key composta:
 PRIMARY KEY (contactId, tagId)
 ```
 
-### 5.12 ChannelConnection — futuro
+### 5.15 ChannelConnection — integração real
 
 Representa uma conta externa conectada ao workspace.
 
@@ -429,6 +524,7 @@ id                    UUID       PK
 organizationId        String     FK → organization.id
 provider              Enum       INSTAGRAM | FACEBOOK | TWITTER
 externalAccountId     String
+displayName           String
 username              String?
 encryptedAccessToken  String
 tokenExpiresAt        DateTime?
@@ -444,14 +540,14 @@ Constraints:
 
 ```text
 UNIQUE (provider, externalAccountId)
-UNIQUE (organizationId, provider, externalAccountId)
+INDEX  (organizationId, provider, status)
 ```
 
 O token nunca será retornado pela API ou enviado ao frontend.
 
-`ChannelConnection` representa uma conta externa real; por isso, sua conexão sempre usa o modo `REAL`. O modo `SIMULATED` é usado nos eventos, conversas, mensagens e contatos gerados pelo simulador, sem exigir uma conta conectada.
+`ChannelConnection` representa uma conta externa real; por isso, não possui `mode` e sempre participa de operações `REAL`. O modo `SIMULATED` é usado nos eventos, conteúdos, conversas, mensagens e contatos gerados pelo simulador, sem exigir uma conta conectada. Uma mesma conta externa não pode permanecer ativa em duas Organizations sem transferência explícita.
 
-### 5.13 ExternalEvent — futuro
+### 5.16 ExternalEvent — futuro
 
 Evento recebido de um provider externo ou de um adapter simulado.
 
@@ -487,6 +583,10 @@ AutomationStatus:
   ACTIVE
   PAUSED
   ARCHIVED
+
+AutomationRevisionStatus:
+  DRAFT
+  PUBLISHED
 
 AutomationTriggerType:
   COMMENT_KEYWORD
@@ -534,6 +634,18 @@ Provider:
 ExecutionMode:
   SIMULATED
   REAL
+
+ContentType:
+  POST
+  REEL
+  VIDEO
+
+ChannelConnectionStatus:
+  ACTIVE
+  EXPIRED
+  REVOKED
+  ERROR
+  DISCONNECTED
 ```
 
 ### 6.1 Capacidades do canal
@@ -557,43 +669,58 @@ Uma ação incompatível com as capacidades do provider deve ser rejeitada na pu
 
 ```text
 Automation
-  ├─ AutomationTrigger
-  └─ AutomationAction[]
+  └─ AutomationRevision(DRAFT)
+       ├─ AutomationTarget?
+       ├─ AutomationTrigger?
+       └─ AutomationAction[]
 ```
 
-A criação deve ocorrer em uma transação. O rascunho pode ter campos incompletos; a publicação deve validar o agregado inteiro.
+A criação deve ocorrer em uma transação. O rascunho pode ter campos incompletos; a publicação deve validar o agregado inteiro. No modo simulado, o alvo usa conteúdo simulado e conexão nula. No modo real, o usuário escolhe uma conexão antes do conteúdo, e ambos ficam registrados na revisão.
 
-### 7.2 Receber comentário simulado do Instagram
+### 7.2 Conectar conta externa real
 
 ```text
-1. normalizar payload como IncomingInteraction
-2. definir provider=INSTAGRAM e mode=SIMULATED
-3. criar/obter Contact
-4. criar/obter Conversation
-5. criar ExternalEvent ou evento interno equivalente
-6. criar AutomationExecution(PENDING)
-7. adicionar job automation-execution
+1. iniciar OAuth pelo adapter do provider
+2. validar callback, identidade, escopos e permissões
+3. criar ou atualizar ChannelConnection na Organization ativa
+4. criptografar credenciais no backend
+5. sincronizar ou consultar Content da conexão
+6. retornar somente metadados sanitizados
 ```
 
-O mesmo fluxo será usado para providers reais; somente o adapter de entrada e o adapter de saída mudam.
+Uma conexão não é criada para o simulador. Falha no OAuth não deve persistir credenciais parciais como conexão ativa.
 
-### 7.3 Processar execução
+### 7.3 Receber comentário simulado
+
+```text
+1. receber provider selecionado entre os providers simuláveis
+2. ignorar qualquer mode recebido do browser e definir mode=SIMULATED
+3. normalizar payload como IncomingInteraction
+4. criar ExternalEvent ou evento interno equivalente
+5. criar AutomationExecution(PENDING)
+6. adicionar job automation-execution
+```
+
+No MVP, `INSTAGRAM` é o único provider simulável. O mesmo fluxo será usado para providers reais; somente o adapter de entrada, o adapter de saída e o modo mudarão. A criação de conversa, contato, lead e tag permanece na Fase 5.
+
+### 7.4 Processar execução
 
 ```text
 1. claim idempotente da execução
 2. mudar para PROCESSING
-3. carregar trigger/actions
-4. salvar automationSnapshot
-5. validar ChannelCapabilities
-6. avaliar keyword
-7. criar Message de resposta pública
-8. criar Message de private reply/DM quando suportado
-9. criar/atualizar Contact e Lead quando aplicável
-10. aplicar ContactTag quando aplicável
-11. mudar para COMPLETED ou FAILED
+3. carregar conexão, conteúdo, trigger e actions da revisão publicada
+4. validar conexão ativa quando mode=REAL
+5. salvar automationSnapshot sem credenciais
+6. validar ChannelCapabilities
+7. avaliar keyword
+8. criar Message de resposta pública
+9. criar Message de private reply/DM quando suportado
+10. criar/atualizar Contact e Lead quando aplicável
+11. aplicar ContactTag quando aplicável
+12. mudar para COMPLETED ou FAILED
 ```
 
-### 7.4 Capturar e-mail
+### 7.5 Capturar e-mail
 
 ```text
 1. normalizar e validar e-mail
@@ -610,6 +737,9 @@ O modelo não deve criar um fluxo paralelo para cada provider. O provider e o mo
 
 - Nenhum registro do produto pode existir sem `organizationId`, exceto tabelas de infraestrutura do Better Auth.
 - Toda FK para uma entidade do produto deve respeitar o mesmo workspace lógico.
+- Conteúdo real, conexão e alvo de uma revisão devem pertencer à mesma Organization e usar o mesmo provider.
+- `mode=REAL` exige conexão; `mode=SIMULATED` exige conexão nula.
+- Uma conexão não ativa bloqueia novas publicações e execuções reais, sem apagar histórico.
 - Um job não pode atualizar execução de outro workspace.
 - Uma execução concluída não deve ser recalculada silenciosamente.
 - Falhas devem manter `errorCode`, `errorMessage` sanitizada e timestamps.
@@ -621,8 +751,13 @@ O modelo não deve criar um fluxo paralelo para cada provider. O provider e o mo
 
 ```text
 automation:            (organizationId, status), (organizationId, updatedAt)
-automation_trigger:   (automationId, normalizedValue)
-automation_execution: (organizationId, status), (automationId, createdAt), (provider, mode, sourceType, sourceExternalId)
+automation_revision:   (automationId, status), UNIQUE (automationId, version)
+automation_target:     UNIQUE (revisionId), (channelConnectionId, contentId)
+automation_trigger:    UNIQUE (revisionId), (keywordNormalized)
+automation_action:     UNIQUE (revisionId, position)
+content:               (organizationId, provider, mode), (channelConnectionId, contentType, externalContentId)
+channel_connection:    (organizationId, provider, status), UNIQUE (provider, externalAccountId)
+automation_execution:  (organizationId, status), (automationId, createdAt), (provider, mode, channelConnectionId, sourceType, sourceExternalId)
 conversation:          (organizationId, provider, mode, channelConnectionId, externalId), (organizationId, lastMessageAt)
 message:               (conversationId, createdAt), (executionId), (provider, mode, externalId)
 contact:               (organizationId, provider, mode, channelConnectionId, externalUserId), (organizationId, emailNormalized), (organizationId, lastInteractionAt)
@@ -635,13 +770,30 @@ external_event:        (provider, mode, channelConnectionId, externalEventId), (
 | Requisito | Entidades principais |
 |---|---|
 | FR-WORK-001 / FR-WORK-004 | `organization`, `member` |
-| FR-AUTO-001 a FR-AUTO-014 | `automation`, `automation_trigger`, `automation_action` |
+| FR-AUTO-001 a FR-AUTO-014 | `automation`, `automation_revision`, `automation_target`, `automation_trigger`, `automation_action`, `content` |
 | FR-SIM-001 a FR-SIM-008 | `external_event`, `automation_execution`, `conversation`, `message` |
 | FR-DATA-001 a FR-DATA-006 | `conversation`, `message`, `contact`, `lead`, `tag`, `contact_tag` |
 | FR-ANALYTICS-001 a FR-ANALYTICS-003 | dados de `automation_execution`, `message`, `lead` |
-| FR-META-001 a FR-META-010 | `channel_connection`, `external_event`, `conversation`, `message`, `contact` |
+| FR-META-001 a FR-META-010 | `channel_connection`, `content`, `external_event`, `conversation`, `message`, `contact` |
+| FR-CHANNEL-001 a FR-CHANNEL-009 | `channel_connection`, `content`, `automation_target`, `automation_execution` |
 
-## 11. Decisões adiadas
+## 11. Impacto sobre o modelo implementado
+
+O schema atual já possui `Content`, `Automation`, `AutomationRevision`, `AutomationTarget`, `AutomationTrigger` e `AutomationAction`, mas ainda não implementa conexões externas. A evolução necessária está documentada e não faz parte desta alteração exclusivamente documental:
+
+| Área atual | Mudança necessária | Compatibilidade |
+| --- | --- | --- |
+| Prisma | Criar `ChannelConnection` e seus enums/índices. | Nova migration, sem alterar conexões inexistentes. |
+| `Content` | Adicionar `channelConnectionId` opcional e relações/constraints condicionais. | Linhas atuais são simuladas e permanecem nulas. |
+| `AutomationTarget` | Adicionar `channelConnectionId` opcional. | Alvos atuais permanecem simulados e nulos. |
+| `AutomationExecution` futuro | Persistir `channelConnectionId` e snapshot sanitizado. | Simulações continuam com conexão nula. |
+| Contratos/API | Expor projeção sanitizada de conexão e endpoints de `channel-connections`. | Endpoints atuais de automação permanecem; o patch do alvo é estendido. |
+| Backend | Criar `Channels` e mover registry/capabilities para sua fronteira. | `Automations` passa a depender de portas; regras atuais de revisão permanecem. |
+| Web | Adicionar gestão de integrações e seleção conexão → conteúdo. | O simulador aparece como opção virtual e mantém o fluxo atual. |
+
+Nenhum token deve ser incluído em respostas, revisões, snapshots, jobs ou logs durante essa migração.
+
+## 12. Decisões adiadas
 
 - persistir métricas em tabelas próprias ou calcular sob demanda;
 - usar soft delete ou apenas estados de arquivamento em cada agregado;
@@ -649,13 +801,12 @@ external_event:        (provider, mode, channelConnectionId, externalEventId), (
 - armazenar payload bruto completo de webhooks e sua política de retenção;
 - estratégia de rotação e recriptografia de tokens por provider;
 - catálogo de capacidades por provider e forma de versioná-lo;
-- regra para associar uma automação a uma `ChannelConnection` específica;
 - identidade compartilhada entre contatos de providers diferentes;
 - particionamento de `message`, `external_event` e `automation_execution` em escala maior.
 
-## 12. Critério de aprovação
+## 13. Critério de aprovação
 
-Este modelo estará pronto para virar `schema.prisma` quando forem confirmados:
+Cada evolução deste modelo estará pronta para virar migration quando forem confirmados:
 
 - nomes finais dos campos e enums;
 - adapter e schema final do Better Auth;

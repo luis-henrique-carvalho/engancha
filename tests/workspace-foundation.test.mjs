@@ -48,22 +48,22 @@ test('workspace dependency boundaries stay explicit', async () => {
   assert.deepEqual(contracts.peerDependencies ?? {}, {})
 })
 
-test('API composes health, infrastructure, and verification as feature modules', async () => {
+test('API composes platform capabilities and feature modules', async () => {
   const appModule = await readFile(path.join(root, 'apps/api/src/app.module.ts'), 'utf8')
   const verificationModule = await readFile(
-    path.join(root, 'apps/api/src/verification/verification.module.ts'),
+    path.join(root, 'apps/api/src/modules/verification/verification.module.ts'),
     'utf8',
   )
   const healthModule = await readFile(
-    path.join(root, 'apps/api/src/health/health.module.ts'),
+    path.join(root, 'apps/api/src/modules/health/health.module.ts'),
     'utf8',
   )
   const infrastructureModule = await readFile(
-    path.join(root, 'apps/api/src/infrastructure/infrastructure.module.ts'),
+    path.join(root, 'apps/api/src/platform/health/infrastructure.module.ts'),
     'utf8',
   )
 
-  assert.match(appModule, /CoreModule/)
+  assert.match(appModule, /PlatformModule/)
   assert.match(appModule, /HealthModule/)
   assert.match(appModule, /InfrastructureModule/)
   assert.match(appModule, /VerificationModule/)

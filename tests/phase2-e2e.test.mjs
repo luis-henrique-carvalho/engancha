@@ -106,7 +106,7 @@ before(async () => {
 
   const [{ AppModule }, { prisma: prismaClient }] = await Promise.all([
     import('../apps/api/src/app.module.ts'),
-    import('../apps/api/src/database/client.ts'),
+    import('../apps/api/src/platform/database/client.ts'),
   ])
   prisma = prismaClient
   queue = new Queue(QUEUE_NAMES.emailDelivery, { connection: { url: process.env.REDIS_URL } })
@@ -125,6 +125,14 @@ after(async () => {
     select: { id: true },
   })
   const userIds = users.map((user) => user.id)
+  await prisma.automation.deleteMany({
+    where: {
+      OR: [
+        { organization: { slug: { startsWith: prefix } } },
+        { createdByUserId: { in: userIds } },
+      ],
+    },
+  })
   await prisma.invitation.deleteMany({
     where: { OR: [{ email: { startsWith: prefix } }, { inviterId: { in: userIds } }] },
   })
@@ -208,4 +216,50 @@ e2eTest('isola Organizations, rejeita ID alheio e bloqueia membership removida',
   })
   const revoked = await productRequest('/workspaces/active', { cookie: firstUser.cookie })
   assert.equal(revoked.response.status, 409)
+})
+
+e2eTest('cria rascunho de automação, edita o nome e consulta no detalhe e listagem', async () => {
+  const user = await createVerifiedUser('auto-flow')
+  const workspace = await productRequest('/workspaces/bootstrap', {
+    cookie: user.cookie,
+    method: 'POST',
+  })
+  assert.equal(workspace.response.status, 201)
+
+  // 1. Criar rascunho de automação
+  const createResponse = await productRequest('/automations', {
+    cookie: user.cookie,
+    method: 'POST',
+    body: {},
+  })
+  assert.equal(createResponse.response.status, 201, JSON.stringify(createResponse.body))
+  assert.equal(createResponse.body.status, 'DRAFT')
+  assert.equal(createResponse.body.current.name, null)
+  const automationId = createResponse.body.id
+
+  // 2. Editar o nome na Etapa 1 (Identificação)
+  const patchResponse = await productRequest(`/automations/${automationId}`, {
+    cookie: user.cookie,
+    method: 'PATCH',
+    body: { name: 'Campanha de Black Friday' },
+  })
+  assert.equal(patchResponse.response.status, 200)
+  assert.equal(patchResponse.body.current.name, 'Campanha de Black Friday')
+
+  // 3. Consultar detalhe da automação
+  const getResponse = await productRequest(`/automations/${automationId}`, {
+    cookie: user.cookie,
+  })
+  assert.equal(getResponse.response.status, 200)
+  assert.equal(getResponse.body.current.name, 'Campanha de Black Friday')
+  assert.equal(getResponse.body.status, 'DRAFT')
+
+  // 4. Consultar listagem de automações
+  const listResponse = await productRequest('/automations', {
+    cookie: user.cookie,
+  })
+  assert.equal(listResponse.response.status, 200)
+  assert.equal(listResponse.body.items.length, 1)
+  assert.equal(listResponse.body.items[0].id, automationId)
+  assert.equal(listResponse.body.items[0].current.name, 'Campanha de Black Friday')
 })

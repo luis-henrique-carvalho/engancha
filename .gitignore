@@ -7,3 +7,5 @@
 /graphify-out
 /.worktrees/
 **/graphify-out
+**/__screenshots__/
+**/.vitest-attachments/

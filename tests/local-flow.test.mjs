@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { enqueueVerificationJob } from '../apps/api/src/verification/verification.enqueuer.ts'
+import { enqueueVerificationJob } from '../apps/api/src/modules/verification/application/verification.enqueuer.ts'
 import { processVerificationJob } from '../apps/worker/src/verification/verification.job.ts'
 
 test('routes a verification request from the API boundary to the worker boundary', async () => {

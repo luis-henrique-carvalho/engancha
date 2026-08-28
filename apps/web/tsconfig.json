@@ -17,6 +17,6 @@
       "@engancha/contracts/*": ["../../packages/contracts/src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test-utils/**", "src/features/**"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

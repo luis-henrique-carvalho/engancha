@@ -19,6 +19,16 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
+import { Route as AutomationsIndexRouteImport } from './routes/automations/index'
+import { Route as AutomationsAutomationIdRouteRouteImport } from './routes/automations/$automationId/route'
+import { Route as AutomationsAutomationIdIndexRouteImport } from './routes/automations/$automationId/index'
+import { Route as AutomationsAutomationIdContentRouteImport } from './routes/automations/$automationId/content'
+import { Route as AutomationsAutomationIdDirectMessageRouteImport } from './routes/automations/$automationId/direct-message'
+import { Route as AutomationsAutomationIdFinalActionRouteImport } from './routes/automations/$automationId/final-action'
+import { Route as AutomationsAutomationIdIdentificationRouteImport } from './routes/automations/$automationId/identification'
+import { Route as AutomationsAutomationIdKeywordRouteImport } from './routes/automations/$automationId/keyword'
+import { Route as AutomationsAutomationIdPublicReplyRouteImport } from './routes/automations/$automationId/public-reply'
+import { Route as AutomationsAutomationIdReviewRouteImport } from './routes/automations/$automationId/review'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +80,65 @@ const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AutomationsIndexRoute = AutomationsIndexRouteImport.update({
+  id: '/automations/',
+  path: '/automations/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AutomationsAutomationIdRouteRoute =
+  AutomationsAutomationIdRouteRouteImport.update({
+    id: '/automations/$automationId',
+    path: '/automations/$automationId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AutomationsAutomationIdIndexRoute =
+  AutomationsAutomationIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdContentRoute =
+  AutomationsAutomationIdContentRouteImport.update({
+    id: '/content',
+    path: '/content',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdDirectMessageRoute =
+  AutomationsAutomationIdDirectMessageRouteImport.update({
+    id: '/direct-message',
+    path: '/direct-message',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdFinalActionRoute =
+  AutomationsAutomationIdFinalActionRouteImport.update({
+    id: '/final-action',
+    path: '/final-action',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdIdentificationRoute =
+  AutomationsAutomationIdIdentificationRouteImport.update({
+    id: '/identification',
+    path: '/identification',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdKeywordRoute =
+  AutomationsAutomationIdKeywordRouteImport.update({
+    id: '/keyword',
+    path: '/keyword',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdPublicReplyRoute =
+  AutomationsAutomationIdPublicReplyRouteImport.update({
+    id: '/public-reply',
+    path: '/public-reply',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
+const AutomationsAutomationIdReviewRoute =
+  AutomationsAutomationIdReviewRouteImport.update({
+    id: '/review',
+    path: '/review',
+    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,11 +146,21 @@ export interface FileRoutesByFullPath {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/users': typeof UsersRoute
   '/workspace': typeof WorkspaceRoute
+  '/automations/$automationId': typeof AutomationsAutomationIdRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/automations/': typeof AutomationsIndexRoute
+  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
+  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
+  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
+  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
+  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
+  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
+  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +173,15 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/automations': typeof AutomationsIndexRoute
+  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
+  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
+  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
+  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
+  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
+  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
+  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -102,11 +190,21 @@ export interface FileRoutesById {
   '/accept-invitation': typeof AcceptInvitationRoute
   '/users': typeof UsersRoute
   '/workspace': typeof WorkspaceRoute
+  '/automations/$automationId': typeof AutomationsAutomationIdRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/automations/': typeof AutomationsIndexRoute
+  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
+  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
+  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
+  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
+  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
+  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
+  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
+  '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -116,11 +214,21 @@ export interface FileRouteTypes {
     | '/accept-invitation'
     | '/users'
     | '/workspace'
+    | '/automations/$automationId'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
+    | '/automations/'
+    | '/automations/$automationId/content'
+    | '/automations/$automationId/direct-message'
+    | '/automations/$automationId/final-action'
+    | '/automations/$automationId/identification'
+    | '/automations/$automationId/keyword'
+    | '/automations/$automationId/public-reply'
+    | '/automations/$automationId/review'
+    | '/automations/$automationId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +241,15 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
+    | '/automations'
+    | '/automations/$automationId/content'
+    | '/automations/$automationId/direct-message'
+    | '/automations/$automationId/final-action'
+    | '/automations/$automationId/identification'
+    | '/automations/$automationId/keyword'
+    | '/automations/$automationId/public-reply'
+    | '/automations/$automationId/review'
+    | '/automations/$automationId'
   id:
     | '__root__'
     | '/'
@@ -140,11 +257,21 @@ export interface FileRouteTypes {
     | '/accept-invitation'
     | '/users'
     | '/workspace'
+    | '/automations/$automationId'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
+    | '/automations/'
+    | '/automations/$automationId/content'
+    | '/automations/$automationId/direct-message'
+    | '/automations/$automationId/final-action'
+    | '/automations/$automationId/identification'
+    | '/automations/$automationId/keyword'
+    | '/automations/$automationId/public-reply'
+    | '/automations/$automationId/review'
+    | '/automations/$automationId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -153,6 +280,8 @@ export interface RootRouteChildren {
   AcceptInvitationRoute: typeof AcceptInvitationRoute
   UsersRoute: typeof UsersRoute
   WorkspaceRoute: typeof WorkspaceRoute
+  AutomationsAutomationIdRouteRoute: typeof AutomationsAutomationIdRouteRouteWithChildren
+  AutomationsIndexRoute: typeof AutomationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -227,6 +356,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthVerifyEmailRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/automations/': {
+      id: '/automations/'
+      path: '/automations'
+      fullPath: '/automations/'
+      preLoaderRoute: typeof AutomationsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automations/$automationId': {
+      id: '/automations/$automationId'
+      path: '/automations/$automationId'
+      fullPath: '/automations/$automationId'
+      preLoaderRoute: typeof AutomationsAutomationIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/automations/$automationId/': {
+      id: '/automations/$automationId/'
+      path: '/'
+      fullPath: '/automations/$automationId/'
+      preLoaderRoute: typeof AutomationsAutomationIdIndexRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/content': {
+      id: '/automations/$automationId/content'
+      path: '/content'
+      fullPath: '/automations/$automationId/content'
+      preLoaderRoute: typeof AutomationsAutomationIdContentRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/direct-message': {
+      id: '/automations/$automationId/direct-message'
+      path: '/direct-message'
+      fullPath: '/automations/$automationId/direct-message'
+      preLoaderRoute: typeof AutomationsAutomationIdDirectMessageRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/final-action': {
+      id: '/automations/$automationId/final-action'
+      path: '/final-action'
+      fullPath: '/automations/$automationId/final-action'
+      preLoaderRoute: typeof AutomationsAutomationIdFinalActionRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/identification': {
+      id: '/automations/$automationId/identification'
+      path: '/identification'
+      fullPath: '/automations/$automationId/identification'
+      preLoaderRoute: typeof AutomationsAutomationIdIdentificationRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/keyword': {
+      id: '/automations/$automationId/keyword'
+      path: '/keyword'
+      fullPath: '/automations/$automationId/keyword'
+      preLoaderRoute: typeof AutomationsAutomationIdKeywordRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/public-reply': {
+      id: '/automations/$automationId/public-reply'
+      path: '/public-reply'
+      fullPath: '/automations/$automationId/public-reply'
+      preLoaderRoute: typeof AutomationsAutomationIdPublicReplyRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
+    '/automations/$automationId/review': {
+      id: '/automations/$automationId/review'
+      path: '/review'
+      fullPath: '/automations/$automationId/review'
+      preLoaderRoute: typeof AutomationsAutomationIdReviewRouteImport
+      parentRoute: typeof AutomationsAutomationIdRouteRoute
+    }
   }
 }
 
@@ -250,12 +449,47 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
+interface AutomationsAutomationIdRouteRouteChildren {
+  AutomationsAutomationIdContentRoute: typeof AutomationsAutomationIdContentRoute
+  AutomationsAutomationIdDirectMessageRoute: typeof AutomationsAutomationIdDirectMessageRoute
+  AutomationsAutomationIdFinalActionRoute: typeof AutomationsAutomationIdFinalActionRoute
+  AutomationsAutomationIdIdentificationRoute: typeof AutomationsAutomationIdIdentificationRoute
+  AutomationsAutomationIdKeywordRoute: typeof AutomationsAutomationIdKeywordRoute
+  AutomationsAutomationIdPublicReplyRoute: typeof AutomationsAutomationIdPublicReplyRoute
+  AutomationsAutomationIdReviewRoute: typeof AutomationsAutomationIdReviewRoute
+  AutomationsAutomationIdIndexRoute: typeof AutomationsAutomationIdIndexRoute
+}
+
+const AutomationsAutomationIdRouteRouteChildren: AutomationsAutomationIdRouteRouteChildren =
+  {
+    AutomationsAutomationIdContentRoute: AutomationsAutomationIdContentRoute,
+    AutomationsAutomationIdDirectMessageRoute:
+      AutomationsAutomationIdDirectMessageRoute,
+    AutomationsAutomationIdFinalActionRoute:
+      AutomationsAutomationIdFinalActionRoute,
+    AutomationsAutomationIdIdentificationRoute:
+      AutomationsAutomationIdIdentificationRoute,
+    AutomationsAutomationIdKeywordRoute: AutomationsAutomationIdKeywordRoute,
+    AutomationsAutomationIdPublicReplyRoute:
+      AutomationsAutomationIdPublicReplyRoute,
+    AutomationsAutomationIdReviewRoute: AutomationsAutomationIdReviewRoute,
+    AutomationsAutomationIdIndexRoute: AutomationsAutomationIdIndexRoute,
+  }
+
+const AutomationsAutomationIdRouteRouteWithChildren =
+  AutomationsAutomationIdRouteRoute._addFileChildren(
+    AutomationsAutomationIdRouteRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
   UsersRoute: UsersRoute,
   WorkspaceRoute: WorkspaceRoute,
+  AutomationsAutomationIdRouteRoute:
+    AutomationsAutomationIdRouteRouteWithChildren,
+  AutomationsIndexRoute: AutomationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

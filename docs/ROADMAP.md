@@ -20,7 +20,7 @@
 | Arquitetura           | ✅ Aprovada — versão 1.1                      |
 | Requisitos funcionais | ✅ Definidos — revisão contínua               |
 | Roadmap               | ✅ Criado                                     |
-| Código                | 🟡 Fase 2 em validação externa                |
+| Código                | 🟡 Fase 3 concluída localmente; Fase 2 em validação externa |
 | Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
 | Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
@@ -111,6 +111,8 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 **Critério de conclusão:** o modelo foi revisado, as decisões adiadas foram resolvidas ou explicitamente aceitas, e o documento está marcado como aprovado.
 
 **Decisão:** modelo aprovado pelo usuário em 13/08/2026. As decisões adiadas no documento foram aceitas como decisões de MVP e podem ser refinadas posteriormente sem bloquear a fundação.
+
+**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
 
 ---
 
@@ -226,47 +228,52 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 ## Fase 3 — Gestão de automações
 
-**Status:** ⏳ NÃO INICIADA  
+**Status:** ✅ CONCLUÍDA  
 **Épico:** EPIC-03  
 **Objetivo:** criar, editar, publicar e pausar automações pelo formulário guiado.
 
 ### Domínio e persistência
 
-- [ ] Modelar `Automation`.
-- [ ] Modelar `AutomationTrigger`.
-- [ ] Modelar `AutomationAction`.
-- [ ] Modelar status e versão da automação.
-- [ ] Criar repositories por domínio.
-- [ ] Criar migrations Prisma.
-- [ ] Implementar isolamento por Organization.
+- [x] Modelar `Automation`.
+- [x] Modelar `AutomationTrigger`.
+- [x] Modelar `AutomationAction`.
+- [x] Modelar status e versão da automação.
+- [x] Criar repositories por domínio.
+- [x] Criar migrations Prisma.
+- [x] Implementar isolamento por Organization.
+- [x] Manter conteúdos e alvos do MVP sem referência a conexão externa; nenhuma `ChannelConnection` é persistida na Fase 3.
 
 ### API
 
-- [ ] `GET /api/v1/automations`.
-- [ ] `POST /api/v1/automations`.
-- [ ] `GET /api/v1/automations/:id`.
-- [ ] `PATCH /api/v1/automations/:id`.
-- [ ] `POST /api/v1/automations/:id/publish`.
-- [ ] `POST /api/v1/automations/:id/pause`.
-- [ ] Validar DTOs/schemas.
-- [ ] Criar respostas serializadas.
+- [x] `GET /api/v1/automations`.
+- [x] `POST /api/v1/automations`.
+- [x] `GET /api/v1/automations/:id`.
+- [x] `PATCH /api/v1/automations/:id`.
+- [x] `POST /api/v1/automations/:id/publish`.
+- [x] `POST /api/v1/automations/:id/pause`.
+- [x] Validar DTOs/schemas.
+- [x] Criar respostas serializadas.
+- [x] Restringir o contrato do MVP a `INSTAGRAM` em modo `SIMULATED`; conteúdo real e outros providers ficam para o EPIC-09.
 
 ### Formulário web
 
-- [ ] Etapa de identificação.
-- [ ] Etapa de palavra-chave.
-- [ ] Etapa de resposta pública.
-- [ ] Etapa de DM.
-- [ ] Etapa de link ou captura de e-mail.
-- [ ] Etapa de tag.
-- [ ] Etapa de revisão.
-- [ ] Salvar rascunho.
-- [ ] Publicar automação.
-- [ ] Exibir erros de validação.
+- [x] Etapa de identificação.
+- [x] Etapa de canal e conteúdo-alvo, exibindo `Instagram — Simulador` como opção virtual no MVP.
+- [x] Etapa de palavra-chave.
+- [x] Etapa de resposta pública.
+- [x] Etapa de DM.
+- [x] Etapa de link ou captura de e-mail.
+- [x] Manter a etapa de tag fora do escopo da Fase 3; ela depende das entidades de contato/lead da Fase 5.
+- [x] Etapa de revisão.
+- [x] Salvar rascunho.
+- [x] Publicar automação.
+- [x] Exibir erros de validação.
 
-**Critério de conclusão:** usuário consegue criar uma automação válida, salvá-la como rascunho, publicar e pausar.
+**Critério de conclusão:** usuário consegue criar uma automação válida para `Instagram — Simulador`, salvá-la como rascunho, publicar e pausar, sem cadastrar ou selecionar uma conta externa.
 
 **Bloqueios:** nenhum esperado após conclusão da Fase 2.
+
+**Validação de encerramento (2026-08-27):** `npm run verify` aprovado; 10 testes de integração de automações e 189 testes web aprovados.
 
 ---
 
@@ -274,7 +281,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Status:** ⏳ NÃO INICIADA  
 **Épico:** EPIC-04  
-**Objetivo:** processar uma interação simulada do Instagram usando o mesmo pipeline previsto para o Instagram real e providers futuros.
+**Objetivo:** processar uma interação simulada no provider selecionado usando o mesmo pipeline previsto para integrações reais e providers futuros.
 
 ### Abstração de canal
 
@@ -286,6 +293,8 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Definir `PrivateReply`.
 - [ ] Definir `DirectMessage`.
 - [ ] Definir `ChannelCapabilities`.
+- [ ] Exibir seleção de provider no simulador, inicialmente com `Instagram` como única opção disponível.
+- [ ] Definir `mode=SIMULATED` exclusivamente no backend; o modo não é uma escolha exposta pela interface nem aceita do browser.
 - [ ] Implementar adapter do Instagram em modo `SIMULATED`.
 - [ ] Garantir que o simulador não chame diretamente o motor de automação.
 
@@ -304,10 +313,20 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 - [ ] `POST /api/v1/simulations/comments`.
 - [ ] `GET /api/v1/simulations/executions/:id`.
+- [ ] `GET /api/v1/simulations/executions/:id/events` via SSE para atualizações da execução.
 - [ ] Criar simulador de comentário.
-- [ ] Exibir status de processamento.
-- [ ] Exibir resultado da execução.
+- [ ] Exibir prévia da experiência do seguidor na aba `Testar`, sem linguagem de logs ou infraestrutura.
+- [ ] Exibir a aba `Atividade` com interações agrupadas por automação e atualização em tempo real por SSE.
+- [ ] Exibir status e resultado da execução em linguagem compreensível.
 - [ ] Exibir falha de forma compreensível.
+
+### Decisões de experiência e escopo
+
+- O detalhe de uma automação terá as áreas `Configuração`, `Testar` e `Atividade`.
+- `Testar` permite escrever um comentário simulado e visualizar a resposta que o seguidor receberia. Não é uma tela de logs.
+- `Atividade` apresenta comentários, respostas e falhas como interações compreensíveis, sem expor termos como job, worker, Redis ou fila.
+- SSE atualiza a atividade em tempo real; `GET /simulations/executions/:id` permanece como fallback de carregamento e reconexão. PostgreSQL é a fonte de verdade.
+- A Fase 4 persiste execuções e saídas simuladas. Conversas, contatos, leads, tags e captura efetiva de e-mail pertencem à Fase 5.
 
 **Critério de conclusão:** um comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável na interface.
 
@@ -449,6 +468,23 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 **Épico:** EPIC-09  
 **Objetivo:** substituir o adapter simulado do Instagram por integração real sem duplicar o motor de automações.
 
+**PRD:** [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md)
+
+### Fundação de canais e conexões
+
+- [ ] Criar o módulo `Channels` e suas portas de consulta.
+- [ ] Mover registry/capabilities de provider para a fronteira `Channels`.
+- [ ] Criar `ChannelConnection` com isolamento por Organization e respostas sanitizadas.
+- [ ] Adicionar `channelConnectionId` opcional a `Content` e `AutomationTarget` por migration aditiva.
+- [ ] Inicializar os dados simulados existentes com conexão nula na migration, sem criar conexões artificiais.
+- [ ] Implementar endpoints de listagem, detalhe, revalidação, desconexão e conteúdos da conexão.
+- [ ] Adicionar tela de integrações e estados vazio, ativo, expirado, erro e desconectado.
+- [ ] Adicionar seleção conexão → conteúdo ao editor de automações reais.
+- [ ] Validar conexão ativa, provider, workspace, conteúdo e capabilities na publicação.
+- [ ] Preservar `channelConnectionId` no snapshot de execuções reais sem copiar credenciais.
+
+### Adapter Meta e entrega real
+
 - [ ] Criar app na Meta for Developers.
 - [ ] Definir callback OAuth.
 - [ ] Implementar conexão de conta profissional.
@@ -546,3 +582,4 @@ Uma funcionalidade só deve ser marcada como concluída quando:
 | 2026-08-13 | Better Auth Organization Plugin representará workspaces                            | Prepara membros e roles futuros                             |
 | 2026-08-13 | PostgreSQL será a fonte de verdade                                                 | Redis fica restrito a cache e filas                         |
 | 2026-08-13 | Instagram será o primeiro provider, com `provider`, `mode` e capacidades separados | Permite adicionar Facebook e Twitter/X sem duplicar o motor |
+| 2026-08-27 | Cada revisão real aponta para uma `ChannelConnection` e conteúdo da mesma conta; simulação usa conexão nula | Torna o roteamento multi-conta inequívoco sem criar conexões fictícias |

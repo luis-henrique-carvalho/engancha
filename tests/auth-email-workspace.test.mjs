@@ -11,9 +11,9 @@ import {
   workspaceListResponseSchema,
 } from '@engancha/contracts'
 import { processEmailDeliveryJob } from '../apps/worker/src/email/email.job.ts'
-import { AuthorizationContextGuard } from '../apps/api/src/authorization/authorization-context.ts'
-import { DevelopmentEmailOutboxController } from '../apps/api/src/development-email-outbox/development-email-outbox.controller.ts'
-import { WorkspacesService } from '../apps/api/src/workspaces/workspaces.service.ts'
+import { AuthorizationContextGuard } from '../apps/api/src/platform/security/authorization-context.ts'
+import { DevelopmentEmailOutboxController } from '../apps/api/src/modules/development-email-outbox/api/http/development-email-outbox.controller.ts'
+import { WorkspacesService } from '../apps/api/src/modules/workspaces/application/workspaces.service.ts'
 
 const validJob = {
   version: 'v1',
@@ -291,4 +291,38 @@ test('workspace member lists memberships and switches only the current session t
     service.setActive('org-other', request),
     (error) => error?.getStatus?.() === 404,
   )
+})
+
+test('bootstrap retains activeOrganizationId when already present in session', async () => {
+  const database = {
+    client: {
+      member: {
+        findUnique: async ({ where }) => {
+          if (where.organizationId_userId.organizationId === 'org-custom') {
+            return {
+              id: 'member-custom',
+              role: 'admin',
+              organization: { id: 'org-custom', name: 'Custom Org', slug: 'custom-org' },
+            }
+          }
+          return null
+        },
+      },
+    },
+  }
+  const service = new WorkspacesService(database)
+  const request = {
+    session: {
+      user: { id: 'user-1', emailVerified: true },
+      session: { id: 'session-1', activeOrganizationId: 'org-custom' },
+    },
+  }
+
+  const result = await service.bootstrap(request)
+  assert.deepEqual(result, {
+    id: 'org-custom',
+    name: 'Custom Org',
+    slug: 'custom-org',
+    role: 'admin',
+  })
 })

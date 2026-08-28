@@ -1,3 +1,11 @@
+# DIRETIVAS MANDATÓRIAS (EXECUTE ANTES DE QUALQUER AÇÃO)
+
+1. **GRAPHIFY FIRST**: Para qualquer pergunta sobre código, arquitetura ou exploração do repositório, execute PRIMEIRO `graphify query "<termo>"` antes de ler arquivos ou buscar com grep/find.
+2. **SHADCN REFERENCE GRAPHIFY**: Antes de criar ou alterar telas, fluxos ou componentes em `apps/web`, consulte PRIMEIRO a referência local (`shadcn-admin-reference`) via `graphify query`.
+3. **GRAPHIFY UPDATE**: Imediatamente após alterar qualquer arquivo de código no repositório, execute `graphify update .`.
+
+---
+
 ## Git e GitHub
 
 Use o plugin `@github` como ponto de entrada para qualquer tarefa relacionada a Git ou GitHub. O plugin deve orientar o fluxo de repositório, branches, commits, push, pull requests, issues, comentários, revisões e GitHub Actions.
@@ -23,6 +31,19 @@ Rules:
   Use-a para investigar a composição do dashboard, sidebar, navegação, tema, responsividade e componentes shadcn. Porte ou adapte explicitamente apenas os padrões necessários para `apps/web`; nunca importe o runtime Vite, dependências, arquivos ou `graphify-out/` da referência para o Engancha. Se o clone não existir, ele continua opcional; consulte o procedimento no `README.md` antes de seguir sem a referência.
 
 ## Workflow de desenvolvimento
+
+## Legibilidade do código
+
+Ao criar ou refatorar código, use uma linha em branco para separar blocos lógicos
+e facilitar a leitura visual. Em especial:
+
+- Separe construtor, métodos públicos e métodos privados de uma classe.
+- Dentro de métodos não triviais, separe etapas distintas, como carregar dados,
+  validar regras, persistir mudanças e montar a resposta.
+- Não separe decorators da declaração que decoram, imports que pertencem ao mesmo
+  grupo, nem expressões curtas e coesas. A quebra de linha deve comunicar uma
+  mudança de intenção, não criar espaçamento arbitrário.
+- Preserve o formato final aplicado pelo Prettier.
 
 ## Convenção obrigatória de features web
 

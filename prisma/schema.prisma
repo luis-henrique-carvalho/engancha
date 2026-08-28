@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../apps/api/src/generated/prisma"
+  output   = "../apps/api/generated/prisma"
 }
 
 datasource db {
@@ -8,18 +8,19 @@ datasource db {
 }
 
 model User {
-  id            String         @id
+  id            String       @id
   name          String
-  email         String         @unique
-  emailVerified Boolean        @default(false)
+  email         String       @unique
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   role          String?
   sessions      Session[]
   accounts      Account[]
   members       Member[]
-  invitations   Invitation[]   @relation("Inviter")
+  invitations   Invitation[] @relation("Inviter")
+  automations   Automation[] @relation("AutomationCreator")
 }
 
 model Session {
@@ -69,14 +70,137 @@ model Verification {
 }
 
 model Organization {
-  id          String         @id
+  id          String       @id
   name        String
-  slug        String         @unique
+  slug        String       @unique
   logo        String?
   metadata    String?
-  createdAt   DateTime       @default(now())
+  createdAt   DateTime     @default(now())
   members     Member[]
   invitations Invitation[]
+  automations Automation[]
+  contents    Content[]
+}
+
+enum AutomationStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum AutomationRevisionStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AutomationTriggerType {
+  COMMENT_KEYWORD
+}
+
+enum AutomationActionType {
+  PUBLIC_REPLY
+  PRIVATE_REPLY
+  LINK
+  CAPTURE_EMAIL
+  APPLY_TAG
+}
+
+enum ContentProvider {
+  INSTAGRAM
+  TIKTOK
+}
+
+enum ContentMode {
+  SIMULATED
+  REAL
+}
+
+enum ContentType {
+  POST
+  VIDEO
+}
+
+model Content {
+  id                String             @id @default(uuid())
+  organizationId    String
+  provider          ContentProvider    @default(INSTAGRAM)
+  mode              ContentMode        @default(SIMULATED)
+  contentType       ContentType        @default(POST)
+  title             String
+  externalContentId String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  targets           AutomationTarget[]
+
+  @@unique([organizationId, provider, mode, contentType, externalContentId])
+  @@index([organizationId, updatedAt])
+}
+
+model Automation {
+  id                         String               @id @default(uuid())
+  organizationId             String
+  createdByUserId            String
+  status                     AutomationStatus     @default(DRAFT)
+  currentPublishedRevisionId String?              @unique
+  activeContentId            String?
+  activeKeywordNormalized    String?
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+  publishedAt                DateTime?
+  pausedAt                   DateTime?
+  organization               Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy                  User                 @relation("AutomationCreator", fields: [createdByUserId], references: [id])
+  revisions                  AutomationRevision[]
+  currentPublishedRevision   AutomationRevision?  @relation("CurrentPublishedRevision", fields: [currentPublishedRevisionId], references: [id])
+
+  @@index([organizationId, status, updatedAt])
+}
+
+model AutomationRevision {
+  id           String                   @id @default(uuid())
+  automationId String
+  version      Int
+  status       AutomationRevisionStatus @default(DRAFT)
+  name         String?
+  createdAt    DateTime                 @default(now())
+  publishedAt  DateTime?
+  automation   Automation               @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  publishedFor Automation?              @relation("CurrentPublishedRevision")
+  target       AutomationTarget?
+  trigger      AutomationTrigger?
+  actions      AutomationAction[]
+
+  @@unique([automationId, version])
+}
+
+model AutomationTarget {
+  id         String             @id @default(uuid())
+  revisionId String             @unique
+  contentId  String
+  revision   AutomationRevision @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+  content    Content            @relation(fields: [contentId], references: [id])
+}
+
+model AutomationTrigger {
+  id                String                @id @default(uuid())
+  revisionId        String                @unique
+  type              AutomationTriggerType @default(COMMENT_KEYWORD)
+  keyword           String
+  keywordNormalized String
+  revision          AutomationRevision    @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+}
+
+model AutomationAction {
+  id         String               @id @default(uuid())
+  revisionId String
+  position   Int
+  type       AutomationActionType
+  config     Json
+  revision   AutomationRevision   @relation(fields: [revisionId], references: [id], onDelete: Cascade)
+
+  @@unique([revisionId, position])
 }
 
 model Member {

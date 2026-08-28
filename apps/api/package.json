@@ -10,16 +10,21 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
+    "@nestjs/testing": "^11.2.3",
     "@types/express": "^5.0.3",
-    "@types/pg": "^8.21.0"
+    "@types/pg": "^8.21.0",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.2.2"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@better-auth/prisma-adapter": "^1.6.28",
     "@nestjs/bullmq": "^11.0.5",
     "@nestjs/common": "^11.1.6",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-express": "^11.1.6",
+    "@nestjs/swagger": "^11.4.7",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@thallesp/nestjs-better-auth": "^2.7.0",

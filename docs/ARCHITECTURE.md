@@ -1,6 +1,6 @@
 # Engancha — Architecture
 
-> Status: approved 1.1  
+> Status: approved 1.2
 > Approved for MVP implementation.
 
 ## 1. Visão do produto
@@ -139,6 +139,19 @@ ExecutionMode:  SIMULATED | REAL
 
 No MVP, a combinação usada será `provider=INSTAGRAM` e `mode=SIMULATED`. Uma integração real usará `provider=INSTAGRAM` e `mode=REAL`. Não serão criados valores compostos como `SIMULATED_INSTAGRAM`.
 
+`Provider` é um catálogo técnico controlado pelo sistema; usuários não cadastram providers. Uma conta externa autorizada por um workspace é representada por `ChannelConnection`. O nome `Account` permanece reservado às identidades gerenciadas pelo Better Auth.
+
+```text
+Provider                    ChannelConnection
+INSTAGRAM                   @loja_a no Instagram
+FACEBOOK                    Página Loja A no Facebook
+TWITTER                     @loja_a no Twitter/X
+```
+
+Cada `ChannelConnection` pertence a uma única Organization e representa somente uma conexão real. O modo simulado não persiste conexões fictícias: ele usa `provider=INSTAGRAM`, `mode=SIMULATED` e `channelConnectionId=null`.
+
+O roteamento de uma automação é uma decisão versionada. Cada `AutomationRevision` possui no máximo um `AutomationTarget`; no modo real, o alvo referencia exatamente uma conexão ativa e um conteúdo pertencente a ela. No modo simulado, o alvo referencia um conteúdo simulado e mantém a conexão nula. Uma revisão não distribui a mesma automação para várias contas; múltiplas contas exigem automações distintas até que exista um conceito específico de deployment multi-conta.
+
 A fronteira de infraestrutura será organizada por provider:
 
 ```text
@@ -172,6 +185,15 @@ ChannelCapabilities
 ```
 
 A publicação e a execução de uma automação devem validar essas capacidades. O núcleo não deve presumir que `PrivateReply` ou `DirectMessage` exista em todos os providers.
+
+A fronteira entre os módulos segue esta direção:
+
+```text
+Automations ──consulta──> Channels ports ──adapta──> provider externo
+Simulation  ──produz────> contratos normalizados, sem ChannelConnection
+```
+
+OAuth, tokens, callbacks, webhooks, limites e payloads específicos pertencem a `Channels` e aos adapters de infraestrutura. `Automations` recebe apenas projeções sanitizadas de conexão, conteúdo e capabilities; credenciais nunca entram em revisões, eventos, jobs ou snapshots.
 
 O simulador não poderá chamar diretamente o motor de automação. Ele deverá passar pelo mesmo caso de uso de ingestão de evento que será usado pelos webhooks dos providers:
 
@@ -225,6 +247,7 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 │   │   │   ├── features/
 │   │   │   │   ├── dashboard/
 │   │   │   │   ├── automations/
+│   │   │   │   ├── channels/
 │   │   │   │   ├── conversations/
 │   │   │   │   ├── contacts/
 │   │   │   │   └── settings/
@@ -239,29 +262,39 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 │   │   └── package.json
 │   │
 │   ├── api/
+│   │   ├── generated/
+│   │   │   └── prisma/
 │   │   ├── src/
 │   │   │   ├── main.ts
 │   │   │   ├── app.module.ts
-│   │   │   ├── config/
-│   │   │   ├── common/
-│   │   │   │   ├── guards/
-│   │   │   │   ├── filters/
-│   │   │   │   ├── pipes/
-│   │   │   │   └── interceptors/
-│   │   │   ├── infrastructure/
+│   │   │   ├── platform/             # recursos transversais da API
+│   │   │   │   ├── config/
 │   │   │   │   ├── database/
-│   │   │   │   ├── redis/
-│   │   │   │   ├── bullmq/
-│   │   │   │   ├── email/
-│   │   │   │   └── bull-board/
+│   │   │   │   ├── health/
+│   │   │   │   ├── http/
+│   │   │   │   ├── runtime/
+│   │   │   │   ├── security/
+│   │   │   │   └── platform.module.ts
+│   │   │   ├── integrations/         # adaptadores de sistemas externos
+│   │   │   │   ├── auth/
+│   │   │   │   └── email/
 │   │   │   └── modules/
-│   │   │       ├── auth/
 │   │   │       ├── workspaces/
+│   │   │       ├── channels/
+│   │   │       │   ├── api/http/
+│   │   │       │   ├── application/
+│   │   │       │   ├── domain/ports/
+│   │   │       │   └── infrastructure/
+│   │   │       │       ├── persistence/
+│   │   │       │       └── providers/
 │   │   │       ├── automations/
-│   │   │       ├── conversations/
-│   │   │       ├── contacts/
-│   │   │       ├── analytics/
-│   │   │       └── simulation/
+│   │   │       │   ├── api/http/
+│   │   │       │   ├── application/
+│   │   │       │   ├── domain/ports/
+│   │   │       │   └── infrastructure/persistence/
+│   │   │       ├── development-email-outbox/
+│   │   │       ├── health/
+│   │   │       └── verification/
 │   │   └── package.json
 │   │
 │   └── worker/
@@ -298,6 +331,15 @@ No início, esses componentes poderão ser executados com Docker Compose. A sepa
 
 O template Satnaing será usado como referência e fonte de componentes visuais shadcn. A aplicação web será criada com TanStack Start; não será acoplada ao runtime Vite original do template.
 
+Na API, `platform` contém preocupações transversais — configuração, banco,
+segurança, HTTP, lifecycle e health de infraestrutura — e não contém regras de
+negócio. `integrations` concentra adaptadores para serviços externos, como
+Better Auth e e-mail. Cada diretório em `modules` é um contexto de negócio:
+`api/http` recebe a requisição, `application` orquestra casos de uso, `domain`
+declara regras e portas, e `infrastructure` implementa adaptadores específicos
+do contexto, como repositórios Prisma e providers de conteúdo. Módulos menores
+podem omitir camadas que não tenham responsabilidade concreta.
+
 ## 8. Domínios e módulos
 
 ### Auth
@@ -327,6 +369,22 @@ execution.organization_id
 
 O `organization_id` enviado pelo cliente nunca será suficiente para autorizar acesso. O backend deverá verificar a sessão e a participação do usuário na Organization.
 
+### Channels
+
+Responsável pelo catálogo técnico de providers, lifecycle de `ChannelConnection`, capabilities e catálogo normalizado de conteúdos disponíveis para automação.
+
+```text
+Channels
+├── ChannelConnection
+├── Content
+├── ChannelCapabilities
+└── Provider adapters
+```
+
+Uma conexão externa pertence ao workspace ativo e expõe somente metadados sanitizados. Conteúdos reais pertencem à conexão que os forneceu; conteúdos simulados preservam provider e modo, mas não possuem conexão. O módulo fornece portas de consulta para `Automations`, `Simulation`, worker e demais consumidores, sem depender deles.
+
+No primeiro vertical slice, somente o conteúdo simulado é utilizado. OAuth e lifecycle de conexões reais entram na fase de integração Meta, preservando a mesma fronteira.
+
 ### Automations
 
 Responsável por criar, editar, publicar, pausar e listar automações.
@@ -335,15 +393,19 @@ Modelo conceitual:
 
 ```text
 Automation
- ├── AutomationTrigger
- └── AutomationAction[]
+ └── AutomationRevision[]
+      ├── AutomationTarget
+      ├── AutomationTrigger
+      └── AutomationAction[]
 ```
 
-No MVP, uma automação terá um trigger de comentário por palavra-chave e uma sequência ordenada de ações.
+No MVP, uma automação terá um trigger de comentário por palavra-chave, um conteúdo simulado como alvo e uma sequência ordenada de ações. Na integração real, o alvo também carregará uma `ChannelConnection` específica. O módulo valida a configuração e o lifecycle das revisões, mas consulta conexão, conteúdo e capabilities através das portas de `Channels`.
 
 ### Simulation
 
 Cria interações simuladas para validar o comportamento da automação sem depender de um provider externo. O primeiro cenário será um comentário do Instagram com `provider=INSTAGRAM` e `mode=SIMULATED`.
+
+“Instagram — Simulador” é uma opção virtual da experiência e dos contratos, não uma `ChannelConnection` persistida.
 
 O simulador deverá atravessar o mesmo caminho de produção:
 
@@ -419,23 +481,25 @@ sequenceDiagram
   participant R as Redis/BullMQ
   participant K as Worker
 
-  U->>W: Configura automação Instagram-first
+  U->>W: Configura automação para um provider
   W->>A: POST /api/v1/automations
   A->>P: Salva automation e trigger
   A-->>W: Retorna automação
 
-  U->>W: Simula comentário
-  W->>A: POST /api/v1/simulations/comments
+  U->>W: Seleciona provider e simula comentário
+  W->>A: POST /api/v1/simulations/comments (sem mode)
+  A->>A: Define mode=SIMULATED
   A->>P: Cria comentário e execution
   A->>R: Enfileira automation-execution
   A-->>W: Retorna executionId
 
   K->>R: Consome job
   K->>P: Carrega automação e avalia palavra-chave
-  K->>P: Salva resposta, DM, contato ou lead
+  K->>P: Salva saídas simuladas da execução
   K->>R: Enfileira message-delivery se necessário
   K->>P: Atualiza execution
-  W->>A: Consulta status
+  W->>A: Assina atividade da execução via SSE
+  A-->>W: Atualizações compreensíveis da atividade
   A->>P: Retorna resultado
   A-->>W: Exibe conversa e métricas
 ```
