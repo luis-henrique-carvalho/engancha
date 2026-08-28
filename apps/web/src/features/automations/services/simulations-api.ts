@@ -26,7 +26,7 @@ export const SimulationsApi = {
   },
 
   async listExecutions(
-    query?: SimulationExecutionListQuery,
+    query?: Partial<SimulationExecutionListQuery>,
   ): Promise<SimulationExecutionListResponse> {
     const params = new URLSearchParams(
       Object.entries(query ?? {})

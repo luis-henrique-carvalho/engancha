@@ -46,15 +46,71 @@ export function getAutomationReadiness(
   const hasPrivateReply = Boolean(privateReplyText)
   const finalAction = getFinalAction(actions)
   const hasFinalAction = Boolean(finalAction)
+  const finalActionSummary = buildFinalActionSummary(finalAction)
 
-  let finalActionSummary = 'Nenhuma ação final configurada'
-  if (finalAction?.type === 'LINK') {
-    finalActionSummary = `Link: ${finalAction.url} (${finalAction.label || 'Abrir link'})`
-  } else if (finalAction?.type === 'CAPTURE_EMAIL') {
-    finalActionSummary = `Captura de e-mail: "${finalAction.prompt}"`
+  const items = buildReadinessItems({
+    current,
+    hasName,
+    hasTarget,
+    hasKeyword,
+    hasPublicReply,
+    publicReplyText,
+    hasPrivateReply,
+    privateReplyText,
+    hasFinalAction,
+    finalActionSummary,
+  })
+
+  const completedCount = items.filter((item) => item.isComplete).length
+  const totalCount = items.length
+  const isReady = completedCount === totalCount
+
+  return {
+    items,
+    completedCount,
+    totalCount,
+    isReady,
   }
+}
 
-  const items: AutomationReadinessItem[] = [
+function buildFinalActionSummary(finalAction: ReturnType<typeof getFinalAction>): string {
+  if (finalAction?.type === 'LINK') {
+    return `Link: ${finalAction.url} (${finalAction.label || 'Abrir link'})`
+  }
+  if (finalAction?.type === 'CAPTURE_EMAIL') {
+    return `Captura de e-mail: "${finalAction.prompt}"`
+  }
+  return 'Nenhuma ação final configurada'
+}
+
+interface BuildReadinessItemsParams {
+  current: AutomationResponse['current'] | AutomationResponse['draft'] | null
+  hasName: boolean
+  hasTarget: boolean
+  hasKeyword: boolean
+  hasPublicReply: boolean
+  publicReplyText: string
+  hasPrivateReply: boolean
+  privateReplyText: string
+  hasFinalAction: boolean
+  finalActionSummary: string
+}
+
+function buildReadinessItems(params: BuildReadinessItemsParams): AutomationReadinessItem[] {
+  const {
+    current,
+    hasName,
+    hasTarget,
+    hasKeyword,
+    hasPublicReply,
+    publicReplyText,
+    hasPrivateReply,
+    privateReplyText,
+    hasFinalAction,
+    finalActionSummary,
+  } = params
+
+  return [
     {
       id: 'identification',
       stepNumber: 1,
@@ -118,15 +174,4 @@ export function getAutomationReadiness(
       field: 'actions',
     },
   ]
-
-  const completedCount = items.filter((item) => item.isComplete).length
-  const totalCount = items.length
-  const isReady = completedCount === totalCount
-
-  return {
-    items,
-    completedCount,
-    totalCount,
-    isReady,
-  }
 }

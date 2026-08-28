@@ -21,22 +21,16 @@ export interface UseSimulationExecutionOptions {
   onTerminalState?: (execution: SimulationExecutionResponse) => void
 }
 
-export function useSimulationExecution(options?: UseSimulationExecutionOptions) {
-  const [executionId, setExecutionId] = useState<string | null>(options?.initialExecutionId ?? null)
-  const [execution, setExecution] = useState<SimulationExecutionResponse | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [isRetrying, setIsRetrying] = useState<boolean>(false)
-  const [isReconnecting, setIsReconnecting] = useState<boolean>(false)
+interface UseSimulationSseParams {
+  onUpdate: (data: SimulationExecutionResponse) => void
+}
+
+function useSimulationSse({ onUpdate }: UseSimulationSseParams) {
   const [connectionStatus, setConnectionStatus] = useState<SseConnectionStatus>('idle')
-  const [error, setError] = useState<Error | null>(null)
-
+  const [isReconnecting, setIsReconnecting] = useState<boolean>(false)
   const eventSourceRef = useRef<EventSource | null>(null)
-  const executionRef = useRef<SimulationExecutionResponse | null>(null)
-  executionRef.current = execution
-
-  const onTerminalStateRef = useRef(options?.onTerminalState)
-  onTerminalStateRef.current = options?.onTerminalState
+  const onUpdateRef = useRef(onUpdate)
+  onUpdateRef.current = onUpdate
 
   const closeStream = useCallback(() => {
     if (eventSourceRef.current) {
@@ -45,35 +39,7 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
     }
   }, [])
 
-  const handleTerminalState = useCallback(
-    (data: SimulationExecutionResponse) => {
-      closeStream()
-      setConnectionStatus('closed')
-      setIsReconnecting(false)
-      onTerminalStateRef.current?.(data)
-    },
-    [closeStream],
-  )
-
-  const updateExecutionIfNewer = useCallback(
-    (data?: SimulationExecutionResponse | null) => {
-      if (!data || typeof data !== 'object') return
-
-      setExecution((prev) => {
-        if (!prev || (data.stateVersion ?? 0) >= (prev.stateVersion ?? 0)) {
-          return data
-        }
-        return prev
-      })
-
-      if (TERMINAL_STATUSES.includes(data.status)) {
-        handleTerminalState(data)
-      }
-    },
-    [handleTerminalState],
-  )
-
-  const startSseStream = useCallback(
+  const startStream = useCallback(
     (id: string) => {
       closeStream()
 
@@ -91,78 +57,85 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
         setIsReconnecting(false)
       }
 
-      es.addEventListener('snapshot', (event) => {
+      const handleEvent = (event: Event) => {
         try {
           const parsed = JSON.parse((event as MessageEvent).data)
           if (parsed?.data) {
-            updateExecutionIfNewer(parsed.data)
+            onUpdateRef.current(parsed.data)
           }
         } catch {
           // ignore parsing error on stream
         }
-      })
+      }
 
-      es.addEventListener('update', (event) => {
-        try {
-          const parsed = JSON.parse((event as MessageEvent).data)
-          if (parsed?.data) {
-            updateExecutionIfNewer(parsed.data)
-          }
-        } catch {
-          // ignore parsing error on stream
-        }
-      })
+      es.addEventListener('snapshot', handleEvent)
+      es.addEventListener('update', handleEvent)
 
       es.onerror = () => {
         setConnectionStatus('reconnecting')
         setIsReconnecting(true)
 
-        // Fallback: authoritative HTTP GET reload
         SimulationsApi.getExecution(id)
           .then((latest) => {
-            updateExecutionIfNewer(latest)
+            if (latest) onUpdateRef.current(latest)
           })
-          .catch(() => {
-            // Keep connection attempt
-          })
+          .catch(() => { })
       }
     },
-    [closeStream, updateExecutionIfNewer],
+    [closeStream],
   )
 
-  const loadExecution = useCallback(
-    async (id: string) => {
-      setIsLoading(true)
-      setError(null)
-      try {
-        const data = await SimulationsApi.getExecution(id)
-        updateExecutionIfNewer(data)
-        if (!TERMINAL_STATUSES.includes(data.status)) {
-          startSseStream(id)
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Falha ao carregar simulação'))
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [startSseStream, updateExecutionIfNewer],
-  )
+  const markClosed = useCallback(() => {
+    closeStream()
+    setConnectionStatus('closed')
+    setIsReconnecting(false)
+  }, [closeStream])
 
-  useEffect(() => {
-    if (executionId) {
-      void loadExecution(executionId)
-    } else {
-      closeStream()
-      setExecution(null)
-      setConnectionStatus('idle')
-      setIsReconnecting(false)
-    }
+  const resetStream = useCallback(() => {
+    closeStream()
+    setConnectionStatus('idle')
+    setIsReconnecting(false)
+  }, [closeStream])
 
-    return () => {
-      closeStream()
-    }
-  }, [executionId, loadExecution, closeStream])
+  return {
+    connectionStatus,
+    isReconnecting,
+    startStream,
+    closeStream,
+    markClosed,
+    resetStream,
+  }
+}
+
+interface UseSimulationExecutionActionsParams {
+  executionId: string | null
+  setExecutionId: React.Dispatch<React.SetStateAction<string | null>>
+  setExecution: React.Dispatch<React.SetStateAction<SimulationExecutionResponse | null>>
+  updateExecutionIfNewer: (data?: SimulationExecutionResponse | null) => void
+  startStream: (id: string) => void
+  resetStream: () => void
+}
+
+function buildSimulationCommentPayload(
+  payload: Omit<SimulationCommentRequest, 'idempotencyKey'> & { idempotencyKey?: string },
+): SimulationCommentRequest {
+  const key = payload.idempotencyKey || crypto.randomUUID()
+  return {
+    contentId: payload.contentId,
+    provider: payload.provider,
+    author: payload.author,
+    text: payload.text,
+    commentId: payload.commentId || undefined,
+    idempotencyKey: key,
+    originAutomationId: payload.originAutomationId ?? undefined,
+  }
+}
+
+function useSimulationCommentSubmit(
+  setExecutionId: React.Dispatch<React.SetStateAction<string | null>>,
+  setError: React.Dispatch<React.SetStateAction<Error | null>>,
+) {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const submitComment = useCallback(
     async (
@@ -171,18 +144,7 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
       setIsSubmitting(true)
       setError(null)
       try {
-        const key = payload.idempotencyKey || crypto.randomUUID()
-        const requestPayload: SimulationCommentRequest = {
-          contentId: payload.contentId,
-          provider: payload.provider,
-          author: payload.author,
-          text: payload.text,
-          commentId: payload.commentId || undefined,
-          idempotencyKey: key,
-          originAutomationId: payload.originAutomationId ?? undefined,
-        }
-
-        const res = await SimulationsApi.submitComment(requestPayload)
+        const res = await SimulationsApi.submitComment(buildSimulationCommentPayload(payload))
         setExecutionId(res.executionId)
         return res
       } catch (err) {
@@ -194,12 +156,21 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
         setIsSubmitting(false)
       }
     },
-    [],
+    [setExecutionId, setError],
   )
+
+  return { isSubmitting, submitComment }
+}
+
+function useSimulationRetry(
+  executionId: string | null,
+  loadExecution: (id: string) => Promise<void>,
+  setError: React.Dispatch<React.SetStateAction<Error | null>>,
+) {
+  const [isRetrying, setIsRetrying] = useState<boolean>(false)
 
   const retry = useCallback(async () => {
     if (!executionId) return
-
     setIsRetrying(true)
     setError(null)
     try {
@@ -214,16 +185,112 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
     } finally {
       setIsRetrying(false)
     }
-  }, [executionId, loadExecution])
+  }, [executionId, loadExecution, setError])
+
+  return { isRetrying, retry }
+}
+
+function useSimulationExecutionActions({
+  executionId,
+  setExecutionId,
+  setExecution,
+  updateExecutionIfNewer,
+  startStream,
+  resetStream,
+}: UseSimulationExecutionActionsParams) {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  const loadExecution = useCallback(
+    async (id: string) => {
+      setIsLoading(true)
+      setError(null)
+      try {
+        const data = await SimulationsApi.getExecution(id)
+        updateExecutionIfNewer(data)
+        if (!TERMINAL_STATUSES.includes(data.status)) {
+          startStream(id)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Falha ao carregar simulação'))
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [startStream, updateExecutionIfNewer],
+  )
+
+  const { isSubmitting, submitComment } = useSimulationCommentSubmit(setExecutionId, setError)
+  const { isRetrying, retry } = useSimulationRetry(executionId, loadExecution, setError)
 
   const reset = useCallback(() => {
-    closeStream()
+    resetStream()
     setExecutionId(null)
     setExecution(null)
     setError(null)
-    setConnectionStatus('idle')
-    setIsReconnecting(false)
-  }, [closeStream])
+  }, [resetStream, setExecution, setExecutionId])
+
+  return {
+    isLoading,
+    isSubmitting,
+    isRetrying,
+    error,
+    loadExecution,
+    submitComment,
+    retry,
+    reset,
+  }
+}
+
+export function useSimulationExecution(options?: UseSimulationExecutionOptions) {
+  const [executionId, setExecutionId] = useState<string | null>(options?.initialExecutionId ?? null)
+  const [execution, setExecution] = useState<SimulationExecutionResponse | null>(null)
+  const onTerminalStateRef = useRef(options?.onTerminalState)
+  onTerminalStateRef.current = options?.onTerminalState
+
+  const { connectionStatus, isReconnecting, startStream, closeStream, markClosed, resetStream } =
+    useSimulationSse({
+      onUpdate: (data) => updateExecutionIfNewer(data),
+    })
+
+  const updateExecutionIfNewer = useCallback(
+    (data?: SimulationExecutionResponse | null) => {
+      if (!data || typeof data !== 'object') return
+      setExecution((prev) => {
+        if (!prev || (data.stateVersion ?? 0) >= (prev.stateVersion ?? 0)) {
+          return data
+        }
+        return prev
+      })
+      if (TERMINAL_STATUSES.includes(data.status)) {
+        markClosed()
+        onTerminalStateRef.current?.(data)
+      }
+    },
+    [markClosed],
+  )
+
+  const { isLoading, isSubmitting, isRetrying, error, loadExecution, submitComment, retry, reset } =
+    useSimulationExecutionActions({
+      executionId,
+      setExecutionId,
+      setExecution,
+      updateExecutionIfNewer,
+      startStream,
+      resetStream,
+    })
+
+  useEffect(() => {
+    if (executionId) {
+      void loadExecution(executionId)
+    } else {
+      resetStream()
+      setExecution(null)
+    }
+    return () => {
+      closeStream()
+    }
+  }, [executionId, loadExecution, closeStream, resetStream])
 
   return {
     executionId,

@@ -262,141 +262,264 @@ export class SimulationsService {
       initialStatus: (initial as any).status,
     })
 
+    return this.createSimulationStreamObservable(context, id, initial, options)
+  }
+
+  private createSimulationStreamObservable(
+    context: AuthorizationContext,
+    id: string,
+    initial: unknown,
+    options?: {
+      heartbeatIntervalMs?: number
+      maxDurationMs?: number
+    },
+  ): Observable<MessageEvent> {
     const heartbeatIntervalMs = options?.heartbeatIntervalMs ?? 15_000
     const maxDurationMs = options?.maxDurationMs ?? 30_000
 
     return new Observable((subscriber) => {
-      let isClosed = false
-      let lastEmittedVersion = (initial as any).stateVersion ?? 1
-      let lastEmittedStatus = (initial as any).status
-      let unsubscribeFn: (() => Promise<void>) | null = null
-
-      subscriber.next({
-        type: 'snapshot',
-        id: String(lastEmittedVersion),
-        data: this.present(initial as any),
+      return this.setupSimulationSubscriber({
+        subscriber,
+        context,
+        id,
+        initial,
+        heartbeatIntervalMs,
+        maxDurationMs,
       })
+    })
+  }
 
-      this.logEvent('simulation_stream_snapshot_emitted', {
+  private setupSimulationSubscriber(params: {
+    subscriber: import('rxjs').Subscriber<MessageEvent>
+    context: AuthorizationContext
+    id: string
+    initial: unknown
+    heartbeatIntervalMs: number
+    maxDurationMs: number
+  }): () => void {
+    const { subscriber, context, id, initial, heartbeatIntervalMs, maxDurationMs } = params
+    let isClosed = false
+    let lastEmittedVersion = (initial as any).stateVersion ?? 1
+    let lastEmittedStatus = (initial as any).status
+    let unsubscribeFn: (() => Promise<void>) | null = null
+
+    const isTerminal = this.emitInitialSnapshot(context, id, initial, subscriber)
+    if (isTerminal) {
+      return () => {}
+    }
+
+    const heartbeatTimer = this.startHeartbeatTimer({
+      subscriber,
+      context,
+      id,
+      heartbeatIntervalMs,
+      isClosed: () => isClosed,
+    })
+
+    const cleanup = async () => {
+      if (isClosed) return
+      isClosed = true
+      clearInterval(heartbeatTimer)
+      clearTimeout(maxDurationTimer)
+      if (unsubscribeFn) {
+        try {
+          await unsubscribeFn()
+        } catch {
+          // Ignora falhas no cancelamento de inscrição
+        }
+      }
+      this.logEvent('simulation_stream_closed', {
         organizationId: context.organizationId,
         executionId: id,
-        stateVersion: lastEmittedVersion,
-        status: lastEmittedStatus,
       })
+    }
 
-      if (['COMPLETED', 'IGNORED', 'FAILED'].includes(lastEmittedStatus)) {
-        this.logEvent('simulation_stream_completed', {
-          organizationId: context.organizationId,
-          executionId: id,
-          terminalStatus: lastEmittedStatus,
-        })
-        subscriber.complete()
-        return
-      }
+    const maxDurationTimer = setTimeout(async () => {
+      await cleanup()
+      subscriber.complete()
+    }, maxDurationMs)
 
-      const heartbeatTimer = setInterval(() => {
-        if (isClosed) return
-        subscriber.next({
-          type: 'heartbeat',
-          data: { heartbeat: true, timestamp: new Date().toISOString() },
+    let isUpdating = false
+    const checkAndEmitUpdate = async () => {
+      if (isClosed) return
+      if (isUpdating) return
+      isUpdating = true
+      try {
+        const updated = await this.handleSimulationStreamUpdate({
+          context,
+          id,
+          lastEmittedVersion,
+          lastEmittedStatus,
+          subscriber,
+          cleanup,
         })
-        this.logEvent('simulation_stream_heartbeat_emitted', {
-          organizationId: context.organizationId,
-          executionId: id,
-        })
-      }, heartbeatIntervalMs)
-
-      const cleanup = async () => {
-        if (isClosed) return
-        isClosed = true
-        clearInterval(heartbeatTimer)
-        clearTimeout(maxDurationTimer)
-        if (unsubscribeFn) {
-          try {
-            await unsubscribeFn()
-          } catch {
-            // Ignora falhas no cancelamento de inscrição
-          }
+        if (updated) {
+          lastEmittedVersion = updated.lastEmittedVersion
+          lastEmittedStatus = updated.lastEmittedStatus
         }
-        this.logEvent('simulation_stream_closed', {
-          organizationId: context.organizationId,
-          executionId: id,
-        })
+      } finally {
+        isUpdating = false
       }
+    }
 
-      const maxDurationTimer = setTimeout(async () => {
+    this.subscribeToSimulationEvents({
+      id,
+      isClosed: () => isClosed,
+      checkAndEmitUpdate,
+      cleanup,
+      subscriber,
+      setUnsubscribeFn: (fn) => {
+        unsubscribeFn = fn
+      },
+    })
+
+    return () => {
+      void cleanup()
+    }
+  }
+
+  private subscribeToSimulationEvents(params: {
+    id: string
+    isClosed: () => boolean
+    checkAndEmitUpdate: () => Promise<void>
+    cleanup: () => Promise<void>
+    subscriber: import('rxjs').Subscriber<MessageEvent>
+    setUnsubscribeFn: (fn: () => Promise<void>) => void
+  }): void {
+    const { id, isClosed, checkAndEmitUpdate, cleanup, subscriber, setUnsubscribeFn } = params
+
+    this.eventsSubscriber
+      .subscribe(id, async () => {
+        await checkAndEmitUpdate()
+      })
+      .then(async (unsub) => {
+        if (isClosed()) {
+          void unsub()
+        } else {
+          setUnsubscribeFn(unsub)
+          await checkAndEmitUpdate()
+        }
+      })
+      .catch((error) => {
+        if (!isClosed()) {
+          void cleanup()
+          subscriber.error(error)
+        }
+      })
+  }
+
+  private emitInitialSnapshot(
+    context: AuthorizationContext,
+    id: string,
+    initial: unknown,
+    subscriber: import('rxjs').Subscriber<MessageEvent>,
+  ): boolean {
+    const lastEmittedVersion = (initial as any).stateVersion ?? 1
+    const lastEmittedStatus = (initial as any).status
+
+    subscriber.next({
+      type: 'snapshot',
+      id: String(lastEmittedVersion),
+      data: this.present(initial as any),
+    })
+
+    this.logEvent('simulation_stream_snapshot_emitted', {
+      organizationId: context.organizationId,
+      executionId: id,
+      stateVersion: lastEmittedVersion,
+      status: lastEmittedStatus,
+    })
+
+    if (['COMPLETED', 'IGNORED', 'FAILED'].includes(lastEmittedStatus)) {
+      this.logEvent('simulation_stream_completed', {
+        organizationId: context.organizationId,
+        executionId: id,
+        terminalStatus: lastEmittedStatus,
+      })
+      subscriber.complete()
+      return true
+    }
+
+    return false
+  }
+
+  private startHeartbeatTimer(params: {
+    subscriber: import('rxjs').Subscriber<MessageEvent>
+    context: AuthorizationContext
+    id: string
+    heartbeatIntervalMs: number
+    isClosed: () => boolean
+  }): NodeJS.Timeout {
+    const { subscriber, context, id, heartbeatIntervalMs, isClosed } = params
+    return setInterval(() => {
+      if (isClosed()) return
+      subscriber.next({
+        type: 'heartbeat',
+        data: { heartbeat: true, timestamp: new Date().toISOString() },
+      })
+      this.logEvent('simulation_stream_heartbeat_emitted', {
+        organizationId: context.organizationId,
+        executionId: id,
+      })
+    }, heartbeatIntervalMs)
+  }
+
+  private async handleSimulationStreamUpdate(params: {
+    context: AuthorizationContext
+    id: string
+    lastEmittedVersion: number
+    lastEmittedStatus: string
+    subscriber: import('rxjs').Subscriber<MessageEvent>
+    cleanup: () => Promise<void>
+  }): Promise<{ lastEmittedVersion: number; lastEmittedStatus: string } | null> {
+    const { context, id, subscriber, cleanup } = params
+    let { lastEmittedVersion, lastEmittedStatus } = params
+
+    try {
+      const current = await this.simulations.find(id, context.organizationId)
+      if (!current) {
         await cleanup()
         subscriber.complete()
-      }, maxDurationMs)
+        return null
+      }
 
-      const checkAndEmitUpdate = async () => {
-        if (isClosed) return
-        try {
-          const current = await this.simulations.find(id, context.organizationId)
-          if (!current) {
-            await cleanup()
-            subscriber.complete()
-            return
-          }
+      const stateVersion = (current as any).stateVersion ?? 1
+      const status = (current as any).status
 
-          const stateVersion = (current as any).stateVersion ?? 1
-          const status = (current as any).status
+      if (stateVersion > lastEmittedVersion || status !== lastEmittedStatus) {
+        lastEmittedVersion = stateVersion
+        lastEmittedStatus = status
 
-          if (stateVersion > lastEmittedVersion || status !== lastEmittedStatus) {
-            lastEmittedVersion = stateVersion
-            lastEmittedStatus = status
+        subscriber.next({
+          type: 'update',
+          id: String(stateVersion),
+          data: this.present(current as any),
+        })
 
-            subscriber.next({
-              type: 'update',
-              id: String(stateVersion),
-              data: this.present(current as any),
-            })
+        this.logEvent('simulation_stream_update_emitted', {
+          organizationId: context.organizationId,
+          executionId: id,
+          stateVersion,
+          status,
+        })
 
-            this.logEvent('simulation_stream_update_emitted', {
-              organizationId: context.organizationId,
-              executionId: id,
-              stateVersion,
-              status,
-            })
-
-            if (['COMPLETED', 'IGNORED', 'FAILED'].includes(status)) {
-              this.logEvent('simulation_stream_completed', {
-                organizationId: context.organizationId,
-                executionId: id,
-                terminalStatus: status,
-              })
-              await cleanup()
-              subscriber.complete()
-            }
-          }
-        } catch {
-          // Mantém o stream ativo diante de falhas de leitura transitórias
+        if (['COMPLETED', 'IGNORED', 'FAILED'].includes(status)) {
+          this.logEvent('simulation_stream_completed', {
+            organizationId: context.organizationId,
+            executionId: id,
+            terminalStatus: status,
+          })
+          await cleanup()
+          subscriber.complete()
         }
-      }
 
-      this.eventsSubscriber
-        .subscribe(id, async () => {
-          await checkAndEmitUpdate()
-        })
-        .then(async (unsub) => {
-          if (isClosed) {
-            void unsub()
-          } else {
-            unsubscribeFn = unsub
-            await checkAndEmitUpdate()
-          }
-        })
-        .catch((error) => {
-          if (!isClosed) {
-            void cleanup()
-            subscriber.error(error)
-          }
-        })
-
-      return () => {
-        void cleanup()
+        return { lastEmittedVersion, lastEmittedStatus }
       }
-    })
+    } catch {
+      // Mantém o stream ativo diante de falhas de leitura transitórias
+    }
+
+    return null
   }
 
   private present(execution: any) {

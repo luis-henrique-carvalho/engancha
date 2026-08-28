@@ -90,8 +90,56 @@ export class PrismaSimulationRepository implements SimulationRepository {
       limit: number
     },
   ) {
-    const where: any = { organizationId }
+    const where = this.buildListWhereClause(organizationId, query)
+    const total = await this.database.client.automationExecution.count({ where })
+    const page = query.page ?? 1
+    const limit = query.limit
+    const totalPages = Math.ceil(total / limit) || 1
+    const isCursorBased = Boolean(query.cursor)
 
+    const records = await this.database.client.automationExecution.findMany({
+      where,
+      take: isCursorBased ? limit + 1 : limit,
+      ...(isCursorBased ? { cursor: { id: query.cursor }, skip: 1 } : { skip: (page - 1) * limit }),
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      include: {
+        content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
+        automationRevision: { select: { id: true, version: true, name: true } },
+        outputs: { orderBy: { position: 'asc' } },
+      },
+    })
+
+    const hasMore = isCursorBased ? records.length > limit : page < totalPages
+    const items = isCursorBased && records.length > limit ? records.slice(0, limit) : records
+    const nextCursor =
+      hasMore && items.length > 0 ? (items[items.length - 1] as { id: string }).id : null
+
+    return {
+      items,
+      nextCursor,
+      hasMore,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
+    }
+  }
+
+  private buildListWhereClause(
+    organizationId: string,
+    query: {
+      automationId?: string
+      query?: string
+      status?: any[]
+      provider?: any[]
+      mode?: any[]
+      contentType?: any[]
+      outputType?: any[]
+    },
+  ) {
+    const where: any = { organizationId }
     const andConditions: any[] = []
 
     if (query.automationId) {
@@ -140,41 +188,7 @@ export class PrismaSimulationRepository implements SimulationRepository {
       }
     }
 
-    const total = await this.database.client.automationExecution.count({ where })
-    const page = query.page ?? 1
-    const limit = query.limit
-    const totalPages = Math.ceil(total / limit) || 1
-
-    const isCursorBased = Boolean(query.cursor)
-
-    const records = await this.database.client.automationExecution.findMany({
-      where,
-      take: isCursorBased ? limit + 1 : limit,
-      ...(isCursorBased ? { cursor: { id: query.cursor }, skip: 1 } : { skip: (page - 1) * limit }),
-      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-      include: {
-        content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
-        automationRevision: { select: { id: true, version: true, name: true } },
-        outputs: { orderBy: { position: 'asc' } },
-      },
-    })
-
-    const hasMore = isCursorBased ? records.length > limit : page < totalPages
-    const items = isCursorBased && records.length > limit ? records.slice(0, limit) : records
-    const nextCursor =
-      hasMore && items.length > 0 ? (items[items.length - 1] as { id: string }).id : null
-
-    return {
-      items,
-      nextCursor,
-      hasMore,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages,
-      },
-    }
+    return where
   }
 
   async resetForRetry(
