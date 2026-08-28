@@ -62,7 +62,7 @@ export default tseslint.config(
       },
     },
     rules: {
-      'react/no-multi-comp': ['error', { ignoreStateless: false }],
+      'react/no-multi-comp': ['error', { ignoreStateless: true }],
       'max-lines-per-function': [
         'warn',
         {
