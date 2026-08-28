@@ -690,19 +690,18 @@ A criação deve ocorrer em uma transação. O rascunho pode ter campos incomple
 
 Uma conexão não é criada para o simulador. Falha no OAuth não deve persistir credenciais parciais como conexão ativa.
 
-### 7.3 Receber comentário simulado do Instagram
+### 7.3 Receber comentário simulado
 
 ```text
-1. normalizar payload como IncomingInteraction
-2. definir provider=INSTAGRAM e mode=SIMULATED
-3. criar/obter Contact
-4. criar/obter Conversation
-5. criar ExternalEvent ou evento interno equivalente
-6. criar AutomationExecution(PENDING)
-7. adicionar job automation-execution
+1. receber provider selecionado entre os providers simuláveis
+2. ignorar qualquer mode recebido do browser e definir mode=SIMULATED
+3. normalizar payload como IncomingInteraction
+4. criar ExternalEvent ou evento interno equivalente
+5. criar AutomationExecution(PENDING)
+6. adicionar job automation-execution
 ```
 
-O mesmo fluxo será usado para providers reais; somente o adapter de entrada e o adapter de saída mudam.
+No MVP, `INSTAGRAM` é o único provider simulável. O mesmo fluxo será usado para providers reais; somente o adapter de entrada, o adapter de saída e o modo mudarão. A criação de conversa, contato, lead e tag permanece na Fase 5.
 
 ### 7.4 Processar execução
 

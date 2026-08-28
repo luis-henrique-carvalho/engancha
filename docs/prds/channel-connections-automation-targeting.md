@@ -50,7 +50,7 @@ O sucesso é uma automação real possuir roteamento inequívoco até uma única
 1. As a workspace owner or admin, I want to connect and inspect an external channel account, so that the workspace can use it safely.
 2. As a confirmed member, I want to see only active connections from my current workspace, so that I cannot select another tenant's account.
 3. As a confirmed member, I want to select one connection before selecting its content, so that the automation has an unambiguous destination.
-4. As a confirmed member, I want the editor to show the Instagram simulator without requiring OAuth, so that the simulated MVP remains usable.
+4. As a confirmed member, I want the editor and simulator to show available providers without requiring OAuth, so that the simulated MVP remains usable and can evolve beyond Instagram.
 5. As a confirmed member, I want publication to reject an inactive or inconsistent connection/content pair, so that a broken automation never becomes active.
 6. As an operator, I want executions to preserve connection, provider and mode in their snapshot, so that routing and diagnostics remain traceable.
 
@@ -62,7 +62,7 @@ O sucesso é uma automação real possuir roteamento inequívoco até uma única
 4. Alterar a conexão limpa qualquer conteúdo selecionado que não pertença à nova conexão e exige nova seleção antes da publicação.
 5. Cada `AutomationRevision` possui no máximo um `AutomationTarget`; cada alvo publicado aponta para exatamente um conteúdo e, no modo real, para exatamente uma conexão.
 6. Uma revisão real somente pode ser publicada quando a conexão está `ACTIVE`, pertence ao mesmo workspace, possui o mesmo provider do conteúdo e suporta as ações configuradas.
-7. No modo simulado, o editor apresenta “Instagram — Simulador” como opção virtual. `Content.mode=SIMULATED`, `Content.channelConnectionId=null` e `AutomationTarget.channelConnectionId=null`; nenhuma credencial ou linha de conexão fictícia é criada.
+7. No modo simulado, o editor e o simulador apresentam os providers disponíveis como opções virtuais; inicialmente, apenas `Instagram` é disponibilizado. O usuário escolhe o provider, mas não escolhe o modo: `Content.mode=SIMULATED` é imposto pelo backend. `Content.channelConnectionId=null` e `AutomationTarget.channelConnectionId=null`; nenhuma credencial ou linha de conexão fictícia é criada.
 8. Desconectar, expirar ou revogar uma conexão impede novas publicações e novas execuções reais. Revisões publicadas e execuções antigas permanecem consultáveis; a política de pausa automática da automação será decidida no ticket de implementação do lifecycle.
 9. Editar a conexão ou o conteúdo de uma automação ativa ocorre somente em nova revisão de rascunho. A revisão publicada continua imutável até nova publicação.
 10. Para aplicar a mesma configuração a duas contas, o usuário cria ou duplica outra automação. Uma revisão não distribui eventos ou ações para múltiplas conexões.
@@ -128,7 +128,7 @@ Os endpoints existentes de automação permanecem estáveis. O contrato de patch
 - Adicionar `ChannelConnection` ao schema e relações opcionais em `Content` e `AutomationTarget`. Constraints condicionais de modo serão aplicadas por validação transacional e, quando adequado, por checks/índices SQL da migration.
 - Resolver e validar conexão e conteúdo no backend usando `AuthorizationContext`; IDs enviados pelo browser nunca constituem autorização.
 - Manter uma conexão por revisão. Uma futura distribuição multi-conta exigirá outro conceito de deployment/binding, sem transformar esta relação em N:N antecipadamente.
-- Manter a seleção simulada como uma projeção de UI/contrato, não como entidade persistida.
+- Manter a seleção simulada de provider como uma projeção de UI/contrato, não como entidade persistida. O backend impõe `mode=SIMULATED` em toda criação de simulação.
 - Dividir entrega em fatias verticais: fundação de conexão, consulta segura, seleção no editor, publicação e lifecycle/execução.
 
 ## Testing Decisions
@@ -162,6 +162,7 @@ Os endpoints existentes de automação permanecem estáveis. O contrato de patch
 | DEC-07 | Uma revisão não suporta múltiplas conexões; o usuário duplica a automação. | RESOLVIDA | Evita complexidade prematura em conflitos, métricas e lifecycle. | 2026-08-27 |
 | DEC-08 | Publicação real exige conexão ativa, mesmo workspace, mesmo provider e conteúdo pertencente à conexão. | RESOLVIDA | Impede configurações publicadas sem rota executável. | 2026-08-27 |
 | DEC-09 | Registros simulados existentes permanecem com conexão nula na migração. | ACEITA COMO PADRÃO | Mantém compatibilidade sem backfill artificial. | 2026-08-27 |
+| DEC-10 | O simulador permite selecionar provider, mas sempre impõe `mode=SIMULATED` no backend. | RESOLVIDA | Prepara a interface para novos providers sem permitir uma simulação ser confundida com execução real. | 2026-08-27 |
 
 ## Further Notes
 

@@ -281,7 +281,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Status:** ⏳ NÃO INICIADA  
 **Épico:** EPIC-04  
-**Objetivo:** processar uma interação simulada do Instagram usando o mesmo pipeline previsto para o Instagram real e providers futuros.
+**Objetivo:** processar uma interação simulada no provider selecionado usando o mesmo pipeline previsto para integrações reais e providers futuros.
 
 ### Abstração de canal
 
@@ -293,6 +293,8 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - [ ] Definir `PrivateReply`.
 - [ ] Definir `DirectMessage`.
 - [ ] Definir `ChannelCapabilities`.
+- [ ] Exibir seleção de provider no simulador, inicialmente com `Instagram` como única opção disponível.
+- [ ] Definir `mode=SIMULATED` exclusivamente no backend; o modo não é uma escolha exposta pela interface nem aceita do browser.
 - [ ] Implementar adapter do Instagram em modo `SIMULATED`.
 - [ ] Garantir que o simulador não chame diretamente o motor de automação.
 
@@ -311,10 +313,20 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 - [ ] `POST /api/v1/simulations/comments`.
 - [ ] `GET /api/v1/simulations/executions/:id`.
+- [ ] `GET /api/v1/simulations/executions/:id/events` via SSE para atualizações da execução.
 - [ ] Criar simulador de comentário.
-- [ ] Exibir status de processamento.
-- [ ] Exibir resultado da execução.
+- [ ] Exibir prévia da experiência do seguidor na aba `Testar`, sem linguagem de logs ou infraestrutura.
+- [ ] Exibir a aba `Atividade` com interações agrupadas por automação e atualização em tempo real por SSE.
+- [ ] Exibir status e resultado da execução em linguagem compreensível.
 - [ ] Exibir falha de forma compreensível.
+
+### Decisões de experiência e escopo
+
+- O detalhe de uma automação terá as áreas `Configuração`, `Testar` e `Atividade`.
+- `Testar` permite escrever um comentário simulado e visualizar a resposta que o seguidor receberia. Não é uma tela de logs.
+- `Atividade` apresenta comentários, respostas e falhas como interações compreensíveis, sem expor termos como job, worker, Redis ou fila.
+- SSE atualiza a atividade em tempo real; `GET /simulations/executions/:id` permanece como fallback de carregamento e reconexão. PostgreSQL é a fonte de verdade.
+- A Fase 4 persiste execuções e saídas simuladas. Conversas, contatos, leads, tags e captura efetiva de e-mail pertencem à Fase 5.
 
 **Critério de conclusão:** um comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável na interface.
 

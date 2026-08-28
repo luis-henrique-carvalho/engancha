@@ -481,23 +481,25 @@ sequenceDiagram
   participant R as Redis/BullMQ
   participant K as Worker
 
-  U->>W: Configura automação Instagram-first
+  U->>W: Configura automação para um provider
   W->>A: POST /api/v1/automations
   A->>P: Salva automation e trigger
   A-->>W: Retorna automação
 
-  U->>W: Simula comentário
-  W->>A: POST /api/v1/simulations/comments
+  U->>W: Seleciona provider e simula comentário
+  W->>A: POST /api/v1/simulations/comments (sem mode)
+  A->>A: Define mode=SIMULATED
   A->>P: Cria comentário e execution
   A->>R: Enfileira automation-execution
   A-->>W: Retorna executionId
 
   K->>R: Consome job
   K->>P: Carrega automação e avalia palavra-chave
-  K->>P: Salva resposta, DM, contato ou lead
+  K->>P: Salva saídas simuladas da execução
   K->>R: Enfileira message-delivery se necessário
   K->>P: Atualiza execution
-  W->>A: Consulta status
+  W->>A: Assina atividade da execução via SSE
+  A-->>W: Atualizações compreensíveis da atividade
   A->>P: Retorna resultado
   A-->>W: Exibe conversa e métricas
 ```

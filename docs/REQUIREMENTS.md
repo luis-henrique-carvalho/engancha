@@ -451,9 +451,11 @@ O sistema MUST permitir informar autor, texto e identificador opcional de um com
 Critérios de aceitação:
 
 - texto do comentário obrigatório;
-- usuário deve poder selecionar uma automação ativa;
+- usuário deve poder selecionar um provider disponível no simulador; no MVP, `Instagram` é a única opção;
+- usuário não seleciona o modo de execução e o browser não envia esse campo; o backend sempre define `mode=SIMULATED`;
+- o comentário é associado a um conteúdo e o worker encontra a automação ativa compatível pelo conteúdo-alvo e palavra-chave, sem seleção manual de automação;
 - o sistema deve aceitar comentário que corresponde ou não à palavra-chave;
-- no MVP, o sistema deve persistir `provider=INSTAGRAM` e `mode=SIMULATED` sem expor outros providers na interface;
+- no MVP, a execução persiste o provider selecionado e `mode=SIMULATED`;
 - a solicitação deve retornar um `executionId`.
 
 ### FR-SIM-002 — Avaliar correspondência da palavra-chave
@@ -482,7 +484,7 @@ Quando houver correspondência, o sistema MUST criar uma resposta pública simul
 **Prioridade:** P0  
 **Ator:** Worker
 
-Quando houver correspondência, o sistema MUST criar uma DM simulada vinculada à conversa e à execução.
+Quando houver correspondência, o sistema MUST criar uma DM simulada vinculada à execução. A criação de conversa pertence à Fase 5.
 
 ### FR-SIM-005 — Processar link
 
@@ -496,9 +498,7 @@ Quando a ação final for link, o sistema MUST registrar e exibir a entrega do l
 **Prioridade:** P0  
 **Ator:** Worker / Usuário simulado
 
-Quando a ação final for captura de e-mail, o sistema MUST permitir completar a resposta simulada com um e-mail.
-
-O resultado deve ser associado ao contato, lead, automação e execution.
+Quando a ação final for captura de e-mail, o sistema MUST registrar que a automação solicitou o e-mail ao seguidor simulado. A coleta do e-mail e a associação a contato e lead pertencem à Fase 5.
 
 ### FR-SIM-007 — Consultar status da execução
 
@@ -506,6 +506,8 @@ O resultado deve ser associado ao contato, lead, automação e execution.
 **Ator:** Usuário
 
 O sistema MUST permitir consultar o estado de uma execução.
+
+A interface MUST apresentar a atividade da automação como interações compreensíveis e atualizá-la em tempo real por SSE. O endpoint HTTP do estado da execução permanece disponível para carregamento e recuperação após reconexão.
 
 Estados mínimos:
 
@@ -759,6 +761,8 @@ mode:     SIMULATED | REAL
 
 O MVP usará `provider=INSTAGRAM` e `mode=SIMULATED`. Valores compostos como `SIMULATED_INSTAGRAM` não devem ser criados.
 
+No simulador, o usuário escolhe um provider dentre as opções disponibilizadas pelo sistema. O modo não é uma escolha de interface nem um campo confiável do request: o backend sempre define `mode=SIMULATED`. Inicialmente, apenas `INSTAGRAM` estará disponível nesse seletor.
+
 ### FR-CHANNEL-002 — Normalizar interações e mensagens
 
 O sistema MUST converter payloads de providers para contratos internos normalizados:
@@ -842,6 +846,8 @@ PostgreSQL é a fonte de verdade para automações, execuções, conversas, cont
 ### RN-007 — Simulação não representa provider real
 
 Dados simulados devem ser identificáveis como simulação e não podem ser apresentados como mensagens realmente enviadas por um provider externo.
+
+O provider pode ser selecionado no simulador, mas toda execução criada por esse fluxo deve ter `mode=SIMULATED` imposto pelo backend.
 
 ### RN-008 — Contexto ativo obrigatório
 
