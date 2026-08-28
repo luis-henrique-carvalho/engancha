@@ -1,20 +1,100 @@
+import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Activity, AlertCircle, Play, RefreshCw, WifiOff } from 'lucide-react'
+import { Activity, AlertCircle, FilterX, Play, RefreshCw, WifiOff } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AutomationActivityList } from '../components/automation-activity-list'
+import { AutomationActivityPagination } from '../components/automation-activity-pagination'
+import { AutomationActivityToolbar } from '../components/automation-activity-toolbar'
+import type { ActivityFilters } from '../data/activity-filter-options'
 import { groupExecutionsByDate } from '../data/activity-grouping'
 import { useSimulationExecutionsList } from '../hooks/use-simulation-executions-list'
 
 export interface AutomationActivityTabViewProps {
   automationId: string
+  query?: string
+  filters?: ActivityFilters
+  page?: number
+  limit?: number
+  onQueryChange?: (query?: string) => void
+  onFiltersChange?: (filters: ActivityFilters) => void
+  onPageChange?: (page: number) => void
+  onPageSizeChange?: (limit: number) => void
+  onReset?: () => void
 }
 
-export function AutomationActivityTabView({ automationId }: AutomationActivityTabViewProps) {
+export function AutomationActivityTabView({
+  automationId,
+  query: externalQuery,
+  filters: externalFilters,
+  page: externalPage,
+  limit: externalLimit,
+  onQueryChange: externalOnQueryChange,
+  onFiltersChange: externalOnFiltersChange,
+  onPageChange: externalOnPageChange,
+  onPageSizeChange: externalOnPageSizeChange,
+  onReset: externalOnReset,
+}: AutomationActivityTabViewProps) {
+  const [internalQuery, setInternalQuery] = useState<string | undefined>(undefined)
+  const [internalFilters, setInternalFilters] = useState<ActivityFilters>({})
+  const [internalPage, setInternalPage] = useState<number>(1)
+  const [internalLimit, setInternalLimit] = useState<number>(20)
+
+  const query = externalQuery !== undefined ? externalQuery : internalQuery
+  const filters = externalFilters !== undefined ? externalFilters : internalFilters
+  const page = externalPage !== undefined ? externalPage : internalPage
+  const limit = externalLimit !== undefined ? externalLimit : internalLimit
+
+  const handleQueryChange = (nextQuery?: string) => {
+    if (externalOnQueryChange) {
+      externalOnQueryChange(nextQuery)
+    } else {
+      setInternalQuery(nextQuery)
+      setInternalPage(1)
+    }
+  }
+
+  const handleFiltersChange = (nextFilters: ActivityFilters) => {
+    if (externalOnFiltersChange) {
+      externalOnFiltersChange(nextFilters)
+    } else {
+      setInternalFilters(nextFilters)
+      setInternalPage(1)
+    }
+  }
+
+  const handlePageChange = (nextPage: number) => {
+    if (externalOnPageChange) {
+      externalOnPageChange(nextPage)
+    } else {
+      setInternalPage(nextPage)
+    }
+  }
+
+  const handlePageSizeChange = (nextLimit: number) => {
+    if (externalOnPageSizeChange) {
+      externalOnPageSizeChange(nextLimit)
+    } else {
+      setInternalLimit(nextLimit)
+      setInternalPage(1)
+    }
+  }
+
+  const handleReset = () => {
+    if (externalOnReset) {
+      externalOnReset()
+    } else {
+      setInternalQuery(undefined)
+      setInternalFilters({})
+      setInternalPage(1)
+    }
+  }
+
   const {
     executions,
+    meta,
     isLoading,
     isLoadingMore,
     isRefreshing,
@@ -25,9 +105,24 @@ export function AutomationActivityTabView({ automationId }: AutomationActivityTa
     loadMore,
     refresh,
     retry,
-  } = useSimulationExecutionsList({ automationId })
+  } = useSimulationExecutionsList({
+    automationId,
+    query,
+    filters,
+    page,
+    limit,
+  })
 
   const groups = groupExecutionsByDate(executions)
+
+  const isFiltered = Boolean(
+    query ||
+      filters.status?.length ||
+      filters.provider?.length ||
+      filters.mode?.length ||
+      filters.contentType?.length ||
+      filters.outputType?.length,
+  )
 
   if (isLoading) {
     return (
@@ -36,6 +131,7 @@ export function AutomationActivityTabView({ automationId }: AutomationActivityTa
           <Skeleton className="h-5 w-40" />
           <Skeleton className="h-8 w-24" />
         </div>
+        <Skeleton className="h-8 w-full max-w-md" />
         <div className="space-y-3">
           <Skeleton className="h-28 w-full rounded-lg" />
           <Skeleton className="h-28 w-full rounded-lg" />
@@ -47,7 +143,7 @@ export function AutomationActivityTabView({ automationId }: AutomationActivityTa
 
   return (
     <div className="space-y-6" data-testid="automation-activity-tab-view">
-      {/* Tab Header with refresh action */}
+      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 className="text-base font-semibold tracking-tight text-foreground flex items-center gap-2">
@@ -71,6 +167,15 @@ export function AutomationActivityTabView({ automationId }: AutomationActivityTa
           {isRefreshing ? 'Atualizando...' : 'Atualizar'}
         </Button>
       </div>
+
+      {/* Toolbar with Search and Faceted Filters */}
+      <AutomationActivityToolbar
+        query={query}
+        onQueryChange={handleQueryChange}
+        filters={filters}
+        onFiltersChange={handleFiltersChange}
+        onReset={handleReset}
+      />
 
       {/* Reconnecting banner if SSE was interrupted */}
       {isReconnecting && (
@@ -106,42 +211,85 @@ export function AutomationActivityTabView({ automationId }: AutomationActivityTa
         </Alert>
       )}
 
-      {/* Empty State */}
+      {/* Empty States */}
       {executions.length === 0 ? (
-        <Card
-          className="border-dashed bg-muted/10 text-center py-8"
-          data-testid="automation-activity-empty"
-        >
-          <CardHeader className="space-y-2">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-              <Activity className="size-6" />
-            </div>
-            <CardTitle className="text-base font-semibold">Nenhuma atividade registrada</CardTitle>
-            <CardDescription className="text-xs max-w-sm mx-auto">
-              As interações simuladas com a publicação aparecerão aqui em ordem cronológica após o
-              primeiro teste.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild size="sm" className="gap-1.5 text-xs font-semibold">
-              <Link to={`/automations/${automationId}/test` as any}>
-                <Play className="size-3.5" />
-                Fazer um teste agora
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+        isFiltered ? (
+          <Card
+            className="border-dashed bg-muted/10 text-center py-8"
+            data-testid="automation-activity-filtered-empty"
+          >
+            <CardHeader className="space-y-2">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <FilterX className="size-6" />
+              </div>
+              <CardTitle className="text-base font-semibold">
+                Nenhuma atividade encontrada
+              </CardTitle>
+              <CardDescription className="text-xs max-w-sm mx-auto">
+                Nenhuma interação corresponde aos critérios e filtros selecionados no momento.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleReset}
+                className="gap-1.5 text-xs font-semibold"
+                data-testid="activity-empty-reset-button"
+              >
+                Limpar filtros
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card
+            className="border-dashed bg-muted/10 text-center py-8"
+            data-testid="automation-activity-empty"
+          >
+            <CardHeader className="space-y-2">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                <Activity className="size-6" />
+              </div>
+              <CardTitle className="text-base font-semibold">
+                Nenhuma atividade registrada
+              </CardTitle>
+              <CardDescription className="text-xs max-w-sm mx-auto">
+                As interações simuladas com a publicação aparecerão aqui em ordem cronológica após o
+                primeiro teste.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild size="sm" className="gap-1.5 text-xs font-semibold">
+                <Link to={`/automations/${automationId}/test` as any}>
+                  <Play className="size-3.5" />
+                  Fazer um teste agora
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )
       ) : (
-        /* Activity Groups List */
-        <AutomationActivityList
-          groups={groups}
-          currentAutomationId={automationId}
-          retryingId={retryingId}
-          onRetry={retry}
-          hasMore={hasMore}
-          isLoadingMore={isLoadingMore}
-          onLoadMore={loadMore}
-        />
+        /* Activity Groups List & Pagination */
+        <div className="space-y-6">
+          <AutomationActivityList
+            groups={groups}
+            currentAutomationId={automationId}
+            retryingId={retryingId}
+            onRetry={retry}
+            hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={loadMore}
+          />
+
+          <AutomationActivityPagination
+            page={meta.page}
+            limit={meta.limit}
+            total={meta.total}
+            totalPages={meta.totalPages}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </div>
       )}
     </div>
   )

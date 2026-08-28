@@ -56,6 +56,15 @@ export const executionStatusSchema = z.enum([
 ])
 export type ExecutionStatus = z.infer<typeof executionStatusSchema>
 
+export const contentProviderSchema = z.enum(['INSTAGRAM', 'TIKTOK'])
+export type ContentProvider = z.infer<typeof contentProviderSchema>
+
+export const contentModeSchema = z.enum(['SIMULATED', 'REAL'])
+export type ContentMode = z.infer<typeof contentModeSchema>
+
+export const contentTypeSchema = z.enum(['POST', 'VIDEO'])
+export type ContentType = z.infer<typeof contentTypeSchema>
+
 const simulationProviderSchema = z.literal('INSTAGRAM')
 const simulationAuthorSchema = z.string().trim().min(1).max(120)
 const simulationCommentTextSchema = z.string().trim().min(1).max(1_000)
@@ -210,10 +219,23 @@ export const simulationExecutionResponseSchema = z
   .strict()
 export type SimulationExecutionResponse = z.infer<typeof simulationExecutionResponseSchema>
 
+const normalizeSimulationQueryArray = <T extends z.ZodTypeAny>(schema: T) =>
+  z
+    .union([schema, z.array(schema)])
+    .transform((v) => (Array.isArray(v) ? v : [v]))
+    .optional()
+
 export const simulationExecutionListQuerySchema = z
   .object({
     automationId: z.string().trim().min(1).max(255).optional(),
+    query: z.string().trim().max(120).optional(),
+    status: normalizeSimulationQueryArray(executionStatusSchema),
+    provider: normalizeSimulationQueryArray(contentProviderSchema),
+    mode: normalizeSimulationQueryArray(contentModeSchema),
+    contentType: normalizeSimulationQueryArray(contentTypeSchema),
+    outputType: normalizeSimulationQueryArray(executionOutputTypeSchema),
     cursor: z.string().trim().min(1).max(255).optional(),
+    page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(100).default(20),
   })
   .strict()
@@ -224,6 +246,15 @@ export const simulationExecutionListResponseSchema = z
     items: z.array(simulationExecutionResponseSchema),
     nextCursor: z.string().nullable(),
     hasMore: z.boolean(),
+    meta: z
+      .object({
+        page: z.number().int().min(1),
+        limit: z.number().int().min(1),
+        total: z.number().int().min(0),
+        totalPages: z.number().int().min(0),
+      })
+      .strict()
+      .optional(),
   })
   .strict()
 export type SimulationExecutionListResponse = z.infer<typeof simulationExecutionListResponseSchema>

@@ -1206,3 +1206,90 @@ test('GET /simulations/executions lista somente o workspace ativo, aceita filtro
   assert.equal(page2.body.items.length, 1)
   assert.notEqual(page2.body.items[0].id, firstId)
 })
+
+test('GET /simulations/executions filtra por busca textual, status, provedor, modo, contentType e outputType com meta de paginação', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+
+  const contentPost = await createContent(api, workspace)
+  const automation = await createAndPublishAutomation(api, workspace, contentPost.id, 'CUPOM')
+
+  // 1. Execução PENDING com autor "Marcos" e texto "Quero CUPOM hoje"
+  const res1 = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: contentPost.id,
+    provider: 'INSTAGRAM',
+    author: 'Marcos',
+    text: 'Quero CUPOM hoje',
+    idempotencyKey: 'filter-test-001',
+    originAutomationId: automation.automationId,
+  })
+  expectStatus(res1, 201)
+
+  // 2. Execução com autor "Juliana" e texto "Dúvida geral"
+  const res2 = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: contentPost.id,
+    provider: 'INSTAGRAM',
+    author: 'Juliana',
+    text: 'Dúvida geral',
+    idempotencyKey: 'filter-test-002',
+    originAutomationId: automation.automationId,
+  })
+  expectStatus(res2, 201)
+
+  // Processa a 1ª execução com worker para que se torne COMPLETED com outputs
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const job1 = queued.find((j: any) => j.executionId === res1.body.executionId)
+  assert.ok(job1)
+  await workerService.consume(job1 as never)
+
+  // A. Busca textual por autor "marcos" (case-insensitive)
+  const searchByAuthor = await api
+    .get('/api/v1/simulations/executions?query=marcos')
+    .set(workspace.headers)
+  expectStatus(searchByAuthor, 200)
+  assert.equal(searchByAuthor.body.items.length, 1)
+  assert.equal(searchByAuthor.body.items[0].id, res1.body.executionId)
+  assert.equal(searchByAuthor.body.meta.total, 1)
+
+  // B. Busca textual por texto "dúvida" (case-insensitive)
+  const searchByText = await api
+    .get('/api/v1/simulations/executions?query=dúvida')
+    .set(workspace.headers)
+  expectStatus(searchByText, 200)
+  assert.equal(searchByText.body.items.length, 1)
+  assert.equal(searchByText.body.items[0].id, res2.body.executionId)
+
+  // C. Filtro por status=COMPLETED
+  const filterByStatus = await api
+    .get('/api/v1/simulations/executions?status=COMPLETED')
+    .set(workspace.headers)
+  expectStatus(filterByStatus, 200)
+  assert.equal(filterByStatus.body.items.length, 1)
+  assert.equal(filterByStatus.body.items[0].id, res1.body.executionId)
+
+  // D. Filtro por status=PENDING
+  const filterByPending = await api
+    .get('/api/v1/simulations/executions?status=PENDING')
+    .set(workspace.headers)
+  expectStatus(filterByPending, 200)
+  assert.equal(filterByPending.body.items.length, 1)
+  assert.equal(filterByPending.body.items[0].id, res2.body.executionId)
+
+  // E. Filtro por provider=INSTAGRAM e mode=SIMULATED
+  const filterByProviderMode = await api
+    .get('/api/v1/simulations/executions?provider=INSTAGRAM&mode=SIMULATED')
+    .set(workspace.headers)
+  expectStatus(filterByProviderMode, 200)
+  assert.equal(filterByProviderMode.body.items.length, 2)
+  assert.equal(filterByProviderMode.body.meta.total, 2)
+  assert.equal(filterByProviderMode.body.meta.page, 1)
+
+  // F. Filtro por outputType=PUBLIC_REPLY
+  const filterByOutput = await api
+    .get('/api/v1/simulations/executions?outputType=PUBLIC_REPLY')
+    .set(workspace.headers)
+  expectStatus(filterByOutput, 200)
+  assert.equal(filterByOutput.body.items.length, 1)
+  assert.equal(filterByOutput.body.items[0].id, res1.body.executionId)
+})

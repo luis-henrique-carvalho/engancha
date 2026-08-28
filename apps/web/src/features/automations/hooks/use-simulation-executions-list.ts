@@ -1,16 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import type { ExecutionStatus, SimulationExecutionResponse } from '@engancha/contracts'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type {
+  ExecutionStatus,
+  SimulationExecutionListQuery,
+  SimulationExecutionResponse,
+} from '@engancha/contracts'
+import type { ActivityFilters } from '../data/activity-filter-options'
 import { SimulationsApi } from '../services/simulations-api'
 
 const TERMINAL_STATUSES: ExecutionStatus[] = ['COMPLETED', 'IGNORED', 'FAILED']
 
 export interface UseSimulationExecutionsListOptions {
   automationId?: string
+  query?: string
+  filters?: ActivityFilters
+  page?: number
   limit?: number
 }
 
 export function useSimulationExecutionsList(options?: UseSimulationExecutionsListOptions) {
   const automationId = options?.automationId
+  const query = options?.query
+  const filters = options?.filters
+  const page = options?.page ?? 1
   const limit = options?.limit ?? 20
 
   const [executions, setExecutions] = useState<SimulationExecutionResponse[]>([])
@@ -22,6 +33,17 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState<boolean>(false)
   const [retryingId, setRetryingId] = useState<string | null>(null)
+  const [meta, setMeta] = useState<{
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }>({
+    page,
+    limit,
+    total: 0,
+    totalPages: 1,
+  })
 
   const activeStreamsRef = useRef<Map<string, EventSource>>(new Map())
 
@@ -54,7 +76,6 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
           return prev
         }
 
-        // Prepend if not found and matches automation context
         if (
           !automationId ||
           item.automation?.id === automationId ||
@@ -111,7 +132,6 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
 
       es.onerror = () => {
         setIsReconnecting(true)
-        // Fallback GET reload on reconnection
         try {
           const promise = SimulationsApi.getExecution(id)
           if (promise && typeof promise.then === 'function') {
@@ -134,22 +154,53 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
     [updateExecutionInList],
   )
 
+  const serializedFilters: SimulationExecutionListQuery = useMemo(() => {
+    const params: SimulationExecutionListQuery = {
+      page,
+      limit,
+    }
+    if (automationId) params.automationId = automationId
+    if (query) params.query = query
+    if (filters?.status?.length) params.status = filters.status
+    if (filters?.provider?.length) params.provider = filters.provider
+    if (filters?.mode?.length) params.mode = filters.mode
+    if (filters?.contentType?.length) params.contentType = filters.contentType
+    if (filters?.outputType?.length) params.outputType = filters.outputType
+    return params
+  }, [
+    automationId,
+    query,
+    filters?.status,
+    filters?.provider,
+    filters?.mode,
+    filters?.contentType,
+    filters?.outputType,
+    page,
+    limit,
+  ])
+
   const fetchInitial = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     closeAllStreams()
 
     try {
-      const res = await SimulationsApi.listExecutions({
-        automationId,
-        limit,
-      })
+      const res = await SimulationsApi.listExecutions(serializedFilters)
 
       setExecutions(res.items)
       setNextCursor(res.nextCursor)
       setHasMore(res.hasMore)
+      if (res.meta) {
+        setMeta(res.meta)
+      } else {
+        setMeta({
+          page,
+          limit,
+          total: res.items.length,
+          totalPages: Math.max(1, Math.ceil(res.items.length / limit)),
+        })
+      }
 
-      // Start SSE streams for any pending/processing items
       for (const item of res.items) {
         if (!TERMINAL_STATUSES.includes(item.status)) {
           startStreamForExecution(item.id)
@@ -160,21 +211,21 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
     } finally {
       setIsLoading(false)
     }
-  }, [automationId, limit, closeAllStreams, startStreamForExecution])
+  }, [serializedFilters, page, limit, closeAllStreams, startStreamForExecution])
 
   const refresh = useCallback(async () => {
     setIsRefreshing(true)
     setError(null)
 
     try {
-      const res = await SimulationsApi.listExecutions({
-        automationId,
-        limit,
-      })
+      const res = await SimulationsApi.listExecutions(serializedFilters)
 
       setExecutions(res.items)
       setNextCursor(res.nextCursor)
       setHasMore(res.hasMore)
+      if (res.meta) {
+        setMeta(res.meta)
+      }
 
       for (const item of res.items) {
         if (!TERMINAL_STATUSES.includes(item.status)) {
@@ -186,7 +237,7 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
     } finally {
       setIsRefreshing(false)
     }
-  }, [automationId, limit, startStreamForExecution])
+  }, [serializedFilters, startStreamForExecution])
 
   const loadMore = useCallback(async () => {
     if (!nextCursor || isLoadingMore || !hasMore) return
@@ -194,9 +245,8 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
     setIsLoadingMore(true)
     try {
       const res = await SimulationsApi.listExecutions({
-        automationId,
+        ...serializedFilters,
         cursor: nextCursor,
-        limit,
       })
 
       setExecutions((prev) => {
@@ -218,7 +268,7 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
     } finally {
       setIsLoadingMore(false)
     }
-  }, [nextCursor, isLoadingMore, hasMore, automationId, limit, startStreamForExecution])
+  }, [nextCursor, isLoadingMore, hasMore, serializedFilters, startStreamForExecution])
 
   const retry = useCallback(
     async (executionId: string) => {
@@ -228,7 +278,6 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
       try {
         const res = await SimulationsApi.retryExecution(executionId)
 
-        // Optimistically update in the list
         setExecutions((prev) =>
           prev.map((item) =>
             item.id === executionId
@@ -243,10 +292,8 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
           ),
         )
 
-        // Connect SSE for this retried execution
         startStreamForExecution(res.executionId)
 
-        // Fetch fresh authoritative state
         const fresh = await SimulationsApi.getExecution(executionId)
         updateExecutionInList(fresh)
 
@@ -273,6 +320,7 @@ export function useSimulationExecutionsList(options?: UseSimulationExecutionsLis
 
   return {
     executions,
+    meta,
     isLoading,
     isLoadingMore,
     isRefreshing,

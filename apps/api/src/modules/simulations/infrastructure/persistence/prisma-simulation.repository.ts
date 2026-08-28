@@ -77,18 +77,80 @@ export class PrismaSimulationRepository implements SimulationRepository {
 
   async list(
     organizationId: string,
-    query: { automationId?: string; cursor?: string; limit: number },
+    query: {
+      automationId?: string
+      query?: string
+      status?: any[]
+      provider?: any[]
+      mode?: any[]
+      contentType?: any[]
+      outputType?: any[]
+      cursor?: string
+      page?: number
+      limit: number
+    },
   ) {
     const where: any = { organizationId }
 
+    const andConditions: any[] = []
+
     if (query.automationId) {
-      where.OR = [{ automationId: query.automationId }, { originAutomationId: query.automationId }]
+      andConditions.push({
+        OR: [{ automationId: query.automationId }, { originAutomationId: query.automationId }],
+      })
     }
+
+    if (query.query?.trim()) {
+      const searchTerm = query.query.trim()
+      andConditions.push({
+        OR: [
+          { inputAuthor: { contains: searchTerm, mode: 'insensitive' } },
+          { inputText: { contains: searchTerm, mode: 'insensitive' } },
+          { content: { title: { contains: searchTerm, mode: 'insensitive' } } },
+        ],
+      })
+    }
+
+    if (andConditions.length > 0) {
+      where.AND = andConditions
+    }
+
+    if (query.status?.length) {
+      where.status = { in: query.status }
+    }
+
+    if (query.provider?.length) {
+      where.provider = { in: query.provider }
+    }
+
+    if (query.mode?.length) {
+      where.mode = { in: query.mode }
+    }
+
+    if (query.contentType?.length) {
+      where.content = {
+        ...(where.content || {}),
+        contentType: { in: query.contentType },
+      }
+    }
+
+    if (query.outputType?.length) {
+      where.outputs = {
+        some: { type: { in: query.outputType } },
+      }
+    }
+
+    const total = await this.database.client.automationExecution.count({ where })
+    const page = query.page ?? 1
+    const limit = query.limit
+    const totalPages = Math.ceil(total / limit) || 1
+
+    const isCursorBased = Boolean(query.cursor)
 
     const records = await this.database.client.automationExecution.findMany({
       where,
-      take: query.limit + 1,
-      ...(query.cursor ? { cursor: { id: query.cursor }, skip: 1 } : {}),
+      take: isCursorBased ? limit + 1 : limit,
+      ...(isCursorBased ? { cursor: { id: query.cursor }, skip: 1 } : { skip: (page - 1) * limit }),
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       include: {
         content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
@@ -97,14 +159,21 @@ export class PrismaSimulationRepository implements SimulationRepository {
       },
     })
 
-    const hasMore = records.length > query.limit
-    const items = hasMore ? records.slice(0, query.limit) : records
-    const nextCursor = hasMore && items.length > 0 ? items[items.length - 1].id : null
+    const hasMore = isCursorBased ? records.length > limit : page < totalPages
+    const items = isCursorBased && records.length > limit ? records.slice(0, limit) : records
+    const nextCursor =
+      hasMore && items.length > 0 ? (items[items.length - 1] as { id: string }).id : null
 
     return {
       items,
       nextCursor,
       hasMore,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
     }
   }
 

@@ -261,4 +261,61 @@ describe('AutomationActivityTabView', () => {
 
     expect(SimulationsApi.retryExecution).toHaveBeenCalledWith('exec-failed')
   })
+
+  it('renders toolbar with search input, faceted filters and pagination', async () => {
+    const listResponse: SimulationExecutionListResponse = {
+      items: [completedExec],
+      nextCursor: null,
+      hasMore: false,
+      meta: {
+        page: 1,
+        limit: 20,
+        total: 1,
+        totalPages: 1,
+      },
+    }
+    vi.mocked(SimulationsApi.listExecutions).mockResolvedValueOnce(listResponse)
+
+    const { getByTestId } = await render(<AutomationActivityTabView automationId="auto-1" />)
+
+    await expect.element(getByTestId('activity-toolbar')).toBeInTheDocument()
+    await expect.element(getByTestId('activity-search-input')).toBeInTheDocument()
+    await expect.element(getByTestId('activity-pagination')).toBeInTheDocument()
+  })
+
+  it('renders filtered empty state when filters are active and no items match', async () => {
+    const emptyResponse: SimulationExecutionListResponse = {
+      items: [],
+      nextCursor: null,
+      hasMore: false,
+      meta: {
+        page: 1,
+        limit: 20,
+        total: 0,
+        totalPages: 1,
+      },
+    }
+    vi.mocked(SimulationsApi.listExecutions).mockResolvedValueOnce(emptyResponse)
+
+    const handleReset = vi.fn()
+    const { getByTestId } = await render(
+      <AutomationActivityTabView
+        automationId="auto-1"
+        query="termo-inexistente"
+        filters={{ status: ['FAILED'] }}
+        onReset={handleReset}
+      />,
+    )
+
+    await expect.element(getByTestId('automation-activity-filtered-empty')).toBeInTheDocument()
+    await expect
+      .element(getByTestId('automation-activity-filtered-empty'))
+      .toHaveTextContent('Nenhuma atividade encontrada')
+
+    const resetBtn = getByTestId('activity-empty-reset-button')
+    await expect.element(resetBtn).toBeInTheDocument()
+    ;(resetBtn.element() as HTMLElement).click()
+
+    expect(handleReset).toHaveBeenCalled()
+  })
 })

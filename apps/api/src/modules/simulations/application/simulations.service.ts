@@ -215,6 +215,7 @@ export class SimulationsService {
       items: result.items.map((item) => this.present(item)),
       nextCursor: result.nextCursor,
       hasMore: result.hasMore,
+      meta: result.meta,
     })
   }
 

@@ -28,10 +28,13 @@ export const SimulationsApi = {
   async listExecutions(
     query?: SimulationExecutionListQuery,
   ): Promise<SimulationExecutionListResponse> {
-    const params = new URLSearchParams()
-    if (query?.automationId) params.set('automationId', query.automationId)
-    if (query?.cursor) params.set('cursor', query.cursor)
-    if (query?.limit) params.set('limit', String(query.limit))
+    const params = new URLSearchParams(
+      Object.entries(query ?? {})
+        .filter(([, value]) => value !== undefined && value !== '')
+        .flatMap(([key, value]) =>
+          Array.isArray(value) ? value.map((item) => [key, String(item)]) : [[key, String(value)]],
+        ),
+    )
 
     const queryString = params.toString()
     const path = queryString ? `/simulations/executions?${queryString}` : '/simulations/executions'

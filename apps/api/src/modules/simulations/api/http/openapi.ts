@@ -1,6 +1,8 @@
 import {
   simulationCommentRequestSchema,
   simulationCommentResponseSchema,
+  simulationExecutionListQuerySchema,
+  simulationExecutionListResponseSchema,
   simulationExecutionResponseSchema,
 } from '@engancha/contracts'
 import type { OpenApiPathRegistrar } from '../../../../platform/http/openapi/shared'
@@ -29,6 +31,23 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
       404: notFound,
     },
   })
+
+  registry.registerPath({
+    method: 'get',
+    path: '/api/v1/simulations/executions',
+    tags: ['Simulations'],
+    summary: 'Lista execuções de automação com filtros, busca e paginação',
+    security: cookieSecurity,
+    request: { query: simulationExecutionListQuerySchema },
+    responses: {
+      200: {
+        description: 'Lista paginada de execuções',
+        content: json(simulationExecutionListResponseSchema),
+      },
+      400: validationFailure,
+    },
+  })
+
   registry.registerPath({
     method: 'get',
     path: '/api/v1/simulations/executions/{id}',
@@ -41,6 +60,7 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
       404: notFound,
     },
   })
+
   registry.registerPath({
     method: 'get',
     path: '/api/v1/simulations/executions/{id}/events',
