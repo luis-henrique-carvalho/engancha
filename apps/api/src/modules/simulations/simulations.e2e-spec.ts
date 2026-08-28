@@ -8,6 +8,7 @@ import {
   ServiceUnavailableException,
   type INestApplication,
 } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 import { Test } from '@nestjs/testing'
 import { simulationExecutionResponseSchema } from '@engancha/contracts'
 import request, { type Response } from 'supertest'
@@ -23,6 +24,7 @@ import { SimulationsService } from './application/simulations.service'
 import { AutomationExecutionService } from '../../../../worker/src/automation-execution/application/automation-execution.service'
 import { PrismaAutomationExecutionRepository } from '../../../../worker/src/automation-execution/infrastructure/persistence/prisma-automation-execution.repository'
 import { RedisSimulationEventsPublisher } from '../../../../worker/src/automation-execution/infrastructure/messaging/redis-simulation-events.publisher'
+import { apiEnvSchema, validateApiEnvironment } from '../../platform/config/runtime-env'
 
 type WorkspaceScenario = {
   organizationId: string
@@ -60,19 +62,21 @@ function expectStatus(response: Response, status: number): void {
   assert.equal(response.status, status, JSON.stringify(response.body))
 }
 
-async function createWorkspaceScenario(): Promise<WorkspaceScenario> {
+async function createWorkspaceScenario(existingUserId?: string): Promise<WorkspaceScenario> {
   const suffix = randomUUID()
   const organizationId = randomUUID()
-  const userId = randomUUID()
+  const userId = existingUserId ?? randomUUID()
   const membershipId = randomUUID()
 
-  await prisma.client.user.create({
-    data: {
-      id: userId,
-      name: `Simulation test ${suffix}`,
-      email: `simulation-${suffix}@example.test`,
-    },
-  })
+  if (!existingUserId) {
+    await prisma.client.user.create({
+      data: {
+        id: userId,
+        name: `Simulation test ${suffix}`,
+        email: `simulation-${suffix}@example.test`,
+      },
+    })
+  }
   await prisma.client.organization.create({
     data: {
       id: organizationId,
@@ -106,7 +110,19 @@ async function createContent(api: ReturnType<typeof request>, workspace: Workspa
 
 before(async () => {
   const module = await Test.createTestingModule({
-    imports: [PlatformModule, DatabaseModule, AutomationsModule, SimulationsModule],
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true,
+        envFilePath: ['../../.env', '.env'],
+        validationSchema: apiEnvSchema,
+        validate: validateApiEnvironment,
+        validationOptions: { allowUnknown: true, abortEarly: false },
+      }),
+      PlatformModule,
+      DatabaseModule,
+      AutomationsModule,
+      SimulationsModule,
+    ],
   })
     .overrideGuard(AuthorizationContextGuard)
     .useClass(FeatureAuthorizationGuard)
@@ -139,9 +155,11 @@ afterEach(async () => {
         where: { organizationId: workspace.organizationId },
       })
       await prisma.client.organization.delete({ where: { id: workspace.organizationId } })
-      await prisma.client.user.delete({ where: { id: workspace.userId } })
     }),
   )
+  await prisma.client.user.deleteMany({
+    where: { id: { in: [...new Set(scenarios.map((workspace) => workspace.userId))] } },
+  })
   queueAvailable = true
   queued = []
   scenarios = []
@@ -195,6 +213,160 @@ test('cria uma execução simulada pendente, enfileira uma vez e expõe sua proj
   assert.equal(persisted.mode, 'SIMULATED')
   assert.equal(persisted.channelConnectionId, null)
   assert.equal(persisted.stateVersion, 1)
+})
+
+test('limita submissões por usuário e workspace, rejeita antes de persistir/enfileirar e recupera após o bloqueio', async () => {
+  const workspace = await createWorkspaceScenario()
+  const otherWorkspace = await createWorkspaceScenario(workspace.userId)
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+  const otherContent = await createContent(api, otherWorkspace)
+
+  for (let index = 0; index < 5; index += 1) {
+    const response = await api
+      .post('/api/v1/simulations/comments')
+      .set(workspace.headers)
+      .send({
+        contentId: content.id,
+        provider: 'INSTAGRAM',
+        author: 'Rate limit test',
+        text: `Comentário ${index}`,
+        idempotencyKey: `simulation-rate-${index}`,
+      })
+
+    expectStatus(response, 201)
+  }
+
+  const rejected = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Rate limit test',
+    text: 'Rejeitado',
+    idempotencyKey: 'simulation-rate-rejected',
+  })
+
+  expectStatus(rejected, 429)
+  assert.equal(rejected.body.code, 'SIMULATION_RATE_LIMIT_EXCEEDED')
+  assert.equal(rejected.body.message, 'Too many simulation requests. Please try again later.')
+  assert.equal(rejected.body.executionId, undefined)
+  assert.equal(rejected.body.key, undefined)
+  assert.ok(
+    rejected.headers['retry-after'],
+    `Expected Retry-After header, got: ${JSON.stringify(rejected.headers)}`,
+  )
+  assert.match(rejected.headers['retry-after'], /^\d+$/)
+  assert.equal(
+    await prisma.client.automationExecution.count({
+      where: { organizationId: workspace.organizationId },
+    }),
+    5,
+  )
+  assert.equal(queued.length, 5)
+
+  const isolated = await api.post('/api/v1/simulations/comments').set(otherWorkspace.headers).send({
+    contentId: otherContent.id,
+    provider: 'INSTAGRAM',
+    author: 'Mesmo usuário',
+    text: 'Outro workspace',
+    idempotencyKey: 'simulation-rate-other-workspace',
+  })
+
+  expectStatus(isolated, 201)
+  assert.equal(queued.length, 6)
+
+  await new Promise((resolve) => setTimeout(resolve, 1_100))
+
+  const recovered = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Rate limit test',
+    text: 'Após bloqueio',
+    idempotencyKey: 'simulation-rate-recovered',
+  })
+
+  expectStatus(recovered, 201)
+  assert.equal(queued.length, 7)
+})
+
+test('limita consultas e retries sem bloquear o SSE nem alterar estado após 429', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const created = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Read and retry test',
+    text: 'Consulta',
+    idempotencyKey: 'simulation-read-retry',
+  })
+  expectStatus(created, 201)
+  const executionId = created.body.executionId
+
+  for (let index = 0; index < 20; index += 1) {
+    const response = await api
+      .get(`/api/v1/simulations/executions/${executionId}`)
+      .set(workspace.headers)
+
+    expectStatus(response, 200)
+  }
+
+  const rejectedRead = await api
+    .get(`/api/v1/simulations/executions/${executionId}`)
+    .set(workspace.headers)
+  expectStatus(rejectedRead, 429)
+  assert.equal(rejectedRead.body.code, 'SIMULATION_RATE_LIMIT_EXCEEDED')
+
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'COMPLETED', completedAt: new Date() },
+  })
+
+  const sse = await api
+    .get(`/api/v1/simulations/executions/${executionId}/events`)
+    .set(workspace.headers)
+  expectStatus(sse, 200)
+  assert.ok(sse.headers['content-type']?.includes('text/event-stream'))
+
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'FAILED', completedAt: new Date() },
+  })
+
+  const firstRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(workspace.headers)
+    .send()
+  expectStatus(firstRetry, 201)
+
+  for (let index = 0; index < 4; index += 1) {
+    const response = await api
+      .post(`/api/v1/simulations/executions/${executionId}/retry`)
+      .set(workspace.headers)
+      .send()
+
+    expectStatus(response, 409)
+  }
+
+  const beforeRejectedRetry = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: executionId },
+    select: { status: true, stateVersion: true, enqueuedAt: true },
+  })
+  const queuedBeforeRejectedRetry = queued.length
+
+  const rejectedRetry = await api
+    .post(`/api/v1/simulations/executions/${executionId}/retry`)
+    .set(workspace.headers)
+    .send()
+  expectStatus(rejectedRetry, 429)
+  assert.equal(rejectedRetry.body.code, 'SIMULATION_RATE_LIMIT_EXCEEDED')
+
+  const afterRejectedRetry = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: executionId },
+    select: { status: true, stateVersion: true, enqueuedAt: true },
+  })
+  assert.deepEqual(afterRejectedRetry, beforeRejectedRetry)
+  assert.equal(queued.length, queuedBeforeRejectedRetry)
 })
 
 test('rejeita mode e provider não habilitado antes de persistir ou enfileirar', async () => {

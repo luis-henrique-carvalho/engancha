@@ -18,6 +18,15 @@ export const apiEnvSchema = Joi.object({
   GOOGLE_CLIENT_SECRET: Joi.string().allow('').optional(),
   RESEND_API_KEY: Joi.string().allow('').optional(),
   RESEND_FROM: Joi.string().default('onboarding@example.com'),
+  SIMULATION_CREATE_RATE_LIMIT: Joi.number().integer().min(1).default(5),
+  SIMULATION_CREATE_RATE_LIMIT_TTL_MS: Joi.number().integer().min(100).default(60_000),
+  SIMULATION_CREATE_RATE_LIMIT_BLOCK_DURATION_MS: Joi.number().integer().min(100).default(1_000),
+  SIMULATION_RETRY_RATE_LIMIT: Joi.number().integer().min(1).default(5),
+  SIMULATION_RETRY_RATE_LIMIT_TTL_MS: Joi.number().integer().min(100).default(60_000),
+  SIMULATION_RETRY_RATE_LIMIT_BLOCK_DURATION_MS: Joi.number().integer().min(100).default(1_000),
+  SIMULATION_READ_RATE_LIMIT: Joi.number().integer().min(1).default(20),
+  SIMULATION_READ_RATE_LIMIT_TTL_MS: Joi.number().integer().min(100).default(60_000),
+  SIMULATION_READ_RATE_LIMIT_BLOCK_DURATION_MS: Joi.number().integer().min(100).default(1_000),
 }).unknown(true)
 
 export type ApiRuntimeConfig = {
@@ -28,6 +37,15 @@ export type ApiRuntimeConfig = {
   betterAuthSecret: string
   betterAuthUrl: string
   webOrigin: string
+  simulationCreateRateLimit: number
+  simulationCreateRateLimitTtlMs: number
+  simulationCreateRateLimitBlockDurationMs: number
+  simulationRetryRateLimit: number
+  simulationRetryRateLimitTtlMs: number
+  simulationRetryRateLimitBlockDurationMs: number
+  simulationReadRateLimit: number
+  simulationReadRateLimitTtlMs: number
+  simulationReadRateLimitBlockDurationMs: number
 }
 
 export function validateApiEnvironment(env: NodeJS.ProcessEnv): ApiRuntimeConfig {
@@ -48,5 +66,14 @@ export function validateApiEnvironment(env: NodeJS.ProcessEnv): ApiRuntimeConfig
     betterAuthSecret: value.BETTER_AUTH_SECRET,
     betterAuthUrl: value.BETTER_AUTH_URL,
     webOrigin: value.WEB_ORIGIN,
+    simulationCreateRateLimit: value.SIMULATION_CREATE_RATE_LIMIT,
+    simulationCreateRateLimitTtlMs: value.SIMULATION_CREATE_RATE_LIMIT_TTL_MS,
+    simulationCreateRateLimitBlockDurationMs: value.SIMULATION_CREATE_RATE_LIMIT_BLOCK_DURATION_MS,
+    simulationRetryRateLimit: value.SIMULATION_RETRY_RATE_LIMIT,
+    simulationRetryRateLimitTtlMs: value.SIMULATION_RETRY_RATE_LIMIT_TTL_MS,
+    simulationRetryRateLimitBlockDurationMs: value.SIMULATION_RETRY_RATE_LIMIT_BLOCK_DURATION_MS,
+    simulationReadRateLimit: value.SIMULATION_READ_RATE_LIMIT,
+    simulationReadRateLimitTtlMs: value.SIMULATION_READ_RATE_LIMIT_TTL_MS,
+    simulationReadRateLimitBlockDurationMs: value.SIMULATION_READ_RATE_LIMIT_BLOCK_DURATION_MS,
   }
 }

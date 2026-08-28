@@ -11,6 +11,7 @@ import {
   idParameterSchema,
   json,
   notFound,
+  tooManyRequests,
   validationFailure,
 } from '../../../../platform/http/openapi/shared'
 
@@ -29,6 +30,7 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
       },
       400: validationFailure,
       404: notFound,
+      429: tooManyRequests,
     },
   })
 
@@ -45,6 +47,7 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
         content: json(simulationExecutionListResponseSchema),
       },
       400: validationFailure,
+      429: tooManyRequests,
     },
   })
 
@@ -58,6 +61,7 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
     responses: {
       200: { description: 'Execução simulada', content: json(simulationExecutionResponseSchema) },
       404: notFound,
+      429: tooManyRequests,
     },
   })
 
@@ -81,6 +85,24 @@ export const registerSimulationsOpenApi: OpenApiPathRegistrar = (registry) => {
         },
       },
       404: notFound,
+    },
+  })
+
+  registry.registerPath({
+    method: 'post',
+    path: '/api/v1/simulations/executions/{id}/retry',
+    tags: ['Simulations'],
+    summary: 'Reprocessa uma execução simulada com falha',
+    security: cookieSecurity,
+    request: { params: idParameterSchema },
+    responses: {
+      201: {
+        description: 'Execução simulada reenfileirada',
+        content: json(simulationCommentResponseSchema),
+      },
+      404: notFound,
+      409: { description: 'Estado atual impede o retry' },
+      429: tooManyRequests,
     },
   })
 }
