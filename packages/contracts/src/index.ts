@@ -104,12 +104,60 @@ export const simulationCommentResponseSchema = z
   .strict()
 export type SimulationCommentResponse = z.infer<typeof simulationCommentResponseSchema>
 
+export const executionOutputTypeSchema = z.enum([
+  'PUBLIC_REPLY',
+  'PRIVATE_REPLY',
+  'LINK_DELIVERY',
+  'EMAIL_CAPTURE_REQUEST',
+])
+export type ExecutionOutputType = z.infer<typeof executionOutputTypeSchema>
+
+export const channelCapabilitiesSchema = z
+  .object({
+    provider: z.enum(['INSTAGRAM', 'TIKTOK']),
+    mode: z.enum(['SIMULATED', 'REAL']),
+    supportedActions: z.array(
+      z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL']),
+    ),
+    publicReply: z.boolean(),
+    privateReply: z.boolean(),
+    linkDelivery: z.boolean(),
+    emailCapture: z.boolean(),
+  })
+  .strict()
+
+export type ChannelCapabilities = z.infer<typeof channelCapabilitiesSchema>
+
+export function getChannelCapabilities(provider: string, mode: string): ChannelCapabilities {
+  if (provider === 'INSTAGRAM' && mode === 'SIMULATED') {
+    return {
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      supportedActions: ['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL'],
+      publicReply: true,
+      privateReply: true,
+      linkDelivery: true,
+      emailCapture: true,
+    }
+  }
+
+  return {
+    provider: provider as 'INSTAGRAM' | 'TIKTOK',
+    mode: mode as 'SIMULATED' | 'REAL',
+    supportedActions: [],
+    publicReply: false,
+    privateReply: false,
+    linkDelivery: false,
+    emailCapture: false,
+  }
+}
+
 const executionOutputSchema = z
   .object({
     id: z.string().min(1),
     key: z.string().min(1),
     position: z.number().int().min(0),
-    type: z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK_DELIVERY', 'EMAIL_CAPTURE_REQUEST']),
+    type: executionOutputTypeSchema,
     payload: z.record(z.string(), z.unknown()),
     createdAt: z.string().datetime({ offset: true }),
   })

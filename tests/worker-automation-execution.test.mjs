@@ -171,8 +171,8 @@ test('marca como IGNORED com matched=false quando nenhuma automação ativa corr
   })
 })
 
-test('vincula automação e persiste snapshot sanitizado no match único', async () => {
-  let savedSnapshotParams = null
+test('vincula automação, valida capacidades e persiste snapshot e saídas no match único', async () => {
+  let savedCompletedParams = null
   const repository = {
     claimExecution: async (executionId, organizationId) => ({
       id: executionId,
@@ -215,9 +215,10 @@ test('vincula automação e persiste snapshot sanitizado no match único', async
         },
       },
     ],
-    saveMatchSnapshot: async (params) => {
-      savedSnapshotParams = params
+    saveExecutionCompleted: async (params) => {
+      savedCompletedParams = params
     },
+    saveMatchSnapshot: async () => {},
     markIgnored: async () => {
       throw new Error('Should not be ignored')
     },
@@ -231,12 +232,12 @@ test('vincula automação e persiste snapshot sanitizado no match único', async
 
   assert.deepEqual(result, {
     executionId: 'execution-100',
-    status: 'PROCESSING',
+    status: 'COMPLETED',
     matched: true,
     automationId: 'auto-1',
     revisionId: 'rev-1',
   })
-  assert.deepEqual(savedSnapshotParams, {
+  assert.deepEqual(savedCompletedParams, {
     executionId: 'execution-100',
     organizationId: 'org-100',
     automationId: 'auto-1',
@@ -256,7 +257,76 @@ test('vincula automação e persiste snapshot sanitizado no match único', async
         { position: 1, type: 'LINK', config: { url: 'https://example.com', label: 'Link' } },
       ],
     },
+    outputs: [
+      {
+        key: 'execution-100:0:PUBLIC_REPLY',
+        position: 0,
+        type: 'PUBLIC_REPLY',
+        payload: { text: 'Enviando!', simulated: true },
+      },
+      {
+        key: 'execution-100:1:LINK_DELIVERY',
+        position: 1,
+        type: 'LINK_DELIVERY',
+        payload: { url: 'https://example.com', label: 'Link', simulated: true },
+      },
+    ],
   })
+})
+
+test('falha com UNSUPPORTED_CHANNEL_ACTION quando canal não suporta ação configurada', async () => {
+  let failedParams = null
+  const repository = {
+    claimExecution: async (executionId, organizationId) => ({
+      id: executionId,
+      organizationId,
+      contentId: 'content-1',
+      provider: 'TIKTOK',
+      mode: 'REAL',
+      inputText: 'Quero o material',
+      inputAuthor: 'Carlos',
+      commentId: null,
+      originAutomationId: null,
+      status: 'PROCESSING',
+      attempts: 1,
+      stateVersion: 2,
+    }),
+    findActiveCandidateAutomations: async () => [
+      {
+        id: 'auto-1',
+        organizationId: 'org-100',
+        status: 'ACTIVE',
+        currentPublishedRevision: {
+          id: 'rev-1',
+          version: 1,
+          target: { id: 'target-1', contentId: 'content-1' },
+          trigger: {
+            id: 'trig-1',
+            type: 'COMMENT_KEYWORD',
+            keyword: 'Material',
+            keywordNormalized: 'material',
+          },
+          actions: [{ id: 'act-1', position: 0, type: 'PUBLIC_REPLY', config: { text: 'Olá!' } }],
+        },
+      },
+    ],
+    saveExecutionCompleted: async () => {},
+    markIgnored: async () => {},
+    markFailed: async (params) => {
+      failedParams = params
+    },
+  }
+
+  const service = new AutomationExecutionService(repository)
+  const result = await service.consume(validJob.data)
+
+  assert.deepEqual(result, {
+    executionId: 'execution-100',
+    status: 'FAILED',
+    matched: true,
+    errorCode: 'UNSUPPORTED_CHANNEL_ACTION',
+  })
+  assert.equal(failedParams.errorCode, 'UNSUPPORTED_CHANNEL_ACTION')
 })
 
 test('falha fechado com AMBIGUOUS_AUTOMATION_MATCH se múltiplos matches forem encontrados', async () => {

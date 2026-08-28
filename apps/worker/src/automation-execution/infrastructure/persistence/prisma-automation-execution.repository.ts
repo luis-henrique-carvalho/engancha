@@ -146,6 +146,58 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     })
   }
 
+  async saveExecutionCompleted(params: {
+    executionId: string
+    organizationId: string
+    automationId: string
+    revisionId: string
+    snapshot: AutomationSnapshot
+    outputs: Array<{
+      key: string
+      position: number
+      type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
+      payload: Record<string, unknown>
+    }>
+  }): Promise<void> {
+    await this.database.client.$transaction(async (tx) => {
+      await tx.automationExecution.update({
+        where: { id: params.executionId },
+        data: {
+          automationId: params.automationId,
+          automationRevisionId: params.revisionId,
+          automationSnapshot: params.snapshot as never,
+          matched: true,
+          status: 'COMPLETED',
+          completedAt: new Date(),
+          stateVersion: { increment: 1 },
+        },
+      })
+
+      for (const output of params.outputs) {
+        await tx.automationExecutionOutput.upsert({
+          where: {
+            executionId_key: {
+              executionId: params.executionId,
+              key: output.key,
+            },
+          },
+          create: {
+            executionId: params.executionId,
+            key: output.key,
+            position: output.position,
+            type: output.type,
+            payload: output.payload as never,
+          },
+          update: {
+            position: output.position,
+            type: output.type,
+            payload: output.payload as never,
+          },
+        })
+      }
+    })
+  }
+
   async markIgnored(params: {
     executionId: string
     organizationId: string

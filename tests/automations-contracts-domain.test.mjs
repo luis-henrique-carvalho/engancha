@@ -5,6 +5,7 @@ import {
   automationActionSchema,
   automationSnapshotSchema,
   createContentRequestSchema,
+  getChannelCapabilities,
   matchesAutomationKeyword,
   normalizeAutomationKeyword,
   simulationCommentRequestSchema,
@@ -119,4 +120,24 @@ test('aceita comentário simulado estrito e um job de execução seguro e versio
       organizationId: 'organization-1',
     },
   )
+})
+
+test('valida capacidades do canal simulado Instagram', () => {
+  const capabilities = getChannelCapabilities('INSTAGRAM', 'SIMULATED')
+  assert.equal(capabilities.provider, 'INSTAGRAM')
+  assert.equal(capabilities.mode, 'SIMULATED')
+  assert.equal(capabilities.publicReply, true)
+  assert.equal(capabilities.privateReply, true)
+  assert.equal(capabilities.linkDelivery, true)
+  assert.equal(capabilities.emailCapture, true)
+  assert.deepEqual(capabilities.supportedActions, [
+    'PUBLIC_REPLY',
+    'PRIVATE_REPLY',
+    'LINK',
+    'CAPTURE_EMAIL',
+  ])
+
+  const tiktokCapabilities = getChannelCapabilities('TIKTOK', 'REAL')
+  assert.equal(tiktokCapabilities.publicReply, false)
+  assert.deepEqual(tiktokCapabilities.supportedActions, [])
 })

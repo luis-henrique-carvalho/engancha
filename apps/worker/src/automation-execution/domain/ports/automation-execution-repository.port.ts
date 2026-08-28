@@ -43,6 +43,13 @@ export interface CandidateAutomation {
   }
 }
 
+export interface AutomationExecutionOutputDraft {
+  key: string
+  position: number
+  type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
+  payload: Record<string, unknown>
+}
+
 export interface AutomationExecutionRepository {
   claimExecution(executionId: string, organizationId: string): Promise<ClaimedExecution | null>
   findActiveCandidateAutomations(
@@ -57,6 +64,14 @@ export interface AutomationExecutionRepository {
     automationId: string
     revisionId: string
     snapshot: AutomationSnapshot
+  }): Promise<void>
+  saveExecutionCompleted(params: {
+    executionId: string
+    organizationId: string
+    automationId: string
+    revisionId: string
+    snapshot: AutomationSnapshot
+    outputs: AutomationExecutionOutputDraft[]
   }): Promise<void>
   markIgnored(params: {
     executionId: string

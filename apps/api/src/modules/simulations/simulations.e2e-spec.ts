@@ -319,7 +319,7 @@ async function createAndPublishAutomation(
   return { automationId, revisionId: publishRes.body.published.id }
 }
 
-test('worker encontra revisão publicada, vincula automação e persiste snapshot sanitizado imutável', async () => {
+test('worker processa jornada positiva completa com resposta pública e link na ordem correta', async () => {
   const workspace = await createWorkspaceScenario()
   const api = request(app.getHttpServer())
   const content = await createContent(api, workspace)
@@ -345,26 +345,51 @@ test('worker encontra revisão publicada, vincula automação e persiste snapsho
   const workerService = new AutomationExecutionService(workerRepo)
   const result = await workerService.consume(queued[0] as never)
 
-  assert.equal(result.status, 'PROCESSING')
+  assert.equal(result.status, 'COMPLETED')
   assert.equal(result.matched, true)
   assert.equal(result.automationId, automationId)
   assert.equal(result.revisionId, revisionId)
+
+  // Redelivery do mesmo job não duplica saídas nem falha
+  const redeliveryResult = await workerService.consume(queued[0] as never)
+  assert.equal(redeliveryResult.status, 'SKIPPED')
 
   const projection = await api
     .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
     .set(workspace.headers)
   expectStatus(projection, 200)
-  assert.equal(projection.body.status, 'PROCESSING')
+  assert.equal(projection.body.status, 'COMPLETED')
+  assert.equal(projection.body.simulated, true)
   assert.equal(projection.body.matched, true)
   assert.equal(projection.body.automation?.id, automationId)
   assert.equal(projection.body.automation?.revisionId, revisionId)
   assert.equal(projection.body.automation?.version, 1)
+  assert.equal(projection.body.outputs.length, 2)
+  assert.deepEqual(projection.body.outputs[0], {
+    id: projection.body.outputs[0].id,
+    key: `${commentRes.body.executionId}:0:PUBLIC_REPLY`,
+    position: 0,
+    type: 'PUBLIC_REPLY',
+    payload: { text: 'Enviando resposta!', simulated: true },
+    createdAt: projection.body.outputs[0].createdAt,
+  })
+  assert.deepEqual(projection.body.outputs[1], {
+    id: projection.body.outputs[1].id,
+    key: `${commentRes.body.executionId}:1:LINK_DELIVERY`,
+    position: 1,
+    type: 'LINK_DELIVERY',
+    payload: { url: 'https://example.test/ebook', label: 'Baixar material', simulated: true },
+    createdAt: projection.body.outputs[1].createdAt,
+  })
 
   const persisted = await prisma.client.automationExecution.findUniqueOrThrow({
     where: { id: commentRes.body.executionId },
+    include: { outputs: true },
   })
   assert.equal(persisted.matched, true)
-  assert.equal(persisted.status, 'PROCESSING')
+  assert.equal(persisted.status, 'COMPLETED')
+  assert.ok(persisted.completedAt !== null)
+  assert.equal(persisted.outputs.length, 2)
   assert.deepEqual(persisted.automationSnapshot, {
     automationId,
     revisionId,
@@ -389,7 +414,7 @@ test('worker encontra revisão publicada, vincula automação e persiste snapsho
     ],
   })
 
-  // Alterações posteriores na automação (draft, pausa) não alteram o snapshot da execução já iniciada
+  // Alterações posteriores na automação (draft, pausa) não alteram o snapshot da execução já concluída
   await api
     .patch(`/api/v1/automations/${automationId}`)
     .set(workspace.headers)
@@ -402,6 +427,94 @@ test('worker encontra revisão publicada, vincula automação e persiste snapsho
   expectStatus(projectionAfterEdit, 200)
   assert.equal(projectionAfterEdit.body.automation?.id, automationId)
   assert.equal(projectionAfterEdit.body.matched, true)
+  assert.equal(projectionAfterEdit.body.status, 'COMPLETED')
+})
+
+test('worker processa jornada com CAPTURE_EMAIL gerando EMAIL_CAPTURE_REQUEST sem criar entidades da Fase 5', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const createRes = await api
+    .post('/api/v1/automations')
+    .set(workspace.headers)
+    .send({ name: 'Captura de Leads' })
+  expectStatus(createRes, 201)
+  const automationId = createRes.body.id
+
+  const patchRes = await api
+    .patch(`/api/v1/automations/${automationId}`)
+    .set(workspace.headers)
+    .send({
+      targetId: content.id,
+      keyword: 'QueroAcesso',
+      actions: [
+        { type: 'PUBLIC_REPLY', text: 'Te enviei uma DM!' },
+        { type: 'CAPTURE_EMAIL', prompt: 'Qual é o seu melhor e-mail para receber o acesso?' },
+      ],
+    })
+  expectStatus(patchRes, 200)
+
+  const publishRes = await api
+    .post(`/api/v1/automations/${automationId}/publish`)
+    .set(workspace.headers)
+    .send()
+  expectStatus(publishRes, 201)
+  const revisionId = publishRes.body.published.id
+
+  const commentRes = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Juliana',
+    text: 'QueroAcesso agora!',
+    commentId: 'comment-email-01',
+    idempotencyKey: 'sim-capture-email-001',
+  })
+  expectStatus(commentRes, 201)
+
+  const workerRepo = new PrismaAutomationExecutionRepository(prisma)
+  const workerService = new AutomationExecutionService(workerRepo)
+  const result = await workerService.consume(queued[0] as never)
+
+  assert.equal(result.status, 'COMPLETED')
+  assert.equal(result.matched, true)
+  assert.equal(result.automationId, automationId)
+  assert.equal(result.revisionId, revisionId)
+
+  const projection = await api
+    .get(`/api/v1/simulations/executions/${commentRes.body.executionId}`)
+    .set(workspace.headers)
+  expectStatus(projection, 200)
+  assert.equal(projection.body.status, 'COMPLETED')
+  assert.equal(projection.body.simulated, true)
+  assert.equal(projection.body.matched, true)
+  assert.equal(projection.body.outputs.length, 2)
+  assert.deepEqual(projection.body.outputs[0], {
+    id: projection.body.outputs[0].id,
+    key: `${commentRes.body.executionId}:0:PUBLIC_REPLY`,
+    position: 0,
+    type: 'PUBLIC_REPLY',
+    payload: { text: 'Te enviei uma DM!', simulated: true },
+    createdAt: projection.body.outputs[0].createdAt,
+  })
+  assert.deepEqual(projection.body.outputs[1], {
+    id: projection.body.outputs[1].id,
+    key: `${commentRes.body.executionId}:1:EMAIL_CAPTURE_REQUEST`,
+    position: 1,
+    type: 'EMAIL_CAPTURE_REQUEST',
+    payload: {
+      prompt: 'Qual é o seu melhor e-mail para receber o acesso?',
+      simulated: true,
+    },
+    createdAt: projection.body.outputs[1].createdAt,
+  })
+
+  // Comprova fronteira: nenhuma entidade externa ou da Fase 5 criada
+  const execution = await prisma.client.automationExecution.findUniqueOrThrow({
+    where: { id: commentRes.body.executionId },
+  })
+  assert.equal(execution.channelConnectionId, null)
+  assert.equal(execution.mode, 'SIMULATED')
 })
 
 test('worker conclui como IGNORED sem saídas quando nenhuma automação corresponde ao comentário', async () => {
@@ -518,7 +631,7 @@ test('claim condicional impede processamento simultâneo em workers concorrentes
   ])
 
   const statuses = [firstWorker.status, secondWorker.status]
-  assert.ok(statuses.includes('PROCESSING'))
+  assert.ok(statuses.includes('COMPLETED'))
   assert.ok(statuses.includes('SKIPPED'))
 
   const persisted = await prisma.client.automationExecution.findUniqueOrThrow({
