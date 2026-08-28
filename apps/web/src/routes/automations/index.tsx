@@ -1,14 +1,26 @@
 import { createFileRoute } from '@tanstack/react-router'
-import type { PaginationRequest } from '@engancha/contracts'
+import type { AutomationListRequest } from '@engancha/contracts'
 import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
 import { AutomationsHeader } from '@/features/automations/components/automations-header'
 import { AutomationsListView } from '@/features/automations/views'
 import { useCreateAutomation } from '@/features/automations/hooks/use-create-automation'
 
+function selectedStatuses(value: unknown): AutomationListRequest['status'] {
+  const allowed = ['ACTIVE', 'DRAFT', 'PAUSED'] as const
+  const values = Array.isArray(value) ? value : [value]
+  const selected = values.filter(
+    (item): item is (typeof allowed)[number] =>
+      typeof item === 'string' && (allowed as readonly string[]).includes(item),
+  )
+  return selected.length ? selected : undefined
+}
+
 export const Route = createFileRoute('/automations/')({
-  validateSearch: (search: Record<string, unknown>): PaginationRequest => ({
+  validateSearch: (search: Record<string, unknown>): AutomationListRequest => ({
     page: typeof search.page === 'number' ? search.page : 1,
     limit: typeof search.limit === 'number' ? search.limit : 20,
+    query: typeof search.query === 'string' ? search.query : undefined,
+    status: selectedStatuses(search.status),
   }),
   component: AutomationsIndexPage,
 })
@@ -35,7 +47,7 @@ function AutomationsPageContent({
   navigate,
 }: {
   workspaceId: string
-  params: PaginationRequest
+  params: AutomationListRequest
   navigate: (opts: any) => Promise<void>
 }) {
   const createMutation = useCreateAutomation(workspaceId)
@@ -57,7 +69,12 @@ function AutomationsPageContent({
       params={params}
       onParamsChange={(next) =>
         void navigate({
-          search: { page: next.page, limit: next.limit },
+          search: {
+            page: next.page,
+            limit: next.limit,
+            query: next.query,
+            status: next.status,
+          },
         })
       }
       onCreateClick={handleCreate}

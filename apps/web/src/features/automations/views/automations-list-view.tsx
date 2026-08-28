@@ -1,12 +1,12 @@
-import type { PaginationRequest } from '@engancha/contracts'
+import type { AutomationListRequest } from '@engancha/contracts'
 import { AutomationTable } from '../components/automation-table'
 import { AutomationsPrimaryButtons } from '../components/automations-primary-buttons'
 import { useAutomationsList } from '../hooks/use-automations-list'
 
 export interface AutomationsListViewProps {
   workspaceId: string
-  params: PaginationRequest
-  onParamsChange: (params: PaginationRequest) => void
+  params: AutomationListRequest
+  onParamsChange: (params: AutomationListRequest) => void
   onCreateClick?: () => void
   isCreating?: boolean
 }
@@ -27,6 +27,8 @@ export function AutomationsListView({
     totalPages: 0,
   }
 
+  const filters = { query: params.query, status: params.status }
+
   return (
     <div className="space-y-4" data-testid="automations-list-view">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -45,11 +47,11 @@ export function AutomationsListView({
         workspaceId={workspaceId}
         data={items}
         isLoading={automations.isLoading}
-        page={meta.page}
-        limit={meta.limit}
-        totalPages={meta.totalPages}
+        meta={meta}
+        filters={filters}
+        onFiltersChange={(next) => onParamsChange({ ...params, ...next, page: 1 })}
         onPageChange={(page) => onParamsChange({ ...params, page })}
-        onLimitChange={(limit) => onParamsChange({ ...params, limit, page: 1 })}
+        onPageSizeChange={(limit) => onParamsChange({ ...params, limit, page: 1 })}
       />
     </div>
   )

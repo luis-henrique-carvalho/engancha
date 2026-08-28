@@ -361,6 +361,20 @@ export const automationResponseSchema = z
   .strict()
 export type AutomationResponse = z.infer<typeof automationResponseSchema>
 
+export const automationListRequestSchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    query: z.string().trim().max(120).optional(),
+    status: z
+      .union([automationStatusSchema, z.array(automationStatusSchema)])
+      .transform((v) => (Array.isArray(v) ? v : [v]))
+      .optional(),
+  })
+  .strict()
+
+export type AutomationListRequest = z.infer<typeof automationListRequestSchema>
+
 export const automationListResponseSchema = z
   .object({
     items: z.array(automationResponseSchema),

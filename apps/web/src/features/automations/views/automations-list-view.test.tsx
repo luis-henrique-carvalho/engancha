@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AutomationListResponse } from '@engancha/contracts'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
-import { userEvent } from 'vitest/browser'
+import { page, userEvent } from 'vitest/browser'
 import { AutomationsListView } from './automations-list-view'
 
 const mockList = vi.fn<() => Promise<AutomationListResponse>>()
@@ -277,5 +277,84 @@ describe('AutomationsListView', () => {
     await userEvent.click(menuButton)
 
     await expect.element(getByRole('menuitem', { name: 'Pausar' })).not.toBeInTheDocument()
+  })
+
+  it('chama onParamsChange com query ao digitar na busca', async () => {
+    mockList.mockResolvedValue({
+      items: [],
+      meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+    })
+
+    const onParamsChange = vi.fn()
+    await renderWithClient(
+      <AutomationsListView
+        workspaceId="ws-123"
+        params={{ page: 1, limit: 20 }}
+        onParamsChange={onParamsChange}
+      />,
+    )
+
+    const input = page.getByPlaceholder('Buscar por nome ou palavra-chave...')
+    await expect.element(input).toBeInTheDocument()
+
+    await userEvent.click(input)
+    await userEvent.type(input, 'v')
+
+    expect(onParamsChange).toHaveBeenCalledWith(
+      expect.objectContaining({ query: 'v', page: 1 }),
+    )
+  })
+
+  it('chama onParamsChange com status ao selecionar filtro de status e exibe botão Reset', async () => {
+    mockList.mockResolvedValue({
+      items: [],
+      meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+    })
+
+    const onParamsChange = vi.fn()
+    const { getByRole } = await renderWithClient(
+      <AutomationsListView
+        workspaceId="ws-123"
+        params={{ page: 1, limit: 20 }}
+        onParamsChange={onParamsChange}
+      />,
+    )
+
+    const statusFilterBtn = getByRole('button', { name: /status/i })
+    await expect.element(statusFilterBtn).toBeInTheDocument()
+    await userEvent.click(statusFilterBtn)
+
+    const activaOption = getByRole('option', { name: 'Ativa' })
+    await expect.element(activaOption).toBeInTheDocument()
+    await userEvent.click(activaOption)
+
+    expect(onParamsChange).toHaveBeenCalledWith(
+      expect.objectContaining({ status: expect.arrayContaining(['ACTIVE']), page: 1 }),
+    )
+  })
+
+  it('exibe botão Reset quando filtros estão ativos e chama onParamsChange para limpar', async () => {
+    mockList.mockResolvedValue({
+      items: [],
+      meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
+    })
+
+    const onParamsChange = vi.fn()
+    const { getByRole } = await renderWithClient(
+      <AutomationsListView
+        workspaceId="ws-123"
+        params={{ page: 1, limit: 20, status: ['ACTIVE'] }}
+        onParamsChange={onParamsChange}
+      />,
+    )
+
+    const resetBtn = getByRole('button', { name: /reset/i })
+    await expect.element(resetBtn).toBeInTheDocument()
+
+    await userEvent.click(resetBtn)
+
+    expect(onParamsChange).toHaveBeenCalledWith(
+      expect.objectContaining({ query: undefined, status: undefined, page: 1 }),
+    )
   })
 })

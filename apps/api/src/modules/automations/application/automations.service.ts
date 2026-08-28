@@ -10,8 +10,8 @@ import {
   contentResponseSchema,
   validatePublishableAutomation,
   type AutomationAction,
+  type AutomationListRequest,
   type CreateAutomationRequest,
-  type PaginationRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
 import type { AuthorizationContext } from '../../../platform/security/authorization-context'
@@ -31,7 +31,7 @@ export class AutomationsService {
     @Inject(ContentProviderRegistry) private readonly providers: ContentProviderRegistry,
   ) {}
 
-  async list(context: AuthorizationContext, input: PaginationRequest) {
+  async list(context: AuthorizationContext, input: AutomationListRequest) {
     const { items, total } = await this.automations.list(context.organizationId, input)
     return automationListResponseSchema.parse({
       items: items.map((item) => this.present(item)),

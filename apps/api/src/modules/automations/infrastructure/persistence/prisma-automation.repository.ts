@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import {
   normalizeAutomationKeyword,
+  type AutomationListRequest,
   type CreateAutomationRequest,
-  type PaginationRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
 import { PrismaService } from '../../../../platform/database/prisma.service'
@@ -25,11 +25,40 @@ const include = {
     },
   },
 } as const
+
 @Injectable()
 export class PrismaAutomationRepository implements AutomationRepository {
   constructor(@Inject(PrismaService) private readonly database: PrismaService) {}
-  async list(organizationId: string, input: PaginationRequest) {
-    const where = { organizationId }
+
+  async list(organizationId: string, input: AutomationListRequest) {
+    const statusFilter = input.status?.length ? { status: { in: input.status } } : {}
+    const queryFilter = input.query?.trim()
+      ? {
+          OR: [
+            {
+              revisions: {
+                some: {
+                  name: { contains: input.query.trim(), mode: 'insensitive' as const },
+                },
+              },
+            },
+            {
+              revisions: {
+                some: {
+                  trigger: {
+                    keywordNormalized: {
+                      contains: normalizeAutomationKeyword(input.query.trim()),
+                      mode: 'insensitive' as const,
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        }
+      : {}
+    const where = { organizationId, ...statusFilter, ...queryFilter }
+
     const [items, total] = await Promise.all([
       this.database.client.automation.findMany({
         where,
@@ -40,8 +69,10 @@ export class PrismaAutomationRepository implements AutomationRepository {
       }),
       this.database.client.automation.count({ where }),
     ])
+
     return { items, total }
   }
+
   create(organizationId: string, userId: string, input: CreateAutomationRequest) {
     return this.database.client.automation.create({
       data: {

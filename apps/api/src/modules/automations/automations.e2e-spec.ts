@@ -388,3 +388,100 @@ test('rejeita publicação cuja ação final não seja terminal', async () => {
   expectStatus(publication, 422)
   assert.deepEqual(publication.body.issues, ['actions'])
 })
+
+test('filtra automações por status via GET /automations?status=ACTIVE', async () => {
+  scenario = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, scenario)
+
+  const draft = await createAutomation(api, scenario)
+
+  const toPublish = await createAutomation(api, scenario)
+  const configured = await api
+    .patch(`/api/v1/automations/${toPublish.id}`)
+    .set(scenario.headers)
+    .send({
+      targetId: content.id,
+      keyword: 'PROMO',
+      actions: [{ type: 'LINK', url: 'https://engancha.test/promo' }],
+    })
+  expectStatus(configured, 200)
+  const published = await api
+    .post(`/api/v1/automations/${toPublish.id}/publish`)
+    .set(scenario.headers)
+    .send()
+  expectStatus(published, 201)
+
+  const activeOnly = await api
+    .get('/api/v1/automations?status=ACTIVE')
+    .set(scenario.headers)
+  expectStatus(activeOnly, 200)
+  assert.equal(activeOnly.body.meta.total, 1)
+  assert.equal(activeOnly.body.items[0].id, toPublish.id)
+  assert.equal(activeOnly.body.items[0].status, 'ACTIVE')
+
+  const draftOnly = await api
+    .get('/api/v1/automations?status=DRAFT')
+    .set(scenario.headers)
+  expectStatus(draftOnly, 200)
+  assert.equal(draftOnly.body.meta.total, 1)
+  assert.equal(draftOnly.body.items[0].id, draft.id)
+
+  const all = await api.get('/api/v1/automations').set(scenario.headers)
+  expectStatus(all, 200)
+  assert.equal(all.body.meta.total, 2)
+})
+
+test('filtra automações por nome via GET /automations?query=BUSCA', async () => {
+  scenario = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, scenario)
+
+  const namedOne = await api
+    .post('/api/v1/automations')
+    .set(scenario.headers)
+    .send({ name: 'Campanha Verão' })
+  expectStatus(namedOne, 201)
+
+  const namedTwo = await api
+    .post('/api/v1/automations')
+    .set(scenario.headers)
+    .send({ name: 'Campanha Inverno' })
+  expectStatus(namedTwo, 201)
+
+  // Create one with keyword to test keyword search
+  const keywordOne = await api
+    .post('/api/v1/automations')
+    .set(scenario.headers)
+    .send({ name: 'Outra' })
+  expectStatus(keywordOne, 201)
+  const patched = await api
+    .patch(`/api/v1/automations/${keywordOne.body.id}`)
+    .set(scenario.headers)
+    .send({
+      targetId: content.id,
+      keyword: 'cupom-especial',
+      actions: [{ type: 'LINK', url: 'https://engancha.test/cupom' }],
+    })
+  expectStatus(patched, 200)
+
+  const byName = await api
+    .get('/api/v1/automations?query=Verão')
+    .set(scenario.headers)
+  expectStatus(byName, 200)
+  assert.equal(byName.body.meta.total, 1)
+  assert.equal(byName.body.items[0].id, namedOne.body.id)
+
+  const byKeyword = await api
+    .get('/api/v1/automations?query=cupom')
+    .set(scenario.headers)
+  expectStatus(byKeyword, 200)
+  assert.equal(byKeyword.body.meta.total, 1)
+  assert.equal(byKeyword.body.items[0].id, keywordOne.body.id)
+
+  const noMatch = await api
+    .get('/api/v1/automations?query=inexistente')
+    .set(scenario.headers)
+  expectStatus(noMatch, 200)
+  assert.equal(noMatch.body.meta.total, 0)
+})

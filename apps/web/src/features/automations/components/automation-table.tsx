@@ -1,6 +1,14 @@
-import { useMemo } from 'react'
-import { type ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import type { AutomationResponse } from '@engancha/contracts'
+import { useState } from 'react'
+import {
+  flexRender,
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  useReactTable,
+} from '@tanstack/react-table'
+import type { ColumnFiltersState, PaginationState } from '@tanstack/react-table'
+import type { AutomationListRequest, AutomationResponse, AutomationStatus } from '@engancha/contracts'
+import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
@@ -10,69 +18,94 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { DataTablePagination } from '@/components/data-table/pagination'
 import { createAutomationColumns } from './automation-columns'
+import { automationStatusOptions } from '../data/automation-status-options'
+
+type Filters = Pick<AutomationListRequest, 'query' | 'status'>
 
 interface AutomationTableProps {
   data: AutomationResponse[]
-  columns?: ColumnDef<AutomationResponse>[]
   workspaceId?: string
   isLoading?: boolean
-  page: number
-  limit: number
-  totalPages: number
+  meta: { page: number; limit: number; total: number; totalPages: number }
+  filters: Filters
+  onFiltersChange: (filters: Filters) => void
   onPageChange: (page: number) => void
-  onLimitChange: (limit: number) => void
+  onPageSizeChange: (limit: number) => void
 }
 
 export function AutomationTable({
   data,
-  columns,
   workspaceId,
   isLoading = false,
-  page,
-  limit,
-  totalPages,
+  meta,
+  filters,
+  onFiltersChange,
   onPageChange,
-  onLimitChange,
+  onPageSizeChange,
 }: AutomationTableProps) {
-  const tableColumns = useMemo(() => {
-    if (columns) return columns
-    return createAutomationColumns(workspaceId)
-  }, [columns, workspaceId])
+  const [columnVisibility, setColumnVisibility] = useState({})
+
+  const columns = createAutomationColumns(workspaceId)
+
+  const columnFilters: ColumnFiltersState = [
+    ...(filters.status?.length ? [{ id: 'status', value: filters.status }] : []),
+  ]
+
+  const pagination: PaginationState = {
+    pageIndex: Math.max(0, meta.page - 1),
+    pageSize: meta.limit,
+  }
 
   const table = useReactTable({
     data,
-    columns: tableColumns,
-    pageCount: totalPages,
-    state: {
-      pagination: {
-        pageIndex: page - 1,
-        pageSize: limit,
-      },
-    },
+    columns,
+    state: { globalFilter: filters.query ?? '', columnFilters, pagination, columnVisibility },
+    rowCount: meta.total,
+    manualFiltering: true,
     manualPagination: true,
-    onPaginationChange: (updater) => {
-      const next =
-        typeof updater === 'function' ? updater({ pageIndex: page - 1, pageSize: limit }) : updater
-      if (next.pageIndex !== page - 1) {
-        onPageChange(next.pageIndex + 1)
-      }
-      if (next.pageSize !== limit) {
-        onLimitChange(next.pageSize)
-      }
+    onGlobalFilterChange: (value) =>
+      onFiltersChange({ ...filters, query: String(value) || undefined }),
+    onColumnFiltersChange: (next) => {
+      const resolved = typeof next === 'function' ? next(columnFilters) : next
+      const status = resolved.find((f) => f.id === 'status')?.value as AutomationStatus[] | undefined
+      onFiltersChange({
+        ...filters,
+        status: status?.length ? status : undefined,
+      })
     },
+    onPaginationChange: (next) => {
+      const resolved = typeof next === 'function' ? next(pagination) : next
+      if (resolved.pageSize !== pagination.pageSize) onPageSizeChange(resolved.pageSize)
+      else onPageChange(resolved.pageIndex + 1)
+    },
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border bg-card">
+      <DataTableToolbar
+        table={table}
+        searchPlaceholder="Buscar por nome ou palavra-chave..."
+        onReset={() => onFiltersChange({ query: undefined, status: undefined })}
+        filters={[
+          {
+            columnId: 'status',
+            title: 'Status',
+            options: automationStatusOptions,
+          },
+        ]}
+      />
+
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map((group) => (
+              <TableRow key={group.id}>
+                {group.headers.map((header) => (
                   <TableHead key={header.id} colSpan={header.colSpan}>
                     {header.isPlaceholder
                       ? null
@@ -85,7 +118,7 @@ export function AutomationTable({
           <TableBody>
             {isLoading ? (
               <TableRow data-testid="automation-table-loading">
-                <TableCell colSpan={tableColumns.length} className="p-4">
+                <TableCell colSpan={columns.length} className="p-4">
                   <div className="space-y-2">
                     <Skeleton className="h-8 w-full" />
                     <Skeleton className="h-8 w-full" />
@@ -110,7 +143,7 @@ export function AutomationTable({
             ) : (
               <TableRow data-testid="automation-table-empty">
                 <TableCell
-                  colSpan={tableColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center text-muted-foreground"
                 >
                   Nenhuma automação cadastrada.
@@ -120,6 +153,7 @@ export function AutomationTable({
           </TableBody>
         </Table>
       </div>
+
       <DataTablePagination table={table} />
     </div>
   )

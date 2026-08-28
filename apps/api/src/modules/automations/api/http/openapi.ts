@@ -1,4 +1,5 @@
 import {
+  automationListRequestSchema,
   automationListResponseSchema,
   automationResponseSchema,
   contentListResponseSchema,
@@ -49,7 +50,7 @@ export const registerAutomationsOpenApi: OpenApiPathRegistrar = (registry) => {
     tags: ['Automations'],
     summary: 'Lista automações',
     security: cookieSecurity,
-    request: { query: paginationRequestSchema },
+    request: { query: automationListRequestSchema },
     responses: {
       200: { description: 'Automações', content: json(automationListResponseSchema) },
       400: validationFailure,

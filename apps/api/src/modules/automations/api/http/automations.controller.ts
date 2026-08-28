@@ -11,11 +11,11 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import {
+  automationListRequestSchema,
   createAutomationRequestSchema,
-  paginationRequestSchema,
   patchAutomationRequestSchema,
+  type AutomationListRequest,
   type CreateAutomationRequest,
-  type PaginationRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
 import {
@@ -29,8 +29,9 @@ import { AutomationsService } from '../../application/automations.service'
 @UseGuards(AuthorizationContextGuard)
 export class AutomationsController {
   constructor(@Inject(AutomationsService) private readonly automations: AutomationsService) {}
+
   @Get() list(
-    @Query(new ZodValidationPipe(paginationRequestSchema)) query: PaginationRequest,
+    @Query(new ZodValidationPipe(automationListRequestSchema)) query: AutomationListRequest,
     @Req() request: RequestWithAuthorization,
   ) {
     return this.automations.list(request.authorizationContext!, query)
