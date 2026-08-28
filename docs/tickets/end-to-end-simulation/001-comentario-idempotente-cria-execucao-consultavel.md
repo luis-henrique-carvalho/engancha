@@ -1,6 +1,6 @@
 ---
 title: "Comentário idempotente cria execução consultável"
-status: "needs-triage"
+status: "completed"
 type: "AFK"
 parent: "docs/prds/end-to-end-simulation.md"
 blocked_by: []
@@ -17,14 +17,14 @@ Entregar a primeira fatia executável da simulação: reconciliar o modelo lógi
 
 ## Acceptance criteria
 
-- [ ] O modelo lógico e a migration suportam execução antes do match, input validado, estado inicial `PENDING`, versão de estado e saídas futuras sem criar entidades da Fase 5.
-- [ ] `POST /api/v1/simulations/comments` aceita somente conteúdo simulado do workspace ativo, provider habilitado e conexão nula; `INSTAGRAM` é a única opção disponível.
-- [ ] O schema estrito rejeita `mode` enviado pelo browser e a persistência sempre grava `mode=SIMULATED`.
-- [ ] A mesma chave idempotente no mesmo workspace/provider retorna o mesmo `executionId` e não cria uma segunda execução nem um segundo ciclo lógico de enfileiramento.
-- [ ] A API publica um job `automation-execution` versionado contendo apenas identificadores e correlação seguros, sem snapshot da automação ou tenant confiado ao browser.
-- [ ] `GET /api/v1/simulations/executions/:id` retorna a projeção PostgreSQL da execução e aplica sessão, workspace ativo e política `404` para acesso cruzado.
-- [ ] Testes de contrato, Prisma, API e fila cobrem entrada válida, `mode` proibido, provider/conteúdo inválido, idempotência concorrente, indisponibilidade da fila e isolamento multi-tenant.
-- [ ] Typecheck, lint, formatter, migration e testes relevantes são executados e registrados em `Result`.
+- [x] O modelo lógico e a migration suportam execução antes do match, input validado, estado inicial `PENDING`, versão de estado e saídas futuras sem criar entidades da Fase 5.
+- [x] `POST /api/v1/simulations/comments` aceita somente conteúdo simulado do workspace ativo, provider habilitado e conexão nula; `INSTAGRAM` é a única opção disponível.
+- [x] O schema estrito rejeita `mode` enviado pelo browser e a persistência sempre grava `mode=SIMULATED`.
+- [x] A mesma chave idempotente no mesmo workspace/provider retorna o mesmo `executionId` e não cria uma segunda execução nem um segundo ciclo lógico de enfileiramento.
+- [x] A API publica um job `automation-execution` versionado contendo apenas identificadores e correlação seguros, sem snapshot da automação ou tenant confiado ao browser.
+- [x] `GET /api/v1/simulations/executions/:id` retorna a projeção PostgreSQL da execução e aplica sessão, workspace ativo e política `404` para acesso cruzado.
+- [x] Testes de contrato, Prisma, API e fila cobrem entrada válida, `mode` proibido, provider/conteúdo inválido, idempotência concorrente, indisponibilidade da fila e isolamento multi-tenant.
+- [x] Typecheck, lint, formatter, migration e testes relevantes são executados e registrados em `Result`.
 
 ## Blocked by
 
