@@ -119,6 +119,7 @@ describe('useSimulationExecution', () => {
       provider: 'INSTAGRAM',
       author: '@follower',
       text: 'Quero saber mais',
+      originAutomationId: 'auto-123',
     })
 
     expect(SimulationsApi.submitComment).toHaveBeenCalledWith(
@@ -127,6 +128,7 @@ describe('useSimulationExecution', () => {
         provider: 'INSTAGRAM',
         author: '@follower',
         text: 'Quero saber mais',
+        originAutomationId: 'auto-123',
         idempotencyKey: expect.any(String),
       }),
     )

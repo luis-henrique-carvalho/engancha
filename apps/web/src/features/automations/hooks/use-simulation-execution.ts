@@ -179,6 +179,7 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
           text: payload.text,
           commentId: payload.commentId || undefined,
           idempotencyKey: key,
+          originAutomationId: payload.originAutomationId ?? undefined,
         }
 
         const res = await SimulationsApi.submitComment(requestPayload)
