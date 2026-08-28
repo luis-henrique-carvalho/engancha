@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { AUTOMATION_STEPS } from '../data/automation-steps'
+import { AUTOMATION_STEPS } from '../../data/automation-steps'
 
 interface AutomationStepNavProps {
   automationId: string

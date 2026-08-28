@@ -3,9 +3,12 @@ import { AlertCircle, CheckCircle2, FileEdit, PauseCircle, Play } from 'lucide-r
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useAutomationEditor } from '../components/automation-editor-provider'
-import { SimulationFollowerChat } from '../components/simulation-follower-chat'
-import { SimulationTestForm, type SimulationContentInfo } from '../components/simulation-test-form'
+import {
+  useAutomationEditor,
+  SimulationFollowerChat,
+  SimulationTestForm,
+  type SimulationContentInfo,
+} from '../components'
 import { useSimulationExecution } from '../hooks/use-simulation-execution'
 
 export interface AutomationTestTabViewProps {

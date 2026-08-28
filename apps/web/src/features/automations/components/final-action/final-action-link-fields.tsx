@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import type { AutomationFinalActionFormValues } from '../data/automation-step-schemas'
+import type { AutomationFinalActionFormValues } from '../../data/automation-step-schemas'
 
 export interface FinalActionLinkFieldsProps {
   form: UseFormReturn<AutomationFinalActionFormValues>

@@ -12,9 +12,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  useOptionalAutomationEditor,
+} from '../components'
 import {
   automationIdentificationSchema,
   type AutomationIdentificationFormValues,

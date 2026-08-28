@@ -1,6 +1,5 @@
 import type { AutomationListRequest } from '@engancha/contracts'
-import { AutomationTable } from '../components/automation-table'
-import { AutomationsPrimaryButtons } from '../components/automations-primary-buttons'
+import { AutomationTable, AutomationsPrimaryButtons } from '../components'
 import { useAutomationsList } from '../hooks/use-automations-list'
 
 export interface AutomationsListViewProps {

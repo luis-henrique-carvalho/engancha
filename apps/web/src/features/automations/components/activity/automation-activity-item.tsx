@@ -20,11 +20,11 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
-import { formatActivityTime, getAutomationMatchDescription } from '../data/activity-grouping'
+import { formatActivityTime, getAutomationMatchDescription } from '../../data/activity-grouping'
 import {
   extractSimulationOutputs,
   getExecutionStatusViewModel,
-} from '../data/simulation-view-mappers'
+} from '../../data/simulation-view-mappers'
 
 export interface AutomationActivityItemProps {
   execution: SimulationExecutionResponse

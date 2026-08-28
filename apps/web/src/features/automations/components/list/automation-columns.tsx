@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@tanstack/react-table'
 import type { AutomationResponse } from '@engancha/contracts'
 import { DataTableColumnHeader } from '@/components/data-table/column-header'
-import { AutomationStatusBadge } from './automation-status-badge'
+import { AutomationStatusBadge } from '../shared/automation-status-badge'
 import { AutomationRowActions } from './automation-row-actions'
 
 function formatDate(dateString: string): string {

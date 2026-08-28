@@ -9,7 +9,7 @@ import {
   activityOutputTypeOptions,
   activityProviderOptions,
   activityStatusOptions,
-} from '../data/activity-filter-options'
+} from '../../data/activity-filter-options'
 
 export interface AutomationActivityToolbarProps {
   query?: string

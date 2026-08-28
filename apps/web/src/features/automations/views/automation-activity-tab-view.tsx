@@ -5,9 +5,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AutomationActivityList } from '../components/automation-activity-list'
-import { AutomationActivityPagination } from '../components/automation-activity-pagination'
-import { AutomationActivityToolbar } from '../components/automation-activity-toolbar'
+import {
+  AutomationActivityList,
+  AutomationActivityPagination,
+  AutomationActivityToolbar,
+} from '../components'
 import type { ActivityFilters } from '../data/activity-filter-options'
 import { groupExecutionsByDate } from '../data/activity-grouping'
 import { useSimulationExecutionsList } from '../hooks/use-simulation-executions-list'

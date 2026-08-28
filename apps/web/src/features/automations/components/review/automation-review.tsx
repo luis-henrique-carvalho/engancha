@@ -1,5 +1,5 @@
 import type { AutomationResponse } from '@engancha/contracts'
-import { getAutomationReadiness, type AutomationStepId } from '../data/automation-readiness'
+import { getAutomationReadiness, type AutomationStepId } from '../../data/automation-readiness'
 import { AutomationReviewChecklist } from './automation-review-checklist'
 import { AutomationReviewPublishAlert } from './automation-review-publish-alert'
 import { AutomationReviewPublishBar } from './automation-review-publish-bar'

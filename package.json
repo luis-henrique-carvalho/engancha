@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently --names web,api,worker --kill-others-on-fail \"npm run web:dev\" \"npm run api:dev\" \"npm run worker:dev\"",
+    "dev": "concurrently --names web,api,worker --prefix-colors \"cyan,green,yellow\" --prefix \"[{name}]\" --kill-others-on-fail \"npm run web:dev\" \"npm run api:dev\" \"npm run worker:dev\"",
     "web:dev": "npm run dev --workspace=@engancha/web",
     "web:build": "npm run build --workspace=@engancha/web",
     "web:preview": "npm run preview --workspace=@engancha/web",

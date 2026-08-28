@@ -23,7 +23,7 @@ async function bootstrap(): Promise<void> {
   logger.event('ready', { environment: config.get('nodeEnv', { infer: true }) })
 }
 
-void bootstrap().catch(() => {
-  console.error('[worker] bootstrap_failed')
+void bootstrap().catch((error: unknown) => {
+  console.error('[worker] bootstrap_failed', error)
   process.exitCode = 1
 })

@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useCreateSimulatedContent } from '../hooks/use-create-simulated-content'
+import { useCreateSimulatedContent } from '../../hooks/use-create-simulated-content'
 
 interface CreateSimulatedContentDialogProps {
   open: boolean

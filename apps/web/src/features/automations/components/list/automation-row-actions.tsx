@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAutomationMutations } from '../hooks/use-automation-mutations'
+import { useAutomationMutations } from '../../hooks/use-automation-mutations'
 
 interface AutomationRowActionsProps {
   automation: AutomationResponse

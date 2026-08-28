@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import type { AutomationListRequest } from '@engancha/contracts'
 import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
-import { AutomationsHeader } from '@/features/automations/components/automations-header'
+import { AutomationsHeader } from '@/features/automations/components'
 import { AutomationsListView } from '@/features/automations/views/automations-list-view'
 import { useCreateAutomation } from '@/features/automations/hooks/use-create-automation'
 

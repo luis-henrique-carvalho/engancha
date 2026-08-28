@@ -1,7 +1,7 @@
 import type { AutomationResponse } from '@engancha/contracts'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
-import { AutomationEditorProvider } from '../components/automation-editor-provider'
+import { AutomationEditorProvider } from '../components/shared/automation-editor-provider'
 import { AutomationTestTabView } from './automation-test-tab-view'
 
 vi.mock('@tanstack/react-router', async (importOriginal) => {

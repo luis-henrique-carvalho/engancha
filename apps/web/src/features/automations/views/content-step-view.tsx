@@ -3,10 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import type { AutomationResponse } from '@engancha/contracts'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { ContentPicker } from '../components/content-picker'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  ContentPicker,
+  useOptionalAutomationEditor,
+} from '../components'
 import {
   automationContentSchema,
   type AutomationContentFormValues,

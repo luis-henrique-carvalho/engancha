@@ -31,5 +31,11 @@ features/<feature>/
   como em `users/components/users-provider.tsx` e `users/components/users-dialogs.tsx`.
 - Filtros e paginação compartilháveis pertencem à URL. A view recebe o estado
   da rota e o encaminha aos hooks e componentes da feature.
+- **Organização de `components/` em features complexas**: Quando uma feature
+  possuir múltiplas views e mais de 10 componentes (como `features/automations`),
+  a pasta `components/` deve ser subdividida por escopo da tela
+  (`components/<view-scope>/`, ex.: `activity/`, `list/`, `simulation/`, `review/`)
+  e incluir uma pasta `components/shared/` para componentes de apresentação
+  reutilizados entre várias views do mesmo módulo.
 
 Exceções exigem uma decisão arquitetural documentada antes da implementação.

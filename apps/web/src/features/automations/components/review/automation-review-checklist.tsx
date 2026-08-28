@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import type { AutomationReadinessResult, AutomationStepId } from '../data/automation-readiness'
+import type { AutomationReadinessResult, AutomationStepId } from '../../data/automation-readiness'
 
 export interface AutomationReviewChecklistProps {
   readiness: AutomationReadinessResult

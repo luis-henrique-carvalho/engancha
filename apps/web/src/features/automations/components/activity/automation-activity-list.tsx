@@ -1,6 +1,6 @@
 import { Calendar, ChevronDown, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { ActivityGroup } from '../data/activity-grouping'
+import type { ActivityGroup } from '../../data/activity-grouping'
 import { AutomationActivityItem } from './automation-activity-item'
 
 export interface AutomationActivityListProps {

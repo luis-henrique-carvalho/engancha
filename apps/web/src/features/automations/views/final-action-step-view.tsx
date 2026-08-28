@@ -4,12 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import type { AutomationResponse } from '@engancha/contracts'
 import { Form } from '@/components/ui/form'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
-import { FinalActionEmailFields } from '../components/final-action-email-fields'
-import { FinalActionLinkFields } from '../components/final-action-link-fields'
-import { FinalActionTypeSelector } from '../components/final-action-type-selector'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  useOptionalAutomationEditor,
+  FinalActionEmailFields,
+  FinalActionLinkFields,
+  FinalActionTypeSelector,
+} from '../components'
 import {
   buildUpdatedActions,
   getFinalAction,

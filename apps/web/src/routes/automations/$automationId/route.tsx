@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
-import { AutomationsHeader } from '@/features/automations/components/automations-header'
+import { AutomationsHeader } from '@/features/automations/components'
 import { AutomationEditorLayoutView } from '@/features/automations/views'
 
 export const Route = createFileRoute('/automations/$automationId')({

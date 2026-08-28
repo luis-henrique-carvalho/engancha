@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import type { AutomationFinalActionFormValues } from '../data/automation-step-schemas'
+import type { AutomationFinalActionFormValues } from '../../data/automation-step-schemas'
 
 export interface FinalActionEmailFieldsProps {
   form: UseFormReturn<AutomationFinalActionFormValues>

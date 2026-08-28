@@ -1,6 +1,6 @@
 import type { AutomationStatus } from '@engancha/contracts'
 import { Badge } from '@/components/ui/badge'
-import { AUTOMATION_STATUS_MAP } from '../data/automation-status'
+import { AUTOMATION_STATUS_MAP } from '../../data/automation-status'
 
 interface AutomationStatusBadgeProps {
   status: AutomationStatus

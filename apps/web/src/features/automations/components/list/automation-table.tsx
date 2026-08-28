@@ -23,7 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { createAutomationColumns } from './automation-columns'
-import { automationStatusOptions } from '../data/automation-status-options'
+import { automationStatusOptions } from '../../data/automation-status-options'
 
 type Filters = Pick<AutomationListRequest, 'query' | 'status'>
 

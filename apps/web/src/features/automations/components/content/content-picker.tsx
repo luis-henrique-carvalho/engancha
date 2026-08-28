@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { useSimulatedContents } from '../hooks/use-simulated-contents'
-import { CreateSimulatedContentDialog } from './create-simulated-content-dialog'
+import { useSimulatedContents } from '../../hooks/use-simulated-contents'
+import { CreateSimulatedContentDialog } from '../simulation/create-simulated-content-dialog'
 
 interface ContentPickerProps {
   workspaceId: string

@@ -30,11 +30,11 @@ async function bootstrap(): Promise<void> {
   logger.event('ready', { port, environment: config.get('nodeEnv') })
 }
 
-void bootstrap().catch(() => {
-  loggerFallback()
+void bootstrap().catch((error: unknown) => {
+  loggerFallback(error)
   process.exitCode = 1
 })
 
-function loggerFallback(): void {
-  console.error('[api] bootstrap_failed')
+function loggerFallback(error?: unknown): void {
+  console.error('[api] bootstrap_failed', error)
 }

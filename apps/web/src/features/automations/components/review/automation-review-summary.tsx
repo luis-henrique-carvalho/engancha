@@ -17,9 +17,9 @@ import {
   getFinalAction,
   getPrivateReplyText,
   getPublicReplyText,
-} from '../data/automation-action-mappers'
-import type { AutomationStepId } from '../data/automation-readiness'
-import { AutomationStatusBadge } from './automation-status-badge'
+} from '../../data/automation-action-mappers'
+import type { AutomationStepId } from '../../data/automation-readiness'
+import { AutomationStatusBadge } from '../shared/automation-status-badge'
 
 export interface AutomationReviewSummaryProps {
   automation: AutomationResponse

@@ -1,7 +1,7 @@
 import { AlertTriangle, ArrowRight } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import type { AutomationStepId } from '../data/automation-readiness'
+import type { AutomationStepId } from '../../data/automation-readiness'
 
 export interface AutomationReviewPublishAlertProps {
   errorMessage: string | null

@@ -12,10 +12,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { KeywordNormalizationPreview } from '../components/keyword-normalization-preview'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  KeywordNormalizationPreview,
+  useOptionalAutomationEditor,
+} from '../components'
 import {
   automationKeywordSchema,
   type AutomationKeywordFormValues,

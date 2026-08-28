@@ -5,9 +5,9 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { AutomationEditorProvider } from '../components/automation-editor-provider'
-import { AutomationStatusBadge } from '../components/automation-status-badge'
-import { AutomationStepNav } from '../components/automation-step-nav'
+import { AutomationEditorProvider } from '../components/shared/automation-editor-provider'
+import { AutomationStatusBadge } from '../components/shared/automation-status-badge'
+import { AutomationStepNav } from '../components/shared/automation-step-nav'
 import { useAutomation } from '../hooks/use-automation'
 
 interface AutomationEditorLayoutViewProps {
