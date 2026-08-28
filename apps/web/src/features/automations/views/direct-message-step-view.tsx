@@ -15,10 +15,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { AutomationSaveBar } from '../components/automation-save-bar'
 import { AutomationStepSection } from '../components/automation-step-section'
 import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
-import {
-  buildUpdatedActions,
-  getPrivateReplyText,
-} from '../data/automation-action-mappers'
+import { buildUpdatedActions, getPrivateReplyText } from '../data/automation-action-mappers'
 import {
   automationDirectMessageSchema,
   type AutomationDirectMessageFormValues,

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
-import type { AutomationAction, AutomationResponse } from '@engancha/contracts'
+import type { AutomationResponse } from '@engancha/contracts'
 import { Link as LinkIcon, Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
@@ -97,21 +97,19 @@ export function FinalActionStepView({
 
   const watchedValues = form.watch()
   const watchedPrompt =
-    watchedValues.actionType === 'CAPTURE_EMAIL' ? watchedValues.prompt ?? '' : ''
-  const watchedLabel = watchedValues.actionType === 'LINK' ? watchedLabelFromLink(watchedValues) : ''
+    watchedValues.actionType === 'CAPTURE_EMAIL' ? (watchedValues.prompt ?? '') : ''
+  const watchedLabel =
+    watchedValues.actionType === 'LINK' ? watchedLabelFromLink(watchedValues) : ''
 
   function watchedLabelFromLink(v: AutomationFinalActionFormValues) {
-    return v.actionType === 'LINK' ? v.label ?? '' : ''
+    return v.actionType === 'LINK' ? (v.label ?? '') : ''
   }
 
   const handleModeChange = (newType: 'LINK' | 'CAPTURE_EMAIL') => {
     setSelectedType(newType)
     if (newType === 'LINK') {
       form.setValue('actionType', 'LINK')
-      form.setValue(
-        'url',
-        initialFinalAction?.type === 'LINK' ? initialFinalAction.url : '',
-      )
+      form.setValue('url', initialFinalAction?.type === 'LINK' ? initialFinalAction.url : '')
       form.setValue(
         'label',
         initialFinalAction?.type === 'LINK' ? initialFinalAction.label : 'Abrir link',
@@ -127,7 +125,6 @@ export function FinalActionStepView({
 
   const onSubmit = async (values: AutomationFinalActionFormValues) => {
     let finalAction: FinalAutomationAction | null = null
-
 
     if (values.actionType === 'LINK') {
       const trimmedUrl = values.url?.trim()
@@ -228,7 +225,6 @@ export function FinalActionStepView({
               </Label>
             </RadioGroup>
           </div>
-
 
           {selectedType === 'LINK' && (
             <div className="space-y-4 rounded-lg border p-4">

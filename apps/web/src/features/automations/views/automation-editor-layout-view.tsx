@@ -104,8 +104,10 @@ export function AutomationEditorLayoutView({
         <Separator />
 
         {/* Editor Main with Guided Step Navigation */}
-        <div className="flex flex-col gap-6 md:flex-row md:gap-8">
-          <AutomationStepNav automationId={automationId} />
+        <div className="flex flex-1 flex-col space-y-6 md:space-y-6 lg:flex-row lg:space-y-0 lg:space-x-8">
+          <aside className="top-0 lg:sticky lg:w-60 shrink-0">
+            <AutomationStepNav automationId={automationId} />
+          </aside>
           <div className="flex-1 min-w-0">{children ?? <Outlet />}</div>
         </div>
       </div>

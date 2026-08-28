@@ -8,4 +8,3 @@ export const Route = createFileRoute('/automations/$automationId/public-reply')(
 function PublicReplyStepPage() {
   return <PublicReplyStepView />
 }
-

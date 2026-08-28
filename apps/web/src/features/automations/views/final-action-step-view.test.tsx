@@ -149,7 +149,6 @@ describe('FinalActionStepView', () => {
       .toHaveTextContent('27/300 caracteres')
   })
 
-
   it('allows toggling between LINK and CAPTURE_EMAIL modes', async () => {
     const queryClient = createTestQueryClient()
     const { getByTestId } = await render(

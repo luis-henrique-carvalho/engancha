@@ -20,8 +20,22 @@ export function useAutomationMutations(workspaceId: string, automationId: string
     },
   })
 
+  const publishMutation = useMutation({
+    mutationFn: () => AutomationsApi.publish(automationId),
+    onSuccess: (updatedAutomation) => {
+      queryClient.setQueryData(automationsKeys.detail(workspaceId, automationId), updatedAutomation)
+      void invalidateAutomationsList(queryClient, workspaceId)
+      toast.success('Automação publicada com sucesso!')
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : 'Não foi possível publicar a automação')
+    },
+  })
+
   return {
     patchAutomation: patchMutation.mutateAsync,
     isSaving: patchMutation.isPending,
+    publishAutomation: publishMutation.mutateAsync,
+    isPublishing: publishMutation.isPending,
   }
 }

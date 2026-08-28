@@ -45,7 +45,6 @@ export interface BuildActionsOptions {
   finalAction?: FinalAutomationAction | null
 }
 
-
 export function buildUpdatedActions(
   currentActions: AutomationAction[] | null | undefined,
   update: BuildActionsOptions,

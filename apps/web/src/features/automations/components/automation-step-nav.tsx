@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
@@ -52,37 +53,46 @@ export function AutomationStepNav({ automationId, className }: AutomationStepNav
         </Select>
       </div>
 
-      {/* Desktop / Tablet Vertical Navigation */}
-      <nav
-        className={cn('hidden md:flex flex-col space-y-1 w-full min-w-48 max-w-64', className)}
-        data-testid="automation-step-nav-desktop"
+      {/* Desktop / Tablet Navigation with Horizontal Scroll on md and Vertical List on lg */}
+      <ScrollArea
+        orientation="horizontal"
+        type="always"
+        className="hidden w-full min-w-40 bg-background px-1 py-2 md:block lg:p-0"
       >
-        {AUTOMATION_STEPS.map((step) => {
-          const Icon = step.icon
-          const isActive = pathname.endsWith(`/${step.path}`)
-          const href = `/automations/${automationId}/${step.path}`
+        <nav
+          className={cn('flex space-x-2 py-1 lg:flex-col lg:space-y-1 lg:space-x-0', className)}
+          data-testid="automation-step-nav-desktop"
+        >
+          {AUTOMATION_STEPS.map((step) => {
+            const Icon = step.icon
+            const isActive = pathname.endsWith(`/${step.path}`)
+            const href = `/automations/${automationId}/${step.path}`
 
-          return (
-            <Link
-              key={step.id}
-              to={href as any}
-              className={cn(
-                buttonVariants({ variant: 'ghost' }),
-                isActive
-                  ? 'bg-muted font-semibold text-foreground hover:bg-muted'
-                  : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
-                'justify-start h-10 px-3',
-              )}
-              data-testid={`step-link-${step.id}`}
-            >
-              <Icon
-                className={cn('mr-2.5 size-4', isActive ? 'text-primary' : 'text-muted-foreground')}
-              />
-              <span className="truncate">{step.title}</span>
-            </Link>
-          )
-        })}
-      </nav>
+            return (
+              <Link
+                key={step.id}
+                to={href as any}
+                className={cn(
+                  buttonVariants({ variant: 'ghost' }),
+                  isActive
+                    ? 'bg-muted font-semibold text-foreground hover:bg-muted'
+                    : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
+                  'justify-start h-10 px-3 whitespace-nowrap',
+                )}
+                data-testid={`step-link-${step.id}`}
+              >
+                <Icon
+                  className={cn(
+                    'mr-2.5 size-4 shrink-0',
+                    isActive ? 'text-primary' : 'text-muted-foreground',
+                  )}
+                />
+                <span className="truncate">{step.title}</span>
+              </Link>
+            )
+          })}
+        </nav>
+      </ScrollArea>
     </>
   )
 }

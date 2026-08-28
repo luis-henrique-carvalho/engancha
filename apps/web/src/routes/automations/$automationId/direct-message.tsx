@@ -8,4 +8,3 @@ export const Route = createFileRoute('/automations/$automationId/direct-message'
 function DirectMessageStepPage() {
   return <DirectMessageStepView />
 }
-

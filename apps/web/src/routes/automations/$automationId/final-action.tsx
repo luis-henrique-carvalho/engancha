@@ -8,4 +8,3 @@ export const Route = createFileRoute('/automations/$automationId/final-action')(
 function FinalActionStepPage() {
   return <FinalActionStepView />
 }
-

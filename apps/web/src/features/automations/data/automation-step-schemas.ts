@@ -79,4 +79,3 @@ export const automationFinalActionSchema = z.discriminatedUnion('actionType', [
 ])
 
 export type AutomationFinalActionFormValues = z.infer<typeof automationFinalActionSchema>
-

@@ -104,7 +104,9 @@ describe('automationPublicReplySchema', () => {
 
 describe('automationDirectMessageSchema', () => {
   it('allows valid direct message text up to 1000 characters', () => {
-    const result = automationDirectMessageSchema.safeParse({ text: 'Olá! Segue seu link promocional.' })
+    const result = automationDirectMessageSchema.safeParse({
+      text: 'Olá! Segue seu link promocional.',
+    })
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data.text).toBe('Olá! Segue seu link promocional.')
@@ -196,4 +198,3 @@ describe('automationFinalActionSchema', () => {
     expect(result.success).toBe(true)
   })
 })
-

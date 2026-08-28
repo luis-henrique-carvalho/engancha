@@ -13,10 +13,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 export function WorkspaceShell({
   children,
   header,
+  fixed = false,
   mainClassName = 'gap-6',
 }: {
   children: (workspace: ActiveWorkspaceResponse) => React.ReactNode
   header?: React.ReactNode
+  fixed?: boolean
   mainClassName?: string
 }) {
   const navigate = useNavigate()
@@ -104,7 +106,7 @@ export function WorkspaceShell({
           </Button>
         </Header>
       )}
-      <Main fixed className={mainClassName}>
+      <Main fixed={fixed} className={mainClassName}>
         {children(workspace)}
       </Main>
     </AuthenticatedLayout>
