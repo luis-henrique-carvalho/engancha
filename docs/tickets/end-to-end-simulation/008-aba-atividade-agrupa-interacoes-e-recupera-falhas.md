@@ -1,6 +1,6 @@
 ---
 title: "Aba Atividade agrupa interações e recupera falhas"
-status: "needs-triage"
+status: "completed"
 type: "HITL"
 parent: "docs/prds/end-to-end-simulation.md"
 blocked_by:

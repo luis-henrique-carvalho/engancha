@@ -229,48 +229,48 @@ The simulated Instagram input/output adapter implements the normalized ports wit
 
 ### Ingestion and authorization
 
-- [ ] A confirmed member submits author, comment text, optional comment identifier, provider and content from the active workspace and receives an `executionId` without waiting for the worker.
-- [ ] Instagram is the only enabled provider, the browser sends no mode, and every accepted execution persists `mode=SIMULATED` with no connection.
-- [ ] Invalid provider/content combinations, foreign-workspace data and client-supplied mode are rejected before enqueueing.
-- [ ] Repeating the same idempotency key returns the same execution and creates neither a second job cycle nor duplicate outputs.
+- [x] A confirmed member submits author, comment text, optional comment identifier, provider and content from the active workspace and receives an `executionId` without waiting for the worker.
+- [x] Instagram is the only enabled provider, the browser sends no mode, and every accepted execution persists `mode=SIMULATED` with no connection.
+- [x] Invalid provider/content combinations, foreign-workspace data and client-supplied mode are rejected before enqueueing.
+- [x] Repeating the same idempotency key returns the same execution and creates neither a second job cycle nor duplicate outputs.
 
 ### Matching and snapshot
 
-- [ ] The worker selects only an active automation with a published revision whose target content, provider/mode and whole-word/phrase keyword match the comment.
-- [ ] The UI-origin automation is never used as a matching shortcut.
-- [ ] No match ends in `IGNORED` with no outputs; more than one match fails closed without executing multiple automations.
-- [ ] A unique match persists an immutable sanitized snapshot of the exact published revision before producing outputs.
-- [ ] Editing, republishing or pausing after claim does not change the execution snapshot or result.
+- [x] The worker selects only an active automation with a published revision whose target content, provider/mode and whole-word/phrase keyword match the comment.
+- [x] The UI-origin automation is never used as a matching shortcut.
+- [x] No match ends in `IGNORED` with no outputs; more than one match fails closed without executing multiple automations.
+- [x] A unique match persists an immutable sanitized snapshot of the exact published revision before producing outputs.
+- [x] Editing, republishing or pausing after claim does not change the execution snapshot or result.
 
 ### Outputs and scope boundary
 
-- [ ] A matching link flow persists and displays comment, public reply, DM and link delivery in published order.
-- [ ] A matching capture-email flow persists and displays only the e-mail request, without collecting an address or creating conversation, contact, lead or tag records.
-- [ ] Every execution and output is visibly identified as simulated and no external provider call occurs.
-- [ ] Output identities prevent duplication during worker redelivery, automatic retry and manual reprocessing.
+- [x] A matching link flow persists and displays comment, public reply, DM and link delivery in published order.
+- [x] A matching capture-email flow persists and displays only the e-mail request, without collecting an address or creating conversation, contact, lead or tag records.
+- [x] Every execution and output is visibly identified as simulated and no external provider call occurs.
+- [x] Output identities prevent duplication during worker redelivery, automatic retry and manual reprocessing.
 
 ### Status, recovery and real time
 
-- [ ] PostgreSQL records the required execution states, attempts, safe failure details, timestamps and monotonic state version.
-- [ ] Transient failures use retry/backoff; exhausted failures become `FAILED` without stopping unrelated jobs.
-- [ ] Manual retry is accepted only for `FAILED`, keeps the same execution identity and does not duplicate previously committed outputs.
-- [ ] HTTP returns the full current execution projection and remains sufficient to load or recover the UI without SSE history.
-- [ ] SSE emits authenticated workspace-scoped snapshots and updates, reaches the terminal state, and reconnects through HTTP reconciliation.
-- [ ] Losing the SSE connection does not change processing state or present a false execution failure.
+- [x] PostgreSQL records the required execution states, attempts, safe failure details, timestamps and monotonic state version.
+- [x] Transient failures use retry/backoff; exhausted failures become `FAILED` without stopping unrelated jobs.
+- [x] Manual retry is accepted only for `FAILED`, keeps the same execution identity and does not duplicate previously committed outputs.
+- [x] HTTP returns the full current execution projection and remains sufficient to load or recover the UI without SSE history.
+- [x] SSE emits authenticated workspace-scoped snapshots and updates, reaches the terminal state, and reconnects through HTTP reconciliation.
+- [x] Losing the SSE connection does not change processing state or present a false execution failure.
 
 ### Product experience
 
-- [ ] Automation detail exposes `Configuração`, `Testar` and `Atividade` with accessible navigation and responsive states.
-- [ ] `Testar` shows the follower journey rather than technical logs and distinguishes link delivery, e-mail request, ignored and failed outcomes.
-- [ ] Draft or paused automations cannot initiate a test and explain how to become testable.
-- [ ] `Atividade` lists and groups persisted interactions, keeps ignored simulations understandable and updates visible entries in real time.
-- [ ] No customer-facing surface exposes job, worker, Redis, queue, stack trace or raw payload terminology.
+- [x] Automation detail exposes `Configuração`, `Testar` and `Atividade` with accessible navigation and responsive states.
+- [x] `Testar` shows the follower journey rather than technical logs and distinguishes link delivery, e-mail request, ignored and failed outcomes.
+- [x] Draft or paused automations cannot initiate a test and explain how to become testable.
+- [x] `Atividade` lists and groups persisted interactions, keeps ignored simulations understandable and updates visible entries in real time.
+- [x] No customer-facing surface exposes job, worker, Redis, queue, stack trace or raw payload terminology.
 
 ### Quality and isolation
 
-- [ ] Contracts, API, persistence, queue, worker and web tests cover success, ignored, ambiguity, failure, retry, idempotency, reconnection and cross-workspace access.
-- [ ] Structured logs correlate request, workspace, execution and transport identifiers without logging full comments, DMs, links, e-mails, credentials or secrets.
-- [ ] Rate limits and SSE connection limits protect simulation endpoints without breaking deterministic retry/reconnection behavior.
+- [x] Contracts, API, persistence, queue, worker and web tests cover success, ignored, ambiguity, failure, retry, idempotency, reconnection and cross-workspace access.
+- [x] Structured logs correlate request, workspace, execution and transport identifiers without logging full comments, DMs, links, e-mails, credentials or secrets.
+- [x] Rate limits and SSE connection limits protect simulation endpoints without breaking deterministic retry/reconnection behavior.
 
 ## Implementation Decisions
 
@@ -311,7 +311,7 @@ The simulated Instagram input/output adapter implements the normalized ports wit
 ## Decision Log
 
 | ID | Decision | Status | Impact | Date |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- |
 | DEC-01 | O comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável. | RESOLVIDA | Valida o pipeline que providers reais reutilizarão. | 2026-08-27 |
 | DEC-02 | O usuário escolhe o provider; inicialmente apenas Instagram está disponível. | RESOLVIDA | Prepara extensão sem fingir suporte atual a outros providers. | 2026-08-27 |
 | DEC-03 | O browser não envia `mode`; o backend sempre impõe `SIMULATED`. | RESOLVIDA | Impede que entrada do cliente represente uma execução como real. | 2026-08-27 |
@@ -342,12 +342,14 @@ The simulated Instagram input/output adapter implements the normalized ports wit
 - [007 — Aba Testar apresenta experiência do seguidor](../tickets/end-to-end-simulation/007-aba-testar-apresenta-experiencia-do-seguidor.md)
 - [008 — Aba Atividade agrupa interações e recupera falhas](../tickets/end-to-end-simulation/008-aba-atividade-agrupa-interacoes-e-recupera-falhas.md)
 - [009 — Observabilidade e logs estruturados do pipeline de simulação](../tickets/end-to-end-simulation/009-observabilidade-e-logs-estruturados-do-pipeline-de-simulacao.md)
+- [010 — Filtros por status, plataforma e modo, busca textual e paginação na aba de atividade](../tickets/end-to-end-simulation/010-filtros-busca-e-paginacao-na-aba-de-atividade.md)
+- [011 — Limites de requisição para operações de simulação](../tickets/end-to-end-simulation/011-limites-de-requisicao-para-operacoes-de-simulacao.md)
+- [012 — Limites de conexões SSE de simulação](../tickets/end-to-end-simulation/012-limites-de-conexoes-sse-de-simulacao.md)
+- [013 — Encerramento verificável da Fase 4](../tickets/end-to-end-simulation/013-encerramento-verificavel-da-fase-4.md)
 
 ## Further Notes
 
-- A PRD exige uma evolução aditiva do modelo lógico: execução precisa existir antes do match e saídas precisam ser persistidas sem `Conversation`/`Message`. O `DATA-MODEL.md` deverá ser reconciliado com esta decisão antes da migration do primeiro ticket que persistir essas estruturas.
-- `ExternalEvent` pode continuar reservado ao fluxo real. Para esta fase, a identidade/input normalizado da execução é suficiente, desde que os contratos `interaction.received.v1` e `automation-execution` permaneçam reutilizáveis por adapters futuros.
-- A forma interna de sinalizar mudanças à API SSE não está bloqueada. O requisito invariável é PostgreSQL como fonte de verdade e recuperação completa por GET.
-- Limite exato de paginação, intervalo de heartbeat e retenção operacional de jobs podem ser ajustados durante a implementação sem mudar os comportamentos desta PRD, desde que tenham defaults explícitos, testes e limites seguros.
-- O texto final, hierarquia visual e responsividade de `Testar` e `Atividade` devem ser revisados no ticket de interface. Essa revisão de qualidade não reabre as decisões funcionais aqui registradas.
-- Nenhum ticket foi criado. A decomposição precisa ser aprovada antes de gerar arquivos em `docs/tickets/end-to-end-simulation/`.
+- A PRD exigiu uma evolução aditiva do modelo lógico: execução existe antes do match e saídas são persistidas sem `Conversation`/`Message`. O `DATA-MODEL.md` foi reconciliado e a migration `0003_simulated_automation_executions` foi aplicada.
+- `ExternalEvent` continua reservado ao fluxo real. Para esta fase, a identidade/input normalizado da execução é suficiente, com os contratos `interaction.received.v1` e `automation-execution` prontos para reuso por adapters futuros.
+- A sinalização de mudanças em tempo real para o SSE utiliza Redis Pub/Sub desacoplado via porta, mantendo PostgreSQL como fonte autoritativa de verdade e recuperação integral por GET.
+- A Fase 4 foi concluída e validada integralmente com a entrega dos tickets 001 a 013 e aprovação da suíte completa de testes e verificações.
