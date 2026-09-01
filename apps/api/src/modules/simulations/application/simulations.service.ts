@@ -1,5 +1,7 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
@@ -29,10 +31,18 @@ import {
   SIMULATION_EVENTS_SUBSCRIBER,
   type SimulationEventsSubscriber,
 } from '../domain/ports/simulation-events-subscriber.port'
+import {
+  SIMULATION_SSE_CONNECTION_TRACKER,
+  type SimulationSseConnectionTracker,
+  type SimulationSseLease,
+} from '../domain/ports/simulation-sse-connection-tracker.port'
+import { SIMULATION_RATE_LIMIT_ERROR_CODE } from '../api/http/simulation-rate-limit.guard'
 
 @Injectable()
 export class SimulationsService {
   private readonly eventsSubscriber: SimulationEventsSubscriber
+  private readonly sseTracker?: SimulationSseConnectionTracker
+  private readonly logger?: { event(event: string, details?: Record<string, unknown>): void }
 
   constructor(
     @Inject(SIMULATION_REPOSITORY) private readonly simulations: SimulationRepository,
@@ -43,10 +53,26 @@ export class SimulationsService {
     eventsSubscriber?: SimulationEventsSubscriber,
     @Optional()
     @Inject(StructuredLogger)
-    private readonly logger?: { event(event: string, details?: Record<string, unknown>): void },
+    logger?:
+      | { event(event: string, details?: Record<string, unknown>): void }
+      | SimulationSseConnectionTracker,
+    @Optional()
+    @Inject(SIMULATION_SSE_CONNECTION_TRACKER)
+    sseTracker?: SimulationSseConnectionTracker,
   ) {
     this.eventsSubscriber = eventsSubscriber ?? {
       subscribe: async () => async () => {},
+    }
+
+    if (logger && 'tryAcquire' in logger) {
+      this.sseTracker = logger as SimulationSseConnectionTracker
+      this.logger = undefined
+    } else if (logger && 'event' in logger) {
+      this.logger = logger as { event(event: string, details?: Record<string, unknown>): void }
+      this.sseTracker = sseTracker
+    } else {
+      this.logger = undefined
+      this.sseTracker = sseTracker
     }
   }
 
@@ -256,19 +282,46 @@ export class SimulationsService {
       throw new NotFoundException()
     }
 
+    let lease: SimulationSseLease = { id: 'noop', release: () => {} }
+    if (this.sseTracker) {
+      const acquisition = this.sseTracker.tryAcquire({
+        organizationId: context.organizationId,
+        membershipId: context.membershipId,
+        userId: context.userId,
+      })
+      if (!acquisition.acquired) {
+        this.logEvent('simulation_stream_connection_limit_exceeded', {
+          organizationId: context.organizationId,
+          membershipId: context.membershipId,
+          userId: context.userId,
+          executionId: id,
+          reason: acquisition.reason,
+        })
+        throw new HttpException(
+          {
+            code: SIMULATION_RATE_LIMIT_ERROR_CODE,
+            message: 'Too many concurrent simulation SSE connections. Please try again later.',
+          },
+          HttpStatus.TOO_MANY_REQUESTS,
+        )
+      }
+      lease = acquisition.lease
+    }
+
     this.logEvent('simulation_stream_opened', {
       organizationId: context.organizationId,
       executionId: id,
       initialStatus: (initial as any).status,
     })
 
-    return this.createSimulationStreamObservable(context, id, initial, options)
+    return this.createSimulationStreamObservable(context, id, initial, lease, options)
   }
 
   private createSimulationStreamObservable(
     context: AuthorizationContext,
     id: string,
     initial: unknown,
+    lease: SimulationSseLease,
     options?: {
       heartbeatIntervalMs?: number
       maxDurationMs?: number
@@ -283,10 +336,46 @@ export class SimulationsService {
         context,
         id,
         initial,
+        lease,
         heartbeatIntervalMs,
         maxDurationMs,
       })
     })
+  }
+
+  private createStreamCleanup(params: {
+    context: AuthorizationContext
+    id: string
+    lease: SimulationSseLease
+    heartbeatTimer: NodeJS.Timeout
+    state: { isClosed: boolean; maxDurationTimer?: NodeJS.Timeout }
+    getUnsubscribeFn: () => (() => Promise<void>) | null
+  }): () => Promise<void> {
+    const { context, id, lease, heartbeatTimer, state, getUnsubscribeFn } = params
+
+    return async () => {
+      if (state.isClosed) return
+      state.isClosed = true
+      clearInterval(heartbeatTimer)
+      if (state.maxDurationTimer) {
+        clearTimeout(state.maxDurationTimer)
+      }
+      lease.release()
+
+      const unsubscribeFn = getUnsubscribeFn()
+      if (unsubscribeFn) {
+        try {
+          await unsubscribeFn()
+        } catch {
+          // Ignora falhas no cancelamento de inscrição
+        }
+      }
+
+      this.logEvent('simulation_stream_closed', {
+        organizationId: context.organizationId,
+        executionId: id,
+      })
+    }
   }
 
   private setupSimulationSubscriber(params: {
@@ -294,17 +383,23 @@ export class SimulationsService {
     context: AuthorizationContext
     id: string
     initial: unknown
+    lease: SimulationSseLease
     heartbeatIntervalMs: number
     maxDurationMs: number
   }): () => void {
-    const { subscriber, context, id, initial, heartbeatIntervalMs, maxDurationMs } = params
-    let isClosed = false
+    const { subscriber, context, id, initial, lease, heartbeatIntervalMs, maxDurationMs } = params
+    const state = {
+      isClosed: false,
+      maxDurationTimer: undefined as NodeJS.Timeout | undefined,
+    }
     let lastEmittedVersion = (initial as any).stateVersion ?? 1
     let lastEmittedStatus = (initial as any).status
     let unsubscribeFn: (() => Promise<void>) | null = null
 
     const isTerminal = this.emitInitialSnapshot(context, id, initial, subscriber)
     if (isTerminal) {
+      lease.release()
+      subscriber.complete()
       return () => {}
     }
 
@@ -313,36 +408,26 @@ export class SimulationsService {
       context,
       id,
       heartbeatIntervalMs,
-      isClosed: () => isClosed,
+      isClosed: () => state.isClosed,
     })
 
-    const cleanup = async () => {
-      if (isClosed) return
-      isClosed = true
-      clearInterval(heartbeatTimer)
-      clearTimeout(maxDurationTimer)
-      if (unsubscribeFn) {
-        try {
-          await unsubscribeFn()
-        } catch {
-          // Ignora falhas no cancelamento de inscrição
-        }
-      }
-      this.logEvent('simulation_stream_closed', {
-        organizationId: context.organizationId,
-        executionId: id,
-      })
-    }
+    const cleanup = this.createStreamCleanup({
+      context,
+      id,
+      lease,
+      heartbeatTimer,
+      state,
+      getUnsubscribeFn: () => unsubscribeFn,
+    })
 
-    const maxDurationTimer = setTimeout(async () => {
+    state.maxDurationTimer = setTimeout(async () => {
       await cleanup()
       subscriber.complete()
     }, maxDurationMs)
 
     let isUpdating = false
     const checkAndEmitUpdate = async () => {
-      if (isClosed) return
-      if (isUpdating) return
+      if (state.isClosed || isUpdating) return
       isUpdating = true
       try {
         const updated = await this.handleSimulationStreamUpdate({
@@ -364,7 +449,7 @@ export class SimulationsService {
 
     this.subscribeToSimulationEvents({
       id,
-      isClosed: () => isClosed,
+      isClosed: () => state.isClosed,
       checkAndEmitUpdate,
       cleanup,
       subscriber,

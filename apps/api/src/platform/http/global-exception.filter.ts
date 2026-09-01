@@ -36,6 +36,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const payload = isHttpException ? exception.getResponse() : undefined
     if (payload && typeof payload === 'object' && 'issues' in payload) body.issues = payload.issues
 
+    if (statusCode === HttpStatus.TOO_MANY_REQUESTS && !response.getHeader('Retry-After')) {
+      response.setHeader('Retry-After', '5')
+    }
+
     response.setHeader('x-request-id', requestId)
     response.status(statusCode).json(body)
     this.logger.event('request_error', {

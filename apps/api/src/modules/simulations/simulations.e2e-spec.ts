@@ -19,6 +19,10 @@ import { DatabaseModule } from '../../platform/database/database.module'
 import { PrismaService } from '../../platform/database/prisma.service'
 import { AutomationsModule } from '../automations/automations.module'
 import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
+import {
+  SIMULATION_SSE_CONNECTION_TRACKER,
+  type SimulationSseConnectionTracker,
+} from './domain/ports/simulation-sse-connection-tracker.port'
 import { SimulationsModule } from './simulations.module'
 import { SimulationsService } from './application/simulations.service'
 import { AutomationExecutionService } from '../../../../worker/src/automation-execution/application/automation-execution.service'
@@ -1464,4 +1468,247 @@ test('GET /simulations/executions filtra por busca textual, status, provedor, mo
   expectStatus(filterByOutput, 200)
   assert.equal(filterByOutput.body.items.length, 1)
   assert.equal(filterByOutput.body.items[0].id, res1.body.executionId)
+})
+
+test('limita conexões SSE simultâneas por membro/workspace, rejeita excedente com 429 e Retry-After sem vazar recursos e mantém isolamento', async () => {
+  const workspaceA = await createWorkspaceScenario()
+  const workspaceB = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+
+  const contentA = await createContent(api, workspaceA)
+  const contentB = await createContent(api, workspaceB)
+
+  const commentA = await api.post('/api/v1/simulations/comments').set(workspaceA.headers).send({
+    contentId: contentA.id,
+    provider: 'INSTAGRAM',
+    author: 'Alice',
+    text: 'SSE limit test',
+    idempotencyKey: 'sse-limit-test-001',
+  })
+  expectStatus(commentA, 201)
+  const execA = commentA.body.executionId
+
+  const commentB = await api.post('/api/v1/simulations/comments').set(workspaceB.headers).send({
+    contentId: contentB.id,
+    provider: 'INSTAGRAM',
+    author: 'Bob',
+    text: 'SSE limit test B',
+    idempotencyKey: 'sse-limit-test-002',
+  })
+  expectStatus(commentB, 201)
+  const execB = commentB.body.executionId
+
+  const simulationsService = app.get(SimulationsService)
+  const sseTracker = app.get<SimulationSseConnectionTracker>(SIMULATION_SSE_CONNECTION_TRACKER)
+
+  // 1. Verificação prévia de 404: execução inexistente ou estrangeira não consome vaga
+  const countsBefore404 = sseTracker.getActiveCounts()
+  const notFoundRes = await api
+    .get('/api/v1/simulations/executions/non-existent-id/events')
+    .set(workspaceA.headers)
+  expectStatus(notFoundRes, 404)
+
+  const foreignRes = await api
+    .get(`/api/v1/simulations/executions/${execA}/events`)
+    .set(workspaceB.headers)
+  expectStatus(foreignRes, 404)
+
+  const countsAfter404 = sseTracker.getActiveCounts()
+  assert.equal(countsAfter404.global, countsBefore404.global)
+
+  // 2. Abre 5 conexões SSE ativas (atinge limite padrão por membro de 5)
+  const subscriptions: Array<import('rxjs').Subscription> = []
+  const contextA = {
+    userId: workspaceA.userId,
+    organizationId: workspaceA.organizationId,
+    membershipId: (workspaceA.headers as any)['x-test-membership-id'],
+    role: 'member' as const,
+  }
+
+  for (let i = 0; i < 5; i += 1) {
+    const stream = await simulationsService.stream(contextA, execA, {
+      heartbeatIntervalMs: 10_000,
+      maxDurationMs: 60_000,
+    })
+    const sub = stream.subscribe()
+    subscriptions.push(sub)
+  }
+
+  const countsAtCapacity = sseTracker.getActiveCounts()
+  assert.equal(countsAtCapacity.global, 5)
+
+  // 3. 6ª tentativa para o mesmo membro/workspace é rejeitada com 429
+  const rejected = await api
+    .get(`/api/v1/simulations/executions/${execA}/events`)
+    .set(workspaceA.headers)
+  expectStatus(rejected, 429)
+  assert.equal(rejected.body.code, 'SIMULATION_RATE_LIMIT_EXCEEDED')
+  assert.ok(rejected.body.message.includes('Too many concurrent simulation SSE connections'))
+  assert.ok(
+    rejected.headers['retry-after'],
+    `Expected Retry-After header, got: ${JSON.stringify(rejected.headers)}`,
+  )
+
+  // 4. Isolamento: Workspace B com outro membro consegue conectar sem ser afetado
+  const contextB = {
+    userId: workspaceB.userId,
+    organizationId: workspaceB.organizationId,
+    membershipId: (workspaceB.headers as any)['x-test-membership-id'],
+    role: 'member' as const,
+  }
+  const streamB = await simulationsService.stream(contextB, execB, {
+    heartbeatIntervalMs: 10_000,
+    maxDurationMs: 60_000,
+  })
+  const subB = streamB.subscribe()
+  subscriptions.push(subB)
+
+  assert.equal(sseTracker.getActiveCounts().global, 6)
+
+  // 5. Liberação: cancela uma das subscriptions do workspace A e verifica que nova conexão é aceita
+  const subToRelease = subscriptions.shift()
+  subToRelease?.unsubscribe()
+
+  // Permite ciclo de limpeza
+  await new Promise((resolve) => setTimeout(resolve, 10))
+
+  const newStreamA = await simulationsService.stream(contextA, execA, {
+    heartbeatIntervalMs: 10_000,
+    maxDurationMs: 60_000,
+  })
+  const newSubA = newStreamA.subscribe()
+  subscriptions.push(newSubA)
+
+  // Cleanup de todas as subscriptions
+  for (const sub of subscriptions) {
+    sub.unsubscribe()
+  }
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  assert.equal(sseTracker.getActiveCounts().global, 0)
+})
+
+test('libera vaga SSE em encerramento terminal (snapshot e atualização), timeout e cancelamento do cliente', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const comment = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Bruno',
+    text: 'Release lifecycle test',
+    idempotencyKey: 'sse-release-lifecycle-001',
+  })
+  expectStatus(comment, 201)
+  const executionId = comment.body.executionId
+
+  const simulationsService = app.get(SimulationsService)
+  const sseTracker = app.get<SimulationSseConnectionTracker>(SIMULATION_SSE_CONNECTION_TRACKER)
+  const context = {
+    userId: workspace.userId,
+    organizationId: workspace.organizationId,
+    membershipId: (workspace.headers as any)['x-test-membership-id'],
+    role: 'member' as const,
+  }
+
+  // A. Timeout: conexão aberta com maxDurationMs curto encerra e libera a vaga
+  const timeoutStream = await simulationsService.stream(context, executionId, {
+    heartbeatIntervalMs: 50,
+    maxDurationMs: 100,
+  })
+  let timeoutCompleted = false
+  await new Promise<void>((resolve) => {
+    timeoutStream.subscribe({
+      complete: () => {
+        timeoutCompleted = true
+        resolve()
+      },
+    })
+  })
+  assert.equal(timeoutCompleted, true)
+  assert.equal(sseTracker.getActiveCounts().global, 0)
+
+  // B. Cancelamento (unsubscribe): cliente desconecta e libera a vaga
+  const activeStream = await simulationsService.stream(context, executionId, {
+    heartbeatIntervalMs: 10_000,
+    maxDurationMs: 60_000,
+  })
+  const sub = activeStream.subscribe()
+  assert.equal(sseTracker.getActiveCounts().global, 1)
+  sub.unsubscribe()
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  assert.equal(sseTracker.getActiveCounts().global, 0)
+
+  // C. Terminal snapshot: se a execução já está COMPLETED, stream emite snapshot e libera a vaga imediatamente
+  await prisma.client.automationExecution.update({
+    where: { id: executionId },
+    data: { status: 'COMPLETED', completedAt: new Date() },
+  })
+
+  const terminalStream = await simulationsService.stream(context, executionId)
+  let terminalCompleted = false
+  await new Promise<void>((resolve) => {
+    terminalStream.subscribe({
+      complete: () => {
+        terminalCompleted = true
+        resolve()
+      },
+    })
+  })
+  assert.equal(terminalCompleted, true)
+  assert.equal(sseTracker.getActiveCounts().global, 0)
+})
+
+test('preserva recuperação HTTP e integridade de projeção quando o limite SSE é atingido', async () => {
+  const workspace = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, workspace)
+
+  const comment = await api.post('/api/v1/simulations/comments').set(workspace.headers).send({
+    contentId: content.id,
+    provider: 'INSTAGRAM',
+    author: 'Clara',
+    text: 'HTTP recovery test',
+    idempotencyKey: 'sse-http-recovery-001',
+  })
+  expectStatus(comment, 201)
+  const executionId = comment.body.executionId
+
+  const simulationsService = app.get(SimulationsService)
+  const context = {
+    userId: workspace.userId,
+    organizationId: workspace.organizationId,
+    membershipId: (workspace.headers as any)['x-test-membership-id'],
+    role: 'member' as const,
+  }
+
+  // Preenche a capacidade SSE com 5 conexões
+  const subs: Array<import('rxjs').Subscription> = []
+  for (let i = 0; i < 5; i += 1) {
+    const stream = await simulationsService.stream(context, executionId, {
+      heartbeatIntervalMs: 10_000,
+      maxDurationMs: 60_000,
+    })
+    subs.push(stream.subscribe())
+  }
+
+  // SSE adicional é rejeitado com 429
+  const sseRejected = await api
+    .get(`/api/v1/simulations/executions/${executionId}/events`)
+    .set(workspace.headers)
+  expectStatus(sseRejected, 429)
+
+  // Projeção HTTP GET continua respondendo com 200, status PENDING e stateVersion intacto
+  const projection = await api
+    .get(`/api/v1/simulations/executions/${executionId}`)
+    .set(workspace.headers)
+  expectStatus(projection, 200)
+  assert.equal(projection.body.status, 'PENDING')
+  assert.equal(projection.body.simulated, true)
+  assert.equal(projection.body.stateVersion, 1)
+
+  for (const s of subs) {
+    s.unsubscribe()
+  }
+  await new Promise((resolve) => setTimeout(resolve, 10))
 })

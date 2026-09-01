@@ -14,8 +14,10 @@ import { SimulationsService } from './application/simulations.service'
 import { AUTOMATION_EXECUTION_DISPATCHER } from './domain/ports/automation-execution-dispatcher.port'
 import { SIMULATION_EVENTS_SUBSCRIBER } from './domain/ports/simulation-events-subscriber.port'
 import { SIMULATION_REPOSITORY } from './domain/ports/simulation.repository'
+import { SIMULATION_SSE_CONNECTION_TRACKER } from './domain/ports/simulation-sse-connection-tracker.port'
 import { BullMqAutomationExecutionDispatcher } from './infrastructure/messaging/bullmq-automation-execution.dispatcher'
 import { RedisSimulationEventsSubscriber } from './infrastructure/messaging/redis-simulation-events.subscriber'
+import { InMemorySimulationSseConnectionTracker } from './infrastructure/security/in-memory-simulation-sse-connection-tracker'
 import { PrismaSimulationRepository } from './infrastructure/persistence/prisma-simulation.repository'
 
 @Module({
@@ -42,6 +44,12 @@ import { PrismaSimulationRepository } from './infrastructure/persistence/prisma-
     { provide: AUTOMATION_EXECUTION_DISPATCHER, useExisting: BullMqAutomationExecutionDispatcher },
     RedisSimulationEventsSubscriber,
     { provide: SIMULATION_EVENTS_SUBSCRIBER, useExisting: RedisSimulationEventsSubscriber },
+    InMemorySimulationSseConnectionTracker,
+    {
+      provide: SIMULATION_SSE_CONNECTION_TRACKER,
+      useExisting: InMemorySimulationSseConnectionTracker,
+    },
   ],
+  exports: [SimulationsService, SIMULATION_SSE_CONNECTION_TRACKER],
 })
 export class SimulationsModule {}

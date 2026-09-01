@@ -27,6 +27,8 @@ export const apiEnvSchema = Joi.object({
   SIMULATION_READ_RATE_LIMIT: Joi.number().integer().min(1).default(20),
   SIMULATION_READ_RATE_LIMIT_TTL_MS: Joi.number().integer().min(100).default(60_000),
   SIMULATION_READ_RATE_LIMIT_BLOCK_DURATION_MS: Joi.number().integer().min(100).default(1_000),
+  SIMULATION_SSE_MAX_CONCURRENT_PER_MEMBER: Joi.number().integer().min(1).default(5),
+  SIMULATION_SSE_MAX_CONCURRENT_GLOBAL: Joi.number().integer().min(1).default(100),
 }).unknown(true)
 
 export type ApiRuntimeConfig = {
@@ -46,6 +48,8 @@ export type ApiRuntimeConfig = {
   simulationReadRateLimit: number
   simulationReadRateLimitTtlMs: number
   simulationReadRateLimitBlockDurationMs: number
+  simulationSseMaxConcurrentPerMember: number
+  simulationSseMaxConcurrentGlobal: number
 }
 
 export function validateApiEnvironment(env: NodeJS.ProcessEnv): ApiRuntimeConfig {
@@ -75,5 +79,7 @@ export function validateApiEnvironment(env: NodeJS.ProcessEnv): ApiRuntimeConfig
     simulationReadRateLimit: value.SIMULATION_READ_RATE_LIMIT,
     simulationReadRateLimitTtlMs: value.SIMULATION_READ_RATE_LIMIT_TTL_MS,
     simulationReadRateLimitBlockDurationMs: value.SIMULATION_READ_RATE_LIMIT_BLOCK_DURATION_MS,
+    simulationSseMaxConcurrentPerMember: value.SIMULATION_SSE_MAX_CONCURRENT_PER_MEMBER,
+    simulationSseMaxConcurrentGlobal: value.SIMULATION_SSE_MAX_CONCURRENT_GLOBAL,
   }
 }
