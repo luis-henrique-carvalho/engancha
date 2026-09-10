@@ -22,7 +22,7 @@ decomposição em fatias verticais
         ↓
 aprovação da decomposição
         ↓
-docs/tickets/<prd-slug>/NNN-*.md
+docs/phases/phase-XX-name/NNN-prd-name/tickets/NNN-*.md
 ```
 
 Produzir documentação e tickets; não implementar código durante este fluxo.
@@ -87,14 +87,9 @@ Não criar a PRD enquanto existir uma decisão bloqueadora sem resposta. Decisõ
 
 ## Fase 3 — Criar a PRD
 
-Depois que as decisões bloqueadoras forem respondidas, criar um arquivo novo. Usar esta prioridade de destino:
+Depois que as decisões bloqueadoras forem respondidas, identificar a fase correspondente no `ROADMAP.md` e criar a PRD em `docs/phases/phase-XX-name/NNN-prd-name/prd.md`. Usar `phase-future-name` somente para trabalho aprovado que ainda não pertence a uma fase numerada.
 
-1. diretório de PRDs já existente no projeto;
-2. `docs/prds/`;
-3. `docs/`;
-4. raiz do repositório somente se nenhum diretório de documentação existir.
-
-Usar nome lowercase kebab-case que identifique o épico ou feature. Não sobrescrever uma PRD existente sem autorização explícita.
+O número `NNN` da PRD é global, incremental e imutável: determinar o próximo número lendo todos os diretórios `NNN-*/prd.md` em `docs/phases/`. Usar nomes de diretório em inglês, lowercase kebab-case. Não sobrescrever uma PRD existente sem autorização explícita.
 
 Escrever a PRD com as seções abaixo:
 
@@ -187,13 +182,13 @@ Pedir aprovação da granularidade, dependências, classificações e autorizaç
 
 ## Fase 5 — Criar tickets locais
 
-Depois da aprovação, criar os tickets em `docs/tickets/<prd-slug>/`, em ordem de dependência. O `<prd-slug>` deve ser o slug ASCII lowercase com hífens do arquivo da PRD, sem a extensão `.md`. Exemplo: `docs/prds/local-executable-monorepo-foundation.md` gera a pasta `docs/tickets/local-executable-monorepo-foundation/`.
+Depois da aprovação, criar os tickets em `<diretório-da-prd>/tickets/`, em ordem de dependência. Exemplo: `docs/phases/phase-01-foundation/001-local-executable-monorepo-foundation/prd.md` gera tickets em `docs/phases/phase-01-foundation/001-local-executable-monorepo-foundation/tickets/`.
 
 Determinar o próximo número lendo os tickets existentes dentro da subpasta da PRD e continuar do maior número. Começar em `001` quando a subpasta ainda não existir. A numeração é local à subpasta; o caminho completo diferencia tickets de PRDs diferentes. Nunca sobrescrever ticket existente.
 
 Usar nomes `NNN-slug-do-ticket.md`, com slug ASCII lowercase e hífens.
 
-Quando a origem for uma conversa sem PRD em arquivo, usar `docs/tickets/conversation/` e `parent: "conversation"`.
+Quando a origem for uma conversa sem PRD em arquivo, usar `docs/phases/phase-unplanned/NNN-conversation/tickets/` e `parent: "conversation"`.
 
 Cada ticket deve ter este frontmatter:
 
@@ -202,13 +197,13 @@ Cada ticket deve ter este frontmatter:
 title: "Título curto"
 status: "needs-triage"
 type: "AFK"
-parent: "docs/prds/feature.md"
+parent: "docs/phases/phase-XX-name/NNN-feature/prd.md"
 blocked_by: []
 user_stories: [1, 2]
 ---
 ```
 
-Usar caminhos relativos ao repositório em `parent` e `blocked_by`. O campo `parent` deve apontar para a PRD em `docs/prds/`, mesmo quando o ticket estiver em uma subpasta diferente. Dependências dentro da mesma PRD devem usar o caminho completo, por exemplo `docs/tickets/feature/001-first-slice.md`. Usar `parent: "conversation"` somente quando não existir fonte ou PRD em arquivo.
+Usar caminhos relativos ao repositório em `parent` e `blocked_by`. O campo `parent` deve apontar para o `prd.md` no diretório da PRD. Dependências dentro da mesma PRD devem usar o caminho completo, por exemplo `docs/phases/phase-XX-name/NNN-feature/tickets/001-first-slice.md`. Usar `parent: "conversation"` somente quando não existir fonte ou PRD em arquivo.
 
 Se a PRD tiver uma seção `Ticket Map`, adicionar ou atualizar nela os links relativos para os tickets criados. Essa atualização deve conter apenas rastreabilidade; não alterar decisões, escopo ou critérios da PRD durante a criação dos tickets.
 

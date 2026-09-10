@@ -26,7 +26,12 @@ describe('SignOutDialog', () => {
   })
 
   it('renders sign out dialog content and buttons', async () => {
-    const { getByRole, getByText } = await render(<SignOutDialog open onOpenChange={vi.fn()} />)
+    const { getByRole, getByText } = await render(
+      <SignOutDialog
+        open
+        onOpenChange={vi.fn()}
+      />,
+    )
 
     await expect.element(getByRole('heading', { name: 'Sair da conta' })).toBeInTheDocument()
     await expect
@@ -37,7 +42,12 @@ describe('SignOutDialog', () => {
   })
 
   it('calls authClient.signOut and navigates to /auth/login on confirmation', async () => {
-    const { getByRole } = await render(<SignOutDialog open onOpenChange={vi.fn()} />)
+    const { getByRole } = await render(
+      <SignOutDialog
+        open
+        onOpenChange={vi.fn()}
+      />,
+    )
 
     await userEvent.click(getByRole('button', { name: 'Sair' }))
 
@@ -51,7 +61,12 @@ describe('SignOutDialog', () => {
   })
 
   it('does not call signOut or navigate when Cancelar is clicked', async () => {
-    const { getByRole } = await render(<SignOutDialog open onOpenChange={vi.fn()} />)
+    const { getByRole } = await render(
+      <SignOutDialog
+        open
+        onOpenChange={vi.fn()}
+      />,
+    )
 
     await userEvent.click(getByRole('button', { name: 'Cancelar' }))
 

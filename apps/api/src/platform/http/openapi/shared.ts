@@ -37,6 +37,15 @@ export const forbidden = { description: 'Ação não permitida para o usuário a
 export const notFound = { description: 'Recurso não encontrado' }
 export const conflict = { description: 'Estado atual impede a operação' }
 export const unprocessable = { description: 'Recurso não está pronto para a operação' }
+export const tooManyRequests = {
+  description: 'Limite de requisições excedido; aguarde o intervalo indicado e tente novamente',
+  headers: {
+    'Retry-After': {
+      description: 'Quantidade aproximada de segundos até uma nova tentativa',
+      schema: { type: 'integer' as const, minimum: 0 },
+    },
+  },
+}
 
 export function json(schema: z.ZodType) {
   return { 'application/json': { schema } }

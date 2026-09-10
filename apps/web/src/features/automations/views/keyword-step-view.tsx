@@ -12,10 +12,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { KeywordNormalizationPreview } from '../components/keyword-normalization-preview'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  KeywordNormalizationPreview,
+  useOptionalAutomationEditor,
+} from '../components'
 import {
   automationKeywordSchema,
   type AutomationKeywordFormValues,
@@ -95,7 +97,10 @@ export function KeywordStepView({
       description="Configure o gatilho textual que aciona a resposta."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FormField
             control={form.control}
             name="keyword"

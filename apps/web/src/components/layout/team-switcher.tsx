@@ -145,7 +145,10 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+      <Dialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Criar workspace</DialogTitle>
@@ -153,7 +156,10 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
               Você será definido como owner e este workspace passará a ser o ativo.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={submitWorkspace} className="grid gap-4">
+          <form
+            onSubmit={submitWorkspace}
+            className="grid gap-4"
+          >
             <Input
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -171,7 +177,10 @@ export function TeamSwitcher({ workspace, onWorkspaceChange }: TeamSwitcherProps
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={createWorkspace.isPending}>
+              <Button
+                type="submit"
+                disabled={createWorkspace.isPending}
+              >
                 {createWorkspace.isPending ? 'Criando…' : 'Criar workspace'}
               </Button>
             </DialogFooter>

@@ -72,6 +72,16 @@ export type AutomationTrigger = Prisma.AutomationTriggerModel
  */
 export type AutomationAction = Prisma.AutomationActionModel
 /**
+ * Model AutomationExecution
+ *
+ */
+export type AutomationExecution = Prisma.AutomationExecutionModel
+/**
+ * Model AutomationExecutionOutput
+ *
+ */
+export type AutomationExecutionOutput = Prisma.AutomationExecutionOutputModel
+/**
  * Model Member
  *
  */

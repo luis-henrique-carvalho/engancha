@@ -305,7 +305,11 @@ describe('ReviewStepView', () => {
 
     const { getByTestId, getByRole } = await render(
       <QueryClientProvider client={queryClient}>
-        <ReviewStepView workspaceId="ws-1" automationId="auto-100" automation={activeAutomation} />
+        <ReviewStepView
+          workspaceId="ws-1"
+          automationId="auto-100"
+          automation={activeAutomation}
+        />
       </QueryClientProvider>,
     )
 

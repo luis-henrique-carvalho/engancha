@@ -117,6 +117,9 @@ before(async () => {
 afterEach(async () => {
   await Promise.all(
     scenarios.map(async (workspace) => {
+      await prisma.client.automationExecution.deleteMany({
+        where: { organizationId: workspace.organizationId },
+      })
       await prisma.client.automation.deleteMany({
         where: { organizationId: workspace.organizationId },
       })
@@ -474,4 +477,41 @@ test('filtra automações por nome via GET /automations?query=BUSCA', async () =
   const noMatch = await api.get('/api/v1/automations?query=inexistente').set(scenario.headers)
   expectStatus(noMatch, 200)
   assert.equal(noMatch.body.meta.total, 0)
+})
+
+test('calcula contagem real de execuções na listagem e detalhe da automação', async () => {
+  scenario = await createWorkspaceScenario()
+  const api = request(app.getHttpServer())
+  const content = await createContent(api, scenario)
+
+  const created = await createAutomation(api, scenario)
+
+  const initialGet = await api.get(`/api/v1/automations/${created.id}`).set(scenario.headers)
+  expectStatus(initialGet, 200)
+  assert.equal(initialGet.body.executionCount, 0)
+
+  await prisma.client.automationExecution.create({
+    data: {
+      organizationId: scenario.organizationId,
+      contentId: content.id,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: randomUUID(),
+      inputAuthor: 'test_user',
+      inputText: 'comentário de teste',
+      automationId: created.id,
+      matched: true,
+      status: 'COMPLETED',
+    },
+  })
+
+  const afterExecution = await api.get(`/api/v1/automations/${created.id}`).set(scenario.headers)
+  expectStatus(afterExecution, 200)
+  assert.equal(afterExecution.body.executionCount, 1)
+
+  const list = await api.get('/api/v1/automations').set(scenario.headers)
+  expectStatus(list, 200)
+  const item = list.body.items.find((auto: any) => auto.id === created.id)
+  assert.ok(item)
+  assert.equal(item.executionCount, 1)
 })

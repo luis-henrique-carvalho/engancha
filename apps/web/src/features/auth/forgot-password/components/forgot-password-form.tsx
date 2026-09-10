@@ -57,18 +57,28 @@ export function ForgotPasswordForm({ className, ...props }: React.HTMLAttributes
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input placeholder="nome@exemplo.com" autoComplete="email" {...field} />
+                <Input
+                  placeholder="nome@exemplo.com"
+                  autoComplete="email"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         {message && (
-          <p className="text-sm text-muted-foreground" role="status">
+          <p
+            className="text-sm text-muted-foreground"
+            role="status"
+          >
             {message}
           </p>
         )}
-        <Button className="mt-2" disabled={isLoading}>
+        <Button
+          className="mt-2"
+          disabled={isLoading}
+        >
           Enviar instruções
           {isLoading ? <Loader2 className="animate-spin" /> : <ArrowRight />}
         </Button>

@@ -235,6 +235,8 @@ export type AutomationWhereInput = {
     Prisma.AutomationRevisionNullableScalarRelationFilter,
     Prisma.AutomationRevisionWhereInput
   > | null
+  originatingExecutions?: Prisma.AutomationExecutionListRelationFilter
+  matchedExecutions?: Prisma.AutomationExecutionListRelationFilter
 }
 
 export type AutomationOrderByWithRelationInput = {
@@ -253,6 +255,8 @@ export type AutomationOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   revisions?: Prisma.AutomationRevisionOrderByRelationAggregateInput
   currentPublishedRevision?: Prisma.AutomationRevisionOrderByWithRelationInput
+  originatingExecutions?: Prisma.AutomationExecutionOrderByRelationAggregateInput
+  matchedExecutions?: Prisma.AutomationExecutionOrderByRelationAggregateInput
 }
 
 export type AutomationWhereUniqueInput = Prisma.AtLeast<
@@ -281,6 +285,8 @@ export type AutomationWhereUniqueInput = Prisma.AtLeast<
       Prisma.AutomationRevisionNullableScalarRelationFilter,
       Prisma.AutomationRevisionWhereInput
     > | null
+    originatingExecutions?: Prisma.AutomationExecutionListRelationFilter
+    matchedExecutions?: Prisma.AutomationExecutionListRelationFilter
   },
   'id' | 'currentPublishedRevisionId'
 >
@@ -339,6 +345,8 @@ export type AutomationCreateInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
   revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
   currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUncheckedCreateInput = {
@@ -354,6 +362,8 @@ export type AutomationUncheckedCreateInput = {
   publishedAt?: Date | string | null
   pausedAt?: Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUpdateInput = {
@@ -369,6 +379,8 @@ export type AutomationUpdateInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
   revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
   currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateInput = {
@@ -384,6 +396,8 @@ export type AutomationUncheckedUpdateInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationCreateManyInput = {
@@ -745,6 +759,62 @@ export type AutomationUncheckedUpdateOneWithoutCurrentPublishedRevisionNestedInp
   >
 }
 
+export type AutomationCreateNestedOneWithoutOriginatingExecutionsInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationCreateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutOriginatingExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationCreateOrConnectWithoutOriginatingExecutionsInput
+  connect?: Prisma.AutomationWhereUniqueInput
+}
+
+export type AutomationCreateNestedOneWithoutMatchedExecutionsInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationCreateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutMatchedExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationCreateOrConnectWithoutMatchedExecutionsInput
+  connect?: Prisma.AutomationWhereUniqueInput
+}
+
+export type AutomationUpdateOneWithoutOriginatingExecutionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationCreateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutOriginatingExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationCreateOrConnectWithoutOriginatingExecutionsInput
+  upsert?: Prisma.AutomationUpsertWithoutOriginatingExecutionsInput
+  disconnect?: Prisma.AutomationWhereInput | boolean
+  delete?: Prisma.AutomationWhereInput | boolean
+  connect?: Prisma.AutomationWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.AutomationUpdateToOneWithWhereWithoutOriginatingExecutionsInput,
+      Prisma.AutomationUpdateWithoutOriginatingExecutionsInput
+    >,
+    Prisma.AutomationUncheckedUpdateWithoutOriginatingExecutionsInput
+  >
+}
+
+export type AutomationUpdateOneWithoutMatchedExecutionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationCreateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutMatchedExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationCreateOrConnectWithoutMatchedExecutionsInput
+  upsert?: Prisma.AutomationUpsertWithoutMatchedExecutionsInput
+  disconnect?: Prisma.AutomationWhereInput | boolean
+  delete?: Prisma.AutomationWhereInput | boolean
+  connect?: Prisma.AutomationWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.AutomationUpdateToOneWithWhereWithoutMatchedExecutionsInput,
+      Prisma.AutomationUpdateWithoutMatchedExecutionsInput
+    >,
+    Prisma.AutomationUncheckedUpdateWithoutMatchedExecutionsInput
+  >
+}
+
 export type AutomationCreateWithoutCreatedByInput = {
   id?: string
   status?: $Enums.AutomationStatus
@@ -757,6 +827,8 @@ export type AutomationCreateWithoutCreatedByInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutAutomationsInput
   revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
   currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUncheckedCreateWithoutCreatedByInput = {
@@ -771,6 +843,8 @@ export type AutomationUncheckedCreateWithoutCreatedByInput = {
   publishedAt?: Date | string | null
   pausedAt?: Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationCreateOrConnectWithoutCreatedByInput = {
@@ -843,6 +917,8 @@ export type AutomationCreateWithoutOrganizationInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
   revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
   currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUncheckedCreateWithoutOrganizationInput = {
@@ -857,6 +933,8 @@ export type AutomationUncheckedCreateWithoutOrganizationInput = {
   publishedAt?: Date | string | null
   pausedAt?: Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationCreateOrConnectWithoutOrganizationInput = {
@@ -914,6 +992,8 @@ export type AutomationCreateWithoutRevisionsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutAutomationsInput
   createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
   currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUncheckedCreateWithoutRevisionsInput = {
@@ -928,6 +1008,8 @@ export type AutomationUncheckedCreateWithoutRevisionsInput = {
   updatedAt?: Date | string
   publishedAt?: Date | string | null
   pausedAt?: Date | string | null
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationCreateOrConnectWithoutRevisionsInput = {
@@ -950,6 +1032,8 @@ export type AutomationCreateWithoutCurrentPublishedRevisionInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutAutomationsInput
   createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
   revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationUncheckedCreateWithoutCurrentPublishedRevisionInput = {
@@ -964,6 +1048,8 @@ export type AutomationUncheckedCreateWithoutCurrentPublishedRevisionInput = {
   publishedAt?: Date | string | null
   pausedAt?: Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
 }
 
 export type AutomationCreateOrConnectWithoutCurrentPublishedRevisionInput = {
@@ -1006,6 +1092,8 @@ export type AutomationUpdateWithoutRevisionsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutAutomationsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
   currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateWithoutRevisionsInput = {
@@ -1020,6 +1108,8 @@ export type AutomationUncheckedUpdateWithoutRevisionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUpsertWithoutCurrentPublishedRevisionInput = {
@@ -1054,6 +1144,8 @@ export type AutomationUpdateWithoutCurrentPublishedRevisionInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutAutomationsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
   revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateWithoutCurrentPublishedRevisionInput = {
@@ -1068,6 +1160,192 @@ export type AutomationUncheckedUpdateWithoutCurrentPublishedRevisionInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
+}
+
+export type AutomationCreateWithoutOriginatingExecutionsInput = {
+  id?: string
+  status?: $Enums.AutomationStatus
+  activeContentId?: string | null
+  activeKeywordNormalized?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutAutomationsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
+  revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
+  currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  matchedExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationInput
+}
+
+export type AutomationUncheckedCreateWithoutOriginatingExecutionsInput = {
+  id?: string
+  organizationId: string
+  createdByUserId: string
+  status?: $Enums.AutomationStatus
+  currentPublishedRevisionId?: string | null
+  activeContentId?: string | null
+  activeKeywordNormalized?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationInput
+}
+
+export type AutomationCreateOrConnectWithoutOriginatingExecutionsInput = {
+  where: Prisma.AutomationWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationCreateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutOriginatingExecutionsInput
+  >
+}
+
+export type AutomationCreateWithoutMatchedExecutionsInput = {
+  id?: string
+  status?: $Enums.AutomationStatus
+  activeContentId?: string | null
+  activeKeywordNormalized?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutAutomationsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutAutomationsInput
+  revisions?: Prisma.AutomationRevisionCreateNestedManyWithoutAutomationInput
+  currentPublishedRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutPublishedForInput
+  originatingExecutions?: Prisma.AutomationExecutionCreateNestedManyWithoutOriginAutomationInput
+}
+
+export type AutomationUncheckedCreateWithoutMatchedExecutionsInput = {
+  id?: string
+  organizationId: string
+  createdByUserId: string
+  status?: $Enums.AutomationStatus
+  currentPublishedRevisionId?: string | null
+  activeContentId?: string | null
+  activeKeywordNormalized?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  publishedAt?: Date | string | null
+  pausedAt?: Date | string | null
+  revisions?: Prisma.AutomationRevisionUncheckedCreateNestedManyWithoutAutomationInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutOriginAutomationInput
+}
+
+export type AutomationCreateOrConnectWithoutMatchedExecutionsInput = {
+  where: Prisma.AutomationWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationCreateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutMatchedExecutionsInput
+  >
+}
+
+export type AutomationUpsertWithoutOriginatingExecutionsInput = {
+  update: Prisma.XOR<
+    Prisma.AutomationUpdateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedUpdateWithoutOriginatingExecutionsInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationCreateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutOriginatingExecutionsInput
+  >
+  where?: Prisma.AutomationWhereInput
+}
+
+export type AutomationUpdateToOneWithWhereWithoutOriginatingExecutionsInput = {
+  where?: Prisma.AutomationWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationUpdateWithoutOriginatingExecutionsInput,
+    Prisma.AutomationUncheckedUpdateWithoutOriginatingExecutionsInput
+  >
+}
+
+export type AutomationUpdateWithoutOriginatingExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAutomationStatusFieldUpdateOperationsInput | $Enums.AutomationStatus
+  activeContentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeKeywordNormalized?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutAutomationsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
+  revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
+  currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
+}
+
+export type AutomationUncheckedUpdateWithoutOriginatingExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAutomationStatusFieldUpdateOperationsInput | $Enums.AutomationStatus
+  currentPublishedRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeContentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeKeywordNormalized?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
+}
+
+export type AutomationUpsertWithoutMatchedExecutionsInput = {
+  update: Prisma.XOR<
+    Prisma.AutomationUpdateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedUpdateWithoutMatchedExecutionsInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationCreateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedCreateWithoutMatchedExecutionsInput
+  >
+  where?: Prisma.AutomationWhereInput
+}
+
+export type AutomationUpdateToOneWithWhereWithoutMatchedExecutionsInput = {
+  where?: Prisma.AutomationWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationUpdateWithoutMatchedExecutionsInput,
+    Prisma.AutomationUncheckedUpdateWithoutMatchedExecutionsInput
+  >
+}
+
+export type AutomationUpdateWithoutMatchedExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAutomationStatusFieldUpdateOperationsInput | $Enums.AutomationStatus
+  activeContentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeKeywordNormalized?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutAutomationsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
+  revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
+  currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+}
+
+export type AutomationUncheckedUpdateWithoutMatchedExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAutomationStatusFieldUpdateOperationsInput | $Enums.AutomationStatus
+  currentPublishedRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeContentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activeKeywordNormalized?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
 }
 
 export type AutomationCreateManyCreatedByInput = {
@@ -1095,6 +1373,8 @@ export type AutomationUpdateWithoutCreatedByInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutAutomationsNestedInput
   revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
   currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateWithoutCreatedByInput = {
@@ -1109,6 +1389,8 @@ export type AutomationUncheckedUpdateWithoutCreatedByInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1149,6 +1431,8 @@ export type AutomationUpdateWithoutOrganizationInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutAutomationsNestedInput
   revisions?: Prisma.AutomationRevisionUpdateManyWithoutAutomationNestedInput
   currentPublishedRevision?: Prisma.AutomationRevisionUpdateOneWithoutPublishedForNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateWithoutOrganizationInput = {
@@ -1163,6 +1447,8 @@ export type AutomationUncheckedUpdateWithoutOrganizationInput = {
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   pausedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revisions?: Prisma.AutomationRevisionUncheckedUpdateManyWithoutAutomationNestedInput
+  originatingExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationNestedInput
+  matchedExecutions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationNestedInput
 }
 
 export type AutomationUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1184,12 +1470,16 @@ export type AutomationUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type AutomationCountOutputType = {
   revisions: number
+  originatingExecutions: number
+  matchedExecutions: number
 }
 
 export type AutomationCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   revisions?: boolean | AutomationCountOutputTypeCountRevisionsArgs
+  originatingExecutions?: boolean | AutomationCountOutputTypeCountOriginatingExecutionsArgs
+  matchedExecutions?: boolean | AutomationCountOutputTypeCountMatchedExecutionsArgs
 }
 
 /**
@@ -1213,6 +1503,24 @@ export type AutomationCountOutputTypeCountRevisionsArgs<
   where?: Prisma.AutomationRevisionWhereInput
 }
 
+/**
+ * AutomationCountOutputType without action
+ */
+export type AutomationCountOutputTypeCountOriginatingExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.AutomationExecutionWhereInput
+}
+
+/**
+ * AutomationCountOutputType without action
+ */
+export type AutomationCountOutputTypeCountMatchedExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.AutomationExecutionWhereInput
+}
+
 export type AutomationSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1232,6 +1540,8 @@ export type AutomationSelect<
     createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
     revisions?: boolean | Prisma.Automation$revisionsArgs<ExtArgs>
     currentPublishedRevision?: boolean | Prisma.Automation$currentPublishedRevisionArgs<ExtArgs>
+    originatingExecutions?: boolean | Prisma.Automation$originatingExecutionsArgs<ExtArgs>
+    matchedExecutions?: boolean | Prisma.Automation$matchedExecutionsArgs<ExtArgs>
     _count?: boolean | Prisma.AutomationCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['automation']
@@ -1318,6 +1628,8 @@ export type AutomationInclude<
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   revisions?: boolean | Prisma.Automation$revisionsArgs<ExtArgs>
   currentPublishedRevision?: boolean | Prisma.Automation$currentPublishedRevisionArgs<ExtArgs>
+  originatingExecutions?: boolean | Prisma.Automation$originatingExecutionsArgs<ExtArgs>
+  matchedExecutions?: boolean | Prisma.Automation$matchedExecutionsArgs<ExtArgs>
   _count?: boolean | Prisma.AutomationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AutomationIncludeCreateManyAndReturn<
@@ -1344,6 +1656,8 @@ export type $AutomationPayload<
     createdBy: Prisma.$UserPayload<ExtArgs>
     revisions: Prisma.$AutomationRevisionPayload<ExtArgs>[]
     currentPublishedRevision: Prisma.$AutomationRevisionPayload<ExtArgs> | null
+    originatingExecutions: Prisma.$AutomationExecutionPayload<ExtArgs>[]
+    matchedExecutions: Prisma.$AutomationExecutionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1948,6 +2262,28 @@ export interface Prisma__AutomationClient<
     ExtArgs,
     GlobalOmitOptions
   >
+  originatingExecutions<T extends Prisma.Automation$originatingExecutionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Automation$originatingExecutionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$AutomationExecutionPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
+  matchedExecutions<T extends Prisma.Automation$matchedExecutionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Automation$matchedExecutionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$AutomationExecutionPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2470,6 +2806,62 @@ export type Automation$currentPublishedRevisionArgs<
    */
   include?: Prisma.AutomationRevisionInclude<ExtArgs> | null
   where?: Prisma.AutomationRevisionWhereInput
+}
+
+/**
+ * Automation.originatingExecutions
+ */
+export type Automation$originatingExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the AutomationExecution
+   */
+  select?: Prisma.AutomationExecutionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationExecution
+   */
+  omit?: Prisma.AutomationExecutionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationExecutionInclude<ExtArgs> | null
+  where?: Prisma.AutomationExecutionWhereInput
+  orderBy?:
+    | Prisma.AutomationExecutionOrderByWithRelationInput
+    | Prisma.AutomationExecutionOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationExecutionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationExecutionScalarFieldEnum | Prisma.AutomationExecutionScalarFieldEnum[]
+}
+
+/**
+ * Automation.matchedExecutions
+ */
+export type Automation$matchedExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the AutomationExecution
+   */
+  select?: Prisma.AutomationExecutionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationExecution
+   */
+  omit?: Prisma.AutomationExecutionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationExecutionInclude<ExtArgs> | null
+  where?: Prisma.AutomationExecutionWhereInput
+  orderBy?:
+    | Prisma.AutomationExecutionOrderByWithRelationInput
+    | Prisma.AutomationExecutionOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationExecutionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationExecutionScalarFieldEnum | Prisma.AutomationExecutionScalarFieldEnum[]
 }
 
 /**

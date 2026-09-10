@@ -20,7 +20,7 @@
 | Arquitetura           | ✅ Aprovada — versão 1.1                      |
 | Requisitos funcionais | ✅ Definidos — revisão contínua               |
 | Roadmap               | ✅ Criado                                     |
-| Código                | 🟡 Fase 3 concluída localmente; Fase 2 em validação externa |
+| Código                | ✅ Fases 1 a 4 concluídas localmente; Fase 2 em validação externa |
 | Meta/Instagram real   | ⏸️ Futuro — EPIC-09                           |
 | Outros providers      | ⏸️ Posterior — mesmos contratos e capacidades |
 
@@ -112,7 +112,7 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 **Decisão:** modelo aprovado pelo usuário em 13/08/2026. As decisões adiadas no documento foram aceitas como decisões de MVP e podem ser refinadas posteriormente sem bloquear a fundação.
 
-**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
+**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./phases/phase-future-instagram-meta/007-channel-connections-and-automation-targeting/prd.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
 
 ---
 
@@ -177,7 +177,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Critério de conclusão:** ✅ `web`, `api` e `worker` iniciam localmente com Docker Compose, conectam ao PostgreSQL/Redis e executam um job de teste.
 
-**Bloqueios:** nenhum. A PRD [Fundação executável local do monorepo](./prds/local-executable-monorepo-foundation.md) e os tickets `001`–`008` foram concluídos em 2026-08-13. A validação final registrou 30 testes aprovados, typecheck e lint aprovados; o format check global possui duas divergências preexistentes no worker, fora da fundação funcional.
+**Bloqueios:** nenhum. A PRD [Fundação executável local do monorepo](./phases/phase-01-foundation/001-local-executable-monorepo-foundation/prd.md) e os tickets `001`–`008` foram concluídos em 2026-08-13. A validação final registrou 30 testes aprovados, typecheck e lint aprovados; o format check global possui duas divergências preexistentes no worker, fora da fundação funcional.
 
 ---
 
@@ -279,46 +279,46 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 ## Fase 4 — Simulação ponta a ponta
 
-**Status:** ⏳ NÃO INICIADA  
+**Status:** ✅ CONCLUÍDA  
 **Épico:** EPIC-04  
 **Objetivo:** processar uma interação simulada no provider selecionado usando o mesmo pipeline previsto para integrações reais e providers futuros.
 
 ### Abstração de canal
 
-- [ ] Definir `ChannelProvider`.
-- [ ] Definir `Provider` e `ExecutionMode` como dimensões independentes.
-- [ ] Definir `IncomingInteraction`.
-- [ ] Definir `IncomingMessage`.
-- [ ] Definir `PublicReply`.
-- [ ] Definir `PrivateReply`.
-- [ ] Definir `DirectMessage`.
-- [ ] Definir `ChannelCapabilities`.
-- [ ] Exibir seleção de provider no simulador, inicialmente com `Instagram` como única opção disponível.
-- [ ] Definir `mode=SIMULATED` exclusivamente no backend; o modo não é uma escolha exposta pela interface nem aceita do browser.
-- [ ] Implementar adapter do Instagram em modo `SIMULATED`.
-- [ ] Garantir que o simulador não chame diretamente o motor de automação.
+- [x] Definir `ChannelProvider`.
+- [x] Definir `Provider` e `ExecutionMode` como dimensões independentes.
+- [x] Definir `IncomingInteraction`.
+- [x] Definir `IncomingMessage`.
+- [x] Definir `PublicReply`.
+- [x] Definir `PrivateReply`.
+- [x] Definir `DirectMessage`.
+- [x] Definir `ChannelCapabilities`.
+- [x] Exibir seleção de provider no simulador, inicialmente com `Instagram` como única opção disponível.
+- [x] Definir `mode=SIMULATED` exclusivamente no backend; o modo não é uma escolha exposta pela interface nem aceita do browser.
+- [x] Implementar adapter do Instagram em modo `SIMULATED`.
+- [x] Garantir que o simulador não chame diretamente o motor de automação.
 
 ### Eventos e filas
 
-- [ ] Criar evento normalizado `interaction.received.v1`.
-- [ ] Criar job `automation-execution`.
-- [ ] Implementar `AutomationExecutionProcessor`.
-- [ ] Implementar normalização de palavra-chave.
-- [ ] Implementar matching case-insensitive.
-- [ ] Implementar idempotência por evento/comentário.
-- [ ] Persistir status `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED` e `IGNORED`.
-- [ ] Configurar retries e backoff.
+- [x] Criar evento normalizado `interaction.received.v1`.
+- [x] Criar job `automation-execution`.
+- [x] Implementar `AutomationExecutionProcessor`.
+- [x] Implementar normalização de palavra-chave.
+- [x] Implementar matching case-insensitive.
+- [x] Implementar idempotência por evento/comentário.
+- [x] Persistir status `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED` e `IGNORED`.
+- [x] Configurar retries e backoff.
 
 ### API e interface
 
-- [ ] `POST /api/v1/simulations/comments`.
-- [ ] `GET /api/v1/simulations/executions/:id`.
-- [ ] `GET /api/v1/simulations/executions/:id/events` via SSE para atualizações da execução.
-- [ ] Criar simulador de comentário.
-- [ ] Exibir prévia da experiência do seguidor na aba `Testar`, sem linguagem de logs ou infraestrutura.
-- [ ] Exibir a aba `Atividade` com interações agrupadas por automação e atualização em tempo real por SSE.
-- [ ] Exibir status e resultado da execução em linguagem compreensível.
-- [ ] Exibir falha de forma compreensível.
+- [x] `POST /api/v1/simulations/comments`.
+- [x] `GET /api/v1/simulations/executions/:id`.
+- [x] `GET /api/v1/simulations/executions/:id/events` via SSE para atualizações da execução.
+- [x] Criar simulador de comentário.
+- [x] Exibir prévia da experiência do seguidor na aba `Testar`, sem linguagem de logs ou infraestrutura.
+- [x] Exibir a aba `Atividade` com interações agrupadas por automação e atualização em tempo real por SSE.
+- [x] Exibir status e resultado da execução em linguagem compreensível.
+- [x] Exibir falha de forma compreensível.
 
 ### Decisões de experiência e escopo
 
@@ -328,9 +328,11 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 - SSE atualiza a atividade em tempo real; `GET /simulations/executions/:id` permanece como fallback de carregamento e reconexão. PostgreSQL é a fonte de verdade.
 - A Fase 4 persiste execuções e saídas simuladas. Conversas, contatos, leads, tags e captura efetiva de e-mail pertencem à Fase 5.
 
-**Critério de conclusão:** um comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável na interface.
+**Critério de conclusão:** ✅ um comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável na interface.
 
-**Bloqueios:** nenhum esperado.
+**Bloqueios:** nenhum. A PRD [Fase 4 — Simulação ponta a ponta](./phases/phase-04-end-to-end-simulation/005-end-to-end-simulation/prd.md) e os tickets `001`–`013` foram concluídos em 2026-09-01.
+
+**Validação de encerramento (2026-09-01):** `npm run verify` aprovado integralmente (typecheck sem erros em todos os workspaces; 85 testes da suíte completa de integração/E2E com PostgreSQL e Redis locais, incluindo rate limiting e controle de conexões SSE; 222 testes web/DOM no Vitest Browser; ESLint sem erros; Prettier 100% formatado).
 
 ---
 
@@ -468,7 +470,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 **Épico:** EPIC-09  
 **Objetivo:** substituir o adapter simulado do Instagram por integração real sem duplicar o motor de automações.
 
-**PRD:** [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md)
+**PRD:** [Conexões de canais e direcionamento de automações](./phases/phase-future-instagram-meta/007-channel-connections-and-automation-targeting/prd.md)
 
 ### Fundação de canais e conexões
 

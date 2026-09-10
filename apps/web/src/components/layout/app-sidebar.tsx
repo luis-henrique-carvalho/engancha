@@ -25,13 +25,22 @@ export function AppSidebar({ user, workspace, onWorkspaceChange }: AppSidebarPro
   const sidebarData = createSidebarData({ user, workspace })
 
   return (
-    <Sidebar collapsible={collapsible} variant={variant}>
+    <Sidebar
+      collapsible={collapsible}
+      variant={variant}
+    >
       <SidebarHeader>
-        <TeamSwitcher workspace={workspace} onWorkspaceChange={onWorkspaceChange} />
+        <TeamSwitcher
+          workspace={workspace}
+          onWorkspaceChange={onWorkspaceChange}
+        />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (
-          <NavGroup key={props.title} {...props} />
+          <NavGroup
+            key={props.title}
+            {...props}
+          />
         ))}
       </SidebarContent>
       <SidebarFooter>

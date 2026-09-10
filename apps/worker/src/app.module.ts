@@ -4,9 +4,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import type { WorkerRuntimeConfig } from './config/runtime-env'
 import { CoreModule } from './common/core.module'
 import { WorkerConfigModule } from './config/worker-config.module'
+import { DatabaseModule } from './platform/database/database.module'
 import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { VerificationModule } from './verification/verification.module'
 import { EmailModule } from './email/email.module'
+import { AutomationExecutionModule } from './automation-execution/automation-execution.module'
 
 @Module({
   imports: [
@@ -19,9 +21,11 @@ import { EmailModule } from './email/email.module'
       }),
     }),
     CoreModule,
+    DatabaseModule,
     InfrastructureModule,
     VerificationModule,
     EmailModule,
+    AutomationExecutionModule,
   ],
 })
 export class AppModule {}

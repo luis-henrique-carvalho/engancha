@@ -3,24 +3,15 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
 import type { AutomationResponse } from '@engancha/contracts'
-import { Link as LinkIcon, Mail } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Form } from '@/components/ui/form'
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Label } from '@/components/ui/label'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+  AutomationSaveBar,
+  AutomationStepSection,
+  useOptionalAutomationEditor,
+  FinalActionEmailFields,
+  FinalActionLinkFields,
+  FinalActionTypeSelector,
+} from '../components'
 import {
   buildUpdatedActions,
   getFinalAction,
@@ -67,7 +58,6 @@ export function FinalActionStepView({
     initialFinalAction?.type === 'CAPTURE_EMAIL' ? 'CAPTURE_EMAIL' : 'LINK'
 
   const [selectedType, setSelectedType] = useState<'LINK' | 'CAPTURE_EMAIL'>(initialActionType)
-
   const { patchAutomation, isSaving } = useAutomationMutations(workspaceId, automationId)
 
   const form = useForm<AutomationFinalActionFormValues>({
@@ -99,12 +89,7 @@ export function FinalActionStepView({
   const watchedValues = form.watch()
   const watchedPrompt =
     watchedValues.actionType === 'CAPTURE_EMAIL' ? (watchedValues.prompt ?? '') : ''
-  const watchedLabel =
-    watchedValues.actionType === 'LINK' ? watchedLabelFromLink(watchedValues) : ''
-
-  function watchedLabelFromLink(v: AutomationFinalActionFormValues) {
-    return v.actionType === 'LINK' ? (v.label ?? '') : ''
-  }
+  const watchedLabel = watchedValues.actionType === 'LINK' ? (watchedValues.label ?? '') : ''
 
   const { UnsavedChangesDialog } = useUnsavedChanges({
     isDirty: form.formState.isDirty,
@@ -178,149 +163,27 @@ export function FinalActionStepView({
       description="Configure o link de destino ou captura de e-mail."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Tipo de ação final</Label>
-            <RadioGroup
-              value={selectedType}
-              onValueChange={(val) => handleModeChange(val as 'LINK' | 'CAPTURE_EMAIL')}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-            >
-              <Label
-                htmlFor="final-action-link"
-                data-testid="final-action-type-link"
-                className={cn(
-                  'flex cursor-pointer items-start gap-3 rounded-lg border-2 p-4 transition-colors hover:bg-accent/50',
-                  selectedType === 'LINK'
-                    ? 'border-primary bg-primary/5'
-                    : 'border-muted bg-popover',
-                )}
-              >
-                <RadioGroupItem value="LINK" id="final-action-link" className="mt-0.5" />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 font-semibold">
-                    <LinkIcon className="h-4 w-4 text-primary" />
-                    <span>Link externo</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-normal">
-                    Envia um link com botão interativo para direcionar o seguidor.
-                  </p>
-                </div>
-              </Label>
-
-              <Label
-                htmlFor="final-action-email"
-                data-testid="final-action-type-email"
-                className={cn(
-                  'flex cursor-pointer items-start gap-3 rounded-lg border-2 p-4 transition-colors hover:bg-accent/50',
-                  selectedType === 'CAPTURE_EMAIL'
-                    ? 'border-primary bg-primary/5'
-                    : 'border-muted bg-popover',
-                )}
-              >
-                <RadioGroupItem value="CAPTURE_EMAIL" id="final-action-email" className="mt-0.5" />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 font-semibold">
-                    <Mail className="h-4 w-4 text-primary" />
-                    <span>Captura de e-mail</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground font-normal">
-                    Solicita o endereço de e-mail para geração de leads.
-                  </p>
-                </div>
-              </Label>
-            </RadioGroup>
-          </div>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          <FinalActionTypeSelector
+            selectedType={selectedType}
+            onSelectType={handleModeChange}
+          />
 
           {selectedType === 'LINK' && (
-            <div className="space-y-4 rounded-lg border p-4">
-              <FormField
-                control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL de destino</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="https://exemplo.com.br/promocao"
-                        data-testid="automation-final-action-url-input"
-                        {...field}
-                        value={field.value ?? ''}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Endereço web para onde o seguidor será direcionado ao clicar.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="label"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Texto do botão / rótulo (opcional)</FormLabel>
-                      <span
-                        className="text-xs text-muted-foreground"
-                        data-testid="automation-final-action-label-char-count"
-                      >
-                        {watchedLabel.length}/80 caracteres
-                      </span>
-                    </div>
-                    <FormControl>
-                      <Input
-                        placeholder="Ex: Acessar cupom"
-                        data-testid="automation-final-action-label-input"
-                        {...field}
-                        value={field.value ?? ''}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Texto exibido no botão da mensagem direta (padrão: Abrir link).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FinalActionLinkFields
+              form={form}
+              watchedLabel={watchedLabel}
+            />
           )}
 
           {selectedType === 'CAPTURE_EMAIL' && (
-            <div className="space-y-4 rounded-lg border p-4">
-              <FormField
-                control={form.control}
-                name="prompt"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Mensagem de solicitação do e-mail</FormLabel>
-                      <span
-                        className="text-xs text-muted-foreground"
-                        data-testid="automation-final-action-prompt-char-count"
-                      >
-                        {watchedPrompt.length}/300 caracteres
-                      </span>
-                    </div>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Ex: Por favor, digite seu melhor e-mail para receber o material:"
-                        rows={3}
-                        data-testid="automation-final-action-prompt-input"
-                        {...field}
-                        value={field.value ?? ''}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Texto enviado no Direct para solicitar o endereço de e-mail do seguidor.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FinalActionEmailFields
+              form={form}
+              watchedPrompt={watchedPrompt}
+            />
           )}
 
           <AutomationSaveBar

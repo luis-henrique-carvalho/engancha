@@ -24,6 +24,11 @@ const include = {
       actions: { orderBy: { position: 'asc' } },
     },
   },
+  _count: {
+    select: {
+      matchedExecutions: true,
+    },
+  },
 } as const
 
 @Injectable()

@@ -70,16 +70,17 @@ model Verification {
 }
 
 model Organization {
-  id          String       @id
+  id          String                @id
   name        String
-  slug        String       @unique
+  slug        String                @unique
   logo        String?
   metadata    String?
-  createdAt   DateTime     @default(now())
+  createdAt   DateTime              @default(now())
   members     Member[]
   invitations Invitation[]
   automations Automation[]
   contents    Content[]
+  executions  AutomationExecution[]
 }
 
 enum AutomationStatus {
@@ -121,39 +122,57 @@ enum ContentType {
   VIDEO
 }
 
+enum AutomationExecutionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  IGNORED
+  FAILED
+}
+
+enum AutomationExecutionOutputType {
+  PUBLIC_REPLY
+  PRIVATE_REPLY
+  LINK_DELIVERY
+  EMAIL_CAPTURE_REQUEST
+}
+
 model Content {
-  id                String             @id @default(uuid())
+  id                String                @id @default(uuid())
   organizationId    String
-  provider          ContentProvider    @default(INSTAGRAM)
-  mode              ContentMode        @default(SIMULATED)
-  contentType       ContentType        @default(POST)
+  provider          ContentProvider       @default(INSTAGRAM)
+  mode              ContentMode           @default(SIMULATED)
+  contentType       ContentType           @default(POST)
   title             String
   externalContentId String
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  organization      Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   targets           AutomationTarget[]
+  executions        AutomationExecution[]
 
   @@unique([organizationId, provider, mode, contentType, externalContentId])
   @@index([organizationId, updatedAt])
 }
 
 model Automation {
-  id                         String               @id @default(uuid())
+  id                         String                @id @default(uuid())
   organizationId             String
   createdByUserId            String
-  status                     AutomationStatus     @default(DRAFT)
-  currentPublishedRevisionId String?              @unique
+  status                     AutomationStatus      @default(DRAFT)
+  currentPublishedRevisionId String?               @unique
   activeContentId            String?
   activeKeywordNormalized    String?
-  createdAt                  DateTime             @default(now())
-  updatedAt                  DateTime             @updatedAt
+  createdAt                  DateTime              @default(now())
+  updatedAt                  DateTime              @updatedAt
   publishedAt                DateTime?
   pausedAt                   DateTime?
-  organization               Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  createdBy                  User                 @relation("AutomationCreator", fields: [createdByUserId], references: [id])
+  organization               Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy                  User                  @relation("AutomationCreator", fields: [createdByUserId], references: [id])
   revisions                  AutomationRevision[]
-  currentPublishedRevision   AutomationRevision?  @relation("CurrentPublishedRevision", fields: [currentPublishedRevisionId], references: [id])
+  currentPublishedRevision   AutomationRevision?   @relation("CurrentPublishedRevision", fields: [currentPublishedRevisionId], references: [id])
+  originatingExecutions      AutomationExecution[] @relation("ExecutionOriginAutomation")
+  matchedExecutions          AutomationExecution[] @relation("ExecutionAutomation")
 
   @@index([organizationId, status, updatedAt])
 }
@@ -171,6 +190,7 @@ model AutomationRevision {
   target       AutomationTarget?
   trigger      AutomationTrigger?
   actions      AutomationAction[]
+  executions   AutomationExecution[]
 
   @@unique([automationId, version])
 }
@@ -201,6 +221,58 @@ model AutomationAction {
   revision   AutomationRevision   @relation(fields: [revisionId], references: [id], onDelete: Cascade)
 
   @@unique([revisionId, position])
+}
+
+model AutomationExecution {
+  id                   String                      @id @default(uuid())
+  organizationId       String
+  contentId            String
+  provider             ContentProvider
+  mode                 ContentMode                 @default(SIMULATED)
+  channelConnectionId  String?
+  commentId            String?
+  idempotencyKey       String
+  inputAuthor          String
+  inputText            String
+  originAutomationId   String?
+  automationId         String?
+  automationRevisionId String?
+  automationSnapshot   Json?
+  status               AutomationExecutionStatus   @default(PENDING)
+  matched              Boolean?
+  attempts             Int                         @default(0)
+  errorCode            String?
+  errorMessage         String?
+  stateVersion         Int                         @default(1)
+  enqueuedAt           DateTime?
+  startedAt            DateTime?
+  completedAt          DateTime?
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+  organization         Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  content              Content                     @relation(fields: [contentId], references: [id])
+  originAutomation     Automation?                 @relation("ExecutionOriginAutomation", fields: [originAutomationId], references: [id])
+  automation           Automation?                 @relation("ExecutionAutomation", fields: [automationId], references: [id])
+  automationRevision   AutomationRevision?         @relation(fields: [automationRevisionId], references: [id])
+  outputs              AutomationExecutionOutput[]
+
+  @@unique([organizationId, provider, mode, idempotencyKey])
+  @@index([organizationId, status, createdAt])
+  @@index([contentId, createdAt])
+}
+
+model AutomationExecutionOutput {
+  id          String                        @id @default(uuid())
+  executionId String
+  key         String
+  position    Int
+  type        AutomationExecutionOutputType
+  payload     Json
+  createdAt   DateTime                      @default(now())
+  execution   AutomationExecution           @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, key])
+  @@index([executionId, position])
 }
 
 model Member {

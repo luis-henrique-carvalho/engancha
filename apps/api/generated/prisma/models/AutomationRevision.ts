@@ -250,6 +250,7 @@ export type AutomationRevisionWhereInput = {
     Prisma.AutomationTriggerWhereInput
   > | null
   actions?: Prisma.AutomationActionListRelationFilter
+  executions?: Prisma.AutomationExecutionListRelationFilter
 }
 
 export type AutomationRevisionOrderByWithRelationInput = {
@@ -265,6 +266,7 @@ export type AutomationRevisionOrderByWithRelationInput = {
   target?: Prisma.AutomationTargetOrderByWithRelationInput
   trigger?: Prisma.AutomationTriggerOrderByWithRelationInput
   actions?: Prisma.AutomationActionOrderByRelationAggregateInput
+  executions?: Prisma.AutomationExecutionOrderByRelationAggregateInput
 }
 
 export type AutomationRevisionWhereUniqueInput = Prisma.AtLeast<
@@ -296,6 +298,7 @@ export type AutomationRevisionWhereUniqueInput = Prisma.AtLeast<
       Prisma.AutomationTriggerWhereInput
     > | null
     actions?: Prisma.AutomationActionListRelationFilter
+    executions?: Prisma.AutomationExecutionListRelationFilter
   },
   'id' | 'automationId_version'
 >
@@ -350,6 +353,7 @@ export type AutomationRevisionCreateInput = {
   target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateInput = {
@@ -364,6 +368,7 @@ export type AutomationRevisionUncheckedCreateInput = {
   target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUpdateInput = {
@@ -380,6 +385,7 @@ export type AutomationRevisionUpdateInput = {
   target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateInput = {
@@ -396,6 +402,7 @@ export type AutomationRevisionUncheckedUpdateInput = {
   target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionCreateManyInput = {
@@ -706,6 +713,34 @@ export type AutomationRevisionUpdateOneRequiredWithoutActionsNestedInput = {
   >
 }
 
+export type AutomationRevisionCreateNestedOneWithoutExecutionsInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationRevisionCreateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedCreateWithoutExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationRevisionCreateOrConnectWithoutExecutionsInput
+  connect?: Prisma.AutomationRevisionWhereUniqueInput
+}
+
+export type AutomationRevisionUpdateOneWithoutExecutionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationRevisionCreateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedCreateWithoutExecutionsInput
+  >
+  connectOrCreate?: Prisma.AutomationRevisionCreateOrConnectWithoutExecutionsInput
+  upsert?: Prisma.AutomationRevisionUpsertWithoutExecutionsInput
+  disconnect?: Prisma.AutomationRevisionWhereInput | boolean
+  delete?: Prisma.AutomationRevisionWhereInput | boolean
+  connect?: Prisma.AutomationRevisionWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.AutomationRevisionUpdateToOneWithWhereWithoutExecutionsInput,
+      Prisma.AutomationRevisionUpdateWithoutExecutionsInput
+    >,
+    Prisma.AutomationRevisionUncheckedUpdateWithoutExecutionsInput
+  >
+}
+
 export type AutomationRevisionCreateWithoutAutomationInput = {
   id?: string
   version: number
@@ -717,6 +752,7 @@ export type AutomationRevisionCreateWithoutAutomationInput = {
   target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateWithoutAutomationInput = {
@@ -730,6 +766,7 @@ export type AutomationRevisionUncheckedCreateWithoutAutomationInput = {
   target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionCreateOrConnectWithoutAutomationInput = {
@@ -758,6 +795,7 @@ export type AutomationRevisionCreateWithoutPublishedForInput = {
   target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateWithoutPublishedForInput = {
@@ -771,6 +809,7 @@ export type AutomationRevisionUncheckedCreateWithoutPublishedForInput = {
   target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionCreateOrConnectWithoutPublishedForInput = {
@@ -857,6 +896,7 @@ export type AutomationRevisionUpdateWithoutPublishedForInput = {
   target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateWithoutPublishedForInput = {
@@ -872,6 +912,7 @@ export type AutomationRevisionUncheckedUpdateWithoutPublishedForInput = {
   target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionCreateWithoutTargetInput = {
@@ -885,6 +926,7 @@ export type AutomationRevisionCreateWithoutTargetInput = {
   publishedFor?: Prisma.AutomationCreateNestedOneWithoutCurrentPublishedRevisionInput
   trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateWithoutTargetInput = {
@@ -898,6 +940,7 @@ export type AutomationRevisionUncheckedCreateWithoutTargetInput = {
   publishedFor?: Prisma.AutomationUncheckedCreateNestedOneWithoutCurrentPublishedRevisionInput
   trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionCreateOrConnectWithoutTargetInput = {
@@ -941,6 +984,7 @@ export type AutomationRevisionUpdateWithoutTargetInput = {
   publishedFor?: Prisma.AutomationUpdateOneWithoutCurrentPublishedRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateWithoutTargetInput = {
@@ -956,6 +1000,7 @@ export type AutomationRevisionUncheckedUpdateWithoutTargetInput = {
   publishedFor?: Prisma.AutomationUncheckedUpdateOneWithoutCurrentPublishedRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionCreateWithoutTriggerInput = {
@@ -969,6 +1014,7 @@ export type AutomationRevisionCreateWithoutTriggerInput = {
   publishedFor?: Prisma.AutomationCreateNestedOneWithoutCurrentPublishedRevisionInput
   target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateWithoutTriggerInput = {
@@ -982,6 +1028,7 @@ export type AutomationRevisionUncheckedCreateWithoutTriggerInput = {
   publishedFor?: Prisma.AutomationUncheckedCreateNestedOneWithoutCurrentPublishedRevisionInput
   target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
   actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionCreateOrConnectWithoutTriggerInput = {
@@ -1025,6 +1072,7 @@ export type AutomationRevisionUpdateWithoutTriggerInput = {
   publishedFor?: Prisma.AutomationUpdateOneWithoutCurrentPublishedRevisionNestedInput
   target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateWithoutTriggerInput = {
@@ -1040,6 +1088,7 @@ export type AutomationRevisionUncheckedUpdateWithoutTriggerInput = {
   publishedFor?: Prisma.AutomationUncheckedUpdateOneWithoutCurrentPublishedRevisionNestedInput
   target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionCreateWithoutActionsInput = {
@@ -1053,6 +1102,7 @@ export type AutomationRevisionCreateWithoutActionsInput = {
   publishedFor?: Prisma.AutomationCreateNestedOneWithoutCurrentPublishedRevisionInput
   target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionUncheckedCreateWithoutActionsInput = {
@@ -1066,6 +1116,7 @@ export type AutomationRevisionUncheckedCreateWithoutActionsInput = {
   publishedFor?: Prisma.AutomationUncheckedCreateNestedOneWithoutCurrentPublishedRevisionInput
   target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
   trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutAutomationRevisionInput
 }
 
 export type AutomationRevisionCreateOrConnectWithoutActionsInput = {
@@ -1109,6 +1160,7 @@ export type AutomationRevisionUpdateWithoutActionsInput = {
   publishedFor?: Prisma.AutomationUpdateOneWithoutCurrentPublishedRevisionNestedInput
   target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateWithoutActionsInput = {
@@ -1124,6 +1176,95 @@ export type AutomationRevisionUncheckedUpdateWithoutActionsInput = {
   publishedFor?: Prisma.AutomationUncheckedUpdateOneWithoutCurrentPublishedRevisionNestedInput
   target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
+}
+
+export type AutomationRevisionCreateWithoutExecutionsInput = {
+  id?: string
+  version: number
+  status?: $Enums.AutomationRevisionStatus
+  name?: string | null
+  createdAt?: Date | string
+  publishedAt?: Date | string | null
+  automation: Prisma.AutomationCreateNestedOneWithoutRevisionsInput
+  publishedFor?: Prisma.AutomationCreateNestedOneWithoutCurrentPublishedRevisionInput
+  target?: Prisma.AutomationTargetCreateNestedOneWithoutRevisionInput
+  trigger?: Prisma.AutomationTriggerCreateNestedOneWithoutRevisionInput
+  actions?: Prisma.AutomationActionCreateNestedManyWithoutRevisionInput
+}
+
+export type AutomationRevisionUncheckedCreateWithoutExecutionsInput = {
+  id?: string
+  automationId: string
+  version: number
+  status?: $Enums.AutomationRevisionStatus
+  name?: string | null
+  createdAt?: Date | string
+  publishedAt?: Date | string | null
+  publishedFor?: Prisma.AutomationUncheckedCreateNestedOneWithoutCurrentPublishedRevisionInput
+  target?: Prisma.AutomationTargetUncheckedCreateNestedOneWithoutRevisionInput
+  trigger?: Prisma.AutomationTriggerUncheckedCreateNestedOneWithoutRevisionInput
+  actions?: Prisma.AutomationActionUncheckedCreateNestedManyWithoutRevisionInput
+}
+
+export type AutomationRevisionCreateOrConnectWithoutExecutionsInput = {
+  where: Prisma.AutomationRevisionWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationRevisionCreateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedCreateWithoutExecutionsInput
+  >
+}
+
+export type AutomationRevisionUpsertWithoutExecutionsInput = {
+  update: Prisma.XOR<
+    Prisma.AutomationRevisionUpdateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedUpdateWithoutExecutionsInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationRevisionCreateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedCreateWithoutExecutionsInput
+  >
+  where?: Prisma.AutomationRevisionWhereInput
+}
+
+export type AutomationRevisionUpdateToOneWithWhereWithoutExecutionsInput = {
+  where?: Prisma.AutomationRevisionWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationRevisionUpdateWithoutExecutionsInput,
+    Prisma.AutomationRevisionUncheckedUpdateWithoutExecutionsInput
+  >
+}
+
+export type AutomationRevisionUpdateWithoutExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?:
+    | Prisma.EnumAutomationRevisionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationRevisionStatus
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  automation?: Prisma.AutomationUpdateOneRequiredWithoutRevisionsNestedInput
+  publishedFor?: Prisma.AutomationUpdateOneWithoutCurrentPublishedRevisionNestedInput
+  target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
+  trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
+  actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+}
+
+export type AutomationRevisionUncheckedUpdateWithoutExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  automationId?: Prisma.StringFieldUpdateOperationsInput | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?:
+    | Prisma.EnumAutomationRevisionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationRevisionStatus
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedFor?: Prisma.AutomationUncheckedUpdateOneWithoutCurrentPublishedRevisionNestedInput
+  target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
+  trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
+  actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
 }
 
 export type AutomationRevisionCreateManyAutomationInput = {
@@ -1148,6 +1289,7 @@ export type AutomationRevisionUpdateWithoutAutomationInput = {
   target?: Prisma.AutomationTargetUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateWithoutAutomationInput = {
@@ -1163,6 +1305,7 @@ export type AutomationRevisionUncheckedUpdateWithoutAutomationInput = {
   target?: Prisma.AutomationTargetUncheckedUpdateOneWithoutRevisionNestedInput
   trigger?: Prisma.AutomationTriggerUncheckedUpdateOneWithoutRevisionNestedInput
   actions?: Prisma.AutomationActionUncheckedUpdateManyWithoutRevisionNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionNestedInput
 }
 
 export type AutomationRevisionUncheckedUpdateManyWithoutAutomationInput = {
@@ -1182,12 +1325,14 @@ export type AutomationRevisionUncheckedUpdateManyWithoutAutomationInput = {
 
 export type AutomationRevisionCountOutputType = {
   actions: number
+  executions: number
 }
 
 export type AutomationRevisionCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   actions?: boolean | AutomationRevisionCountOutputTypeCountActionsArgs
+  executions?: boolean | AutomationRevisionCountOutputTypeCountExecutionsArgs
 }
 
 /**
@@ -1211,6 +1356,15 @@ export type AutomationRevisionCountOutputTypeCountActionsArgs<
   where?: Prisma.AutomationActionWhereInput
 }
 
+/**
+ * AutomationRevisionCountOutputType without action
+ */
+export type AutomationRevisionCountOutputTypeCountExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.AutomationExecutionWhereInput
+}
+
 export type AutomationRevisionSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1227,6 +1381,7 @@ export type AutomationRevisionSelect<
     target?: boolean | Prisma.AutomationRevision$targetArgs<ExtArgs>
     trigger?: boolean | Prisma.AutomationRevision$triggerArgs<ExtArgs>
     actions?: boolean | Prisma.AutomationRevision$actionsArgs<ExtArgs>
+    executions?: boolean | Prisma.AutomationRevision$executionsArgs<ExtArgs>
     _count?: boolean | Prisma.AutomationRevisionCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['automationRevision']
@@ -1288,6 +1443,7 @@ export type AutomationRevisionInclude<
   target?: boolean | Prisma.AutomationRevision$targetArgs<ExtArgs>
   trigger?: boolean | Prisma.AutomationRevision$triggerArgs<ExtArgs>
   actions?: boolean | Prisma.AutomationRevision$actionsArgs<ExtArgs>
+  executions?: boolean | Prisma.AutomationRevision$executionsArgs<ExtArgs>
   _count?: boolean | Prisma.AutomationRevisionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AutomationRevisionIncludeCreateManyAndReturn<
@@ -1311,6 +1467,7 @@ export type $AutomationRevisionPayload<
     target: Prisma.$AutomationTargetPayload<ExtArgs> | null
     trigger: Prisma.$AutomationTriggerPayload<ExtArgs> | null
     actions: Prisma.$AutomationActionPayload<ExtArgs>[]
+    executions: Prisma.$AutomationExecutionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1926,6 +2083,17 @@ export interface Prisma__AutomationRevisionClient<
       >
     | Null
   >
+  executions<T extends Prisma.AutomationRevision$executionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.AutomationRevision$executionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$AutomationExecutionPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2504,6 +2672,34 @@ export type AutomationRevision$actionsArgs<
   take?: number
   skip?: number
   distinct?: Prisma.AutomationActionScalarFieldEnum | Prisma.AutomationActionScalarFieldEnum[]
+}
+
+/**
+ * AutomationRevision.executions
+ */
+export type AutomationRevision$executionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the AutomationExecution
+   */
+  select?: Prisma.AutomationExecutionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationExecution
+   */
+  omit?: Prisma.AutomationExecutionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationExecutionInclude<ExtArgs> | null
+  where?: Prisma.AutomationExecutionWhereInput
+  orderBy?:
+    | Prisma.AutomationExecutionOrderByWithRelationInput
+    | Prisma.AutomationExecutionOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationExecutionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationExecutionScalarFieldEnum | Prisma.AutomationExecutionScalarFieldEnum[]
 }
 
 /**

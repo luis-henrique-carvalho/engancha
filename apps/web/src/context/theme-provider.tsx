@@ -92,7 +92,10 @@ export function ThemeProvider({
   }
 
   return (
-    <ThemeContext value={contextValue} {...props}>
+    <ThemeContext
+      value={contextValue}
+      {...props}
+    >
       {children}
     </ThemeContext>
   )

@@ -134,7 +134,7 @@ export class AutomationsService {
       createdAt: automation.createdAt.toISOString(),
       updatedAt: automation.updatedAt.toISOString(),
       hasUnpublishedChanges: Boolean(draft && automation.currentPublishedRevision),
-      executionCount: 0,
+      executionCount: automation._count?.matchedExecutions ?? 0,
       leadCount: 0,
       draft: draft ? this.revision(draft) : null,
       published: automation.currentPublishedRevision

@@ -28,7 +28,11 @@ export function AuthenticatedLayout({
       <LayoutProvider>
         <SidebarProvider defaultOpen={defaultOpen}>
           <SkipToMain />
-          <AppSidebar user={user} workspace={workspace} onWorkspaceChange={onWorkspaceChange} />
+          <AppSidebar
+            user={user}
+            workspace={workspace}
+            onWorkspaceChange={onWorkspaceChange}
+          />
           <SidebarInset
             className={cn(
               // Set content container, so we can use container queries

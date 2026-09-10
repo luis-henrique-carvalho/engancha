@@ -6,7 +6,10 @@ import type { User } from '../data/schema'
 
 export function UserStatusBadge({ user }: { user: User }) {
   return (
-    <Badge variant="outline" className={cn('capitalize', userStatusStyles.get(user.status))}>
+    <Badge
+      variant="outline"
+      className={cn('capitalize', userStatusStyles.get(user.status))}
+    >
       {user.status === 'invited' ? 'Convite pendente' : 'Ativo'}
     </Badge>
   )

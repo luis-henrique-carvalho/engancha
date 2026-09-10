@@ -402,6 +402,8 @@ export const ModelName = {
   AutomationTarget: 'AutomationTarget',
   AutomationTrigger: 'AutomationTrigger',
   AutomationAction: 'AutomationAction',
+  AutomationExecution: 'AutomationExecution',
+  AutomationExecutionOutput: 'AutomationExecutionOutput',
   Member: 'Member',
   Invitation: 'Invitation',
 } as const
@@ -436,6 +438,8 @@ export type TypeMap<
       | 'automationTarget'
       | 'automationTrigger'
       | 'automationAction'
+      | 'automationExecution'
+      | 'automationExecutionOutput'
       | 'member'
       | 'invitation'
     txIsolationLevel: TransactionIsolationLevel
@@ -1263,6 +1267,158 @@ export type TypeMap<
         }
       }
     }
+    AutomationExecution: {
+      payload: Prisma.$AutomationExecutionPayload<ExtArgs>
+      fields: Prisma.AutomationExecutionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AutomationExecutionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AutomationExecutionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        findFirst: {
+          args: Prisma.AutomationExecutionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AutomationExecutionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        findMany: {
+          args: Prisma.AutomationExecutionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>[]
+        }
+        create: {
+          args: Prisma.AutomationExecutionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        createMany: {
+          args: Prisma.AutomationExecutionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AutomationExecutionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>[]
+        }
+        delete: {
+          args: Prisma.AutomationExecutionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        update: {
+          args: Prisma.AutomationExecutionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AutomationExecutionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AutomationExecutionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AutomationExecutionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AutomationExecutionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionPayload>
+        }
+        aggregate: {
+          args: Prisma.AutomationExecutionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAutomationExecution>
+        }
+        groupBy: {
+          args: Prisma.AutomationExecutionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AutomationExecutionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AutomationExecutionCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.AutomationExecutionCountAggregateOutputType>
+            | number
+        }
+      }
+    }
+    AutomationExecutionOutput: {
+      payload: Prisma.$AutomationExecutionOutputPayload<ExtArgs>
+      fields: Prisma.AutomationExecutionOutputFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AutomationExecutionOutputFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AutomationExecutionOutputFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        findFirst: {
+          args: Prisma.AutomationExecutionOutputFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AutomationExecutionOutputFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        findMany: {
+          args: Prisma.AutomationExecutionOutputFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>[]
+        }
+        create: {
+          args: Prisma.AutomationExecutionOutputCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        createMany: {
+          args: Prisma.AutomationExecutionOutputCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AutomationExecutionOutputCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>[]
+        }
+        delete: {
+          args: Prisma.AutomationExecutionOutputDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        update: {
+          args: Prisma.AutomationExecutionOutputUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        deleteMany: {
+          args: Prisma.AutomationExecutionOutputDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AutomationExecutionOutputUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AutomationExecutionOutputUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>[]
+        }
+        upsert: {
+          args: Prisma.AutomationExecutionOutputUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomationExecutionOutputPayload>
+        }
+        aggregate: {
+          args: Prisma.AutomationExecutionOutputAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAutomationExecutionOutput>
+        }
+        groupBy: {
+          args: Prisma.AutomationExecutionOutputGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AutomationExecutionOutputGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AutomationExecutionOutputCountArgs<ExtArgs>
+          result:
+            | runtime.Types.Utils.Optional<Prisma.AutomationExecutionOutputCountAggregateOutputType>
+            | number
+        }
+      }
+    }
     Member: {
       payload: Prisma.$MemberPayload<ExtArgs>
       fields: Prisma.MemberFieldRefs
@@ -1597,6 +1753,50 @@ export const AutomationActionScalarFieldEnum = {
 export type AutomationActionScalarFieldEnum =
   (typeof AutomationActionScalarFieldEnum)[keyof typeof AutomationActionScalarFieldEnum]
 
+export const AutomationExecutionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  contentId: 'contentId',
+  provider: 'provider',
+  mode: 'mode',
+  channelConnectionId: 'channelConnectionId',
+  commentId: 'commentId',
+  idempotencyKey: 'idempotencyKey',
+  inputAuthor: 'inputAuthor',
+  inputText: 'inputText',
+  originAutomationId: 'originAutomationId',
+  automationId: 'automationId',
+  automationRevisionId: 'automationRevisionId',
+  automationSnapshot: 'automationSnapshot',
+  status: 'status',
+  matched: 'matched',
+  attempts: 'attempts',
+  errorCode: 'errorCode',
+  errorMessage: 'errorMessage',
+  stateVersion: 'stateVersion',
+  enqueuedAt: 'enqueuedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type AutomationExecutionScalarFieldEnum =
+  (typeof AutomationExecutionScalarFieldEnum)[keyof typeof AutomationExecutionScalarFieldEnum]
+
+export const AutomationExecutionOutputScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  key: 'key',
+  position: 'position',
+  type: 'type',
+  payload: 'payload',
+  createdAt: 'createdAt',
+} as const
+
+export type AutomationExecutionOutputScalarFieldEnum =
+  (typeof AutomationExecutionOutputScalarFieldEnum)[keyof typeof AutomationExecutionOutputScalarFieldEnum]
+
 export const MemberScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -1634,6 +1834,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 export const QueryMode = {
   default: 'default',
@@ -1819,6 +2027,38 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
 
 /**
+ * Reference to a field of type 'AutomationExecutionStatus'
+ */
+export type EnumAutomationExecutionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'AutomationExecutionStatus'
+>
+
+/**
+ * Reference to a field of type 'AutomationExecutionStatus[]'
+ */
+export type ListEnumAutomationExecutionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'AutomationExecutionStatus[]'
+>
+
+/**
+ * Reference to a field of type 'AutomationExecutionOutputType'
+ */
+export type EnumAutomationExecutionOutputTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'AutomationExecutionOutputType'
+>
+
+/**
+ * Reference to a field of type 'AutomationExecutionOutputType[]'
+ */
+export type ListEnumAutomationExecutionOutputTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'AutomationExecutionOutputType[]'
+>
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1997,6 +2237,8 @@ export type GlobalOmitConfig = {
   automationTarget?: Prisma.AutomationTargetOmit
   automationTrigger?: Prisma.AutomationTriggerOmit
   automationAction?: Prisma.AutomationActionOmit
+  automationExecution?: Prisma.AutomationExecutionOmit
+  automationExecutionOutput?: Prisma.AutomationExecutionOutputOmit
   member?: Prisma.MemberOmit
   invitation?: Prisma.InvitationOmit
 }

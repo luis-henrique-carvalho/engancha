@@ -62,3 +62,24 @@ export const ContentType = {
 } as const
 
 export type ContentType = (typeof ContentType)[keyof typeof ContentType]
+
+export const AutomationExecutionStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  IGNORED: 'IGNORED',
+  FAILED: 'FAILED',
+} as const
+
+export type AutomationExecutionStatus =
+  (typeof AutomationExecutionStatus)[keyof typeof AutomationExecutionStatus]
+
+export const AutomationExecutionOutputType = {
+  PUBLIC_REPLY: 'PUBLIC_REPLY',
+  PRIVATE_REPLY: 'PRIVATE_REPLY',
+  LINK_DELIVERY: 'LINK_DELIVERY',
+  EMAIL_CAPTURE_REQUEST: 'EMAIL_CAPTURE_REQUEST',
+} as const
+
+export type AutomationExecutionOutputType =
+  (typeof AutomationExecutionOutputType)[keyof typeof AutomationExecutionOutputType]

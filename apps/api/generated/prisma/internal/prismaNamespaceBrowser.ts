@@ -59,6 +59,8 @@ export const ModelName = {
   AutomationTarget: 'AutomationTarget',
   AutomationTrigger: 'AutomationTrigger',
   AutomationAction: 'AutomationAction',
+  AutomationExecution: 'AutomationExecution',
+  AutomationExecutionOutput: 'AutomationExecutionOutput',
   Member: 'Member',
   Invitation: 'Invitation',
 } as const
@@ -226,6 +228,50 @@ export const AutomationActionScalarFieldEnum = {
 export type AutomationActionScalarFieldEnum =
   (typeof AutomationActionScalarFieldEnum)[keyof typeof AutomationActionScalarFieldEnum]
 
+export const AutomationExecutionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  contentId: 'contentId',
+  provider: 'provider',
+  mode: 'mode',
+  channelConnectionId: 'channelConnectionId',
+  commentId: 'commentId',
+  idempotencyKey: 'idempotencyKey',
+  inputAuthor: 'inputAuthor',
+  inputText: 'inputText',
+  originAutomationId: 'originAutomationId',
+  automationId: 'automationId',
+  automationRevisionId: 'automationRevisionId',
+  automationSnapshot: 'automationSnapshot',
+  status: 'status',
+  matched: 'matched',
+  attempts: 'attempts',
+  errorCode: 'errorCode',
+  errorMessage: 'errorMessage',
+  stateVersion: 'stateVersion',
+  enqueuedAt: 'enqueuedAt',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type AutomationExecutionScalarFieldEnum =
+  (typeof AutomationExecutionScalarFieldEnum)[keyof typeof AutomationExecutionScalarFieldEnum]
+
+export const AutomationExecutionOutputScalarFieldEnum = {
+  id: 'id',
+  executionId: 'executionId',
+  key: 'key',
+  position: 'position',
+  type: 'type',
+  payload: 'payload',
+  createdAt: 'createdAt',
+} as const
+
+export type AutomationExecutionOutputScalarFieldEnum =
+  (typeof AutomationExecutionOutputScalarFieldEnum)[keyof typeof AutomationExecutionOutputScalarFieldEnum]
+
 export const MemberScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -263,6 +309,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+} as const
+
+export type NullableJsonNullValueInput =
+  (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 export const QueryMode = {
   default: 'default',

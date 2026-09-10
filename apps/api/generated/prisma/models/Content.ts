@@ -212,6 +212,7 @@ export type ContentWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<'Content'> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   targets?: Prisma.AutomationTargetListRelationFilter
+  executions?: Prisma.AutomationExecutionListRelationFilter
 }
 
 export type ContentOrderByWithRelationInput = {
@@ -226,6 +227,7 @@ export type ContentOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   targets?: Prisma.AutomationTargetOrderByRelationAggregateInput
+  executions?: Prisma.AutomationExecutionOrderByRelationAggregateInput
 }
 
 export type ContentWhereUniqueInput = Prisma.AtLeast<
@@ -248,6 +250,7 @@ export type ContentWhereUniqueInput = Prisma.AtLeast<
       Prisma.OrganizationWhereInput
     >
     targets?: Prisma.AutomationTargetListRelationFilter
+    executions?: Prisma.AutomationExecutionListRelationFilter
   },
   'id' | 'organizationId_provider_mode_contentType_externalContentId'
 >
@@ -297,6 +300,7 @@ export type ContentCreateInput = {
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutContentsInput
   targets?: Prisma.AutomationTargetCreateNestedManyWithoutContentInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateInput = {
@@ -310,6 +314,7 @@ export type ContentUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   targets?: Prisma.AutomationTargetUncheckedCreateNestedManyWithoutContentInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentUpdateInput = {
@@ -323,6 +328,7 @@ export type ContentUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutContentsNestedInput
   targets?: Prisma.AutomationTargetUpdateManyWithoutContentNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateInput = {
@@ -336,6 +342,7 @@ export type ContentUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   targets?: Prisma.AutomationTargetUncheckedUpdateManyWithoutContentNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentCreateManyInput = {
@@ -556,6 +563,32 @@ export type ContentUpdateOneRequiredWithoutTargetsNestedInput = {
   >
 }
 
+export type ContentCreateNestedOneWithoutExecutionsInput = {
+  create?: Prisma.XOR<
+    Prisma.ContentCreateWithoutExecutionsInput,
+    Prisma.ContentUncheckedCreateWithoutExecutionsInput
+  >
+  connectOrCreate?: Prisma.ContentCreateOrConnectWithoutExecutionsInput
+  connect?: Prisma.ContentWhereUniqueInput
+}
+
+export type ContentUpdateOneRequiredWithoutExecutionsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.ContentCreateWithoutExecutionsInput,
+    Prisma.ContentUncheckedCreateWithoutExecutionsInput
+  >
+  connectOrCreate?: Prisma.ContentCreateOrConnectWithoutExecutionsInput
+  upsert?: Prisma.ContentUpsertWithoutExecutionsInput
+  connect?: Prisma.ContentWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.ContentUpdateToOneWithWhereWithoutExecutionsInput,
+      Prisma.ContentUpdateWithoutExecutionsInput
+    >,
+    Prisma.ContentUncheckedUpdateWithoutExecutionsInput
+  >
+}
+
 export type ContentCreateWithoutOrganizationInput = {
   id?: string
   provider?: $Enums.ContentProvider
@@ -566,6 +599,7 @@ export type ContentCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   targets?: Prisma.AutomationTargetCreateNestedManyWithoutContentInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateWithoutOrganizationInput = {
@@ -578,6 +612,7 @@ export type ContentUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   targets?: Prisma.AutomationTargetUncheckedCreateNestedManyWithoutContentInput
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentCreateOrConnectWithoutOrganizationInput = {
@@ -646,6 +681,7 @@ export type ContentCreateWithoutTargetsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutContentsInput
+  executions?: Prisma.AutomationExecutionCreateNestedManyWithoutContentInput
 }
 
 export type ContentUncheckedCreateWithoutTargetsInput = {
@@ -658,6 +694,7 @@ export type ContentUncheckedCreateWithoutTargetsInput = {
   externalContentId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  executions?: Prisma.AutomationExecutionUncheckedCreateNestedManyWithoutContentInput
 }
 
 export type ContentCreateOrConnectWithoutTargetsInput = {
@@ -698,6 +735,7 @@ export type ContentUpdateWithoutTargetsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutContentsNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateWithoutTargetsInput = {
@@ -710,6 +748,87 @@ export type ContentUncheckedUpdateWithoutTargetsInput = {
   externalContentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutContentNestedInput
+}
+
+export type ContentCreateWithoutExecutionsInput = {
+  id?: string
+  provider?: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  contentType?: $Enums.ContentType
+  title: string
+  externalContentId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutContentsInput
+  targets?: Prisma.AutomationTargetCreateNestedManyWithoutContentInput
+}
+
+export type ContentUncheckedCreateWithoutExecutionsInput = {
+  id?: string
+  organizationId: string
+  provider?: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  contentType?: $Enums.ContentType
+  title: string
+  externalContentId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  targets?: Prisma.AutomationTargetUncheckedCreateNestedManyWithoutContentInput
+}
+
+export type ContentCreateOrConnectWithoutExecutionsInput = {
+  where: Prisma.ContentWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.ContentCreateWithoutExecutionsInput,
+    Prisma.ContentUncheckedCreateWithoutExecutionsInput
+  >
+}
+
+export type ContentUpsertWithoutExecutionsInput = {
+  update: Prisma.XOR<
+    Prisma.ContentUpdateWithoutExecutionsInput,
+    Prisma.ContentUncheckedUpdateWithoutExecutionsInput
+  >
+  create: Prisma.XOR<
+    Prisma.ContentCreateWithoutExecutionsInput,
+    Prisma.ContentUncheckedCreateWithoutExecutionsInput
+  >
+  where?: Prisma.ContentWhereInput
+}
+
+export type ContentUpdateToOneWithWhereWithoutExecutionsInput = {
+  where?: Prisma.ContentWhereInput
+  data: Prisma.XOR<
+    Prisma.ContentUpdateWithoutExecutionsInput,
+    Prisma.ContentUncheckedUpdateWithoutExecutionsInput
+  >
+}
+
+export type ContentUpdateWithoutExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  externalContentId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutContentsNestedInput
+  targets?: Prisma.AutomationTargetUpdateManyWithoutContentNestedInput
+}
+
+export type ContentUncheckedUpdateWithoutExecutionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  contentType?: Prisma.EnumContentTypeFieldUpdateOperationsInput | $Enums.ContentType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  externalContentId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  targets?: Prisma.AutomationTargetUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentCreateManyOrganizationInput = {
@@ -733,6 +852,7 @@ export type ContentUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   targets?: Prisma.AutomationTargetUpdateManyWithoutContentNestedInput
+  executions?: Prisma.AutomationExecutionUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateWithoutOrganizationInput = {
@@ -745,6 +865,7 @@ export type ContentUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   targets?: Prisma.AutomationTargetUncheckedUpdateManyWithoutContentNestedInput
+  executions?: Prisma.AutomationExecutionUncheckedUpdateManyWithoutContentNestedInput
 }
 
 export type ContentUncheckedUpdateManyWithoutOrganizationInput = {
@@ -764,12 +885,14 @@ export type ContentUncheckedUpdateManyWithoutOrganizationInput = {
 
 export type ContentCountOutputType = {
   targets: number
+  executions: number
 }
 
 export type ContentCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   targets?: boolean | ContentCountOutputTypeCountTargetsArgs
+  executions?: boolean | ContentCountOutputTypeCountExecutionsArgs
 }
 
 /**
@@ -793,6 +916,15 @@ export type ContentCountOutputTypeCountTargetsArgs<
   where?: Prisma.AutomationTargetWhereInput
 }
 
+/**
+ * ContentCountOutputType without action
+ */
+export type ContentCountOutputTypeCountExecutionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.AutomationExecutionWhereInput
+}
+
 export type ContentSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -808,6 +940,7 @@ export type ContentSelect<
     updatedAt?: boolean
     organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
     targets?: boolean | Prisma.Content$targetsArgs<ExtArgs>
+    executions?: boolean | Prisma.Content$executionsArgs<ExtArgs>
     _count?: boolean | Prisma.ContentCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['content']
@@ -880,6 +1013,7 @@ export type ContentInclude<
 > = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   targets?: boolean | Prisma.Content$targetsArgs<ExtArgs>
+  executions?: boolean | Prisma.Content$executionsArgs<ExtArgs>
   _count?: boolean | Prisma.ContentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContentIncludeCreateManyAndReturn<
@@ -900,6 +1034,7 @@ export type $ContentPayload<
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     targets: Prisma.$AutomationTargetPayload<ExtArgs>[]
+    executions: Prisma.$AutomationExecutionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1452,6 +1587,17 @@ export interface Prisma__ContentClient<
       >
     | Null
   >
+  executions<T extends Prisma.Content$executionsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Content$executionsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$AutomationExecutionPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1945,6 +2091,34 @@ export type Content$targetsArgs<
   take?: number
   skip?: number
   distinct?: Prisma.AutomationTargetScalarFieldEnum | Prisma.AutomationTargetScalarFieldEnum[]
+}
+
+/**
+ * Content.executions
+ */
+export type Content$executionsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the AutomationExecution
+   */
+  select?: Prisma.AutomationExecutionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationExecution
+   */
+  omit?: Prisma.AutomationExecutionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationExecutionInclude<ExtArgs> | null
+  where?: Prisma.AutomationExecutionWhereInput
+  orderBy?:
+    | Prisma.AutomationExecutionOrderByWithRelationInput
+    | Prisma.AutomationExecutionOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationExecutionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationExecutionScalarFieldEnum | Prisma.AutomationExecutionScalarFieldEnum[]
 }
 
 /**

@@ -26,7 +26,10 @@ export function ForgotPassword() {
         <CardFooter>
           <p className="mx-auto text-center text-sm text-balance text-muted-foreground">
             Lembrou sua senha?{' '}
-            <Link to="/auth/login" className="underline underline-offset-4 hover:text-primary">
+            <Link
+              to="/auth/login"
+              className="underline underline-offset-4 hover:text-primary"
+            >
               Voltar para o login
             </Link>
             .

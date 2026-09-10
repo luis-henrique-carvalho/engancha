@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently --names web,api,worker --kill-others-on-fail \"npm run web:dev\" \"npm run api:dev\" \"npm run worker:dev\"",
+    "dev": "concurrently --names web,api,worker --prefix-colors \"cyan,green,yellow\" --prefix \"[{name}]\" --kill-others-on-fail \"npm run web:dev\" \"npm run api:dev\" \"npm run worker:dev\"",
     "web:dev": "npm run dev --workspace=@engancha/web",
     "web:build": "npm run build --workspace=@engancha/web",
     "web:preview": "npm run preview --workspace=@engancha/web",
@@ -28,10 +28,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "node --import tsx --test --test-concurrency=1 --test-force-exit tests/*.test.mjs && npm run test:openapi:e2e && npm run test:automations:e2e && npm run web:test",
+    "test": "node --import tsx --test --test-concurrency=1 --test-force-exit tests/*.test.mjs && npm run test:openapi:e2e && npm run test:automations:e2e && npm run test:simulations:e2e && npm run web:test",
     "test:e2e": "RUN_E2E=1 node --import tsx --test --test-concurrency=1 --test-force-exit tests/phase2-e2e.test.mjs",
     "test:openapi:e2e": "npm run build --workspace=@engancha/api && node --test --test-concurrency=1 --test-force-exit apps/api/dist/apps/api/src/platform/http/openapi.e2e-spec.js",
     "test:automations:e2e": "npm run build --workspace=@engancha/api && NODE_ENV=test node --env-file=.env --test --test-concurrency=1 --test-force-exit apps/api/dist/apps/api/src/modules/automations/automations.e2e-spec.js",
+    "test:simulations:e2e": "npm run build --workspace=@engancha/api && NODE_ENV=test node --env-file=.env --test --test-concurrency=1 --test-force-exit apps/api/dist/apps/api/src/modules/simulations/simulations.e2e-spec.js",
     "verify": "npm run typecheck && npm test && npm run lint && npm run format:check"
   },
   "devDependencies": {
@@ -42,6 +43,9 @@
     "@types/supertest": "^7.2.1",
     "concurrently": "^9.2.4",
     "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
     "supertest": "^7.2.2",

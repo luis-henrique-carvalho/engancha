@@ -12,9 +12,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
-import { AutomationSaveBar } from '../components/automation-save-bar'
-import { AutomationStepSection } from '../components/automation-step-section'
-import { useOptionalAutomationEditor } from '../components/automation-editor-provider'
+import {
+  AutomationSaveBar,
+  AutomationStepSection,
+  useOptionalAutomationEditor,
+} from '../components'
 import { buildUpdatedActions, getPrivateReplyText } from '../data/automation-action-mappers'
 import {
   automationDirectMessageSchema,
@@ -98,7 +100,10 @@ export function DirectMessageStepView({
       description="Defina o texto enviado diretamente no direct."
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FormField
             control={form.control}
             name="text"

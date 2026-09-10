@@ -32,8 +32,24 @@ test('web route tree exposes only Engancha routes', async () => {
     assert.match(source, new RegExp(route.replaceAll('/', '\\/').replaceAll('$', '\\$')))
   }
 
-  for (const forbidden of ['tasks', 'apps', 'settings', 'chats', 'clerk', '_authenticated']) {
+  for (const forbidden of ['tasks', 'apps', 'settings', 'chats', 'clerk']) {
     assert.doesNotMatch(source, new RegExp(`/${forbidden}`))
+  }
+
+  assert.doesNotMatch(source, /path: '\/_authenticated'/)
+
+  for (const route of [
+    'AuthenticatedUsersRoute',
+    'AuthenticatedWorkspaceRoute',
+    'AuthenticatedAutomationsIndexRoute',
+    'AuthenticatedAutomationsAutomationIdRouteRoute',
+  ]) {
+    assert.match(
+      source,
+      new RegExp(
+        `const ${route} =[\\s\\S]*?getParentRoute: \\(\\) => AuthenticatedRouteRoute`,
+      ),
+    )
   }
 })
 
