@@ -35,7 +35,7 @@ export default tseslint.config(
     files: ['**/*.{ts,js,mjs}'],
     rules: {
       'max-lines-per-function': [
-        'warn',
+        'error',
         {
           max: 80,
           skipBlankLines: true,
@@ -65,7 +65,7 @@ export default tseslint.config(
     rules: {
       'react/no-multi-comp': ['error', { ignoreStateless: true }],
       'max-lines-per-function': [
-        'warn',
+        'error',
         {
           max: 200,
           skipBlankLines: true,

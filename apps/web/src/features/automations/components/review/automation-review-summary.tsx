@@ -67,6 +67,92 @@ function SummaryCard({
   )
 }
 
+function TargetCardContent({
+  target,
+}: {
+  target: NonNullable<AutomationResponse['current']>['target'] | undefined
+}) {
+  if (!target) {
+    return (
+      <p className="text-xs text-muted-foreground italic">
+        Nenhum conteúdo associado a esta automação.
+      </p>
+    )
+  }
+
+  return (
+    <>
+      <div className="font-semibold text-sm truncate">{target.title}</div>
+      <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
+        <Badge
+          variant="outline"
+          className="text-[10px]"
+        >
+          {target.provider}
+        </Badge>
+        <Badge
+          variant="outline"
+          className="text-[10px]"
+        >
+          {target.contentType}
+        </Badge>
+        <Badge
+          variant="outline"
+          className="text-[10px]"
+        >
+          {target.mode === 'SIMULATED' ? 'Simulado' : 'Real'}
+        </Badge>
+      </div>
+    </>
+  )
+}
+
+function FinalActionCardContent({
+  finalAction,
+}: {
+  finalAction: ReturnType<typeof getFinalAction>
+}) {
+  if (!finalAction) {
+    return <p className="text-xs text-muted-foreground italic">Nenhuma ação final configurada.</p>
+  }
+
+  if (finalAction.type === 'LINK') {
+    return (
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className="text-[10px]"
+          >
+            Link externo
+          </Badge>
+          <span className="text-xs font-semibold">{finalAction.label || 'Abrir link'}</span>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground break-all">
+          <ExternalLink className="h-3 w-3 shrink-0" />
+          <span>{finalAction.url}</span>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-2">
+        <Badge
+          variant="outline"
+          className="text-[10px]"
+        >
+          Captura de e-mail
+        </Badge>
+      </div>
+      <div className="rounded bg-muted/50 p-2 text-xs text-foreground whitespace-pre-wrap">
+        {finalAction.prompt}
+      </div>
+    </div>
+  )
+}
+
 export function AutomationReviewSummary({
   automation,
   onNavigateStep,
@@ -115,35 +201,7 @@ export function AutomationReviewSummary({
           editTestId="automation-review-edit-content"
           onEdit={() => onNavigateStep?.('content')}
         >
-          {current?.target ? (
-            <>
-              <div className="font-semibold text-sm truncate">{current.target.title}</div>
-              <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
-                <Badge
-                  variant="outline"
-                  className="text-[10px]"
-                >
-                  {current.target.provider}
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="text-[10px]"
-                >
-                  {current.target.contentType}
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="text-[10px]"
-                >
-                  {current.target.mode === 'SIMULATED' ? 'Simulado' : 'Real'}
-                </Badge>
-              </div>
-            </>
-          ) : (
-            <p className="text-xs text-muted-foreground italic">
-              Nenhum conteúdo associado a esta automação.
-            </p>
-          )}
+          <TargetCardContent target={current?.target} />
         </SummaryCard>
 
         {/* 3. Palavra-chave */}
@@ -226,41 +284,7 @@ export function AutomationReviewSummary({
           editTestId="automation-review-edit-final-action"
           onEdit={() => onNavigateStep?.('final-action')}
         >
-          {finalAction ? (
-            finalAction.type === 'LINK' ? (
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="text-[10px]"
-                  >
-                    Link externo
-                  </Badge>
-                  <span className="text-xs font-semibold">{finalAction.label || 'Abrir link'}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground break-all">
-                  <ExternalLink className="h-3 w-3 shrink-0" />
-                  <span>{finalAction.url}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant="outline"
-                    className="text-[10px]"
-                  >
-                    Captura de e-mail
-                  </Badge>
-                </div>
-                <div className="rounded bg-muted/50 p-2 text-xs text-foreground whitespace-pre-wrap">
-                  {finalAction.prompt}
-                </div>
-              </div>
-            )
-          ) : (
-            <p className="text-xs text-muted-foreground italic">Nenhuma ação final configurada.</p>
-          )}
+          <FinalActionCardContent finalAction={finalAction} />
         </SummaryCard>
 
         {/* Tag do contato */}

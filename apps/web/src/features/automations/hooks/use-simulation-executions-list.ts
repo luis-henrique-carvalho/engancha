@@ -138,6 +138,29 @@ function resolveExecutionMeta(
   )
 }
 
+async function fetchExecutionsFromApi(filters: any, fallbackError: string) {
+  try {
+    const res = await SimulationsApi.listExecutions(filters)
+    return { res, error: null }
+  } catch (err) {
+    return {
+      res: null,
+      error: err instanceof Error ? err : new Error(fallbackError),
+    }
+  }
+}
+
+function attachStreamsForItems(
+  items: SimulationExecutionResponse[],
+  startStream: (id: string) => void,
+) {
+  for (const item of items) {
+    if (!TERMINAL_STATUSES.includes(item.status)) {
+      startStream(item.id)
+    }
+  }
+}
+
 function useSimulationExecutionsQuery(params: FetcherBaseParams) {
   const {
     serializedFilters,
@@ -147,68 +170,51 @@ function useSimulationExecutionsQuery(params: FetcherBaseParams) {
     closeAllStreams,
     setExecutions,
   } = params
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const [nextCursor, setNextCursor] = useState<string | null>(null)
-  const [hasMore, setHasMore] = useState<boolean>(false)
-  const [meta, setMeta] = useState<{
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-  }>({
-    page,
-    limit,
-    total: 0,
-    totalPages: 1,
-  })
-
-  const attachStreams = useCallback(
-    (items: SimulationExecutionResponse[]) => {
-      for (const item of items) {
-        if (!TERMINAL_STATUSES.includes(item.status)) {
-          startStreamForExecution(item.id)
-        }
-      }
-    },
-    [startStreamForExecution],
-  )
+  const [hasMore, setHasMore] = useState(false)
+  const [meta, setMeta] = useState({ page, limit, total: 0, totalPages: 1 })
 
   const fetchInitial = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     closeAllStreams()
-    try {
-      const res = await SimulationsApi.listExecutions(serializedFilters)
+    const { res, error: fetchErr } = await fetchExecutionsFromApi(
+      serializedFilters,
+      'Falha ao carregar histórico de atividades',
+    )
+    if (res) {
       setExecutions(res.items)
       setNextCursor(res.nextCursor)
       setHasMore(res.hasMore)
       setMeta(resolveExecutionMeta(res.items.length, page, limit, res.meta))
-      attachStreams(res.items)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Falha ao carregar histórico de atividades'))
-    } finally {
-      setIsLoading(false)
+      attachStreamsForItems(res.items, startStreamForExecution)
+    } else {
+      setError(fetchErr)
     }
-  }, [serializedFilters, page, limit, closeAllStreams, attachStreams, setExecutions])
+    setIsLoading(false)
+  }, [serializedFilters, page, limit, closeAllStreams, startStreamForExecution, setExecutions])
 
   const refresh = useCallback(async () => {
     setIsRefreshing(true)
     setError(null)
-    try {
-      const res = await SimulationsApi.listExecutions(serializedFilters)
+    const { res, error: fetchErr } = await fetchExecutionsFromApi(
+      serializedFilters,
+      'Falha ao atualizar atividades',
+    )
+    if (res) {
       setExecutions(res.items)
       setNextCursor(res.nextCursor)
       setHasMore(res.hasMore)
       if (res.meta) setMeta(res.meta)
-      attachStreams(res.items)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Falha ao atualizar atividades'))
-    } finally {
-      setIsRefreshing(false)
+      attachStreamsForItems(res.items, startStreamForExecution)
+    } else {
+      setError(fetchErr)
     }
-  }, [serializedFilters, attachStreams, setExecutions])
+    setIsRefreshing(false)
+  }, [serializedFilters, startStreamForExecution, setExecutions])
 
   useEffect(() => {
     void fetchInitial()
@@ -216,6 +222,11 @@ function useSimulationExecutionsQuery(params: FetcherBaseParams) {
       closeAllStreams()
     }
   }, [fetchInitial, closeAllStreams])
+
+  const attachStreams = useCallback(
+    (items: SimulationExecutionResponse[]) => attachStreamsForItems(items, startStreamForExecution),
+    [startStreamForExecution],
+  )
 
   return {
     isLoading,

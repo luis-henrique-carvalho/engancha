@@ -443,6 +443,123 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     }
   }
 
+  private resolveOutputMessageTypeAndText(output: AutomationExecutionOutputDraft): {
+    messageType: MessageType
+    text: string | null
+  } | null {
+    switch (output.type) {
+      case 'PUBLIC_REPLY':
+        return { messageType: 'PUBLIC_REPLY', text: (output.payload.text as string) ?? null }
+      case 'PRIVATE_REPLY':
+        return { messageType: 'DIRECT_MESSAGE', text: (output.payload.text as string) ?? null }
+      case 'LINK_DELIVERY':
+        return {
+          messageType: 'DIRECT_MESSAGE_WITH_LINK',
+          text: `${(output.payload.label as string) || 'Abrir link'}: ${(output.payload.url as string) || ''}`,
+        }
+      case 'EMAIL_CAPTURE_REQUEST':
+        return {
+          messageType: 'EMAIL_CAPTURE_REQUEST',
+          text: (output.payload.prompt as string) ?? null,
+        }
+      default:
+        return null
+    }
+  }
+
+  private async persistProjectedMessage(
+    tx: Prisma.TransactionClient,
+    execution: {
+      id: string
+      organizationId: string
+      provider: ContentProvider
+      mode: ContentMode
+      channelConnectionId: string | null
+    },
+    conversationId: string,
+    output: AutomationExecutionOutputDraft,
+    interactionAt: Date,
+  ) {
+    const meta = this.resolveOutputMessageTypeAndText(output)
+    if (!meta) return null
+
+    const externalId = deterministicOutputMessageExternalId(execution.id, output.key)
+    const position = output.position + 1
+    const sentAt = new Date(interactionAt.getTime() + position * 1000)
+
+    const existing = await tx.message.findFirst({
+      where: { conversationId, externalId },
+    })
+    if (existing) return existing
+
+    try {
+      return await tx.message.create({
+        data: {
+          organizationId: execution.organizationId,
+          conversationId,
+          executionId: execution.id,
+          channelConnectionId: execution.channelConnectionId ?? null,
+          direction: 'OUTBOUND',
+          type: meta.messageType,
+          provider: execution.provider,
+          mode: execution.mode,
+          externalId,
+          text: meta.text,
+          position,
+          payload: {
+            ...output.payload,
+            position: output.position,
+            outputKey: output.key,
+            outputType: output.type,
+          },
+          status: 'SENT',
+          sentAt,
+        },
+      })
+    } catch {
+      return await tx.message.findFirstOrThrow({
+        where: { conversationId, externalId },
+      })
+    }
+  }
+
+  private async handleEmailCaptureProjection(
+    tx: Prisma.TransactionClient,
+    execution: { id: string; organizationId: string },
+    contactId: string,
+    conversationId: string,
+    params: { automationId: string; revisionId: string },
+    messageId: string,
+  ) {
+    const capture = await tx.emailCaptureRequest.findUnique({
+      where: { executionId: execution.id },
+    })
+    if (capture) return
+
+    await tx.emailCaptureRequest.updateMany({
+      where: { conversationId, status: 'PENDING' },
+      data: { status: 'SUPERSEDED' },
+    })
+
+    try {
+      await tx.emailCaptureRequest.create({
+        data: {
+          id: deterministicEmailCaptureRequestId(execution.id),
+          organizationId: execution.organizationId,
+          conversationId,
+          contactId,
+          automationId: params.automationId,
+          automationRevisionId: params.revisionId,
+          executionId: execution.id,
+          messageId,
+          status: 'PENDING',
+        },
+      })
+    } catch {
+      // Reentry / race
+    }
+  }
+
   private async projectOutputsToHistory(
     tx: Prisma.TransactionClient,
     execution: {
@@ -478,111 +595,23 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         continue
       }
 
-      const externalId = deterministicOutputMessageExternalId(execution.id, output.key)
-      let messageType: MessageType
-      let text: string | null = null
+      const message = await this.persistProjectedMessage(
+        tx,
+        execution,
+        conversationId,
+        output,
+        interactionAt,
+      )
 
-      switch (output.type) {
-        case 'PUBLIC_REPLY':
-          messageType = 'PUBLIC_REPLY'
-          text = (output.payload.text as string) ?? null
-          break
-        case 'PRIVATE_REPLY':
-          messageType = 'DIRECT_MESSAGE'
-          text = (output.payload.text as string) ?? null
-          break
-        case 'LINK_DELIVERY':
-          messageType = 'DIRECT_MESSAGE_WITH_LINK'
-          text = `${(output.payload.label as string) || 'Abrir link'}: ${(output.payload.url as string) || ''}`
-          break
-        case 'EMAIL_CAPTURE_REQUEST':
-          messageType = 'EMAIL_CAPTURE_REQUEST'
-          text = (output.payload.prompt as string) ?? null
-          break
-        default:
-          continue
-      }
-
-      const position = output.position + 1
-      const sentAt = new Date(interactionAt.getTime() + position * 1000)
-
-      let message = await tx.message.findFirst({
-        where: {
+      if (message && output.type === 'EMAIL_CAPTURE_REQUEST') {
+        await this.handleEmailCaptureProjection(
+          tx,
+          execution,
+          contactId,
           conversationId,
-          externalId,
-        },
-      })
-
-      if (!message) {
-        try {
-          message = await tx.message.create({
-            data: {
-              organizationId: execution.organizationId,
-              conversationId,
-              executionId: execution.id,
-              channelConnectionId: execution.channelConnectionId ?? null,
-              direction: 'OUTBOUND',
-              type: messageType,
-              provider: execution.provider,
-              mode: execution.mode,
-              externalId,
-              text,
-              position,
-              payload: {
-                ...output.payload,
-                position: output.position,
-                outputKey: output.key,
-                outputType: output.type,
-              },
-              status: 'SENT',
-              sentAt,
-            },
-          })
-        } catch {
-          message = await tx.message.findFirstOrThrow({
-            where: {
-              conversationId,
-              externalId,
-            },
-          })
-        }
-      }
-
-      if (output.type === 'EMAIL_CAPTURE_REQUEST') {
-        const capture = await tx.emailCaptureRequest.findUnique({
-          where: { executionId: execution.id },
-        })
-
-        if (!capture) {
-          // Supersede any pending capture request in this conversation
-          await tx.emailCaptureRequest.updateMany({
-            where: {
-              conversationId,
-              status: 'PENDING',
-            },
-            data: {
-              status: 'SUPERSEDED',
-            },
-          })
-
-          try {
-            await tx.emailCaptureRequest.create({
-              data: {
-                id: deterministicEmailCaptureRequestId(execution.id),
-                organizationId: execution.organizationId,
-                conversationId,
-                contactId,
-                automationId: params.automationId,
-                automationRevisionId: params.revisionId,
-                executionId: execution.id,
-                messageId: message.id,
-                status: 'PENDING',
-              },
-            })
-          } catch {
-            // Reentry / race
-          }
-        }
+          params,
+          message.id,
+        )
       }
     }
 

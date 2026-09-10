@@ -1,7 +1,7 @@
 import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import {
-  EMAIL_CAPTURE_JOB,
   contractsVersion,
+  EMAIL_CAPTURE_JOB,
   type ContactListQuery,
   type ContactListResponse,
   type ContactSummary,
@@ -15,7 +15,7 @@ import {
   type EmailCaptureResponseSubmission,
 } from '@engancha/contracts'
 import { PrismaService } from '../../../platform/database/prisma.service'
-import type { AuthorizationContext } from '../../../platform/security/authorization-context'
+import { AuthorizationContext } from '../../../platform/security/authorization-context'
 import {
   EMAIL_CAPTURE_DISPATCHER,
   type EmailCaptureDispatcher,
@@ -24,7 +24,8 @@ import {
 @Injectable()
 export class ConversationsService {
   constructor(
-    @Inject(PrismaService) private readonly database: PrismaService,
+    @Inject(PrismaService)
+    private readonly database: PrismaService,
     @Inject(EMAIL_CAPTURE_DISPATCHER)
     private readonly dispatcher: EmailCaptureDispatcher,
   ) {}
@@ -36,89 +37,7 @@ export class ConversationsService {
     const page = Math.max(1, query.page ?? 1)
     const limit = Math.max(1, Math.min(100, query.limit ?? 20))
     const skip = (page - 1) * limit
-
-    const where: Record<string, unknown> = {
-      organizationId: authContext.organizationId,
-    }
-
-    if (query.status?.length) {
-      where.status = { in: query.status }
-    }
-
-    if (query.startDate || query.endDate) {
-      const dateFilter: Record<string, Date> = {}
-      if (query.startDate) dateFilter.gte = new Date(query.startDate)
-      if (query.endDate) dateFilter.lte = new Date(query.endDate)
-      where.lastMessageAt = dateFilter
-    }
-
-    if (query.automationId) {
-      where.executions = {
-        some: {
-          automationId: query.automationId,
-        },
-      }
-    }
-
-    if (query.hasLead !== undefined) {
-      if (query.hasLead) {
-        where.contact = {
-          lead: { isNot: null },
-        }
-      } else {
-        where.contact = {
-          lead: null,
-        }
-      }
-    }
-
-    if (query.tagId) {
-      where.contact = {
-        ...(where.contact as Record<string, unknown> | undefined),
-        tags: {
-          some: {
-            tagId: query.tagId,
-          },
-        },
-      }
-    }
-
-    if (query.executionStatus?.length) {
-      where.executions = {
-        ...(where.executions as Record<string, unknown> | undefined),
-        some: {
-          status: { in: query.executionStatus },
-        },
-      }
-    }
-
-    if (query.query?.trim()) {
-      const searchTerm = query.query.trim()
-      where.OR = [
-        {
-          contact: {
-            username: { contains: searchTerm, mode: 'insensitive' },
-          },
-        },
-        {
-          contact: {
-            name: { contains: searchTerm, mode: 'insensitive' },
-          },
-        },
-        {
-          contact: {
-            emailNormalized: { contains: searchTerm.toLowerCase() },
-          },
-        },
-        {
-          messages: {
-            some: {
-              text: { contains: searchTerm, mode: 'insensitive' },
-            },
-          },
-        },
-      ]
-    }
+    const where = this.buildConversationWhere(authContext.organizationId, query)
 
     const [conversations, total] = await Promise.all([
       this.database.client.conversation.findMany({
@@ -130,11 +49,7 @@ export class ConversationsService {
           contact: {
             include: {
               lead: true,
-              tags: {
-                include: {
-                  tag: true,
-                },
-              },
+              tags: { include: { tag: true } },
             },
           },
           messages: {
@@ -144,72 +59,20 @@ export class ConversationsService {
           executions: {
             orderBy: { createdAt: 'desc' },
             take: 1,
-            include: {
-              automation: true,
-            },
+            include: { automation: true },
           },
         },
       }),
       this.database.client.conversation.count({ where }),
     ])
 
-    const totalPages = Math.ceil(total / limit)
-
-    const items: ConversationSummary[] = conversations.map((conv) => {
-      const lastMsg = conv.messages[0]
-      const lastExec = conv.executions[0]
-
-      return {
-        id: conv.id,
-        provider: conv.provider,
-        mode: conv.mode,
-        status: conv.status,
-        contact: {
-          id: conv.contact.id,
-          name: conv.contact.name,
-          username: conv.contact.username,
-          externalUserId: conv.contact.externalUserId,
-          email: conv.contact.email,
-        },
-        lastMessage: lastMsg
-          ? {
-              id: lastMsg.id,
-              text: lastMsg.text,
-              direction: lastMsg.direction,
-              type: lastMsg.type,
-              createdAt: lastMsg.createdAt.toISOString(),
-            }
-          : null,
-        automation: lastExec?.automation
-          ? {
-              id: lastExec.automation.id,
-              name: lastExec.automationId,
-            }
-          : null,
-        lead: conv.contact.lead
-          ? {
-              id: conv.contact.lead.id,
-              capturedAt: conv.contact.lead.capturedAt.toISOString(),
-            }
-          : null,
-        tags: conv.contact.tags.map((ct) => ({
-          id: ct.tag.id,
-          name: ct.tag.name,
-          normalizedName: ct.tag.normalizedName,
-        })),
-        lastMessageAt: conv.lastMessageAt ? conv.lastMessageAt.toISOString() : null,
-        createdAt: conv.createdAt.toISOString(),
-        updatedAt: conv.updatedAt.toISOString(),
-      }
-    })
-
     return {
-      items,
+      items: conversations.map((conv) => this.mapConversationSummary(conv)),
       meta: {
         page,
         limit,
         total,
-        totalPages,
+        totalPages: Math.ceil(total / limit),
       },
     }
   }
@@ -227,18 +90,12 @@ export class ConversationsService {
         contact: {
           include: {
             lead: true,
-            tags: {
-              include: {
-                tag: true,
-              },
-            },
+            tags: { include: { tag: true } },
           },
         },
         messages: {
           orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-          include: {
-            execution: true,
-          },
+          include: { execution: true },
         },
         emailCaptureRequests: {
           orderBy: { createdAt: 'desc' },
@@ -246,9 +103,7 @@ export class ConversationsService {
         executions: {
           orderBy: { createdAt: 'desc' },
           take: 1,
-          include: {
-            automation: true,
-          },
+          include: { automation: true },
         },
       },
     })
@@ -257,7 +112,184 @@ export class ConversationsService {
       throw new NotFoundException('Conversa não encontrada ou acesso não autorizado')
     }
 
-    const messages: ConversationMessage[] = conversation.messages.map((msg) => ({
+    return this.mapConversationDetail(conversation)
+  }
+
+  async listContacts(
+    authContext: AuthorizationContext,
+    query: ContactListQuery,
+  ): Promise<ContactListResponse> {
+    const page = Math.max(1, query.page ?? 1)
+    const limit = Math.max(1, Math.min(100, query.limit ?? 20))
+    const skip = (page - 1) * limit
+    const where = this.buildContactWhere(authContext.organizationId, query)
+
+    const [contacts, total] = await Promise.all([
+      this.database.client.contact.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: [{ lastInteractionAt: 'desc' }, { id: 'desc' }],
+        include: {
+          lead: { include: { automation: true } },
+          tags: { include: { tag: true } },
+        },
+      }),
+      this.database.client.contact.count({ where }),
+    ])
+
+    return {
+      items: contacts.map((contact) => this.mapContactSummary(contact)),
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    }
+  }
+
+  async submitEmailCaptureResponse(
+    authContext: AuthorizationContext,
+    conversationId: string,
+    captureId: string,
+    submission: EmailCaptureResponseSubmission,
+  ): Promise<EmailCaptureResponseResult> {
+    const capture = await this.database.client.emailCaptureRequest.findFirst({
+      where: {
+        id: captureId,
+        conversationId,
+        organizationId: authContext.organizationId,
+      },
+      include: { contact: true },
+    })
+
+    if (!capture) {
+      throw new NotFoundException('Captura de e-mail não encontrada ou acesso não autorizado')
+    }
+
+    const settledResult = await this.resolveSettledCaptureResponse(authContext, capture, submission)
+    if (settledResult) {
+      return settledResult
+    }
+
+    await this.database.client.emailCaptureRequest.update({
+      where: { id: capture.id },
+      data: { idempotencyKey: submission.idempotencyKey },
+    })
+
+    await this.dispatcher.dispatch({
+      type: EMAIL_CAPTURE_JOB,
+      version: contractsVersion,
+      correlationId: submission.idempotencyKey,
+      captureRequestId: capture.id,
+      organizationId: authContext.organizationId,
+      submittedEmail: submission.email,
+      idempotencyKey: submission.idempotencyKey,
+    })
+
+    return {
+      id: capture.id,
+      conversationId: capture.conversationId,
+      contactId: capture.contactId,
+      status: capture.status,
+      messageId: capture.messageId,
+      responseMessageId: capture.responseMessageId,
+      createdAt: capture.createdAt.toISOString(),
+      claimedAt: capture.claimedAt ? capture.claimedAt.toISOString() : null,
+      completedAt: capture.completedAt ? capture.completedAt.toISOString() : null,
+    }
+  }
+
+  private buildConversationWhere(
+    organizationId: string,
+    query: ConversationListQuery,
+  ): Record<string, unknown> {
+    const where: Record<string, unknown> = { organizationId }
+
+    if (query.status?.length) where.status = { in: query.status }
+    if (query.startDate || query.endDate) {
+      const dateFilter: Record<string, Date> = {}
+      if (query.startDate) dateFilter.gte = new Date(query.startDate)
+      if (query.endDate) dateFilter.lte = new Date(query.endDate)
+      where.lastMessageAt = dateFilter
+    }
+    if (query.automationId) {
+      where.executions = { some: { automationId: query.automationId } }
+    }
+    if (query.hasLead !== undefined) {
+      where.contact = query.hasLead ? { lead: { isNot: null } } : { lead: null }
+    }
+    if (query.tagId) {
+      where.contact = {
+        ...(where.contact as Record<string, unknown> | undefined),
+        tags: { some: { tagId: query.tagId } },
+      }
+    }
+    if (query.executionStatus?.length) {
+      where.executions = {
+        ...(where.executions as Record<string, unknown> | undefined),
+        some: { status: { in: query.executionStatus } },
+      }
+    }
+    if (query.query?.trim()) {
+      const s = query.query.trim()
+      where.OR = [
+        { contact: { username: { contains: s, mode: 'insensitive' } } },
+        { contact: { name: { contains: s, mode: 'insensitive' } } },
+        { contact: { emailNormalized: { contains: s.toLowerCase() } } },
+        { messages: { some: { text: { contains: s, mode: 'insensitive' } } } },
+      ]
+    }
+    return where
+  }
+
+  private mapConversationSummary(conv: any): ConversationSummary {
+    const lastMsg = conv.messages[0]
+    const lastExec = conv.executions[0]
+    return {
+      id: conv.id,
+      provider: conv.provider,
+      mode: conv.mode,
+      status: conv.status,
+      contact: {
+        id: conv.contact.id,
+        name: conv.contact.name,
+        username: conv.contact.username,
+        externalUserId: conv.contact.externalUserId,
+        email: conv.contact.email,
+      },
+      lastMessage: lastMsg
+        ? {
+            id: lastMsg.id,
+            text: lastMsg.text,
+            direction: lastMsg.direction,
+            type: lastMsg.type,
+            createdAt: lastMsg.createdAt.toISOString(),
+          }
+        : null,
+      automation: lastExec?.automation
+        ? { id: lastExec.automation.id, name: lastExec.automationId }
+        : null,
+      lead: conv.contact.lead
+        ? {
+            id: conv.contact.lead.id,
+            capturedAt: conv.contact.lead.capturedAt.toISOString(),
+          }
+        : null,
+      tags: conv.contact.tags.map((ct: any) => ({
+        id: ct.tag.id,
+        name: ct.tag.name,
+        normalizedName: ct.tag.normalizedName,
+      })),
+      lastMessageAt: conv.lastMessageAt ? conv.lastMessageAt.toISOString() : null,
+      createdAt: conv.createdAt.toISOString(),
+      updatedAt: conv.updatedAt.toISOString(),
+    }
+  }
+
+  private mapConversationDetail(conversation: any): ConversationDetailResponse {
+    const messages: ConversationMessage[] = conversation.messages.map((msg: any) => ({
       id: msg.id,
       direction: msg.direction,
       type: msg.type,
@@ -271,20 +303,21 @@ export class ConversationsService {
       originAutomationId: msg.execution?.automationId ?? null,
     }))
 
-    const emailCaptures: EmailCaptureDetail[] = conversation.emailCaptureRequests.map((ec) => ({
-      id: ec.id,
-      status: ec.status,
-      messageId: ec.messageId,
-      responseMessageId: ec.responseMessageId,
-      errorCode: ec.errorCode,
-      errorMessage: ec.errorMessage,
-      createdAt: ec.createdAt.toISOString(),
-      claimedAt: ec.claimedAt ? ec.claimedAt.toISOString() : null,
-      completedAt: ec.completedAt ? ec.completedAt.toISOString() : null,
-    }))
+    const emailCaptures: EmailCaptureDetail[] = conversation.emailCaptureRequests.map(
+      (ec: any) => ({
+        id: ec.id,
+        status: ec.status,
+        messageId: ec.messageId,
+        responseMessageId: ec.responseMessageId,
+        errorCode: ec.errorCode,
+        errorMessage: ec.errorMessage,
+        createdAt: ec.createdAt.toISOString(),
+        claimedAt: ec.claimedAt ? ec.claimedAt.toISOString() : null,
+        completedAt: ec.completedAt ? ec.completedAt.toISOString() : null,
+      }),
+    )
 
     const lastExec = conversation.executions[0]
-
     return {
       id: conversation.id,
       provider: conversation.provider,
@@ -299,7 +332,7 @@ export class ConversationsService {
         externalUserId: conversation.contact.externalUserId,
         email: conversation.contact.email,
       },
-      tags: conversation.contact.tags.map((ct) => ({
+      tags: conversation.contact.tags.map((ct: any) => ({
         id: ct.tag.id,
         name: ct.tag.name,
         normalizedName: ct.tag.normalizedName,
@@ -311,84 +344,38 @@ export class ConversationsService {
           }
         : null,
       automation: lastExec?.automation
-        ? {
-            id: lastExec.automation.id,
-            name: lastExec.automationId,
-          }
+        ? { id: lastExec.automation.id, name: lastExec.automationId }
         : null,
       messages,
       emailCaptures,
     }
   }
 
-  async listContacts(
-    authContext: AuthorizationContext,
+  private buildContactWhere(
+    organizationId: string,
     query: ContactListQuery,
-  ): Promise<ContactListResponse> {
-    const page = Math.max(1, query.page ?? 1)
-    const limit = Math.max(1, Math.min(100, query.limit ?? 20))
-    const skip = (page - 1) * limit
+  ): Record<string, unknown> {
+    const where: Record<string, unknown> = { organizationId }
 
-    const where: Record<string, unknown> = {
-      organizationId: authContext.organizationId,
-    }
-
-    if (query.provider?.length) {
-      where.provider = { in: query.provider }
-    }
-
-    if (query.mode?.length) {
-      where.mode = { in: query.mode }
-    }
-
-    if (query.tagId) {
-      where.tags = {
-        some: {
-          tagId: query.tagId,
-        },
-      }
-    }
-
-    if (query.leadState === 'LEAD') {
-      where.lead = { isNot: null }
-    } else if (query.leadState === 'NOT_LEAD') {
-      where.lead = null
-    }
+    if (query.provider?.length) where.provider = { in: query.provider }
+    if (query.mode?.length) where.mode = { in: query.mode }
+    if (query.tagId) where.tags = { some: { tagId: query.tagId } }
+    if (query.leadState === 'LEAD') where.lead = { isNot: null }
+    else if (query.leadState === 'NOT_LEAD') where.lead = null
 
     if (query.query?.trim()) {
-      const searchTerm = query.query.trim()
+      const s = query.query.trim()
       where.OR = [
-        { username: { contains: searchTerm, mode: 'insensitive' } },
-        { name: { contains: searchTerm, mode: 'insensitive' } },
-        { emailNormalized: { contains: searchTerm.toLowerCase() } },
+        { username: { contains: s, mode: 'insensitive' } },
+        { name: { contains: s, mode: 'insensitive' } },
+        { emailNormalized: { contains: s.toLowerCase() } },
       ]
     }
+    return where
+  }
 
-    const [contacts, total] = await Promise.all([
-      this.database.client.contact.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: [{ lastInteractionAt: 'desc' }, { id: 'desc' }],
-        include: {
-          lead: {
-            include: {
-              automation: true,
-            },
-          },
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-        },
-      }),
-      this.database.client.contact.count({ where }),
-    ])
-
-    const totalPages = Math.ceil(total / limit)
-
-    const items: ContactSummary[] = contacts.map((contact) => ({
+  private mapContactSummary(contact: any): ContactSummary {
+    return {
       id: contact.id,
       provider: contact.provider,
       mode: contact.mode,
@@ -406,7 +393,7 @@ export class ConversationsService {
             automationName: contact.lead.automationId,
           }
         : null,
-      tags: contact.tags.map((ct) => ({
+      tags: contact.tags.map((ct: any) => ({
         id: ct.tag.id,
         name: ct.tag.name,
         normalizedName: ct.tag.normalizedName,
@@ -414,41 +401,14 @@ export class ConversationsService {
       lastInteractionAt: contact.lastInteractionAt ? contact.lastInteractionAt.toISOString() : null,
       createdAt: contact.createdAt.toISOString(),
       updatedAt: contact.updatedAt.toISOString(),
-    }))
-
-    return {
-      items,
-      meta: {
-        page,
-        limit,
-        total,
-        totalPages,
-      },
     }
   }
 
-  async submitEmailCaptureResponse(
+  private async resolveSettledCaptureResponse(
     authContext: AuthorizationContext,
-    conversationId: string,
-    captureId: string,
+    capture: any,
     submission: EmailCaptureResponseSubmission,
-  ): Promise<EmailCaptureResponseResult> {
-    const capture = await this.database.client.emailCaptureRequest.findFirst({
-      where: {
-        id: captureId,
-        conversationId,
-        organizationId: authContext.organizationId,
-      },
-      include: {
-        contact: true,
-      },
-    })
-
-    if (!capture) {
-      throw new NotFoundException('Captura de e-mail não encontrada ou acesso não autorizado')
-    }
-
-    // Se já estiver COMPLETED ou SUPERSEDED
+  ): Promise<EmailCaptureResponseResult | null> {
     if (capture.status === 'SUPERSEDED') {
       throw new ConflictException(
         'Esta solicitação de captura foi substituída por uma mais recente',
@@ -481,7 +441,6 @@ export class ConversationsService {
       }
     }
 
-    // Se já estiver associado à mesma idempotencyKey e estiver PROCESSING
     if (capture.idempotencyKey === submission.idempotencyKey) {
       return {
         id: capture.id,
@@ -498,35 +457,6 @@ export class ConversationsService {
       }
     }
 
-    // Marca o idempotencyKey na captura para tracking de submissão estável
-    await this.database.client.emailCaptureRequest.update({
-      where: { id: capture.id },
-      data: {
-        idempotencyKey: submission.idempotencyKey,
-      },
-    })
-
-    // Enfileira processamento assíncrono seguro
-    await this.dispatcher.dispatch({
-      type: EMAIL_CAPTURE_JOB,
-      version: contractsVersion,
-      correlationId: submission.idempotencyKey,
-      captureRequestId: capture.id,
-      organizationId: authContext.organizationId,
-      submittedEmail: submission.email,
-      idempotencyKey: submission.idempotencyKey,
-    })
-
-    return {
-      id: capture.id,
-      conversationId: capture.conversationId,
-      contactId: capture.contactId,
-      status: capture.status,
-      messageId: capture.messageId,
-      responseMessageId: capture.responseMessageId,
-      createdAt: capture.createdAt.toISOString(),
-      claimedAt: capture.claimedAt ? capture.claimedAt.toISOString() : null,
-      completedAt: capture.completedAt ? capture.completedAt.toISOString() : null,
-    }
+    return null
   }
 }

@@ -7,6 +7,10 @@ import type {
   ProcessEmailCaptureResult,
 } from '../../domain/ports/email-capture-repository.port'
 
+type ClaimedCapture = Prisma.EmailCaptureRequestGetPayload<{
+  include: { contact: true; execution: true; conversation: true }
+}>
+
 @Injectable()
 export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
   constructor(@Inject(PrismaService) private readonly database: PrismaService) {}
@@ -16,138 +20,22 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
     const normalized = normalizeEmail(submittedEmail)
 
     return await this.database.client.$transaction(async (tx) => {
-      // 1. Busca a captura
-      const capture = await tx.emailCaptureRequest.findFirst({
-        where: {
-          id: captureRequestId,
-          organizationId,
-        },
-        include: {
-          contact: true,
-          execution: true,
-          conversation: true,
-        },
-      })
+      const claimed = await this.findAndClaimCapture(tx, captureRequestId, organizationId)
+      if ('settled' in claimed) {
+        return claimed.settled
+      }
+      const { capture } = claimed
 
-      if (!capture) {
-        throw new Error(
-          `Email capture request ${captureRequestId} not found for org ${organizationId}`,
-        )
+      const conflictResult = await this.checkIdentityConflict(
+        tx,
+        capture,
+        organizationId,
+        normalized,
+      )
+      if (conflictResult) {
+        return conflictResult
       }
 
-      // Se já estiver COMPLETED, retorna resultado idempotente
-      if (capture.status === 'COMPLETED') {
-        const lead = await tx.lead.findUnique({
-          where: {
-            organizationId_contactId: {
-              organizationId,
-              contactId: capture.contactId,
-            },
-          },
-        })
-
-        return {
-          captureId: capture.id,
-          conversationId: capture.conversationId,
-          contactId: capture.contactId,
-          leadId: lead?.id,
-          status: 'COMPLETED',
-        }
-      }
-
-      // Se já estiver SUPERSEDED, não processa efeitos
-      if (capture.status === 'SUPERSEDED') {
-        return {
-          captureId: capture.id,
-          conversationId: capture.conversationId,
-          contactId: capture.contactId,
-          status: 'SUPERSEDED',
-        }
-      }
-
-      // 2. Claim atômico: garante que apenas um worker processe esta captura
-      const updated = await tx.emailCaptureRequest.updateMany({
-        where: {
-          id: captureRequestId,
-          organizationId,
-          status: 'PENDING',
-        },
-        data: {
-          status: 'PROCESSING',
-          claimedAt: new Date(),
-          attempts: { increment: 1 },
-        },
-      })
-
-      // Se não conseguiu atualizar para PROCESSING e não era da mesma claim, relê
-      if (updated.count === 0 && capture.status !== 'PROCESSING') {
-        const recheck = await tx.emailCaptureRequest.findUniqueOrThrow({
-          where: { id: captureRequestId },
-        })
-
-        if (recheck.status === 'COMPLETED') {
-          const lead = await tx.lead.findUnique({
-            where: {
-              organizationId_contactId: {
-                organizationId,
-                contactId: recheck.contactId,
-              },
-            },
-          })
-
-          return {
-            captureId: recheck.id,
-            conversationId: recheck.conversationId,
-            contactId: recheck.contactId,
-            leadId: lead?.id,
-            status: 'COMPLETED',
-          }
-        }
-
-        if (recheck.status === 'SUPERSEDED') {
-          return {
-            captureId: recheck.id,
-            conversationId: recheck.conversationId,
-            contactId: recheck.contactId,
-            status: 'SUPERSEDED',
-          }
-        }
-      }
-
-      // 3. DEC-05: Verificação de conflito de identidade
-      // Se já existir outro contato no mesmo workspace com o mesmo emailNormalized:
-      const conflictingContact = await tx.contact.findFirst({
-        where: {
-          organizationId,
-          emailNormalized: normalized,
-          id: { not: capture.contactId },
-        },
-      })
-
-      if (conflictingContact) {
-        // Falha fechado sem mesclar pessoas, mover histórico ou criar lead
-        await tx.emailCaptureRequest.update({
-          where: { id: captureRequestId },
-          data: {
-            status: 'PENDING', // Permanece pending para que o usuário possa corrigir o endereço
-            errorCode: 'IDENTITY_CONFLICT',
-            errorMessage:
-              'O e-mail informado já está associado a outro contato neste espaço de trabalho.',
-          },
-        })
-
-        return {
-          captureId: capture.id,
-          conversationId: capture.conversationId,
-          contactId: capture.contactId,
-          status: 'FAILED',
-          errorCode: 'IDENTITY_CONFLICT',
-          errorMessage:
-            'O e-mail informado já está associado a outro contato neste espaço de trabalho.',
-        }
-      }
-
-      // 4. Cria mensagem de resposta de entrada (INBOUND)
       const interactionAt = new Date()
       const responseMessage = await this.ensureInboundResponseMessage(
         tx,
@@ -157,7 +45,6 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
         interactionAt,
       )
 
-      // 5. Enriquece o contato com email e emailNormalized
       await tx.contact.update({
         where: { id: capture.contactId },
         data: {
@@ -167,19 +54,14 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
         },
       })
 
-      // 6. Atualiza conversation lastMessageAt
       await tx.conversation.update({
         where: { id: capture.conversationId },
         data: { lastMessageAt: interactionAt },
       })
 
-      // 7. DEC-08: Criação ou preservação do primeiro lead (atribuição imutável)
       const lead = await this.findOrCreateFirstLead(tx, capture, organizationId, interactionAt)
-
-      // 8. Aplica tag configurada na automação/revisão se houver ação APPLY_TAG
       await this.applyAutomationTagIfPresent(tx, capture, organizationId)
 
-      // 9. Marca EmailCaptureRequest como COMPLETED
       await tx.emailCaptureRequest.update({
         where: { id: capture.id },
         data: {
@@ -201,6 +83,89 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
     })
   }
 
+  private async findAndClaimCapture(
+    tx: Prisma.TransactionClient,
+    captureRequestId: string,
+    organizationId: string,
+  ): Promise<{ settled: ProcessEmailCaptureResult } | { capture: ClaimedCapture }> {
+    const capture = await tx.emailCaptureRequest.findFirst({
+      where: { id: captureRequestId, organizationId },
+      include: { contact: true, execution: true, conversation: true },
+    })
+
+    if (!capture) {
+      throw new Error(
+        `Email capture request ${captureRequestId} not found for org ${organizationId}`,
+      )
+    }
+
+    if (capture.status === 'COMPLETED' || capture.status === 'SUPERSEDED') {
+      const settled = await this.buildSettledCaptureResult(tx, capture, organizationId)
+      return { settled }
+    }
+
+    await tx.emailCaptureRequest.updateMany({
+      where: { id: captureRequestId, organizationId, status: 'PENDING' },
+      data: { status: 'PROCESSING', claimedAt: new Date(), attempts: { increment: 1 } },
+    })
+
+    return { capture }
+  }
+
+  private async buildSettledCaptureResult(
+    tx: Prisma.TransactionClient,
+    capture: any,
+    organizationId: string,
+  ): Promise<ProcessEmailCaptureResult> {
+    if (capture.status === 'COMPLETED') {
+      const lead = await tx.lead.findUnique({
+        where: { organizationId_contactId: { organizationId, contactId: capture.contactId } },
+      })
+      return {
+        captureId: capture.id,
+        conversationId: capture.conversationId,
+        contactId: capture.contactId,
+        leadId: lead?.id,
+        status: 'COMPLETED',
+      }
+    }
+    return {
+      captureId: capture.id,
+      conversationId: capture.conversationId,
+      contactId: capture.contactId,
+      status: 'SUPERSEDED',
+    }
+  }
+
+  private async checkIdentityConflict(
+    tx: Prisma.TransactionClient,
+    capture: any,
+    organizationId: string,
+    normalized: string,
+  ): Promise<ProcessEmailCaptureResult | null> {
+    const conflicting = await tx.contact.findFirst({
+      where: { organizationId, emailNormalized: normalized, id: { not: capture.contactId } },
+    })
+
+    if (!conflicting) return null
+
+    const errorMessage =
+      'O e-mail informado já está associado a outro contato neste espaço de trabalho.'
+    await tx.emailCaptureRequest.update({
+      where: { id: capture.id },
+      data: { status: 'PENDING', errorCode: 'IDENTITY_CONFLICT', errorMessage },
+    })
+
+    return {
+      captureId: capture.id,
+      conversationId: capture.conversationId,
+      contactId: capture.contactId,
+      status: 'FAILED',
+      errorCode: 'IDENTITY_CONFLICT',
+      errorMessage,
+    }
+  }
+
   async markFailed(params: {
     captureRequestId: string
     organizationId: string
@@ -215,7 +180,7 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
       data: {
         errorCode: params.errorCode,
         errorMessage: params.errorMessage,
-        status: 'PENDING', // mantem pending para recuperação/retry seguro
+        status: 'PENDING',
       },
     })
   }
@@ -261,6 +226,11 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
           externalId: responseExternalId,
           text: submittedEmail,
           position: nextPosition,
+          payload: {
+            captureRequestId: capture.id,
+            isCaptureResponse: true,
+            submittedEmail,
+          },
           status: 'RECEIVED',
           sentAt: interactionAt,
         },
@@ -273,8 +243,10 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
   private async findOrCreateFirstLead(
     tx: Prisma.TransactionClient,
     capture: {
+      id: string
       contactId: string
       automationId: string | null
+      automationRevisionId: string | null
       executionId: string
       conversation: { provider: any; mode: any }
     },
@@ -318,6 +290,38 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
     return lead
   }
 
+  private async resolveTagIdFromConfig(
+    tx: Prisma.TransactionClient,
+    config: Record<string, unknown>,
+    organizationId: string,
+  ): Promise<string | undefined> {
+    if (config.tagId && typeof config.tagId === 'string') {
+      return config.tagId
+    }
+
+    if (typeof config.name === 'string' && config.name.trim()) {
+      const normalizedName = normalizeTagName(config.name)
+      let tag = await tx.tag.findUnique({
+        where: { organizationId_normalizedName: { organizationId, normalizedName } },
+      })
+
+      if (!tag) {
+        try {
+          tag = await tx.tag.create({
+            data: { organizationId, name: config.name.trim(), normalizedName },
+          })
+        } catch {
+          tag = await tx.tag.findUniqueOrThrow({
+            where: { organizationId_normalizedName: { organizationId, normalizedName } },
+          })
+        }
+      }
+      return tag.id
+    }
+
+    return undefined
+  }
+
   private async applyAutomationTagIfPresent(
     tx: Prisma.TransactionClient,
     capture: {
@@ -328,86 +332,37 @@ export class PrismaEmailCaptureRepository implements EmailCaptureRepository {
     },
     organizationId: string,
   ): Promise<void> {
-    if (!capture.automationRevisionId) {
-      return
-    }
+    if (!capture.automationRevisionId) return
 
     const tagAction = await tx.automationAction.findFirst({
-      where: {
-        revisionId: capture.automationRevisionId,
-        type: 'APPLY_TAG',
-      },
+      where: { revisionId: capture.automationRevisionId, type: 'APPLY_TAG' },
     })
 
-    if (!tagAction || !tagAction.config || typeof tagAction.config !== 'object') {
-      return
-    }
+    if (!tagAction || !tagAction.config || typeof tagAction.config !== 'object') return
 
-    const config = tagAction.config as Record<string, unknown>
-    let tagId = config.tagId as string | undefined
+    const tagId = await this.resolveTagIdFromConfig(
+      tx,
+      tagAction.config as Record<string, unknown>,
+      organizationId,
+    )
+    if (!tagId) return
 
-    if (!tagId && typeof config.name === 'string' && config.name.trim()) {
-      const normalizedName = normalizeTagName(config.name)
-      let tag = await tx.tag.findUnique({
-        where: {
-          organizationId_normalizedName: {
-            organizationId,
-            normalizedName,
-          },
+    const tag = await tx.tag.findFirst({ where: { id: tagId, organizationId } })
+    if (!tag) return
+
+    const existing = await tx.contactTag.findUnique({
+      where: { contactId_tagId: { contactId: capture.contactId, tagId: tag.id } },
+    })
+
+    if (!existing) {
+      await tx.contactTag.create({
+        data: {
+          contactId: capture.contactId,
+          tagId: tag.id,
+          originExecutionId: capture.executionId,
+          originAutomationId: capture.automationId,
         },
       })
-
-      if (!tag) {
-        try {
-          tag = await tx.tag.create({
-            data: {
-              organizationId,
-              name: config.name.trim(),
-              normalizedName,
-            },
-          })
-        } catch {
-          tag = await tx.tag.findUniqueOrThrow({
-            where: {
-              organizationId_normalizedName: {
-                organizationId,
-                normalizedName,
-              },
-            },
-          })
-        }
-      }
-      tagId = tag.id
-    }
-
-    if (tagId) {
-      const tag = await tx.tag.findFirst({
-        where: { id: tagId, organizationId },
-      })
-
-      if (!tag) {
-        return
-      }
-
-      const existing = await tx.contactTag.findUnique({
-        where: {
-          contactId_tagId: {
-            contactId: capture.contactId,
-            tagId: tag.id,
-          },
-        },
-      })
-
-      if (!existing) {
-        await tx.contactTag.create({
-          data: {
-            contactId: capture.contactId,
-            tagId: tag.id,
-            originExecutionId: capture.executionId,
-            originAutomationId: capture.automationId,
-          },
-        })
-      }
     }
   }
 }
