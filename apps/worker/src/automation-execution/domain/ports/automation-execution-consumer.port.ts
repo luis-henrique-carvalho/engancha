@@ -8,6 +8,8 @@ export interface AutomationExecutionResult {
   matched?: boolean
   automationId?: string
   revisionId?: string
+  contactId?: string
+  conversationId?: string
   errorCode?: string
 }
 

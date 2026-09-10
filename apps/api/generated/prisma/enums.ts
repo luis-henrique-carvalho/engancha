@@ -83,3 +83,36 @@ export const AutomationExecutionOutputType = {
 
 export type AutomationExecutionOutputType =
   (typeof AutomationExecutionOutputType)[keyof typeof AutomationExecutionOutputType]
+
+export const ConversationStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+} as const
+
+export type ConversationStatus = (typeof ConversationStatus)[keyof typeof ConversationStatus]
+
+export const MessageDirection = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND',
+} as const
+
+export type MessageDirection = (typeof MessageDirection)[keyof typeof MessageDirection]
+
+export const MessageType = {
+  COMMENT: 'COMMENT',
+  INCOMING_MESSAGE: 'INCOMING_MESSAGE',
+  PUBLIC_REPLY: 'PUBLIC_REPLY',
+  PRIVATE_REPLY: 'PRIVATE_REPLY',
+  DIRECT_MESSAGE: 'DIRECT_MESSAGE',
+} as const
+
+export type MessageType = (typeof MessageType)[keyof typeof MessageType]
+
+export const MessageStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  RECEIVED: 'RECEIVED',
+} as const
+
+export type MessageStatus = (typeof MessageStatus)[keyof typeof MessageStatus]

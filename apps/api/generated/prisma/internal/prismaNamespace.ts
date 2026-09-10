@@ -406,6 +406,9 @@ export const ModelName = {
   AutomationExecutionOutput: 'AutomationExecutionOutput',
   Member: 'Member',
   Invitation: 'Invitation',
+  Contact: 'Contact',
+  Conversation: 'Conversation',
+  Message: 'Message',
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -442,6 +445,9 @@ export type TypeMap<
       | 'automationExecutionOutput'
       | 'member'
       | 'invitation'
+      | 'contact'
+      | 'conversation'
+      | 'message'
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1567,6 +1573,228 @@ export type TypeMap<
         }
       }
     }
+    Contact: {
+      payload: Prisma.$ContactPayload<ExtArgs>
+      fields: Prisma.ContactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ContactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ContactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        findFirst: {
+          args: Prisma.ContactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ContactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        findMany: {
+          args: Prisma.ContactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>[]
+        }
+        create: {
+          args: Prisma.ContactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        createMany: {
+          args: Prisma.ContactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ContactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>[]
+        }
+        delete: {
+          args: Prisma.ContactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        update: {
+          args: Prisma.ContactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        deleteMany: {
+          args: Prisma.ContactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ContactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ContactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>[]
+        }
+        upsert: {
+          args: Prisma.ContactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactPayload>
+        }
+        aggregate: {
+          args: Prisma.ContactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateContact>
+        }
+        groupBy: {
+          args: Prisma.ContactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ContactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ContactCountAggregateOutputType> | number
+        }
+      }
+    }
+    Conversation: {
+      payload: Prisma.$ConversationPayload<ExtArgs>
+      fields: Prisma.ConversationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ConversationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ConversationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        findFirst: {
+          args: Prisma.ConversationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ConversationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        findMany: {
+          args: Prisma.ConversationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+        }
+        create: {
+          args: Prisma.ConversationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        createMany: {
+          args: Prisma.ConversationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ConversationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+        }
+        delete: {
+          args: Prisma.ConversationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        update: {
+          args: Prisma.ConversationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ConversationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ConversationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ConversationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ConversationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ConversationPayload>
+        }
+        aggregate: {
+          args: Prisma.ConversationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateConversation>
+        }
+        groupBy: {
+          args: Prisma.ConversationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ConversationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ConversationCountAggregateOutputType> | number
+        }
+      }
+    }
+    Message: {
+      payload: Prisma.$MessagePayload<ExtArgs>
+      fields: Prisma.MessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        findFirst: {
+          args: Prisma.MessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        findMany: {
+          args: Prisma.MessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        create: {
+          args: Prisma.MessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        createMany: {
+          args: Prisma.MessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        delete: {
+          args: Prisma.MessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        update: {
+          args: Prisma.MessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.MessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.MessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagePayload>
+        }
+        aggregate: {
+          args: Prisma.MessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessage>
+        }
+        groupBy: {
+          args: Prisma.MessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1768,6 +1996,8 @@ export const AutomationExecutionScalarFieldEnum = {
   automationId: 'automationId',
   automationRevisionId: 'automationRevisionId',
   automationSnapshot: 'automationSnapshot',
+  contactId: 'contactId',
+  conversationId: 'conversationId',
   status: 'status',
   matched: 'matched',
   attempts: 'attempts',
@@ -1821,6 +2051,64 @@ export const InvitationScalarFieldEnum = {
 
 export type InvitationScalarFieldEnum =
   (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
+
+export const ContactScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  channelConnectionId: 'channelConnectionId',
+  provider: 'provider',
+  mode: 'mode',
+  externalUserId: 'externalUserId',
+  username: 'username',
+  name: 'name',
+  email: 'email',
+  emailNormalized: 'emailNormalized',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastInteractionAt: 'lastInteractionAt',
+} as const
+
+export type ContactScalarFieldEnum =
+  (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+export const ConversationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  contactId: 'contactId',
+  channelConnectionId: 'channelConnectionId',
+  provider: 'provider',
+  mode: 'mode',
+  externalId: 'externalId',
+  status: 'status',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type ConversationScalarFieldEnum =
+  (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  conversationId: 'conversationId',
+  executionId: 'executionId',
+  channelConnectionId: 'channelConnectionId',
+  direction: 'direction',
+  type: 'type',
+  provider: 'provider',
+  mode: 'mode',
+  externalId: 'externalId',
+  text: 'text',
+  payload: 'payload',
+  status: 'status',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+} as const
+
+export type MessageScalarFieldEnum =
+  (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 export const SortOrder = {
   asc: 'asc',
@@ -2059,6 +2347,70 @@ export type ListEnumAutomationExecutionOutputTypeFieldRefInput<$PrismaModel> = F
 >
 
 /**
+ * Reference to a field of type 'ConversationStatus'
+ */
+export type EnumConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'ConversationStatus'
+>
+
+/**
+ * Reference to a field of type 'ConversationStatus[]'
+ */
+export type ListEnumConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'ConversationStatus[]'
+>
+
+/**
+ * Reference to a field of type 'MessageDirection'
+ */
+export type EnumMessageDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageDirection'
+>
+
+/**
+ * Reference to a field of type 'MessageDirection[]'
+ */
+export type ListEnumMessageDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageDirection[]'
+>
+
+/**
+ * Reference to a field of type 'MessageType'
+ */
+export type EnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageType'
+>
+
+/**
+ * Reference to a field of type 'MessageType[]'
+ */
+export type ListEnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageType[]'
+>
+
+/**
+ * Reference to a field of type 'MessageStatus'
+ */
+export type EnumMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageStatus'
+>
+
+/**
+ * Reference to a field of type 'MessageStatus[]'
+ */
+export type ListEnumMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'MessageStatus[]'
+>
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -2241,6 +2593,9 @@ export type GlobalOmitConfig = {
   automationExecutionOutput?: Prisma.AutomationExecutionOutputOmit
   member?: Prisma.MemberOmit
   invitation?: Prisma.InvitationOmit
+  contact?: Prisma.ContactOmit
+  conversation?: Prisma.ConversationOmit
+  message?: Prisma.MessageOmit
 }
 
 /* Types for Logging */

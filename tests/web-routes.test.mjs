@@ -46,9 +46,7 @@ test('web route tree exposes only Engancha routes', async () => {
   ]) {
     assert.match(
       source,
-      new RegExp(
-        `const ${route} =[\\s\\S]*?getParentRoute: \\(\\) => AuthenticatedRouteRoute`,
-      ),
+      new RegExp(`const ${route} =[\\s\\S]*?getParentRoute: \\(\\) => AuthenticatedRouteRoute`),
     )
   }
 })

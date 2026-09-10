@@ -50,6 +50,8 @@ export type AutomationExecutionMinAggregateOutputType = {
   originAutomationId: string | null
   automationId: string | null
   automationRevisionId: string | null
+  contactId: string | null
+  conversationId: string | null
   status: $Enums.AutomationExecutionStatus | null
   matched: boolean | null
   attempts: number | null
@@ -77,6 +79,8 @@ export type AutomationExecutionMaxAggregateOutputType = {
   originAutomationId: string | null
   automationId: string | null
   automationRevisionId: string | null
+  contactId: string | null
+  conversationId: string | null
   status: $Enums.AutomationExecutionStatus | null
   matched: boolean | null
   attempts: number | null
@@ -105,6 +109,8 @@ export type AutomationExecutionCountAggregateOutputType = {
   automationId: number
   automationRevisionId: number
   automationSnapshot: number
+  contactId: number
+  conversationId: number
   status: number
   matched: number
   attempts: number
@@ -143,6 +149,8 @@ export type AutomationExecutionMinAggregateInputType = {
   originAutomationId?: true
   automationId?: true
   automationRevisionId?: true
+  contactId?: true
+  conversationId?: true
   status?: true
   matched?: true
   attempts?: true
@@ -170,6 +178,8 @@ export type AutomationExecutionMaxAggregateInputType = {
   originAutomationId?: true
   automationId?: true
   automationRevisionId?: true
+  contactId?: true
+  conversationId?: true
   status?: true
   matched?: true
   attempts?: true
@@ -198,6 +208,8 @@ export type AutomationExecutionCountAggregateInputType = {
   automationId?: true
   automationRevisionId?: true
   automationSnapshot?: true
+  contactId?: true
+  conversationId?: true
   status?: true
   matched?: true
   attempts?: true
@@ -318,6 +330,8 @@ export type AutomationExecutionGroupByOutputType = {
   automationId: string | null
   automationRevisionId: string | null
   automationSnapshot: runtime.JsonValue | null
+  contactId: string | null
+  conversationId: string | null
   status: $Enums.AutomationExecutionStatus
   matched: boolean | null
   attempts: number
@@ -367,6 +381,8 @@ export type AutomationExecutionWhereInput = {
   automationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   automationRevisionId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   automationSnapshot?: Prisma.JsonNullableFilter<'AutomationExecution'>
+  contactId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
+  conversationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFilter<'AutomationExecution'>
     | $Enums.AutomationExecutionStatus
@@ -394,7 +410,13 @@ export type AutomationExecutionWhereInput = {
     Prisma.AutomationRevisionNullableScalarRelationFilter,
     Prisma.AutomationRevisionWhereInput
   > | null
+  contact?: Prisma.XOR<Prisma.ContactNullableScalarRelationFilter, Prisma.ContactWhereInput> | null
+  conversation?: Prisma.XOR<
+    Prisma.ConversationNullableScalarRelationFilter,
+    Prisma.ConversationWhereInput
+  > | null
   outputs?: Prisma.AutomationExecutionOutputListRelationFilter
+  messages?: Prisma.MessageListRelationFilter
 }
 
 export type AutomationExecutionOrderByWithRelationInput = {
@@ -412,6 +434,8 @@ export type AutomationExecutionOrderByWithRelationInput = {
   automationId?: Prisma.SortOrderInput | Prisma.SortOrder
   automationRevisionId?: Prisma.SortOrderInput | Prisma.SortOrder
   automationSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  conversationId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   matched?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -428,7 +452,10 @@ export type AutomationExecutionOrderByWithRelationInput = {
   originAutomation?: Prisma.AutomationOrderByWithRelationInput
   automation?: Prisma.AutomationOrderByWithRelationInput
   automationRevision?: Prisma.AutomationRevisionOrderByWithRelationInput
+  contact?: Prisma.ContactOrderByWithRelationInput
+  conversation?: Prisma.ConversationOrderByWithRelationInput
   outputs?: Prisma.AutomationExecutionOutputOrderByRelationAggregateInput
+  messages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
 export type AutomationExecutionWhereUniqueInput = Prisma.AtLeast<
@@ -451,6 +478,8 @@ export type AutomationExecutionWhereUniqueInput = Prisma.AtLeast<
     automationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
     automationRevisionId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
     automationSnapshot?: Prisma.JsonNullableFilter<'AutomationExecution'>
+    contactId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
+    conversationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
     status?:
       | Prisma.EnumAutomationExecutionStatusFilter<'AutomationExecution'>
       | $Enums.AutomationExecutionStatus
@@ -481,7 +510,16 @@ export type AutomationExecutionWhereUniqueInput = Prisma.AtLeast<
       Prisma.AutomationRevisionNullableScalarRelationFilter,
       Prisma.AutomationRevisionWhereInput
     > | null
+    contact?: Prisma.XOR<
+      Prisma.ContactNullableScalarRelationFilter,
+      Prisma.ContactWhereInput
+    > | null
+    conversation?: Prisma.XOR<
+      Prisma.ConversationNullableScalarRelationFilter,
+      Prisma.ConversationWhereInput
+    > | null
     outputs?: Prisma.AutomationExecutionOutputListRelationFilter
+    messages?: Prisma.MessageListRelationFilter
   },
   'id' | 'organizationId_provider_mode_idempotencyKey'
 >
@@ -501,6 +539,8 @@ export type AutomationExecutionOrderByWithAggregationInput = {
   automationId?: Prisma.SortOrderInput | Prisma.SortOrder
   automationRevisionId?: Prisma.SortOrderInput | Prisma.SortOrder
   automationSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder
+  contactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  conversationId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   matched?: Prisma.SortOrderInput | Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -552,6 +592,8 @@ export type AutomationExecutionScalarWhereWithAggregatesInput = {
     | string
     | null
   automationSnapshot?: Prisma.JsonNullableWithAggregatesFilter<'AutomationExecution'>
+  contactId?: Prisma.StringNullableWithAggregatesFilter<'AutomationExecution'> | string | null
+  conversationId?: Prisma.StringNullableWithAggregatesFilter<'AutomationExecution'> | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusWithAggregatesFilter<'AutomationExecution'>
     | $Enums.AutomationExecutionStatus
@@ -605,7 +647,10 @@ export type AutomationExecutionCreateInput = {
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateInput = {
@@ -623,6 +668,8 @@ export type AutomationExecutionUncheckedCreateInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -635,6 +682,7 @@ export type AutomationExecutionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUpdateInput = {
@@ -665,7 +713,10 @@ export type AutomationExecutionUpdateInput = {
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateInput = {
@@ -683,6 +734,8 @@ export type AutomationExecutionUncheckedUpdateInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -697,6 +750,7 @@ export type AutomationExecutionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionCreateManyInput = {
@@ -714,6 +768,8 @@ export type AutomationExecutionCreateManyInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -767,6 +823,8 @@ export type AutomationExecutionUncheckedUpdateManyInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -814,6 +872,8 @@ export type AutomationExecutionCountOrderByAggregateInput = {
   automationId?: Prisma.SortOrder
   automationRevisionId?: Prisma.SortOrder
   automationSnapshot?: Prisma.SortOrder
+  contactId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   matched?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -846,6 +906,8 @@ export type AutomationExecutionMaxOrderByAggregateInput = {
   originAutomationId?: Prisma.SortOrder
   automationId?: Prisma.SortOrder
   automationRevisionId?: Prisma.SortOrder
+  contactId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   matched?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -873,6 +935,8 @@ export type AutomationExecutionMinOrderByAggregateInput = {
   originAutomationId?: Prisma.SortOrder
   automationId?: Prisma.SortOrder
   automationRevisionId?: Prisma.SortOrder
+  contactId?: Prisma.SortOrder
+  conversationId?: Prisma.SortOrder
   status?: Prisma.SortOrder
   matched?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
@@ -894,6 +958,11 @@ export type AutomationExecutionSumOrderByAggregateInput = {
 export type AutomationExecutionScalarRelationFilter = {
   is?: Prisma.AutomationExecutionWhereInput
   isNot?: Prisma.AutomationExecutionWhereInput
+}
+
+export type AutomationExecutionNullableScalarRelationFilter = {
+  is?: Prisma.AutomationExecutionWhereInput | null
+  isNot?: Prisma.AutomationExecutionWhereInput | null
 }
 
 export type AutomationExecutionCreateNestedManyWithoutOrganizationInput = {
@@ -1440,6 +1509,238 @@ export type AutomationExecutionUpdateOneRequiredWithoutOutputsNestedInput = {
   >
 }
 
+export type AutomationExecutionCreateNestedManyWithoutContactInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutContactInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutContactInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutContactInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyContactInputEnvelope
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+}
+
+export type AutomationExecutionUncheckedCreateNestedManyWithoutContactInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutContactInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutContactInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutContactInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyContactInputEnvelope
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+}
+
+export type AutomationExecutionUpdateManyWithoutContactNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutContactInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutContactInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutContactInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput[]
+  upsert?:
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutContactInput
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutContactInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyContactInputEnvelope
+  set?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  disconnect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  delete?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  update?:
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutContactInput
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutContactInput[]
+  updateMany?:
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutContactInput
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutContactInput[]
+  deleteMany?:
+    | Prisma.AutomationExecutionScalarWhereInput
+    | Prisma.AutomationExecutionScalarWhereInput[]
+}
+
+export type AutomationExecutionUncheckedUpdateManyWithoutContactNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutContactInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutContactInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutContactInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutContactInput[]
+  upsert?:
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutContactInput
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutContactInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyContactInputEnvelope
+  set?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  disconnect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  delete?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  update?:
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutContactInput
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutContactInput[]
+  updateMany?:
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutContactInput
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutContactInput[]
+  deleteMany?:
+    | Prisma.AutomationExecutionScalarWhereInput
+    | Prisma.AutomationExecutionScalarWhereInput[]
+}
+
+export type AutomationExecutionCreateNestedManyWithoutConversationInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutConversationInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutConversationInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyConversationInputEnvelope
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+}
+
+export type AutomationExecutionUncheckedCreateNestedManyWithoutConversationInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutConversationInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutConversationInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyConversationInputEnvelope
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+}
+
+export type AutomationExecutionUpdateManyWithoutConversationNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutConversationInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutConversationInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput[]
+  upsert?:
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutConversationInput
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutConversationInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyConversationInputEnvelope
+  set?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  disconnect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  delete?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  update?:
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutConversationInput
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutConversationInput[]
+  updateMany?:
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutConversationInput
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutConversationInput[]
+  deleteMany?:
+    | Prisma.AutomationExecutionScalarWhereInput
+    | Prisma.AutomationExecutionScalarWhereInput[]
+}
+
+export type AutomationExecutionUncheckedUpdateManyWithoutConversationNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.AutomationExecutionCreateWithoutConversationInput,
+        Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+      >
+    | Prisma.AutomationExecutionCreateWithoutConversationInput[]
+    | Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput[]
+  connectOrCreate?:
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput
+    | Prisma.AutomationExecutionCreateOrConnectWithoutConversationInput[]
+  upsert?:
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutConversationInput
+    | Prisma.AutomationExecutionUpsertWithWhereUniqueWithoutConversationInput[]
+  createMany?: Prisma.AutomationExecutionCreateManyConversationInputEnvelope
+  set?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  disconnect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  delete?: Prisma.AutomationExecutionWhereUniqueInput | Prisma.AutomationExecutionWhereUniqueInput[]
+  connect?:
+    | Prisma.AutomationExecutionWhereUniqueInput
+    | Prisma.AutomationExecutionWhereUniqueInput[]
+  update?:
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutConversationInput
+    | Prisma.AutomationExecutionUpdateWithWhereUniqueWithoutConversationInput[]
+  updateMany?:
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutConversationInput
+    | Prisma.AutomationExecutionUpdateManyWithWhereWithoutConversationInput[]
+  deleteMany?:
+    | Prisma.AutomationExecutionScalarWhereInput
+    | Prisma.AutomationExecutionScalarWhereInput[]
+}
+
+export type AutomationExecutionCreateNestedOneWithoutMessagesInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutMessagesInput
+  >
+  connectOrCreate?: Prisma.AutomationExecutionCreateOrConnectWithoutMessagesInput
+  connect?: Prisma.AutomationExecutionWhereUniqueInput
+}
+
+export type AutomationExecutionUpdateOneWithoutMessagesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutMessagesInput
+  >
+  connectOrCreate?: Prisma.AutomationExecutionCreateOrConnectWithoutMessagesInput
+  upsert?: Prisma.AutomationExecutionUpsertWithoutMessagesInput
+  disconnect?: Prisma.AutomationExecutionWhereInput | boolean
+  delete?: Prisma.AutomationExecutionWhereInput | boolean
+  connect?: Prisma.AutomationExecutionWhereUniqueInput
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.AutomationExecutionUpdateToOneWithWhereWithoutMessagesInput,
+      Prisma.AutomationExecutionUpdateWithoutMessagesInput
+    >,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutMessagesInput
+  >
+}
+
 export type AutomationExecutionCreateWithoutOrganizationInput = {
   id?: string
   provider: $Enums.ContentProvider
@@ -1465,7 +1766,10 @@ export type AutomationExecutionCreateWithoutOrganizationInput = {
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutOrganizationInput = {
@@ -1482,6 +1786,8 @@ export type AutomationExecutionUncheckedCreateWithoutOrganizationInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -1494,6 +1800,7 @@ export type AutomationExecutionUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutOrganizationInput = {
@@ -1557,6 +1864,8 @@ export type AutomationExecutionScalarWhereInput = {
   automationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   automationRevisionId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   automationSnapshot?: Prisma.JsonNullableFilter<'AutomationExecution'>
+  contactId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
+  conversationId?: Prisma.StringNullableFilter<'AutomationExecution'> | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFilter<'AutomationExecution'>
     | $Enums.AutomationExecutionStatus
@@ -1597,7 +1906,10 @@ export type AutomationExecutionCreateWithoutContentInput = {
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutContentInput = {
@@ -1614,6 +1926,8 @@ export type AutomationExecutionUncheckedCreateWithoutContentInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -1626,6 +1940,7 @@ export type AutomationExecutionUncheckedCreateWithoutContentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutContentInput = {
@@ -1696,7 +2011,10 @@ export type AutomationExecutionCreateWithoutOriginAutomationInput = {
   content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutOriginAutomationInput = {
@@ -1713,6 +2031,8 @@ export type AutomationExecutionUncheckedCreateWithoutOriginAutomationInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -1725,6 +2045,7 @@ export type AutomationExecutionUncheckedCreateWithoutOriginAutomationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutOriginAutomationInput = {
@@ -1767,7 +2088,10 @@ export type AutomationExecutionCreateWithoutAutomationInput = {
   content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutAutomationInput = {
@@ -1784,6 +2108,8 @@ export type AutomationExecutionUncheckedCreateWithoutAutomationInput = {
   originAutomationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -1796,6 +2122,7 @@ export type AutomationExecutionUncheckedCreateWithoutAutomationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutAutomationInput = {
@@ -1894,7 +2221,10 @@ export type AutomationExecutionCreateWithoutAutomationRevisionInput = {
   content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
   outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutAutomationRevisionInput = {
@@ -1911,6 +2241,8 @@ export type AutomationExecutionUncheckedCreateWithoutAutomationRevisionInput = {
   originAutomationId?: string | null
   automationId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -1923,6 +2255,7 @@ export type AutomationExecutionUncheckedCreateWithoutAutomationRevisionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutAutomationRevisionInput = {
@@ -1994,6 +2327,9 @@ export type AutomationExecutionCreateWithoutOutputsInput = {
   originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
   automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
   automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionUncheckedCreateWithoutOutputsInput = {
@@ -2011,6 +2347,8 @@ export type AutomationExecutionUncheckedCreateWithoutOutputsInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2022,6 +2360,7 @@ export type AutomationExecutionUncheckedCreateWithoutOutputsInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
 }
 
 export type AutomationExecutionCreateOrConnectWithoutOutputsInput = {
@@ -2080,6 +2419,9 @@ export type AutomationExecutionUpdateWithoutOutputsInput = {
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutOutputsInput = {
@@ -2097,6 +2439,8 @@ export type AutomationExecutionUncheckedUpdateWithoutOutputsInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2110,6 +2454,373 @@ export type AutomationExecutionUncheckedUpdateWithoutOutputsInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionCreateWithoutContactInput = {
+  id?: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutExecutionsInput
+  content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
+  originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
+  automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
+  automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
+  outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionUncheckedCreateWithoutContactInput = {
+  id?: string
+  organizationId: string
+  contentId: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  originAutomationId?: string | null
+  automationId?: string | null
+  automationRevisionId?: string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  conversationId?: string | null
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionCreateOrConnectWithoutContactInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutContactInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+  >
+}
+
+export type AutomationExecutionCreateManyContactInputEnvelope = {
+  data:
+    | Prisma.AutomationExecutionCreateManyContactInput
+    | Prisma.AutomationExecutionCreateManyContactInput[]
+  skipDuplicates?: boolean
+}
+
+export type AutomationExecutionUpsertWithWhereUniqueWithoutContactInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  update: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutContactInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutContactInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutContactInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutContactInput
+  >
+}
+
+export type AutomationExecutionUpdateWithWhereUniqueWithoutContactInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  data: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutContactInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutContactInput
+  >
+}
+
+export type AutomationExecutionUpdateManyWithWhereWithoutContactInput = {
+  where: Prisma.AutomationExecutionScalarWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateManyMutationInput,
+    Prisma.AutomationExecutionUncheckedUpdateManyWithoutContactInput
+  >
+}
+
+export type AutomationExecutionCreateWithoutConversationInput = {
+  id?: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutExecutionsInput
+  content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
+  originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
+  automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
+  automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionUncheckedCreateWithoutConversationInput = {
+  id?: string
+  organizationId: string
+  contentId: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  originAutomationId?: string | null
+  automationId?: string | null
+  automationRevisionId?: string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionCreateOrConnectWithoutConversationInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutConversationInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+  >
+}
+
+export type AutomationExecutionCreateManyConversationInputEnvelope = {
+  data:
+    | Prisma.AutomationExecutionCreateManyConversationInput
+    | Prisma.AutomationExecutionCreateManyConversationInput[]
+  skipDuplicates?: boolean
+}
+
+export type AutomationExecutionUpsertWithWhereUniqueWithoutConversationInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  update: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutConversationInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutConversationInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutConversationInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutConversationInput
+  >
+}
+
+export type AutomationExecutionUpdateWithWhereUniqueWithoutConversationInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  data: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutConversationInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutConversationInput
+  >
+}
+
+export type AutomationExecutionUpdateManyWithWhereWithoutConversationInput = {
+  where: Prisma.AutomationExecutionScalarWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateManyMutationInput,
+    Prisma.AutomationExecutionUncheckedUpdateManyWithoutConversationInput
+  >
+}
+
+export type AutomationExecutionCreateWithoutMessagesInput = {
+  id?: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutExecutionsInput
+  content: Prisma.ContentCreateNestedOneWithoutExecutionsInput
+  originAutomation?: Prisma.AutomationCreateNestedOneWithoutOriginatingExecutionsInput
+  automation?: Prisma.AutomationCreateNestedOneWithoutMatchedExecutionsInput
+  automationRevision?: Prisma.AutomationRevisionCreateNestedOneWithoutExecutionsInput
+  contact?: Prisma.ContactCreateNestedOneWithoutExecutionsInput
+  conversation?: Prisma.ConversationCreateNestedOneWithoutExecutionsInput
+  outputs?: Prisma.AutomationExecutionOutputCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionUncheckedCreateWithoutMessagesInput = {
+  id?: string
+  organizationId: string
+  contentId: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  originAutomationId?: string | null
+  automationId?: string | null
+  automationRevisionId?: string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedCreateNestedManyWithoutExecutionInput
+}
+
+export type AutomationExecutionCreateOrConnectWithoutMessagesInput = {
+  where: Prisma.AutomationExecutionWhereUniqueInput
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutMessagesInput
+  >
+}
+
+export type AutomationExecutionUpsertWithoutMessagesInput = {
+  update: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutMessagesInput
+  >
+  create: Prisma.XOR<
+    Prisma.AutomationExecutionCreateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedCreateWithoutMessagesInput
+  >
+  where?: Prisma.AutomationExecutionWhereInput
+}
+
+export type AutomationExecutionUpdateToOneWithWhereWithoutMessagesInput = {
+  where?: Prisma.AutomationExecutionWhereInput
+  data: Prisma.XOR<
+    Prisma.AutomationExecutionUpdateWithoutMessagesInput,
+    Prisma.AutomationExecutionUncheckedUpdateWithoutMessagesInput
+  >
+}
+
+export type AutomationExecutionUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutExecutionsNestedInput
+  content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
+  originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
+  automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
+  automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
+  outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionUncheckedUpdateWithoutMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionCreateManyOrganizationInput = {
@@ -2126,6 +2837,8 @@ export type AutomationExecutionCreateManyOrganizationInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2166,7 +2879,10 @@ export type AutomationExecutionUpdateWithoutOrganizationInput = {
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutOrganizationInput = {
@@ -2183,6 +2899,8 @@ export type AutomationExecutionUncheckedUpdateWithoutOrganizationInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2197,6 +2915,7 @@ export type AutomationExecutionUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateManyWithoutOrganizationInput = {
@@ -2213,6 +2932,8 @@ export type AutomationExecutionUncheckedUpdateManyWithoutOrganizationInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2242,6 +2963,8 @@ export type AutomationExecutionCreateManyContentInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2282,7 +3005,10 @@ export type AutomationExecutionUpdateWithoutContentInput = {
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutContentInput = {
@@ -2299,6 +3025,8 @@ export type AutomationExecutionUncheckedUpdateWithoutContentInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2313,6 +3041,7 @@ export type AutomationExecutionUncheckedUpdateWithoutContentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateManyWithoutContentInput = {
@@ -2329,6 +3058,8 @@ export type AutomationExecutionUncheckedUpdateManyWithoutContentInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2358,6 +3089,8 @@ export type AutomationExecutionCreateManyOriginAutomationInput = {
   automationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2385,6 +3118,8 @@ export type AutomationExecutionCreateManyAutomationInput = {
   originAutomationId?: string | null
   automationRevisionId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2425,7 +3160,10 @@ export type AutomationExecutionUpdateWithoutOriginAutomationInput = {
   content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutOriginAutomationInput = {
@@ -2442,6 +3180,8 @@ export type AutomationExecutionUncheckedUpdateWithoutOriginAutomationInput = {
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2456,6 +3196,7 @@ export type AutomationExecutionUncheckedUpdateWithoutOriginAutomationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationInput = {
@@ -2472,6 +3213,8 @@ export type AutomationExecutionUncheckedUpdateManyWithoutOriginAutomationInput =
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2514,7 +3257,10 @@ export type AutomationExecutionUpdateWithoutAutomationInput = {
   content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutAutomationInput = {
@@ -2531,6 +3277,8 @@ export type AutomationExecutionUncheckedUpdateWithoutAutomationInput = {
   originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2545,6 +3293,7 @@ export type AutomationExecutionUncheckedUpdateWithoutAutomationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateManyWithoutAutomationInput = {
@@ -2561,6 +3310,8 @@ export type AutomationExecutionUncheckedUpdateManyWithoutAutomationInput = {
   originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2590,6 +3341,8 @@ export type AutomationExecutionCreateManyAutomationRevisionInput = {
   originAutomationId?: string | null
   automationId?: string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  conversationId?: string | null
   status?: $Enums.AutomationExecutionStatus
   matched?: boolean | null
   attempts?: number
@@ -2630,7 +3383,10 @@ export type AutomationExecutionUpdateWithoutAutomationRevisionInput = {
   content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
   originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
   automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
   outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateWithoutAutomationRevisionInput = {
@@ -2647,6 +3403,8 @@ export type AutomationExecutionUncheckedUpdateWithoutAutomationRevisionInput = {
   originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2661,6 +3419,7 @@ export type AutomationExecutionUncheckedUpdateWithoutAutomationRevisionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
 }
 
 export type AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionInput = {
@@ -2677,6 +3436,260 @@ export type AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionInput
   originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AutomationExecutionCreateManyContactInput = {
+  id?: string
+  organizationId: string
+  contentId: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  originAutomationId?: string | null
+  automationId?: string | null
+  automationRevisionId?: string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  conversationId?: string | null
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AutomationExecutionUpdateWithoutContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutExecutionsNestedInput
+  content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
+  originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
+  automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
+  automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  conversation?: Prisma.ConversationUpdateOneWithoutExecutionsNestedInput
+  outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionUncheckedUpdateWithoutContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionUncheckedUpdateManyWithoutContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  conversationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AutomationExecutionCreateManyConversationInput = {
+  id?: string
+  organizationId: string
+  contentId: string
+  provider: $Enums.ContentProvider
+  mode?: $Enums.ContentMode
+  channelConnectionId?: string | null
+  commentId?: string | null
+  idempotencyKey: string
+  inputAuthor: string
+  inputText: string
+  originAutomationId?: string | null
+  automationId?: string | null
+  automationRevisionId?: string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: string | null
+  status?: $Enums.AutomationExecutionStatus
+  matched?: boolean | null
+  attempts?: number
+  errorCode?: string | null
+  errorMessage?: string | null
+  stateVersion?: number
+  enqueuedAt?: Date | string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AutomationExecutionUpdateWithoutConversationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutExecutionsNestedInput
+  content?: Prisma.ContentUpdateOneRequiredWithoutExecutionsNestedInput
+  originAutomation?: Prisma.AutomationUpdateOneWithoutOriginatingExecutionsNestedInput
+  automation?: Prisma.AutomationUpdateOneWithoutMatchedExecutionsNestedInput
+  automationRevision?: Prisma.AutomationRevisionUpdateOneWithoutExecutionsNestedInput
+  contact?: Prisma.ContactUpdateOneWithoutExecutionsNestedInput
+  outputs?: Prisma.AutomationExecutionOutputUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionUncheckedUpdateWithoutConversationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?:
+    | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
+    | $Enums.AutomationExecutionStatus
+  matched?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  errorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  enqueuedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  outputs?: Prisma.AutomationExecutionOutputUncheckedUpdateManyWithoutExecutionNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutExecutionNestedInput
+}
+
+export type AutomationExecutionUncheckedUpdateManyWithoutConversationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contentId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.EnumContentProviderFieldUpdateOperationsInput | $Enums.ContentProvider
+  mode?: Prisma.EnumContentModeFieldUpdateOperationsInput | $Enums.ContentMode
+  channelConnectionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  commentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  inputAuthor?: Prisma.StringFieldUpdateOperationsInput | string
+  inputText?: Prisma.StringFieldUpdateOperationsInput | string
+  originAutomationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationRevisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  automationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  contactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?:
     | Prisma.EnumAutomationExecutionStatusFieldUpdateOperationsInput
     | $Enums.AutomationExecutionStatus
@@ -2698,12 +3711,14 @@ export type AutomationExecutionUncheckedUpdateManyWithoutAutomationRevisionInput
 
 export type AutomationExecutionCountOutputType = {
   outputs: number
+  messages: number
 }
 
 export type AutomationExecutionCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = {
   outputs?: boolean | AutomationExecutionCountOutputTypeCountOutputsArgs
+  messages?: boolean | AutomationExecutionCountOutputTypeCountMessagesArgs
 }
 
 /**
@@ -2727,6 +3742,15 @@ export type AutomationExecutionCountOutputTypeCountOutputsArgs<
   where?: Prisma.AutomationExecutionOutputWhereInput
 }
 
+/**
+ * AutomationExecutionCountOutputType without action
+ */
+export type AutomationExecutionCountOutputTypeCountMessagesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.MessageWhereInput
+}
+
 export type AutomationExecutionSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -2745,6 +3769,8 @@ export type AutomationExecutionSelect<
     automationId?: boolean
     automationRevisionId?: boolean
     automationSnapshot?: boolean
+    contactId?: boolean
+    conversationId?: boolean
     status?: boolean
     matched?: boolean
     attempts?: boolean
@@ -2761,7 +3787,10 @@ export type AutomationExecutionSelect<
     originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
     automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
     automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+    contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+    conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
     outputs?: boolean | Prisma.AutomationExecution$outputsArgs<ExtArgs>
+    messages?: boolean | Prisma.AutomationExecution$messagesArgs<ExtArgs>
     _count?: boolean | Prisma.AutomationExecutionCountOutputTypeDefaultArgs<ExtArgs>
   },
   ExtArgs['result']['automationExecution']
@@ -2785,6 +3814,8 @@ export type AutomationExecutionSelectCreateManyAndReturn<
     automationId?: boolean
     automationRevisionId?: boolean
     automationSnapshot?: boolean
+    contactId?: boolean
+    conversationId?: boolean
     status?: boolean
     matched?: boolean
     attempts?: boolean
@@ -2801,6 +3832,8 @@ export type AutomationExecutionSelectCreateManyAndReturn<
     originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
     automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
     automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+    contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+    conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
   },
   ExtArgs['result']['automationExecution']
 >
@@ -2823,6 +3856,8 @@ export type AutomationExecutionSelectUpdateManyAndReturn<
     automationId?: boolean
     automationRevisionId?: boolean
     automationSnapshot?: boolean
+    contactId?: boolean
+    conversationId?: boolean
     status?: boolean
     matched?: boolean
     attempts?: boolean
@@ -2839,6 +3874,8 @@ export type AutomationExecutionSelectUpdateManyAndReturn<
     originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
     automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
     automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+    contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+    conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
   },
   ExtArgs['result']['automationExecution']
 >
@@ -2858,6 +3895,8 @@ export type AutomationExecutionSelectScalar = {
   automationId?: boolean
   automationRevisionId?: boolean
   automationSnapshot?: boolean
+  contactId?: boolean
+  conversationId?: boolean
   status?: boolean
   matched?: boolean
   attempts?: boolean
@@ -2888,6 +3927,8 @@ export type AutomationExecutionOmit<
   | 'automationId'
   | 'automationRevisionId'
   | 'automationSnapshot'
+  | 'contactId'
+  | 'conversationId'
   | 'status'
   | 'matched'
   | 'attempts'
@@ -2909,7 +3950,10 @@ export type AutomationExecutionInclude<
   originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
   automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
   automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+  contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+  conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
   outputs?: boolean | Prisma.AutomationExecution$outputsArgs<ExtArgs>
+  messages?: boolean | Prisma.AutomationExecution$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.AutomationExecutionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AutomationExecutionIncludeCreateManyAndReturn<
@@ -2920,6 +3964,8 @@ export type AutomationExecutionIncludeCreateManyAndReturn<
   originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
   automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
   automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+  contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+  conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
 }
 export type AutomationExecutionIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
@@ -2929,6 +3975,8 @@ export type AutomationExecutionIncludeUpdateManyAndReturn<
   originAutomation?: boolean | Prisma.AutomationExecution$originAutomationArgs<ExtArgs>
   automation?: boolean | Prisma.AutomationExecution$automationArgs<ExtArgs>
   automationRevision?: boolean | Prisma.AutomationExecution$automationRevisionArgs<ExtArgs>
+  contact?: boolean | Prisma.AutomationExecution$contactArgs<ExtArgs>
+  conversation?: boolean | Prisma.AutomationExecution$conversationArgs<ExtArgs>
 }
 
 export type $AutomationExecutionPayload<
@@ -2941,7 +3989,10 @@ export type $AutomationExecutionPayload<
     originAutomation: Prisma.$AutomationPayload<ExtArgs> | null
     automation: Prisma.$AutomationPayload<ExtArgs> | null
     automationRevision: Prisma.$AutomationRevisionPayload<ExtArgs> | null
+    contact: Prisma.$ContactPayload<ExtArgs> | null
+    conversation: Prisma.$ConversationPayload<ExtArgs> | null
     outputs: Prisma.$AutomationExecutionOutputPayload<ExtArgs>[]
+    messages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -2959,6 +4010,8 @@ export type $AutomationExecutionPayload<
       automationId: string | null
       automationRevisionId: string | null
       automationSnapshot: runtime.JsonValue | null
+      contactId: string | null
+      conversationId: string | null
       status: $Enums.AutomationExecutionStatus
       matched: boolean | null
       attempts: number
@@ -3578,11 +4631,48 @@ export interface Prisma__AutomationExecutionClient<
     ExtArgs,
     GlobalOmitOptions
   >
+  contact<T extends Prisma.AutomationExecution$contactArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.AutomationExecution$contactArgs<ExtArgs>>,
+  ): Prisma.Prisma__ContactClient<
+    runtime.Types.Result.GetResult<
+      Prisma.$ContactPayload<ExtArgs>,
+      T,
+      'findUniqueOrThrow',
+      GlobalOmitOptions
+    > | null,
+    null,
+    ExtArgs,
+    GlobalOmitOptions
+  >
+  conversation<T extends Prisma.AutomationExecution$conversationArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.AutomationExecution$conversationArgs<ExtArgs>>,
+  ): Prisma.Prisma__ConversationClient<
+    runtime.Types.Result.GetResult<
+      Prisma.$ConversationPayload<ExtArgs>,
+      T,
+      'findUniqueOrThrow',
+      GlobalOmitOptions
+    > | null,
+    null,
+    ExtArgs,
+    GlobalOmitOptions
+  >
   outputs<T extends Prisma.AutomationExecution$outputsArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.AutomationExecution$outputsArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$AutomationExecutionOutputPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >
+  messages<T extends Prisma.AutomationExecution$messagesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.AutomationExecution$messagesArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$MessagePayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -3634,6 +4724,8 @@ export interface AutomationExecutionFieldRefs {
   readonly automationId: Prisma.FieldRef<'AutomationExecution', 'String'>
   readonly automationRevisionId: Prisma.FieldRef<'AutomationExecution', 'String'>
   readonly automationSnapshot: Prisma.FieldRef<'AutomationExecution', 'Json'>
+  readonly contactId: Prisma.FieldRef<'AutomationExecution', 'String'>
+  readonly conversationId: Prisma.FieldRef<'AutomationExecution', 'String'>
   readonly status: Prisma.FieldRef<'AutomationExecution', 'AutomationExecutionStatus'>
   readonly matched: Prisma.FieldRef<'AutomationExecution', 'Boolean'>
   readonly attempts: Prisma.FieldRef<'AutomationExecution', 'Int'>
@@ -4160,6 +5252,48 @@ export type AutomationExecution$automationRevisionArgs<
 }
 
 /**
+ * AutomationExecution.contact
+ */
+export type AutomationExecution$contactArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Contact
+   */
+  select?: Prisma.ContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Contact
+   */
+  omit?: Prisma.ContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ContactInclude<ExtArgs> | null
+  where?: Prisma.ContactWhereInput
+}
+
+/**
+ * AutomationExecution.conversation
+ */
+export type AutomationExecution$conversationArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Conversation
+   */
+  select?: Prisma.ConversationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Conversation
+   */
+  omit?: Prisma.ConversationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConversationInclude<ExtArgs> | null
+  where?: Prisma.ConversationWhereInput
+}
+
+/**
  * AutomationExecution.outputs
  */
 export type AutomationExecution$outputsArgs<
@@ -4187,6 +5321,32 @@ export type AutomationExecution$outputsArgs<
   distinct?:
     | Prisma.AutomationExecutionOutputScalarFieldEnum
     | Prisma.AutomationExecutionOutputScalarFieldEnum[]
+}
+
+/**
+ * AutomationExecution.messages
+ */
+export type AutomationExecution$messagesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
 }
 
 /**

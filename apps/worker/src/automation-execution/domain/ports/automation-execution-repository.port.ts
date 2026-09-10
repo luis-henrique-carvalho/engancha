@@ -15,6 +15,9 @@ export interface ClaimedExecution {
   automationId: string | null
   automationRevisionId: string | null
   automationSnapshot: AutomationSnapshot | null
+  contactId?: string | null
+  conversationId?: string | null
+  createdAt?: Date
   status: string
   attempts: number
   stateVersion: number
@@ -75,7 +78,7 @@ export interface AutomationExecutionRepository {
     revisionId: string
     snapshot: AutomationSnapshot
     outputs: AutomationExecutionOutputDraft[]
-  }): Promise<void>
+  }): Promise<{ contactId?: string; conversationId?: string } | void>
   recordAttemptFailure(params: {
     executionId: string
     organizationId: string

@@ -615,6 +615,8 @@ export class SimulationsService {
       provider: execution.provider,
       contentId: execution.contentId,
       originAutomationId: execution.originAutomationId ?? null,
+      contactId: execution.contactId ?? null,
+      conversationId: execution.conversationId ?? null,
       content: execution.content
         ? {
             id: execution.content.id,

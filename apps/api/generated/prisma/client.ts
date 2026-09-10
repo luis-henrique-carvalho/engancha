@@ -117,3 +117,18 @@ export type Member = Prisma.MemberModel
  *
  */
 export type Invitation = Prisma.InvitationModel
+/**
+ * Model Contact
+ *
+ */
+export type Contact = Prisma.ContactModel
+/**
+ * Model Conversation
+ *
+ */
+export type Conversation = Prisma.ConversationModel
+/**
+ * Model Message
+ *
+ */
+export type Message = Prisma.MessageModel

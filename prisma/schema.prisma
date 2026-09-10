@@ -81,6 +81,9 @@ model Organization {
   automations Automation[]
   contents    Content[]
   executions  AutomationExecution[]
+  contacts    Contact[]
+  conversations Conversation[]
+  messages    Message[]
 }
 
 enum AutomationStatus {
@@ -238,6 +241,8 @@ model AutomationExecution {
   automationId         String?
   automationRevisionId String?
   automationSnapshot   Json?
+  contactId            String?
+  conversationId       String?
   status               AutomationExecutionStatus   @default(PENDING)
   matched              Boolean?
   attempts             Int                         @default(0)
@@ -254,11 +259,16 @@ model AutomationExecution {
   originAutomation     Automation?                 @relation("ExecutionOriginAutomation", fields: [originAutomationId], references: [id])
   automation           Automation?                 @relation("ExecutionAutomation", fields: [automationId], references: [id])
   automationRevision   AutomationRevision?         @relation(fields: [automationRevisionId], references: [id])
+  contact              Contact?                    @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  conversation         Conversation?               @relation(fields: [conversationId], references: [id], onDelete: SetNull)
   outputs              AutomationExecutionOutput[]
+  messages             Message[]
 
   @@unique([organizationId, provider, mode, idempotencyKey])
   @@index([organizationId, status, createdAt])
   @@index([contentId, createdAt])
+  @@index([contactId])
+  @@index([conversationId])
 }
 
 model AutomationExecutionOutput {
@@ -302,4 +312,101 @@ model Invitation {
 
   @@index([organizationId])
   @@index([email])
+}
+
+enum ConversationStatus {
+  OPEN
+  CLOSED
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageType {
+  COMMENT
+  INCOMING_MESSAGE
+  PUBLIC_REPLY
+  PRIVATE_REPLY
+  DIRECT_MESSAGE
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  FAILED
+  RECEIVED
+}
+
+model Contact {
+  id                  String                @id @default(uuid())
+  organizationId      String
+  channelConnectionId String?
+  provider            ContentProvider       @default(INSTAGRAM)
+  mode                ContentMode           @default(SIMULATED)
+  externalUserId      String?
+  username            String?
+  name                String?
+  email               String?
+  emailNormalized     String?
+  metadata            Json?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  lastInteractionAt   DateTime?
+  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversations       Conversation[]
+  executions          AutomationExecution[]
+
+  @@index([organizationId, updatedAt])
+  @@index([organizationId, lastInteractionAt])
+  @@index([organizationId, provider, mode, externalUserId])
+  @@index([organizationId, emailNormalized])
+}
+
+model Conversation {
+  id                  String                @id @default(uuid())
+  organizationId      String
+  contactId           String
+  channelConnectionId String?
+  provider            ContentProvider       @default(INSTAGRAM)
+  mode                ContentMode           @default(SIMULATED)
+  externalId          String?
+  status              ConversationStatus    @default(OPEN)
+  lastMessageAt       DateTime?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact             Contact               @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  messages            Message[]
+  executions          AutomationExecution[]
+
+  @@index([organizationId, lastMessageAt])
+  @@index([organizationId, contactId, provider, mode])
+  @@index([contactId])
+}
+
+model Message {
+  id                  String                @id @default(uuid())
+  organizationId      String
+  conversationId      String
+  executionId         String?
+  channelConnectionId String?
+  direction           MessageDirection
+  type                MessageType
+  provider            ContentProvider       @default(INSTAGRAM)
+  mode                ContentMode           @default(SIMULATED)
+  externalId          String?
+  text                String?
+  payload             Json?
+  status              MessageStatus         @default(SENT)
+  sentAt              DateTime?
+  createdAt           DateTime              @default(now())
+  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation        Conversation          @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  execution           AutomationExecution?  @relation(fields: [executionId], references: [id], onDelete: SetNull)
+
+  @@index([conversationId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([executionId])
 }

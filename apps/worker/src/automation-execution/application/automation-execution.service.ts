@@ -351,7 +351,7 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
   }): Promise<AutomationExecutionResult> {
     const { claim, automationId, revisionId, snapshot, outputs } = params
 
-    await this.repository.saveExecutionCompleted({
+    const saved = await this.repository.saveExecutionCompleted({
       executionId: claim.id,
       organizationId: claim.organizationId,
       automationId,
@@ -385,6 +385,12 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
       matched: true,
       automationId,
       revisionId,
+      ...(saved && typeof saved === 'object' && 'contactId' in saved && saved.contactId
+        ? { contactId: saved.contactId }
+        : {}),
+      ...(saved && typeof saved === 'object' && 'conversationId' in saved && saved.conversationId
+        ? { conversationId: saved.conversationId }
+        : {}),
     }
   }
 

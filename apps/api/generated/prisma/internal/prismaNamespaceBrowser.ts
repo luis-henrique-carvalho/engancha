@@ -63,6 +63,9 @@ export const ModelName = {
   AutomationExecutionOutput: 'AutomationExecutionOutput',
   Member: 'Member',
   Invitation: 'Invitation',
+  Contact: 'Contact',
+  Conversation: 'Conversation',
+  Message: 'Message',
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -243,6 +246,8 @@ export const AutomationExecutionScalarFieldEnum = {
   automationId: 'automationId',
   automationRevisionId: 'automationRevisionId',
   automationSnapshot: 'automationSnapshot',
+  contactId: 'contactId',
+  conversationId: 'conversationId',
   status: 'status',
   matched: 'matched',
   attempts: 'attempts',
@@ -296,6 +301,64 @@ export const InvitationScalarFieldEnum = {
 
 export type InvitationScalarFieldEnum =
   (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
+
+export const ContactScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  channelConnectionId: 'channelConnectionId',
+  provider: 'provider',
+  mode: 'mode',
+  externalUserId: 'externalUserId',
+  username: 'username',
+  name: 'name',
+  email: 'email',
+  emailNormalized: 'emailNormalized',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  lastInteractionAt: 'lastInteractionAt',
+} as const
+
+export type ContactScalarFieldEnum =
+  (typeof ContactScalarFieldEnum)[keyof typeof ContactScalarFieldEnum]
+
+export const ConversationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  contactId: 'contactId',
+  channelConnectionId: 'channelConnectionId',
+  provider: 'provider',
+  mode: 'mode',
+  externalId: 'externalId',
+  status: 'status',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const
+
+export type ConversationScalarFieldEnum =
+  (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  conversationId: 'conversationId',
+  executionId: 'executionId',
+  channelConnectionId: 'channelConnectionId',
+  direction: 'direction',
+  type: 'type',
+  provider: 'provider',
+  mode: 'mode',
+  externalId: 'externalId',
+  text: 'text',
+  payload: 'payload',
+  status: 'status',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+} as const
+
+export type MessageScalarFieldEnum =
+  (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 export const SortOrder = {
   asc: 'asc',

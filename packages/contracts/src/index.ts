@@ -207,6 +207,8 @@ export const simulationExecutionResponseSchema = z
       })
       .strict()
       .nullable(),
+    contactId: z.string().min(1).nullable().optional(),
+    conversationId: z.string().min(1).nullable().optional(),
     outputs: z.array(executionOutputSchema),
     attempts: z.number().int().min(0),
     error: z
@@ -218,6 +220,36 @@ export const simulationExecutionResponseSchema = z
   })
   .strict()
 export type SimulationExecutionResponse = z.infer<typeof simulationExecutionResponseSchema>
+
+export const conversationStatusSchema = z.enum(['OPEN', 'CLOSED'])
+export type ConversationStatus = z.infer<typeof conversationStatusSchema>
+
+export const messageDirectionSchema = z.enum(['INBOUND', 'OUTBOUND'])
+export type MessageDirection = z.infer<typeof messageDirectionSchema>
+
+export const messageTypeSchema = z.enum([
+  'COMMENT',
+  'INCOMING_MESSAGE',
+  'PUBLIC_REPLY',
+  'PRIVATE_REPLY',
+  'DIRECT_MESSAGE',
+])
+export type MessageType = z.infer<typeof messageTypeSchema>
+
+export const messageStatusSchema = z.enum(['PENDING', 'SENT', 'FAILED', 'RECEIVED'])
+export type MessageStatus = z.infer<typeof messageStatusSchema>
+
+export function normalizeContactExternalUserId(author: string): string {
+  return author.trim().replace(/^@+/, '').toLowerCase()
+}
+
+export function normalizeContactUsername(author: string): string {
+  return author.trim().replace(/^@+/, '')
+}
+
+export function deterministicCommentMessageExternalId(executionId: string): string {
+  return `execution:${executionId}:comment`
+}
 
 const normalizeSimulationQueryArray = <T extends z.ZodTypeAny>(schema: T) =>
   z

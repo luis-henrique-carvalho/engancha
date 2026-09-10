@@ -1,5 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
-import type { AutomationSnapshot } from '@engancha/contracts'
+import {
+  deterministicCommentMessageExternalId,
+  normalizeContactExternalUserId,
+  normalizeContactUsername,
+  type AutomationSnapshot,
+} from '@engancha/contracts'
 import { PrismaService } from '../../../platform/database/prisma.service'
 import type {
   AutomationExecutionRepository,
@@ -41,6 +46,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         contentId: true,
         provider: true,
         mode: true,
+        channelConnectionId: true,
         inputText: true,
         inputAuthor: true,
         commentId: true,
@@ -48,9 +54,12 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         automationId: true,
         automationRevisionId: true,
         automationSnapshot: true,
+        contactId: true,
+        conversationId: true,
         status: true,
         attempts: true,
         stateVersion: true,
+        createdAt: true,
       },
     })
 
@@ -161,8 +170,36 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
       type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
       payload: Record<string, unknown>
     }>
-  }): Promise<void> {
-    await this.database.client.$transaction(async (tx) => {
+  }): Promise<{ contactId: string; conversationId: string }> {
+    return await this.database.client.$transaction(async (tx) => {
+      const execution = await tx.automationExecution.findUniqueOrThrow({
+        where: { id: params.executionId },
+        select: {
+          id: true,
+          organizationId: true,
+          provider: true,
+          mode: true,
+          channelConnectionId: true,
+          inputAuthor: true,
+          inputText: true,
+          commentId: true,
+          createdAt: true,
+          contactId: true,
+          conversationId: true,
+        },
+      })
+
+      const interactionAt = execution.createdAt ?? new Date()
+      const contact = await this.resolveOrCreateContact(tx, execution, interactionAt)
+      const conversation = await this.resolveOrCreateConversation(
+        tx,
+        execution,
+        contact.id,
+        interactionAt,
+      )
+
+      await this.recordInboundCommentMessage(tx, execution, conversation.id, interactionAt)
+
       await tx.automationExecution.update({
         where: { id: params.executionId },
         data: {
@@ -171,34 +208,224 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           automationSnapshot: params.snapshot as never,
           matched: true,
           status: 'COMPLETED',
+          contactId: contact.id,
+          conversationId: conversation.id,
           completedAt: new Date(),
           stateVersion: { increment: 1 },
         },
       })
 
-      for (const output of params.outputs) {
-        await tx.automationExecutionOutput.upsert({
+      await this.upsertExecutionOutputs(tx, params.executionId, params.outputs)
+
+      return { contactId: contact.id, conversationId: conversation.id }
+    })
+  }
+
+  private async resolveOrCreateContact(
+    tx: any,
+    execution: {
+      organizationId: string
+      provider: any
+      mode: any
+      channelConnectionId: string | null
+      inputAuthor: string
+    },
+    interactionAt: Date,
+  ) {
+    const externalUserId = normalizeContactExternalUserId(execution.inputAuthor)
+    const username = normalizeContactUsername(execution.inputAuthor)
+    const name = username
+
+    let contact = await tx.contact.findFirst({
+      where: {
+        organizationId: execution.organizationId,
+        provider: execution.provider,
+        mode: execution.mode,
+        channelConnectionId: execution.channelConnectionId ?? null,
+        externalUserId,
+      },
+    })
+
+    if (!contact) {
+      try {
+        contact = await tx.contact.create({
+          data: {
+            organizationId: execution.organizationId,
+            provider: execution.provider,
+            mode: execution.mode,
+            channelConnectionId: execution.channelConnectionId ?? null,
+            externalUserId,
+            username,
+            name,
+            lastInteractionAt: interactionAt,
+          },
+        })
+      } catch {
+        contact = await tx.contact.findFirstOrThrow({
           where: {
-            executionId_key: {
-              executionId: params.executionId,
-              key: output.key,
-            },
-          },
-          create: {
-            executionId: params.executionId,
-            key: output.key,
-            position: output.position,
-            type: output.type,
-            payload: output.payload as never,
-          },
-          update: {
-            position: output.position,
-            type: output.type,
-            payload: output.payload as never,
+            organizationId: execution.organizationId,
+            provider: execution.provider,
+            mode: execution.mode,
+            channelConnectionId: execution.channelConnectionId ?? null,
+            externalUserId,
           },
         })
       }
+    } else {
+      await tx.contact.update({
+        where: { id: contact.id },
+        data: {
+          lastInteractionAt: interactionAt,
+          username: contact.username ?? username,
+          name: contact.name ?? name,
+        },
+      })
+    }
+
+    return contact
+  }
+
+  private async resolveOrCreateConversation(
+    tx: any,
+    execution: {
+      organizationId: string
+      provider: any
+      mode: any
+      channelConnectionId: string | null
+    },
+    contactId: string,
+    interactionAt: Date,
+  ) {
+    let conversation = await tx.conversation.findFirst({
+      where: {
+        organizationId: execution.organizationId,
+        contactId,
+        provider: execution.provider,
+        mode: execution.mode,
+        channelConnectionId: execution.channelConnectionId ?? null,
+      },
     })
+
+    if (!conversation) {
+      try {
+        conversation = await tx.conversation.create({
+          data: {
+            organizationId: execution.organizationId,
+            contactId,
+            provider: execution.provider,
+            mode: execution.mode,
+            channelConnectionId: execution.channelConnectionId ?? null,
+            status: 'OPEN',
+            lastMessageAt: interactionAt,
+          },
+        })
+      } catch {
+        conversation = await tx.conversation.findFirstOrThrow({
+          where: {
+            organizationId: execution.organizationId,
+            contactId,
+            provider: execution.provider,
+            mode: execution.mode,
+            channelConnectionId: execution.channelConnectionId ?? null,
+          },
+        })
+      }
+    } else {
+      await tx.conversation.update({
+        where: { id: conversation.id },
+        data: {
+          lastMessageAt: interactionAt,
+        },
+      })
+    }
+
+    return conversation
+  }
+
+  private async recordInboundCommentMessage(
+    tx: any,
+    execution: {
+      id: string
+      organizationId: string
+      provider: any
+      mode: any
+      channelConnectionId: string | null
+      inputText: string
+      inputAuthor: string
+      commentId: string | null
+    },
+    conversationId: string,
+    interactionAt: Date,
+  ) {
+    const commentExternalId = deterministicCommentMessageExternalId(execution.id)
+    const existingMessage = await tx.message.findFirst({
+      where: {
+        conversationId,
+        externalId: commentExternalId,
+      },
+    })
+
+    if (existingMessage) return
+
+    try {
+      await tx.message.create({
+        data: {
+          organizationId: execution.organizationId,
+          conversationId,
+          executionId: execution.id,
+          channelConnectionId: execution.channelConnectionId ?? null,
+          direction: 'INBOUND',
+          type: 'COMMENT',
+          provider: execution.provider,
+          mode: execution.mode,
+          externalId: commentExternalId,
+          text: execution.inputText,
+          payload: {
+            author: execution.inputAuthor,
+            commentId: execution.commentId,
+            simulated: execution.mode === 'SIMULATED',
+          },
+          status: 'RECEIVED',
+          sentAt: interactionAt,
+        },
+      })
+    } catch {
+      // Já existe por concorrência ou reexecução
+    }
+  }
+
+  private async upsertExecutionOutputs(
+    tx: any,
+    executionId: string,
+    outputs: Array<{
+      key: string
+      position: number
+      type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
+      payload: Record<string, unknown>
+    }>,
+  ) {
+    for (const output of outputs) {
+      await tx.automationExecutionOutput.upsert({
+        where: {
+          executionId_key: {
+            executionId,
+            key: output.key,
+          },
+        },
+        create: {
+          executionId,
+          key: output.key,
+          position: output.position,
+          type: output.type,
+          payload: output.payload as never,
+        },
+        update: {
+          position: output.position,
+          type: output.type,
+          payload: output.payload as never,
+        },
+      })
+    }
   }
 
   async recordAttemptFailure(params: {

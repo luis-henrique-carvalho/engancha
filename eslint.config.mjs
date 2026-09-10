@@ -12,6 +12,7 @@ export default tseslint.config(
       '**/.output/**',
       '**/coverage/**',
       '**/routeTree.gen.ts',
+      '**/generated/**',
       'graphify-out/**',
     ],
   },
