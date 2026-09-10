@@ -112,7 +112,7 @@ Nenhuma destas tarefas pode começar antes da conclusão desta fase:
 
 **Decisão:** modelo aprovado pelo usuário em 13/08/2026. As decisões adiadas no documento foram aceitas como decisões de MVP e podem ser refinadas posteriormente sem bloquear a fundação.
 
-**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
+**Evolução aprovada em 27/08/2026:** a associação da automação a uma conexão específica foi fechada pela PRD [Conexões de canais e direcionamento de automações](./phases/phase-future-instagram-meta/007-channel-connections-and-automation-targeting/prd.md). O modelo simulado permanece com conexão nula; a implementação real será feita no `EPIC-09` por migration aditiva.
 
 ---
 
@@ -177,7 +177,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Critério de conclusão:** ✅ `web`, `api` e `worker` iniciam localmente com Docker Compose, conectam ao PostgreSQL/Redis e executam um job de teste.
 
-**Bloqueios:** nenhum. A PRD [Fundação executável local do monorepo](./prds/local-executable-monorepo-foundation.md) e os tickets `001`–`008` foram concluídos em 2026-08-13. A validação final registrou 30 testes aprovados, typecheck e lint aprovados; o format check global possui duas divergências preexistentes no worker, fora da fundação funcional.
+**Bloqueios:** nenhum. A PRD [Fundação executável local do monorepo](./phases/phase-01-foundation/001-local-executable-monorepo-foundation/prd.md) e os tickets `001`–`008` foram concluídos em 2026-08-13. A validação final registrou 30 testes aprovados, typecheck e lint aprovados; o format check global possui duas divergências preexistentes no worker, fora da fundação funcional.
 
 ---
 
@@ -330,7 +330,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 **Critério de conclusão:** ✅ um comentário simulado percorre API → Redis/BullMQ → worker → PostgreSQL e retorna um resultado observável na interface.
 
-**Bloqueios:** nenhum. A PRD [Fase 4 — Simulação ponta a ponta](./prds/end-to-end-simulation.md) e os tickets `001`–`013` foram concluídos em 2026-09-01.
+**Bloqueios:** nenhum. A PRD [Fase 4 — Simulação ponta a ponta](./phases/phase-04-end-to-end-simulation/005-end-to-end-simulation/prd.md) e os tickets `001`–`013` foram concluídos em 2026-09-01.
 
 **Validação de encerramento (2026-09-01):** `npm run verify` aprovado integralmente (typecheck sem erros em todos os workspaces; 85 testes da suíte completa de integração/E2E com PostgreSQL e Redis locais, incluindo rate limiting e controle de conexões SSE; 222 testes web/DOM no Vitest Browser; ESLint sem erros; Prettier 100% formatado).
 
@@ -470,7 +470,7 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 **Épico:** EPIC-09  
 **Objetivo:** substituir o adapter simulado do Instagram por integração real sem duplicar o motor de automações.
 
-**PRD:** [Conexões de canais e direcionamento de automações](./prds/channel-connections-automation-targeting.md)
+**PRD:** [Conexões de canais e direcionamento de automações](./phases/phase-future-instagram-meta/007-channel-connections-and-automation-targeting/prd.md)
 
 ### Fundação de canais e conexões
 
