@@ -898,3 +898,216 @@ export const createTagRequestSchema = z
   })
   .strict()
 export type CreateTagRequest = z.infer<typeof createTagRequestSchema>
+
+// ==========================================
+// Phase 5: Conversations and Contacts Contracts
+// ==========================================
+
+export const paginationMetaSchema = z
+  .object({
+    page: z.number().int().min(1),
+    limit: z.number().int().min(1),
+    total: z.number().int().min(0),
+    totalPages: z.number().int().min(0),
+  })
+  .strict()
+export type PaginationMeta = z.infer<typeof paginationMetaSchema>
+
+export const conversationSummaryContactSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().nullable().optional(),
+    username: z.string().nullable().optional(),
+    externalUserId: z.string().nullable().optional(),
+    email: z.string().nullable().optional(),
+  })
+  .strict()
+export type ConversationSummaryContact = z.infer<typeof conversationSummaryContactSchema>
+
+export const conversationSummaryMessageSchema = z
+  .object({
+    id: z.string().min(1),
+    text: z.string().nullable().optional(),
+    direction: messageDirectionSchema,
+    type: messageTypeSchema,
+    createdAt: responseDateTimeSchema,
+  })
+  .strict()
+export type ConversationSummaryMessage = z.infer<typeof conversationSummaryMessageSchema>
+
+export const conversationSummaryLeadSchema = z
+  .object({
+    id: z.string().min(1),
+    capturedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type ConversationSummaryLead = z.infer<typeof conversationSummaryLeadSchema>
+
+export const conversationSummaryTagSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    normalizedName: z.string().min(1),
+  })
+  .strict()
+export type ConversationSummaryTag = z.infer<typeof conversationSummaryTagSchema>
+
+export const conversationSummaryAutomationSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().nullable().optional(),
+  })
+  .strict()
+export type ConversationSummaryAutomation = z.infer<typeof conversationSummaryAutomationSchema>
+
+export const conversationSummarySchema = z
+  .object({
+    id: z.string().min(1),
+    provider: contentProviderSchema,
+    mode: contentModeSchema,
+    status: conversationStatusSchema,
+    contact: conversationSummaryContactSchema,
+    lastMessage: conversationSummaryMessageSchema.nullable().optional(),
+    automation: conversationSummaryAutomationSchema.nullable().optional(),
+    lead: conversationSummaryLeadSchema.nullable().optional(),
+    tags: z.array(conversationSummaryTagSchema),
+    lastMessageAt: responseDateTimeSchema.nullable().optional(),
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type ConversationSummary = z.infer<typeof conversationSummarySchema>
+
+const normalizeQueryArray = <T extends z.ZodTypeAny>(schema: T) =>
+  z
+    .union([schema, z.array(schema)])
+    .transform((v) => (Array.isArray(v) ? v : [v]))
+    .optional()
+
+export const conversationListQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    query: z.string().trim().max(120).optional(),
+    startDate: z.string().datetime({ offset: true }).optional(),
+    endDate: z.string().datetime({ offset: true }).optional(),
+    automationId: z.string().trim().min(1).max(255).optional(),
+    hasLead: z
+      .union([z.boolean(), z.enum(['true', 'false'])])
+      .transform((val) => (typeof val === 'boolean' ? val : val === 'true'))
+      .optional(),
+    tagId: z.string().trim().min(1).max(255).optional(),
+    status: normalizeQueryArray(conversationStatusSchema),
+    executionStatus: normalizeQueryArray(executionStatusSchema),
+  })
+  .strict()
+export type ConversationListQuery = z.infer<typeof conversationListQuerySchema>
+
+export const conversationListResponseSchema = z
+  .object({
+    items: z.array(conversationSummarySchema),
+    meta: paginationMetaSchema,
+  })
+  .strict()
+export type ConversationListResponse = z.infer<typeof conversationListResponseSchema>
+
+export const conversationMessageSchema = z
+  .object({
+    id: z.string().min(1),
+    direction: messageDirectionSchema,
+    type: messageTypeSchema,
+    status: messageStatusSchema,
+    text: z.string().nullable().optional(),
+    payload: z.record(z.string(), z.unknown()).nullable().optional(),
+    position: z.number().int().nullable().optional(),
+    sentAt: responseDateTimeSchema.nullable().optional(),
+    createdAt: responseDateTimeSchema,
+    originExecutionId: z.string().nullable().optional(),
+    originAutomationId: z.string().nullable().optional(),
+  })
+  .strict()
+export type ConversationMessage = z.infer<typeof conversationMessageSchema>
+
+export const emailCaptureDetailSchema = z
+  .object({
+    id: z.string().min(1),
+    status: emailCaptureRequestStatusSchema,
+    messageId: z.string().min(1),
+    responseMessageId: z.string().nullable().optional(),
+    errorCode: z.string().nullable().optional(),
+    errorMessage: z.string().nullable().optional(),
+    createdAt: responseDateTimeSchema,
+    claimedAt: responseDateTimeSchema.nullable().optional(),
+    completedAt: responseDateTimeSchema.nullable().optional(),
+  })
+  .strict()
+export type EmailCaptureDetail = z.infer<typeof emailCaptureDetailSchema>
+
+export const conversationDetailResponseSchema = z
+  .object({
+    id: z.string().min(1),
+    provider: contentProviderSchema,
+    mode: contentModeSchema,
+    status: conversationStatusSchema,
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+    contact: conversationSummaryContactSchema,
+    tags: z.array(conversationSummaryTagSchema),
+    lead: conversationSummaryLeadSchema.nullable().optional(),
+    automation: conversationSummaryAutomationSchema.nullable().optional(),
+    messages: z.array(conversationMessageSchema),
+    emailCaptures: z.array(emailCaptureDetailSchema),
+  })
+  .strict()
+export type ConversationDetailResponse = z.infer<typeof conversationDetailResponseSchema>
+
+export const contactLeadSchema = z
+  .object({
+    id: z.string().min(1),
+    capturedAt: responseDateTimeSchema,
+    automationId: z.string().nullable().optional(),
+    automationName: z.string().nullable().optional(),
+  })
+  .strict()
+export type ContactLead = z.infer<typeof contactLeadSchema>
+
+export const contactSummarySchema = z
+  .object({
+    id: z.string().min(1),
+    provider: contentProviderSchema,
+    mode: contentModeSchema,
+    externalUserId: z.string().nullable().optional(),
+    username: z.string().nullable().optional(),
+    name: z.string().nullable().optional(),
+    email: z.string().nullable().optional(),
+    hasEmail: z.boolean(),
+    isLead: z.boolean(),
+    lead: contactLeadSchema.nullable().optional(),
+    tags: z.array(conversationSummaryTagSchema),
+    lastInteractionAt: responseDateTimeSchema.nullable().optional(),
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type ContactSummary = z.infer<typeof contactSummarySchema>
+
+export const contactListQuerySchema = z
+  .object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    query: z.string().trim().max(120).optional(),
+    provider: normalizeQueryArray(contentProviderSchema),
+    mode: normalizeQueryArray(contentModeSchema),
+    tagId: z.string().trim().min(1).max(255).optional(),
+    leadState: z.enum(['ALL', 'LEAD', 'NOT_LEAD']).optional(),
+  })
+  .strict()
+export type ContactListQuery = z.infer<typeof contactListQuerySchema>
+
+export const contactListResponseSchema = z
+  .object({
+    items: z.array(contactSummarySchema),
+    meta: paginationMetaSchema,
+  })
+  .strict()
+export type ContactListResponse = z.infer<typeof contactListResponseSchema>

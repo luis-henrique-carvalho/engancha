@@ -1,6 +1,8 @@
-import { Body, Controller, Inject, Param, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Param, Post, Query, Req, UseGuards } from '@nestjs/common'
 import {
+  conversationListQuerySchema,
   emailCaptureResponseSubmissionSchema,
+  type ConversationListQuery,
   type EmailCaptureResponseSubmission,
 } from '@engancha/contracts'
 import {
@@ -17,6 +19,26 @@ export class ConversationsController {
     @Inject(ConversationsService)
     private readonly conversationsService: ConversationsService,
   ) {}
+
+  @Get()
+  async listConversations(
+    @Req() request: RequestWithAuthorization,
+    @Query(new ZodValidationPipe(conversationListQuerySchema))
+    query: ConversationListQuery,
+  ) {
+    return this.conversationsService.listConversations(request.authorizationContext!, query)
+  }
+
+  @Get(':id')
+  async getConversationById(
+    @Param('id') conversationId: string,
+    @Req() request: RequestWithAuthorization,
+  ) {
+    return this.conversationsService.getConversationById(
+      request.authorizationContext!,
+      conversationId,
+    )
+  }
 
   @Post(':id/email-captures/:captureId/responses')
   async submitEmailCaptureResponse(

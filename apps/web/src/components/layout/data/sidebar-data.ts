@@ -1,4 +1,4 @@
-import { Bot, LayoutDashboard, UsersRound } from 'lucide-react'
+import { Bot, Contact, LayoutDashboard, MessageSquare, UsersRound } from 'lucide-react'
 import type { ActiveWorkspaceResponse } from '@engancha/contracts'
 import type { SidebarData, User } from '../types'
 
@@ -24,6 +24,16 @@ export function createSidebarData({ user, workspace }: SidebarDataInput): Sideba
             title: 'Automações',
             url: '/automations',
             icon: Bot,
+          },
+          {
+            title: 'Conversas',
+            url: '/conversations',
+            icon: MessageSquare,
+          },
+          {
+            title: 'Contatos',
+            url: '/contacts',
+            icon: Contact,
           },
           {
             title: 'Pessoas',

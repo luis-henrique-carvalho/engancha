@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
+import { Route as AuthenticatedContactsRouteImport } from './routes/_authenticated/contacts'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedWorkspaceRouteImport } from './routes/_authenticated/workspace'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
@@ -22,6 +23,8 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-passw
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
 import { Route as AuthenticatedAutomationsIndexRouteImport } from './routes/_authenticated/automations/index'
 import { Route as AuthenticatedAutomationsAutomationIdRouteRouteImport } from './routes/_authenticated/automations/$automationId/route'
+import { Route as AuthenticatedConversationsIndexRouteImport } from './routes/_authenticated/conversations/index'
+import { Route as AuthenticatedConversationsConversationIdRouteImport } from './routes/_authenticated/conversations/$conversationId'
 import { Route as AuthenticatedAutomationsAutomationIdIndexRouteImport } from './routes/_authenticated/automations/$automationId/index'
 import { Route as AuthenticatedAutomationsAutomationIdActivityRouteImport } from './routes/_authenticated/automations/$automationId/activity'
 import { Route as AuthenticatedAutomationsAutomationIdContentRouteImport } from './routes/_authenticated/automations/$automationId/content'
@@ -51,6 +54,11 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedContactsRoute = AuthenticatedContactsRouteImport.update({
+  id: '/contacts',
+  path: '/contacts',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
@@ -97,6 +105,18 @@ const AuthenticatedAutomationsAutomationIdRouteRoute =
   AuthenticatedAutomationsAutomationIdRouteRouteImport.update({
     id: '/automations/$automationId',
     path: '/automations/$automationId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedConversationsIndexRoute =
+  AuthenticatedConversationsIndexRouteImport.update({
+    id: '/conversations/',
+    path: '/conversations/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedConversationsConversationIdRoute =
+  AuthenticatedConversationsConversationIdRouteImport.update({
+    id: '/conversations/$conversationId',
+    path: '/conversations/$conversationId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedAutomationsAutomationIdIndexRoute =
@@ -164,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -172,7 +193,9 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/automations/$automationId': typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  '/conversations/$conversationId': typeof AuthenticatedConversationsConversationIdRoute
   '/automations/': typeof AuthenticatedAutomationsIndexRoute
+  '/conversations/': typeof AuthenticatedConversationsIndexRoute
   '/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
   '/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
   '/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
@@ -188,6 +211,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/contacts': typeof AuthenticatedContactsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -195,7 +219,9 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
+  '/conversations/$conversationId': typeof AuthenticatedConversationsConversationIdRoute
   '/automations': typeof AuthenticatedAutomationsIndexRoute
+  '/conversations': typeof AuthenticatedConversationsIndexRoute
   '/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
   '/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
   '/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
@@ -213,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
+  '/_authenticated/contacts': typeof AuthenticatedContactsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
@@ -221,7 +248,9 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
   '/_authenticated/automations/$automationId': typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  '/_authenticated/conversations/$conversationId': typeof AuthenticatedConversationsConversationIdRoute
   '/_authenticated/automations/': typeof AuthenticatedAutomationsIndexRoute
+  '/_authenticated/conversations/': typeof AuthenticatedConversationsIndexRoute
   '/_authenticated/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
   '/_authenticated/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
   '/_authenticated/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
@@ -239,6 +268,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accept-invitation'
+    | '/contacts'
     | '/users'
     | '/workspace'
     | '/auth/forgot-password'
@@ -247,7 +277,9 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/verify-email'
     | '/automations/$automationId'
+    | '/conversations/$conversationId'
     | '/automations/'
+    | '/conversations/'
     | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
     | '/automations/$automationId/direct-message'
@@ -263,6 +295,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/accept-invitation'
+    | '/contacts'
     | '/users'
     | '/workspace'
     | '/auth/forgot-password'
@@ -270,7 +303,9 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
+    | '/conversations/$conversationId'
     | '/automations'
+    | '/conversations'
     | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
     | '/automations/$automationId/direct-message'
@@ -287,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/accept-invitation'
+    | '/_authenticated/contacts'
     | '/_authenticated/users'
     | '/_authenticated/workspace'
     | '/auth/forgot-password'
@@ -295,7 +331,9 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/verify-email'
     | '/_authenticated/automations/$automationId'
+    | '/_authenticated/conversations/$conversationId'
     | '/_authenticated/automations/'
+    | '/_authenticated/conversations/'
     | '/_authenticated/automations/$automationId/activity'
     | '/_authenticated/automations/$automationId/content'
     | '/_authenticated/automations/$automationId/direct-message'
@@ -344,6 +382,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/contacts': {
+      id: '/_authenticated/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AuthenticatedContactsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/users': {
       id: '/_authenticated/users'
@@ -406,6 +451,20 @@ declare module '@tanstack/react-router' {
       path: '/automations/$automationId'
       fullPath: '/automations/$automationId'
       preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/conversations/': {
+      id: '/_authenticated/conversations/'
+      path: '/conversations'
+      fullPath: '/conversations/'
+      preLoaderRoute: typeof AuthenticatedConversationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/conversations/$conversationId': {
+      id: '/_authenticated/conversations/$conversationId'
+      path: '/conversations/$conversationId'
+      fullPath: '/conversations/$conversationId'
+      preLoaderRoute: typeof AuthenticatedConversationsConversationIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/automations/$automationId/': {
@@ -524,18 +583,25 @@ const AuthenticatedAutomationsAutomationIdRouteRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedContactsRoute: typeof AuthenticatedContactsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedWorkspaceRoute: typeof AuthenticatedWorkspaceRoute
   AuthenticatedAutomationsAutomationIdRouteRoute: typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  AuthenticatedConversationsConversationIdRoute: typeof AuthenticatedConversationsConversationIdRoute
   AuthenticatedAutomationsIndexRoute: typeof AuthenticatedAutomationsIndexRoute
+  AuthenticatedConversationsIndexRoute: typeof AuthenticatedConversationsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedContactsRoute: AuthenticatedContactsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedWorkspaceRoute: AuthenticatedWorkspaceRoute,
   AuthenticatedAutomationsAutomationIdRouteRoute:
     AuthenticatedAutomationsAutomationIdRouteRouteWithChildren,
+  AuthenticatedConversationsConversationIdRoute:
+    AuthenticatedConversationsConversationIdRoute,
   AuthenticatedAutomationsIndexRoute: AuthenticatedAutomationsIndexRoute,
+  AuthenticatedConversationsIndexRoute: AuthenticatedConversationsIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
