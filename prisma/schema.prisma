@@ -86,6 +86,7 @@ model Organization {
   messages             Message[]
   tags                 Tag[]
   emailCaptureRequests EmailCaptureRequest[]
+  leads                Lead[]
 }
 
 enum AutomationStatus {
@@ -180,6 +181,7 @@ model Automation {
   originatingExecutions      AutomationExecution[] @relation("ExecutionOriginAutomation")
   matchedExecutions          AutomationExecution[] @relation("ExecutionAutomation")
   emailCaptureRequests       EmailCaptureRequest[]
+  leads                      Lead[]
 
   @@index([organizationId, status, updatedAt])
 }
@@ -269,6 +271,7 @@ model AutomationExecution {
   outputs              AutomationExecutionOutput[]
   messages             Message[]
   emailCaptureRequest  EmailCaptureRequest?
+  leads                Lead[]
 
   @@unique([organizationId, provider, mode, idempotencyKey])
   @@index([organizationId, status, createdAt])
@@ -374,6 +377,7 @@ model Contact {
   executions           AutomationExecution[]
   tags                 ContactTag[]
   emailCaptureRequests EmailCaptureRequest[]
+  lead                 Lead?
 
   @@index([organizationId, updatedAt])
   @@index([organizationId, lastInteractionAt])
@@ -493,3 +497,27 @@ model EmailCaptureRequest {
   @@index([conversationId, status])
   @@index([contactId])
 }
+
+model Lead {
+  id             String          @id @default(uuid())
+  organizationId String
+  contactId      String          @unique
+  automationId   String?
+  executionId    String?
+  provider       ContentProvider @default(INSTAGRAM)
+  mode           ContentMode     @default(SIMULATED)
+  capturedAt     DateTime        @default(now())
+  metadata       Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact        Contact             @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  automation     Automation?         @relation(fields: [automationId], references: [id], onDelete: SetNull)
+  execution      AutomationExecution? @relation(fields: [executionId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, contactId])
+  @@index([organizationId, capturedAt])
+  @@index([organizationId, provider, mode])
+}
+

@@ -5,11 +5,13 @@ import {
   deterministicEmailCaptureRequestId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
+  normalizeEmail,
   normalizeTagName,
 } from '@engancha/contracts'
 import { AutomationExecutionService } from '../apps/worker/src/automation-execution/application/automation-execution.service.ts'
 import { PrismaAutomationExecutionRepository } from '../apps/worker/src/automation-execution/infrastructure/persistence/prisma-automation-execution.repository.ts'
 import { PrismaAutomationRepository } from '../apps/api/src/modules/automations/infrastructure/persistence/prisma-automation.repository.ts'
+import { PrismaEmailCaptureRepository } from '../apps/worker/src/email-capture/infrastructure/persistence/prisma-email-capture.repository.ts'
 import { prisma } from '../apps/api/src/platform/database/client.ts'
 
 test('normalizeContactExternalUserId remove arroba, espaços e converte para minúsculas', () => {
@@ -1006,4 +1008,416 @@ test('Ticket 003: normalização, criação inline, multi-tenant e aplicação i
     where: { contactId: savedTagExec.contactId, tagId: tagB.id },
   })
   assert.equal(tagBAssociated, null, 'Tag de outro workspace não pode ser associada')
+})
+
+test('normalizeEmail normaliza apenas o domínio em minúsculas e remove espaços externos', () => {
+  assert.equal(normalizeEmail('  Usuario.Teste@EXEMPLO.COM  '), 'Usuario.Teste@exemplo.com')
+  assert.equal(normalizeEmail('contato@Engancha.app'), 'contato@engancha.app')
+  assert.equal(normalizeEmail('lead+tag@Dominio.Com.Br'), 'lead+tag@dominio.com.br')
+})
+
+test('Tickets 004 e 005: resposta de e-mail cria lead com atribuição imutável, idempotência, supersessão e conflito fechado', async () => {
+  const ts = Date.now() + 400
+  const orgA = `org-t004-a-${ts}`
+  const orgB = `org-t004-b-${ts}`
+  const user = `user-t004-${ts}`
+  const contentA = `content-t004-a-${ts}`
+  const autoA = `auto-t004-a-${ts}`
+  const autoRevA = `rev-t004-a-${ts}`
+
+  await prisma.organization.createMany({
+    data: [
+      { id: orgA, name: 'Org T004 A', slug: `org-t004-a-${ts}` },
+      { id: orgB, name: 'Org T004 B', slug: `org-t004-b-${ts}` },
+    ],
+  })
+
+  await prisma.user.create({
+    data: { id: user, name: 'User T004', email: `user-t004-${ts}@example.test` },
+  })
+
+  await prisma.content.create({
+    data: {
+      id: contentA,
+      organizationId: orgA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      contentType: 'POST',
+      title: 'Post T004',
+      externalContentId: `ext-t004-${ts}`,
+    },
+  })
+
+  await prisma.automation.create({
+    data: {
+      id: autoA,
+      organizationId: orgA,
+      createdByUserId: user,
+      status: 'ACTIVE',
+    },
+  })
+
+  await prisma.automationRevision.create({
+    data: {
+      id: autoRevA,
+      automationId: autoA,
+      version: 1,
+      status: 'PUBLISHED',
+      target: { create: { contentId: contentA } },
+      trigger: {
+        create: {
+          type: 'COMMENT_KEYWORD',
+          keyword: 'QueroMaterial',
+          keywordNormalized: 'queromaterial',
+        },
+      },
+      actions: {
+        create: [
+          { position: 0, type: 'PUBLIC_REPLY', config: { text: 'Oi!' } },
+          {
+            position: 1,
+            type: 'CAPTURE_EMAIL',
+            config: { prompt: 'Envie seu melhor e-mail:' },
+          },
+        ],
+      },
+    },
+  })
+
+  await prisma.automation.update({
+    where: { id: autoA },
+    data: { currentPublishedRevisionId: autoRevA },
+  })
+
+  const exec1Id = `exec-t004-1-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec1Id,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t004-1-${ts}`,
+      inputAuthor: '@SeguidorFiel',
+      inputText: 'QueroMaterial!',
+      commentId: `comment-t004-1-${ts}`,
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  const outputs1 = [
+    {
+      key: `${exec1Id}:0:PUBLIC_REPLY`,
+      position: 0,
+      type: 'PUBLIC_REPLY',
+      payload: { text: 'Oi!', simulated: true },
+    },
+    {
+      key: `${exec1Id}:1:EMAIL_CAPTURE_REQUEST`,
+      position: 1,
+      type: 'EMAIL_CAPTURE_REQUEST',
+      payload: { prompt: 'Envie seu melhor e-mail:', simulated: true },
+    },
+  ]
+
+  const snapshot1 = {
+    automationId: autoA,
+    revisionId: autoRevA,
+    version: 1,
+    target: { contentId: contentA },
+    trigger: {
+      type: 'COMMENT_KEYWORD',
+      keyword: 'QueroMaterial',
+      keywordNormalized: 'queromaterial',
+    },
+    actions: [
+      { position: 0, type: 'PUBLIC_REPLY', config: { text: 'Oi!' } },
+      { position: 1, type: 'CAPTURE_EMAIL', config: { prompt: 'Envie seu melhor e-mail:' } },
+    ],
+  }
+
+  // Completa execução 1 gerando a captura pendente
+  const saved1 = await dbRepository.saveExecutionCompleted({
+    executionId: exec1Id,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: snapshot1,
+    outputs: outputs1,
+  })
+
+  const capture1 = await prisma.emailCaptureRequest.findFirstOrThrow({
+    where: { executionId: exec1Id },
+  })
+  assert.equal(capture1.status, 'PENDING')
+
+  const emailRepo = new PrismaEmailCaptureRepository(prismaService)
+
+  // 1. Processamento de resposta válida cria mensagem INBOUND, atualiza contato e cria Lead (DEC-04, DEC-08)
+  const processResult1 = await emailRepo.claimAndProcess({
+    type: 'email.capture.response.v1',
+    version: 'v1',
+    correlationId: `resp-1-${ts}`,
+    captureRequestId: capture1.id,
+    organizationId: orgA,
+    submittedEmail: 'Seguidor@Dominio.COM',
+    idempotencyKey: `resp-1-${ts}`,
+  })
+
+  assert.equal(processResult1.status, 'COMPLETED')
+  assert.ok(processResult1.leadId, 'LeadId deve ser retornado')
+
+  // A execução originária DEVE continuar COMPLETED
+  const execAfterCapture = await prisma.automationExecution.findUniqueOrThrow({
+    where: { id: exec1Id },
+  })
+  assert.equal(execAfterCapture.status, 'COMPLETED')
+
+  // Contato enriquecido
+  const contactAfterCapture = await prisma.contact.findUniqueOrThrow({
+    where: { id: saved1.contactId },
+  })
+  assert.equal(contactAfterCapture.email, 'Seguidor@Dominio.COM')
+  assert.equal(contactAfterCapture.emailNormalized, 'Seguidor@dominio.com')
+
+  // Lead criado com atribuição originária imutável
+  const lead1 = await prisma.lead.findUniqueOrThrow({
+    where: { id: processResult1.leadId },
+  })
+  assert.equal(lead1.organizationId, orgA)
+  assert.equal(lead1.contactId, saved1.contactId)
+  assert.equal(lead1.automationId, autoA)
+  assert.equal(lead1.executionId, exec1Id)
+  assert.equal(lead1.provider, 'INSTAGRAM')
+  assert.equal(lead1.mode, 'SIMULATED')
+  const initialCapturedAt = lead1.capturedAt
+
+  // Mensagem INBOUND criada com sucesso
+  const responseMessage = await prisma.message.findFirstOrThrow({
+    where: {
+      conversationId: saved1.conversationId,
+      direction: 'INBOUND',
+      type: 'INCOMING_MESSAGE',
+    },
+  })
+  assert.equal(responseMessage.text, 'Seguidor@Dominio.COM')
+  assert.equal(responseMessage.status, 'RECEIVED')
+
+  // 2. Idempotência: reprocessar o mesmo job de captura retorna o mesmo lead e não duplica efeitos
+  const retryCaptureResult = await emailRepo.claimAndProcess({
+    type: 'email.capture.response.v1',
+    version: 'v1',
+    correlationId: `resp-1-${ts}`,
+    captureRequestId: capture1.id,
+    organizationId: orgA,
+    submittedEmail: 'Seguidor@Dominio.COM',
+    idempotencyKey: `resp-1-${ts}`,
+  })
+
+  assert.equal(retryCaptureResult.status, 'COMPLETED')
+  assert.equal(retryCaptureResult.leadId, lead1.id)
+
+  const leadCountAfterRetry = await prisma.lead.count({
+    where: { organizationId: orgA, contactId: saved1.contactId },
+  })
+  assert.equal(leadCountAfterRetry, 1, 'Não pode duplicar o Lead')
+
+  // 3. Captura posterior não sobrescreve a atribuição do lead original (DEC-08)
+  const exec2Id = `exec-t004-2-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec2Id,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t004-2-${ts}`,
+      inputAuthor: 'seguidorfiel',
+      inputText: 'QueroMaterial novamente!',
+      commentId: `comment-t004-2-${ts}`,
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  await dbRepository.saveExecutionCompleted({
+    executionId: exec2Id,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: snapshot1,
+    outputs: outputs1,
+  })
+
+  const capture2 = await prisma.emailCaptureRequest.findFirstOrThrow({
+    where: { executionId: exec2Id },
+  })
+
+  const processResult2 = await emailRepo.claimAndProcess({
+    type: 'email.capture.response.v1',
+    version: 'v1',
+    correlationId: `resp-2-${ts}`,
+    captureRequestId: capture2.id,
+    organizationId: orgA,
+    submittedEmail: 'seguidor.novo@dominio.com',
+    idempotencyKey: `resp-2-${ts}`,
+  })
+
+  assert.equal(processResult2.status, 'COMPLETED')
+  assert.equal(processResult2.leadId, lead1.id, 'O lead deve permanecer o mesmo')
+
+  const leadAfterSecondCapture = await prisma.lead.findUniqueOrThrow({
+    where: { id: lead1.id },
+  })
+  assert.equal(
+    leadAfterSecondCapture.executionId,
+    exec1Id,
+    'Atribuição da execução originária inicial deve ser preservada (imutável)',
+  )
+  assert.equal(
+    leadAfterSecondCapture.capturedAt.getTime(),
+    initialCapturedAt.getTime(),
+    'Data de captura inicial deve permanecer inalterada',
+  )
+
+  // 4. Conflito de Identidade (DEC-05): e-mail pertencente a outro contato falha fechado
+  // Cria contato secundário com e-mail cadastrado
+  await prisma.contact.create({
+    data: {
+      organizationId: orgA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      externalUserId: `outro_usuario_${ts}`,
+      username: `outro_usuario_${ts}`,
+      email: 'outro@dominio.com',
+      emailNormalized: 'outro@dominio.com',
+    },
+  })
+
+  // Cria uma 3ª execução para um novo seguidor
+  const exec3Id = `exec-t004-3-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec3Id,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t004-3-${ts}`,
+      inputAuthor: `@NovoSeguidor_${ts}`,
+      inputText: 'QueroMaterial!',
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  const outputs3 = [
+    {
+      key: `${exec3Id}:0:PUBLIC_REPLY`,
+      position: 0,
+      type: 'PUBLIC_REPLY',
+      payload: { text: 'Oi!', simulated: true },
+    },
+    {
+      key: `${exec3Id}:1:EMAIL_CAPTURE_REQUEST`,
+      position: 1,
+      type: 'EMAIL_CAPTURE_REQUEST',
+      payload: { prompt: 'Envie seu melhor e-mail:', simulated: true },
+    },
+  ]
+
+  const saved3 = await dbRepository.saveExecutionCompleted({
+    executionId: exec3Id,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: snapshot1,
+    outputs: outputs3,
+  })
+
+  const capture3 = await prisma.emailCaptureRequest.findFirstOrThrow({
+    where: { executionId: exec3Id },
+  })
+
+  // Novo seguidor tenta submeter o e-mail que pertence a existingOtherContact
+  const conflictResult = await emailRepo.claimAndProcess({
+    type: 'email.capture.response.v1',
+    version: 'v1',
+    correlationId: `resp-3-${ts}`,
+    captureRequestId: capture3.id,
+    organizationId: orgA,
+    submittedEmail: 'outro@DOMINIO.COM',
+    idempotencyKey: `resp-3-${ts}`,
+  })
+
+  assert.equal(conflictResult.status, 'FAILED')
+  assert.equal(conflictResult.errorCode, 'IDENTITY_CONFLICT')
+
+  // Não deve criar Lead para saved3.contactId
+  const leadSaved3 = await prisma.lead.findUnique({
+    where: {
+      organizationId_contactId: {
+        organizationId: orgA,
+        contactId: saved3.contactId,
+      },
+    },
+  })
+  assert.equal(leadSaved3, null, 'Conflito de identidade não deve criar Lead')
+
+  // Contato novo não deve ter herdado o e-mail conflitante
+  const contact3 = await prisma.contact.findUniqueOrThrow({
+    where: { id: saved3.contactId },
+  })
+  assert.equal(contact3.emailNormalized, null)
+
+  // O pedido permanece PENDING para permitir correção pelo usuário
+  const capture3AfterConflict = await prisma.emailCaptureRequest.findUniqueOrThrow({
+    where: { id: capture3.id },
+  })
+  assert.equal(capture3AfterConflict.status, 'PENDING')
+  assert.equal(capture3AfterConflict.errorCode, 'IDENTITY_CONFLICT')
+
+  // 5. Supersessão: pedido SUPERSEDED não aceita resposta
+  const exec4Id = `exec-t004-4-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec4Id,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t004-4-${ts}`,
+      inputAuthor: `@NovoSeguidor_${ts}`, // mesmo autor da execução 3
+      inputText: 'Nova tentativa!',
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  await dbRepository.saveExecutionCompleted({
+    executionId: exec4Id,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: snapshot1,
+    outputs: outputs1,
+  })
+
+  // A captura 3 agora deve estar SUPERSEDED
+  const capture3Superseded = await prisma.emailCaptureRequest.findUniqueOrThrow({
+    where: { id: capture3.id },
+  })
+  assert.equal(capture3Superseded.status, 'SUPERSEDED')
+
+  const supersededResult = await emailRepo.claimAndProcess({
+    type: 'email.capture.response.v1',
+    version: 'v1',
+    correlationId: `resp-superseded-${ts}`,
+    captureRequestId: capture3.id,
+    organizationId: orgA,
+    submittedEmail: 'correto@dominio.com',
+    idempotencyKey: `resp-superseded-${ts}`,
+  })
+  assert.equal(supersededResult.status, 'SUPERSEDED')
 })

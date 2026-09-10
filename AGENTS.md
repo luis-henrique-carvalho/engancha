@@ -2,7 +2,8 @@
 
 1. **GRAPHIFY FIRST**: Para qualquer pergunta sobre código, arquitetura ou exploração do repositório, execute PRIMEIRO `graphify query "<termo>"` antes de ler arquivos ou buscar com grep/find.
 2. **SHADCN REFERENCE GRAPHIFY**: Antes de criar ou alterar telas, fluxos ou componentes em `apps/web`, consulte PRIMEIRO a referência local (`shadcn-admin-reference`) via `graphify query`.
-3. **GRAPHIFY UPDATE**: Execute `graphify update .` ao final da tarefa ou sessão após concluir as alterações de código (evitando execuções intermediárias redundantes a cada micro-arquivo).
+3. **MANDATORY REVIEW BEFORE CLOSE**: Ao implementar qualquer ticket ou funcionalidade, a etapa de revisão de código (`code-review` avaliando Standards e Spec + remediação imediata) é OBRIGATÓRIA antes de preencher o `Result`, fechar o ticket ou concluir a sessão. É proibido pular a revisão ou deixá-la como sugestão futura.
+4. **GRAPHIFY UPDATE**: Execute `graphify update .` ao final da tarefa ou sessão após concluir as alterações de código (evitando execuções intermediárias redundantes a cada micro-arquivo).
 
 ---
 
@@ -37,7 +38,7 @@ Rules:
 
 O ciclo de desenvolvimento opera em duas fases desacopladas (executadas em sessões separadas):
 - **Planejamento & Especificação**: Use o workflow [`/plan-feature`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/plan-feature.md) para conduzir descoberta, arquitetura/design, criação de PRD em `docs/phases/` e decomposição em tickets verticais em `tickets/`.
-- **Implementação & Entrega de Tickets**: Use o workflow [`/implement-ticket`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/implement-ticket.md) em sessões dedicadas para implementar um ou múltiplos tickets com TDD, aplicar padrões backend/frontend, rodar `code-review`, remediar e registrar o resultado em cada ticket.
+- **Implementação & Entrega de Tickets**: Use o workflow [`/implement-ticket`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/implement-ticket.md) em sessões dedicadas para implementar um ou múltiplos tickets. O ciclo TDD, a revisão de código (`code-review`) e a remediação imediata são etapas mandatórias e inseparáveis da entrega de cada ticket.
 
 ---
 

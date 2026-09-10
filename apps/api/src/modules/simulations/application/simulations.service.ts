@@ -617,6 +617,14 @@ export class SimulationsService {
       originAutomationId: execution.originAutomationId ?? null,
       contactId: execution.contactId ?? null,
       conversationId: execution.conversationId ?? null,
+      emailCapture: execution.emailCaptureRequest
+        ? {
+            id: execution.emailCaptureRequest.id,
+            status: execution.emailCaptureRequest.status,
+            errorCode: execution.emailCaptureRequest.errorCode ?? null,
+            errorMessage: execution.emailCaptureRequest.errorMessage ?? null,
+          }
+        : null,
       content: execution.content
         ? {
             id: execution.content.id,

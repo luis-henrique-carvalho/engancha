@@ -50,6 +50,20 @@ export const SimulationsApi = {
     return simulationCommentResponseSchema.parse(data)
   },
 
+  async submitEmailCaptureResponse(
+    conversationId: string,
+    captureId: string,
+    body: { email: string; idempotencyKey: string },
+  ) {
+    return await apiFetch<unknown>(
+      `/conversations/${conversationId}/email-captures/${captureId}/responses`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      },
+    )
+  },
+
   getEventsUrl(executionId: string): string {
     return `${apiBaseUrl}/api/v1/simulations/executions/${executionId}/events`
   },

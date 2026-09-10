@@ -71,6 +71,14 @@ export class PrismaSimulationRepository implements SimulationRepository {
         content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
         automationRevision: { select: { id: true, version: true, name: true } },
         outputs: { orderBy: { position: 'asc' } },
+        emailCaptureRequest: {
+          select: {
+            id: true,
+            status: true,
+            errorCode: true,
+            errorMessage: true,
+          },
+        },
       },
     })
   }
@@ -106,6 +114,14 @@ export class PrismaSimulationRepository implements SimulationRepository {
         content: { select: { id: true, title: true, contentType: true, externalContentId: true } },
         automationRevision: { select: { id: true, version: true, name: true } },
         outputs: { orderBy: { position: 'asc' } },
+        emailCaptureRequest: {
+          select: {
+            id: true,
+            status: true,
+            errorCode: true,
+            errorMessage: true,
+          },
+        },
       },
     })
 

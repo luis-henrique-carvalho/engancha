@@ -14,6 +14,7 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module'
 import { DevelopmentEmailOutboxModule } from './modules/development-email-outbox/development-email-outbox.module'
 import { AutomationsModule } from './modules/automations/automations.module'
 import { SimulationsModule } from './modules/simulations/simulations.module'
+import { ConversationsModule } from './modules/conversations/conversations.module'
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { SimulationsModule } from './modules/simulations/simulations.module'
     DevelopmentEmailOutboxModule,
     AutomationsModule,
     SimulationsModule,
+    ConversationsModule,
   ],
   controllers: [AppController],
 })

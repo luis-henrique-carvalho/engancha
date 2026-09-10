@@ -41,6 +41,7 @@ test('exports the version and central queue registry', () => {
     verification: 'verification',
     emailDelivery: 'email-delivery',
     automationExecution: 'automation-execution',
+    emailCapture: 'email-capture',
     messageDelivery: 'message-delivery',
     analytics: 'analytics',
   })

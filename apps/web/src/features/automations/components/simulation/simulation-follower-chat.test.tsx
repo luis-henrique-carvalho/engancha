@@ -132,9 +132,277 @@ describe('SimulationFollowerChat', () => {
     await expect.element(getByTestId('simulation-email-notice')).toBeInTheDocument()
     await expect
       .element(
-        getByText('Simulação: a jornada encerra na solicitação. Nenhum dado real foi coletado.'),
+        getByText(
+          'Simulação interativa: responda com um e-mail para testar a captura e a criação do lead.',
+        ),
       )
       .toBeInTheDocument()
+  })
+
+  it('renders interactive email input and submits valid email', async () => {
+    const onSubmitEmail = vi.fn().mockResolvedValue({})
+    const mockExecution: SimulationExecutionResponse = {
+      id: 'exec-email',
+      conversationId: 'conv-1',
+      status: 'COMPLETED',
+      simulated: true,
+      provider: 'INSTAGRAM',
+      contentId: 'content-1',
+      input: {
+        author: '@joao.teste',
+        text: 'INFO',
+        commentId: null,
+        submittedAt: '2026-08-28T10:00:00.000Z',
+      },
+      matched: true,
+      automation: { id: 'auto-1', revisionId: 'rev-1', version: 1 },
+      emailCapture: {
+        id: 'cap-1',
+        status: 'PENDING',
+        errorCode: null,
+        errorMessage: null,
+      },
+      outputs: [
+        {
+          id: 'out-1',
+          key: 'exec-email:0:EMAIL_CAPTURE_REQUEST',
+          position: 0,
+          type: 'EMAIL_CAPTURE_REQUEST',
+          payload: { prompt: 'Qual seu e-mail para contato?' },
+          createdAt: '2026-08-28T10:00:03.000Z',
+        },
+      ],
+      attempts: 1,
+      error: null,
+      stateVersion: 2,
+    }
+
+    const { getByTestId, getByPlaceholder } = await render(
+      <SimulationFollowerChat
+        execution={mockExecution}
+        onSubmitEmail={onSubmitEmail}
+      />,
+    )
+
+    await expect.element(getByTestId('simulation-email-capture-form')).toBeInTheDocument()
+    const input = getByPlaceholder('seu.email@exemplo.com')
+    await input.fill('joao@teste.com')
+
+    const submitBtn = getByTestId('simulation-email-submit-btn')
+    await submitBtn.click()
+
+    expect(onSubmitEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conversationId: 'conv-1',
+        captureId: 'cap-1',
+        email: 'joao@teste.com',
+        executionId: 'exec-email',
+      }),
+    )
+  })
+
+  it('renders completed email capture banner and follower response bubble when status is COMPLETED', async () => {
+    const mockExecution: SimulationExecutionResponse = {
+      id: 'exec-email',
+      conversationId: 'conv-1',
+      status: 'COMPLETED',
+      simulated: true,
+      provider: 'INSTAGRAM',
+      contentId: 'content-1',
+      input: {
+        author: '@joao.teste',
+        text: 'INFO',
+        commentId: null,
+        submittedAt: '2026-08-28T10:00:00.000Z',
+      },
+      matched: true,
+      automation: { id: 'auto-1', revisionId: 'rev-1', version: 1 },
+      emailCapture: {
+        id: 'cap-1',
+        status: 'COMPLETED',
+        errorCode: null,
+        errorMessage: null,
+      },
+      outputs: [
+        {
+          id: 'out-1',
+          key: 'exec-email:0:EMAIL_CAPTURE_REQUEST',
+          position: 0,
+          type: 'EMAIL_CAPTURE_REQUEST',
+          payload: { prompt: 'Qual seu e-mail?' },
+          createdAt: '2026-08-28T10:00:03.000Z',
+        },
+      ],
+      attempts: 1,
+      error: null,
+      stateVersion: 3,
+    }
+
+    const { getByTestId, getByText } = await render(
+      <SimulationFollowerChat execution={mockExecution} />,
+    )
+
+    await expect.element(getByTestId('simulation-email-completed-banner')).toBeInTheDocument()
+    await expect
+      .element(getByText('E-mail capturado com sucesso! Lead registrado no workspace.'))
+      .toBeInTheDocument()
+    await expect
+      .element(getByTestId('simulation-follower-email-response-bubble'))
+      .toBeInTheDocument()
+  })
+
+  it('renders identity conflict alert when emailCapture errorCode is IDENTITY_CONFLICT (DEC-05)', async () => {
+    const mockExecution: SimulationExecutionResponse = {
+      id: 'exec-email',
+      conversationId: 'conv-1',
+      status: 'COMPLETED',
+      simulated: true,
+      provider: 'INSTAGRAM',
+      contentId: 'content-1',
+      input: {
+        author: '@joao.teste',
+        text: 'INFO',
+        commentId: null,
+        submittedAt: '2026-08-28T10:00:00.000Z',
+      },
+      matched: true,
+      automation: { id: 'auto-1', revisionId: 'rev-1', version: 1 },
+      emailCapture: {
+        id: 'cap-1',
+        status: 'PENDING',
+        errorCode: 'IDENTITY_CONFLICT',
+        errorMessage:
+          'O e-mail informado já está associado a outro contato neste espaço de trabalho.',
+      },
+      outputs: [
+        {
+          id: 'out-1',
+          key: 'exec-email:0:EMAIL_CAPTURE_REQUEST',
+          position: 0,
+          type: 'EMAIL_CAPTURE_REQUEST',
+          payload: { prompt: 'Qual seu e-mail?' },
+          createdAt: '2026-08-28T10:00:03.000Z',
+        },
+      ],
+      attempts: 1,
+      error: null,
+      stateVersion: 3,
+    }
+
+    const { getByTestId, getByText } = await render(
+      <SimulationFollowerChat execution={mockExecution} />,
+    )
+
+    await expect.element(getByTestId('simulation-email-conflict-alert')).toBeInTheDocument()
+    await expect.element(getByText('Conflito de identidade')).toBeInTheDocument()
+    await expect
+      .element(
+        getByText('O e-mail informado já está associado a outro contato neste espaço de trabalho.'),
+      )
+      .toBeInTheDocument()
+  })
+
+  it('renders superseded alert when emailCapture status is SUPERSEDED (DEC-06)', async () => {
+    const mockExecution: SimulationExecutionResponse = {
+      id: 'exec-email',
+      conversationId: 'conv-1',
+      status: 'COMPLETED',
+      simulated: true,
+      provider: 'INSTAGRAM',
+      contentId: 'content-1',
+      input: {
+        author: '@joao.teste',
+        text: 'INFO',
+        commentId: null,
+        submittedAt: '2026-08-28T10:00:00.000Z',
+      },
+      matched: true,
+      automation: { id: 'auto-1', revisionId: 'rev-1', version: 1 },
+      emailCapture: {
+        id: 'cap-1',
+        status: 'SUPERSEDED',
+        errorCode: null,
+        errorMessage: null,
+      },
+      outputs: [
+        {
+          id: 'out-1',
+          key: 'exec-email:0:EMAIL_CAPTURE_REQUEST',
+          position: 0,
+          type: 'EMAIL_CAPTURE_REQUEST',
+          payload: { prompt: 'Qual seu e-mail?' },
+          createdAt: '2026-08-28T10:00:03.000Z',
+        },
+      ],
+      attempts: 1,
+      error: null,
+      stateVersion: 3,
+    }
+
+    const { getByTestId, getByText } = await render(
+      <SimulationFollowerChat execution={mockExecution} />,
+    )
+
+    await expect.element(getByTestId('simulation-email-superseded-alert')).toBeInTheDocument()
+    await expect.element(getByText('Solicitação substituída')).toBeInTheDocument()
+  })
+
+  it('renders retry button and triggers onSubmitEmail when emailCaptureError is present', async () => {
+    const onSubmitEmail = vi.fn().mockResolvedValue({})
+    const mockExecution: SimulationExecutionResponse = {
+      id: 'exec-email',
+      conversationId: 'conv-1',
+      status: 'COMPLETED',
+      simulated: true,
+      provider: 'INSTAGRAM',
+      contentId: 'content-1',
+      input: {
+        author: '@joao.teste',
+        text: 'INFO',
+        commentId: null,
+        submittedAt: '2026-08-28T10:00:00.000Z',
+      },
+      matched: true,
+      automation: { id: 'auto-1', revisionId: 'rev-1', version: 1 },
+      emailCapture: {
+        id: 'cap-1',
+        status: 'PENDING',
+        errorCode: null,
+        errorMessage: null,
+      },
+      outputs: [
+        {
+          id: 'out-1',
+          key: 'exec-email:0:EMAIL_CAPTURE_REQUEST',
+          position: 0,
+          type: 'EMAIL_CAPTURE_REQUEST',
+          payload: { prompt: 'Qual seu e-mail?' },
+          createdAt: '2026-08-28T10:00:03.000Z',
+        },
+      ],
+      attempts: 1,
+      error: null,
+      stateVersion: 2,
+    }
+
+    const { getByTestId, getByPlaceholder } = await render(
+      <SimulationFollowerChat
+        execution={mockExecution}
+        onSubmitEmail={onSubmitEmail}
+        emailCaptureError={new Error('Falha temporária de conexão')}
+      />,
+    )
+
+    await expect.element(getByTestId('simulation-email-error-alert')).toBeInTheDocument()
+    const input = getByPlaceholder('seu.email@exemplo.com')
+    await input.fill('joao@teste.com')
+    const submitBtn = getByTestId('simulation-email-submit-btn')
+    await submitBtn.click()
+
+    const retryBtn = getByTestId('simulation-email-retry-btn')
+    await retryBtn.click()
+
+    expect(onSubmitEmail).toHaveBeenCalled()
   })
 
   it('renders ignored alert when status is IGNORED', async () => {

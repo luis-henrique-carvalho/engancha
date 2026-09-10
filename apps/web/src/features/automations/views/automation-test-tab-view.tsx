@@ -23,10 +23,13 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
     isLoading,
     isSubmitting,
     isRetrying,
+    isSubmittingEmail,
     isReconnecting,
     connectionStatus,
     error,
+    emailCaptureError,
     submitComment,
+    submitEmailResponse,
     retry,
     reset,
   } = useSimulationExecution()
@@ -167,9 +170,12 @@ export function AutomationTestTabView({ automationId }: AutomationTestTabViewPro
           isLoading={isLoading}
           isSubmitting={isSubmitting}
           isRetrying={isRetrying}
+          isSubmittingEmail={isSubmittingEmail}
           isReconnecting={isReconnecting}
           connectionStatus={connectionStatus}
           error={error}
+          emailCaptureError={emailCaptureError}
+          onSubmitEmail={submitEmailResponse}
           onRetry={retry}
           onReset={reset}
         />

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { SimulationExecutionResponse } from '@engancha/contracts'
 import {
   AlertCircle,
@@ -16,17 +17,29 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { extractSimulationOutputs } from '../../data/simulation-view-mappers'
 import type { SseConnectionStatus } from '../../hooks/use-simulation-execution'
+
+export interface SubmitEmailCaptureParams {
+  conversationId: string
+  captureId: string
+  email: string
+  idempotencyKey?: string
+  executionId: string
+}
 
 export interface SimulationFollowerChatProps {
   execution: SimulationExecutionResponse | null
   isLoading?: boolean
   isSubmitting?: boolean
   isRetrying?: boolean
+  isSubmittingEmail?: boolean
   isReconnecting?: boolean
   connectionStatus?: SseConnectionStatus
   error?: Error | null
+  emailCaptureError?: Error | null
+  onSubmitEmail?: (params: SubmitEmailCaptureParams) => Promise<unknown> | void
   onRetry?: () => Promise<unknown> | void
   onReset?: () => void
 }
@@ -36,8 +49,11 @@ export function SimulationFollowerChat({
   isLoading = false,
   isSubmitting = false,
   isRetrying = false,
+  isSubmittingEmail = false,
   isReconnecting = false,
   error = null,
+  emailCaptureError = null,
+  onSubmitEmail,
   onRetry,
   onReset,
 }: SimulationFollowerChatProps) {
@@ -81,6 +97,9 @@ export function SimulationFollowerChat({
             execution={execution}
             outputs={outputs}
             isRetrying={isRetrying}
+            isSubmittingEmail={isSubmittingEmail}
+            emailCaptureError={emailCaptureError}
+            onSubmitEmail={onSubmitEmail}
             onRetry={onRetry}
           />
         )}
@@ -178,6 +197,9 @@ interface SimulationFollowerJourneyProps {
   execution: SimulationExecutionResponse
   outputs: ReturnType<typeof extractSimulationOutputs>
   isRetrying: boolean
+  isSubmittingEmail: boolean
+  emailCaptureError: Error | null
+  onSubmitEmail?: (params: SubmitEmailCaptureParams) => Promise<unknown> | void
   onRetry?: () => Promise<unknown> | void
 }
 
@@ -185,6 +207,9 @@ function SimulationFollowerJourney({
   execution,
   outputs,
   isRetrying,
+  isSubmittingEmail,
+  emailCaptureError,
+  onSubmitEmail,
   onRetry,
 }: SimulationFollowerJourneyProps) {
   return (
@@ -258,7 +283,13 @@ function SimulationFollowerJourney({
         </Alert>
       )}
 
-      <SimulationFollowerOutputs outputs={outputs} />
+      <SimulationFollowerOutputs
+        execution={execution}
+        outputs={outputs}
+        isSubmittingEmail={isSubmittingEmail}
+        emailCaptureError={emailCaptureError}
+        onSubmitEmail={onSubmitEmail}
+      />
 
       {(execution.status === 'PENDING' || execution.status === 'PROCESSING') && (
         <div
@@ -270,7 +301,7 @@ function SimulationFollowerJourney({
         </div>
       )}
 
-      {execution.status === 'COMPLETED' && (
+      {execution.status === 'COMPLETED' && !outputs.emailCapture && (
         <div
           className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-emerald-600 dark:text-emerald-400"
           data-testid="simulation-completed-banner"
@@ -283,11 +314,27 @@ function SimulationFollowerJourney({
   )
 }
 
-function SimulationFollowerOutputs({
-  outputs,
-}: {
+interface SimulationFollowerOutputsProps {
+  execution: SimulationExecutionResponse
   outputs: ReturnType<typeof extractSimulationOutputs>
-}) {
+  isSubmittingEmail: boolean
+  emailCaptureError: Error | null
+  onSubmitEmail?: (params: {
+    conversationId: string
+    captureId: string
+    email: string
+    idempotencyKey?: string
+    executionId: string
+  }) => Promise<unknown> | void
+}
+
+function SimulationFollowerOutputs({
+  execution,
+  outputs,
+  isSubmittingEmail,
+  emailCaptureError,
+  onSubmitEmail,
+}: SimulationFollowerOutputsProps) {
   return (
     <>
       {outputs.publicReply && (
@@ -370,36 +417,274 @@ function SimulationFollowerOutputs({
       )}
 
       {outputs.emailCapture && (
-        <div
-          className="rounded-lg border bg-amber-500/5 border-amber-500/20 p-3.5 space-y-2.5"
-          data-testid="simulation-step-email-capture"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="flex size-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                <Mail className="size-3.5" />
-              </div>
-              <span className="text-xs font-semibold text-foreground">
-                Ação final: Captura de e-mail
-              </span>
+        <SimulationFollowerEmailCaptureSection
+          execution={execution}
+          prompt={outputs.emailCapture.prompt}
+          isSubmittingEmail={isSubmittingEmail}
+          emailCaptureError={emailCaptureError}
+          onSubmitEmail={onSubmitEmail}
+        />
+      )}
+    </>
+  )
+}
+
+interface SimulationFollowerEmailCaptureSectionProps {
+  execution: SimulationExecutionResponse
+  prompt: string
+  isSubmittingEmail: boolean
+  emailCaptureError: Error | null
+  onSubmitEmail?: (params: SubmitEmailCaptureParams) => Promise<unknown> | void
+}
+
+function SimulationFollowerEmailCaptureSection({
+  execution,
+  prompt,
+  isSubmittingEmail,
+  emailCaptureError,
+  onSubmitEmail,
+}: SimulationFollowerEmailCaptureSectionProps) {
+  const [emailInput, setEmailInput] = useState('')
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
+  const [localError, setLocalError] = useState<string | null>(null)
+  const [idempotencyKey] = useState(() => crypto.randomUUID())
+
+  const emailCapture = execution.emailCapture
+  const status = emailCapture?.status ?? (execution.status === 'COMPLETED' ? 'PENDING' : null)
+  const isCompleted = status === 'COMPLETED'
+  const isProcessing = status === 'PROCESSING' || isSubmittingEmail
+  const isSuperseded = status === 'SUPERSEDED'
+  const isIdentityConflict = emailCapture?.errorCode === 'IDENTITY_CONFLICT'
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLocalError(null)
+
+    const trimmed = emailInput.trim()
+    if (!trimmed) {
+      setLocalError('Por favor, informe um endereço de e-mail.')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(trimmed)) {
+      setLocalError('Por favor, informe um endereço de e-mail válido.')
+      return
+    }
+
+    if (!execution.conversationId || !emailCapture?.id || !onSubmitEmail) {
+      return
+    }
+
+    setSubmittedEmail(trimmed)
+
+    try {
+      await onSubmitEmail({
+        conversationId: execution.conversationId,
+        captureId: emailCapture.id,
+        email: trimmed,
+        idempotencyKey,
+        executionId: execution.id,
+      })
+    } catch {
+      // O erro é exposto via emailCaptureError ou status da captura
+    }
+  }
+
+  const handleRetrySubmit = async () => {
+    if (!submittedEmail || !execution.conversationId || !emailCapture?.id || !onSubmitEmail) return
+    setLocalError(null)
+    try {
+      await onSubmitEmail({
+        conversationId: execution.conversationId,
+        captureId: emailCapture.id,
+        email: submittedEmail,
+        idempotencyKey,
+        executionId: execution.id,
+      })
+    } catch {
+      // capturado pelo hook
+    }
+  }
+
+  return (
+    <div
+      className="space-y-3"
+      data-testid="simulation-step-email-capture"
+    >
+      <div className="rounded-lg border bg-amber-500/5 border-amber-500/20 p-3.5 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex size-6 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400">
+              <Mail className="size-3.5" />
             </div>
-            <Badge
-              variant="secondary"
-              className="text-[10px] bg-amber-500/10 text-amber-700 dark:text-amber-300"
-            >
-              Solicitação de e-mail
-            </Badge>
+            <span className="text-xs font-semibold text-foreground">
+              Ação final: Captura de e-mail
+            </span>
           </div>
-          <p className="text-xs text-foreground">{outputs.emailCapture.prompt}</p>
-          <div
-            className="rounded border border-dashed border-amber-500/40 bg-amber-500/5 p-2 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-1.5"
-            data-testid="simulation-email-notice"
+          <Badge
+            variant="secondary"
+            className="text-[10px] bg-amber-500/10 text-amber-700 dark:text-amber-300"
           >
-            <Info className="size-3.5 shrink-0" />
-            <span>Simulação: a jornada encerra na solicitação. Nenhum dado real foi coletado.</span>
+            Solicitação de e-mail
+          </Badge>
+        </div>
+        <p className="text-xs text-foreground">{prompt}</p>
+        <div
+          className="rounded border border-dashed border-amber-500/40 bg-amber-500/5 p-2 text-[11px] text-amber-800 dark:text-amber-300 flex items-center gap-1.5"
+          data-testid="simulation-email-notice"
+        >
+          <Info className="size-3.5 shrink-0" />
+          <span>
+            Simulação interativa: responda com um e-mail para testar a captura e a criação do lead.
+          </span>
+        </div>
+      </div>
+
+      {/* Response Bubble when Email has been submitted */}
+      {(submittedEmail || isCompleted) && (
+        <div
+          className="flex justify-end"
+          data-testid="simulation-follower-email-response-bubble"
+        >
+          <div className="max-w-[85%] rounded-lg bg-primary text-primary-foreground p-3 space-y-1 text-xs">
+            <div className="flex items-center justify-between gap-2 text-[10px] opacity-80">
+              <span>{execution.input.author}</span>
+              <span>Resposta de e-mail</span>
+            </div>
+            <p className="font-mono">{submittedEmail || 'E-mail enviado'}</p>
           </div>
         </div>
       )}
-    </>
+
+      {/* Processing State */}
+      {isProcessing && !isCompleted && (
+        <div
+          className="flex items-center gap-2 rounded-lg border border-dashed p-3 text-xs text-muted-foreground bg-muted/20"
+          data-testid="simulation-email-processing-step"
+        >
+          <RefreshCw className="size-3.5 animate-spin text-primary" />
+          <span>Processando resposta de e-mail e registrando contato...</span>
+        </div>
+      )}
+
+      {/* Identity Conflict Alert (DEC-05) */}
+      {isIdentityConflict && (
+        <Alert
+          variant="destructive"
+          className="space-y-1.5"
+          data-testid="simulation-email-conflict-alert"
+        >
+          <AlertCircle className="size-4" />
+          <AlertTitle className="text-xs font-semibold">Conflito de identidade</AlertTitle>
+          <AlertDescription className="text-xs">
+            {emailCapture.errorMessage ||
+              'O e-mail informado já está associado a outro contato neste espaço de trabalho. Por favor, informe outro endereço.'}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Superseded Alert (DEC-06) */}
+      {isSuperseded && (
+        <Alert
+          className="border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200"
+          data-testid="simulation-email-superseded-alert"
+        >
+          <Info className="size-4 text-amber-600 dark:text-amber-400" />
+          <AlertTitle className="text-xs font-semibold">Solicitação substituída</AlertTitle>
+          <AlertDescription className="text-xs">
+            Esta solicitação de e-mail foi substituída por uma nova interação nesta conversa.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Transient/Network Submission Error */}
+      {emailCaptureError && !isIdentityConflict && (
+        <Alert
+          variant="destructive"
+          className="space-y-2"
+          data-testid="simulation-email-error-alert"
+        >
+          <div className="flex items-center gap-2">
+            <AlertCircle className="size-4" />
+            <AlertTitle className="text-xs font-semibold">Falha ao enviar resposta</AlertTitle>
+          </div>
+          <AlertDescription className="text-xs">{emailCaptureError.message}</AlertDescription>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => void handleRetrySubmit()}
+            disabled={isSubmittingEmail}
+            className="h-7 gap-1.5 text-xs border-destructive/30 hover:bg-destructive/10"
+            data-testid="simulation-email-retry-btn"
+          >
+            <RefreshCw className={isSubmittingEmail ? 'size-3 animate-spin' : 'size-3'} />
+            Tentar enviar novamente
+          </Button>
+        </Alert>
+      )}
+
+      {/* Completed Success State (DEC-08) */}
+      {isCompleted && (
+        <div
+          className="flex items-center justify-center gap-1.5 py-2 text-xs font-medium text-emerald-600 dark:text-emerald-400 rounded-lg bg-emerald-500/10 border border-emerald-500/20"
+          data-testid="simulation-email-completed-banner"
+        >
+          <CheckCircle2 className="size-4" />
+          <span>E-mail capturado com sucesso! Lead registrado no workspace.</span>
+        </div>
+      )}
+
+      {/* Interactive Email Submission Form */}
+      {execution.status === 'COMPLETED' &&
+        !isCompleted &&
+        !isSuperseded &&
+        execution.conversationId &&
+        emailCapture?.id && (
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-2 pt-1"
+            data-testid="simulation-email-capture-form"
+          >
+            {localError && (
+              <p
+                className="text-[11px] text-destructive font-medium"
+                data-testid="simulation-email-validation-error"
+              >
+                {localError}
+              </p>
+            )}
+            <div className="flex items-center gap-2">
+              <Input
+                type="email"
+                placeholder="seu.email@exemplo.com"
+                value={emailInput}
+                onChange={(e) => {
+                  setEmailInput(e.target.value)
+                  if (localError) setLocalError(null)
+                }}
+                disabled={isProcessing}
+                aria-label="Seu endereço de e-mail"
+                className="text-xs h-8"
+                data-testid="simulation-email-input"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                disabled={isProcessing || !emailInput.trim()}
+                className="h-8 px-3 text-xs gap-1.5 shrink-0"
+                data-testid="simulation-email-submit-btn"
+              >
+                {isProcessing ? (
+                  <RefreshCw className="size-3 animate-spin" />
+                ) : (
+                  <Send className="size-3" />
+                )}
+                {isProcessing ? 'Enviando...' : 'Enviar'}
+              </Button>
+            </div>
+          </form>
+        )}
+    </div>
   )
 }

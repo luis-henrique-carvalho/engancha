@@ -9,6 +9,7 @@ import { InfrastructureModule } from './infrastructure/infrastructure.module'
 import { VerificationModule } from './verification/verification.module'
 import { EmailModule } from './email/email.module'
 import { AutomationExecutionModule } from './automation-execution/automation-execution.module'
+import { EmailCaptureModule } from './email-capture/email-capture.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AutomationExecutionModule } from './automation-execution/automation-exe
     VerificationModule,
     EmailModule,
     AutomationExecutionModule,
+    EmailCaptureModule,
   ],
 })
 export class AppModule {}

@@ -190,6 +190,60 @@ function useSimulationRetry(
   return { isRetrying, retry }
 }
 
+function useSimulationEmailCapture(
+  loadExecution: (id: string) => Promise<void>,
+  setError: React.Dispatch<React.SetStateAction<Error | null>>,
+) {
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState<boolean>(false)
+  const [emailCaptureError, setEmailCaptureError] = useState<Error | null>(null)
+
+  const submitEmailResponse = useCallback(
+    async (params: {
+      conversationId: string
+      captureId: string
+      email: string
+      idempotencyKey?: string
+      executionId: string
+    }) => {
+      setIsSubmittingEmail(true)
+      setEmailCaptureError(null)
+      setError(null)
+      const key = params.idempotencyKey || crypto.randomUUID()
+      try {
+        const res = await SimulationsApi.submitEmailCaptureResponse(
+          params.conversationId,
+          params.captureId,
+          {
+            email: params.email,
+            idempotencyKey: key,
+          },
+        )
+        await loadExecution(params.executionId)
+        return res
+      } catch (err) {
+        const parsedErr =
+          err instanceof Error ? err : new Error('Não foi possível enviar a resposta de e-mail')
+        setEmailCaptureError(parsedErr)
+        throw parsedErr
+      } finally {
+        setIsSubmittingEmail(false)
+      }
+    },
+    [loadExecution, setError],
+  )
+
+  const clearEmailCaptureError = useCallback(() => {
+    setEmailCaptureError(null)
+  }, [])
+
+  return {
+    isSubmittingEmail,
+    emailCaptureError,
+    submitEmailResponse,
+    clearEmailCaptureError,
+  }
+}
+
 function useSimulationExecutionActions({
   executionId,
   setExecutionId,
@@ -222,22 +276,29 @@ function useSimulationExecutionActions({
 
   const { isSubmitting, submitComment } = useSimulationCommentSubmit(setExecutionId, setError)
   const { isRetrying, retry } = useSimulationRetry(executionId, loadExecution, setError)
+  const { isSubmittingEmail, emailCaptureError, submitEmailResponse, clearEmailCaptureError } =
+    useSimulationEmailCapture(loadExecution, setError)
 
   const reset = useCallback(() => {
     resetStream()
     setExecutionId(null)
     setExecution(null)
     setError(null)
-  }, [resetStream, setExecution, setExecutionId])
+    clearEmailCaptureError()
+  }, [resetStream, setExecution, setExecutionId, clearEmailCaptureError])
 
   return {
     isLoading,
     isSubmitting,
     isRetrying,
+    isSubmittingEmail,
     error,
+    emailCaptureError,
     loadExecution,
     submitComment,
     retry,
+    submitEmailResponse,
+    clearEmailCaptureError,
     reset,
   }
 }
@@ -270,15 +331,27 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
     [markClosed],
   )
 
-  const { isLoading, isSubmitting, isRetrying, error, loadExecution, submitComment, retry, reset } =
-    useSimulationExecutionActions({
-      executionId,
-      setExecutionId,
-      setExecution,
-      updateExecutionIfNewer,
-      startStream,
-      resetStream,
-    })
+  const {
+    isLoading,
+    isSubmitting,
+    isRetrying,
+    isSubmittingEmail,
+    error,
+    emailCaptureError,
+    loadExecution,
+    submitComment,
+    retry,
+    submitEmailResponse,
+    clearEmailCaptureError,
+    reset,
+  } = useSimulationExecutionActions({
+    executionId,
+    setExecutionId,
+    setExecution,
+    updateExecutionIfNewer,
+    startStream,
+    resetStream,
+  })
 
   useEffect(() => {
     if (executionId) {
@@ -298,10 +371,14 @@ export function useSimulationExecution(options?: UseSimulationExecutionOptions) 
     isLoading,
     isSubmitting,
     isRetrying,
+    isSubmittingEmail,
     isReconnecting,
     connectionStatus,
     error,
+    emailCaptureError,
     submitComment,
+    submitEmailResponse,
+    clearEmailCaptureError,
     retry,
     reset,
     setExecutionId,

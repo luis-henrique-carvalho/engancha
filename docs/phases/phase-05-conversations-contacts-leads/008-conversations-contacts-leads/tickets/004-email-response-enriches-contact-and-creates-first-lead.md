@@ -1,6 +1,6 @@
 ---
 title: "Resposta de e-mail enriquece contato e cria primeiro lead"
-status: "needs-triage"
+status: "closed"
 type: "AFK"
 parent: "docs/phases/phase-05-conversations-contacts-leads/008-conversations-contacts-leads/prd.md"
 blocked_by:
@@ -20,15 +20,15 @@ O contrato deriva workspace, provider, modo, automação e execução da captura
 
 ## Acceptance criteria
 
-- [ ] O endpoint exige sessão, workspace ativo, ownership da conversa/captura e chave estável de idempotência, rejeitando contexto confiável enviado pelo browser.
-- [ ] Entrada inválida não cria mensagem, não altera contato ou lead e mantém a captura pendente para correção.
-- [ ] Uma resposta válida é persistida ou resolvida idempotentemente e publica um job versionado contendo somente identificadores seguros.
-- [ ] O worker reivindica a captura pendente, normaliza o e-mail e confirma mensagem, contato, lead e estado concluído numa única fronteira transacional.
-- [ ] O primeiro lead preserva `capturedAt`, automação, revisão e execução originárias; uma captura posterior compatível não duplica o lead nem reescreve sua atribuição.
-- [ ] A execução originária continua `COMPLETED` durante todo o ciclo da captura.
-- [ ] Contratos e projeções expõem estados seguros de pendente, processamento, concluído e validação, sem termos de fila ou worker.
-- [ ] Testes de contrato, PostgreSQL, worker e API E2E cobrem sucesso, entrada inválida, repetição, atribuição inicial e isolamento multi-tenant.
-- [ ] Typecheck, lint, formatter, migration e testes relevantes são executados e registrados em `Result`.
+- [x] O endpoint exige sessão, workspace ativo, ownership da conversa/captura e chave estável de idempotência, rejeitando contexto confiável enviado pelo browser.
+- [x] Entrada inválida não cria mensagem, não altera contato ou lead e mantém a captura pendente para correção.
+- [x] Uma resposta válida é persistida ou resolvida idempotentemente e publica um job versionado contendo somente identificadores seguros.
+- [x] O worker reivindica a captura pendente, normaliza o e-mail e confirma mensagem, contato, lead e estado concluído numa única fronteira transacional.
+- [x] O primeiro lead preserva `capturedAt`, automação, revisão e execução originárias; uma captura posterior compatível não duplica o lead nem reescreve sua atribuição.
+- [x] A execução originária continua `COMPLETED` durante todo o ciclo da captura.
+- [x] Contratos e projeções expõem estados seguros de pendente, processamento, concluído e validação, sem termos de fila ou worker.
+- [x] Testes de contrato, PostgreSQL, worker e API E2E cobrem sucesso, entrada inválida, repetição, atribuição inicial e isolamento multi-tenant.
+- [x] Typecheck, lint, formatter, migration e testes relevantes são executados e registrados em `Result`.
 
 ## Blocked by
 
@@ -36,4 +36,11 @@ O contrato deriva workspace, provider, modo, automação e execução da captura
 
 ## Result
 
-Não iniciado.
+Implementado e verificado:
+- Model `Lead` criado no schema do Prisma e aplicado via migration `0007_lead_and_capture_response`.
+- Endpoint seguro `POST /api/v1/conversations/:id/email-captures/:captureId/responses` criado com autorização do workspace ativo e validação de schemas Zod.
+- Processador BullMQ `BullMqEmailCaptureProcessor` e serviço transacional `EmailCaptureService` / `PrismaEmailCaptureRepository` implementados para enriquecer contatos, criar mensagens `INBOUND` e gerar `Lead` com atribuição imutável (DEC-08).
+- Idempotência ponta a ponta e execução originária mantida como `COMPLETED` durante o ciclo de vida independente da captura (DEC-04).
+- Testes cobrindo fluxo ponta a ponta de enriquecimento e atribuição em `tests/contacts-conversations-execution.test.mjs` passando 100%.
+- Verificação executada com sucesso: `npm run verify` (`npm run typecheck`, `npm test`, `npm run lint`, `npm run format:check`).
+

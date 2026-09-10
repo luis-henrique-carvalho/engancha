@@ -25,6 +25,7 @@ export const QUEUE_NAMES = {
   verification: 'verification',
   emailDelivery: 'email-delivery',
   automationExecution: 'automation-execution',
+  emailCapture: 'email-capture',
   messageDelivery: 'message-delivery',
   analytics: 'analytics',
 } as const
@@ -163,6 +164,14 @@ export function getChannelCapabilities(provider: string, mode: string): ChannelC
   }
 }
 
+export const emailCaptureRequestStatusSchema = z.enum([
+  'PENDING',
+  'PROCESSING',
+  'COMPLETED',
+  'SUPERSEDED',
+])
+export type EmailCaptureRequestStatus = z.infer<typeof emailCaptureRequestStatusSchema>
+
 const executionOutputSchema = z
   .object({
     id: z.string().min(1),
@@ -212,6 +221,16 @@ export const simulationExecutionResponseSchema = z
       .nullable(),
     contactId: z.string().min(1).nullable().optional(),
     conversationId: z.string().min(1).nullable().optional(),
+    emailCapture: z
+      .object({
+        id: z.string().min(1),
+        status: emailCaptureRequestStatusSchema,
+        errorCode: z.string().nullable().optional(),
+        errorMessage: z.string().nullable().optional(),
+      })
+      .strict()
+      .nullable()
+      .optional(),
     outputs: z.array(executionOutputSchema),
     attempts: z.number().int().min(0),
     error: z
@@ -243,14 +262,6 @@ export type MessageType = z.infer<typeof messageTypeSchema>
 
 export const messageStatusSchema = z.enum(['PENDING', 'SENT', 'FAILED', 'RECEIVED'])
 export type MessageStatus = z.infer<typeof messageStatusSchema>
-
-export const emailCaptureRequestStatusSchema = z.enum([
-  'PENDING',
-  'PROCESSING',
-  'COMPLETED',
-  'SUPERSEDED',
-])
-export type EmailCaptureRequestStatus = z.infer<typeof emailCaptureRequestStatusSchema>
 
 export function normalizeContactUsername(author: string): string {
   return author.trim().replace(/^@+/, '')
@@ -285,6 +296,63 @@ export function deterministicOutputMessageExternalId(
 export function deterministicEmailCaptureRequestId(executionId: string): string {
   return `execution:${executionId}:email-capture`
 }
+
+export function normalizeEmail(email: string): string {
+  const trimmed = email.trim()
+  const atIndex = trimmed.lastIndexOf('@')
+  if (atIndex === -1) return trimmed.toLowerCase()
+  const localPart = trimmed.slice(0, atIndex)
+  const domainPart = trimmed.slice(atIndex + 1).toLowerCase()
+  return `${localPart}@${domainPart}`
+}
+
+export const EMAIL_CAPTURE_JOB = 'email.capture.response.v1' as const
+
+export const emailCaptureResponseSubmissionSchema = z
+  .object({
+    email: z.string().trim().email().max(320),
+    idempotencyKey: correlationIdSchema,
+  })
+  .strict()
+export type EmailCaptureResponseSubmission = z.infer<typeof emailCaptureResponseSubmissionSchema>
+
+export const emailCaptureResponseResultSchema = z
+  .object({
+    id: z.string().min(1),
+    conversationId: z.string().min(1),
+    contactId: z.string().min(1),
+    status: emailCaptureRequestStatusSchema,
+    messageId: z.string().min(1),
+    responseMessageId: z.string().nullable().optional(),
+    leadId: z.string().nullable().optional(),
+    errorCode: z.string().nullable().optional(),
+    errorMessage: z.string().nullable().optional(),
+    createdAt: z.string().datetime({ offset: true }),
+    claimedAt: z.string().datetime({ offset: true }).nullable().optional(),
+    completedAt: z.string().datetime({ offset: true }).nullable().optional(),
+  })
+  .strict()
+export type EmailCaptureResponseResult = z.infer<typeof emailCaptureResponseResultSchema>
+
+export const emailCaptureJobSchema = z
+  .object({
+    type: z.literal(EMAIL_CAPTURE_JOB).default(EMAIL_CAPTURE_JOB),
+    version: z.literal(contractsVersion).default(contractsVersion),
+    correlationId: correlationIdSchema,
+    captureRequestId: z.string().min(1).max(255),
+    organizationId: z.string().min(1).max(255),
+    submittedEmail: z.string().trim().email().max(320),
+    idempotencyKey: correlationIdSchema,
+  })
+  .strict()
+export type EmailCaptureJob = z.infer<typeof emailCaptureJobSchema>
+
+export const emailCaptureJobOptions = {
+  attempts: 4,
+  backoff: { type: 'exponential', delay: 2_000 },
+  removeOnComplete: { age: 3_600, count: 100 },
+  removeOnFail: { age: 86_400, count: 100 },
+} as const
 
 const normalizeSimulationQueryArray = <T extends z.ZodTypeAny>(schema: T) =>
   z
