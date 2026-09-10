@@ -338,44 +338,46 @@ Prisma, schema e migrations permanecem deliberadamente adiados até existir pers
 
 ## Fase 5 — Conversas, contatos e leads
 
-**Status:** ⏳ NÃO INICIADA  
+**Status:** ✅ CONCLUÍDA  
 **Épico:** EPIC-05  
 **Objetivo:** transformar execuções em histórico, contatos e leads úteis.
 
 ### Persistência
 
-- [ ] Modelar `Conversation`.
-- [ ] Modelar `Message`.
-- [ ] Modelar `Contact`.
-- [ ] Modelar `Lead`.
-- [ ] Modelar `Tag` e associação com contato.
-- [ ] Adicionar `provider`, `mode`, IDs externos e `channelConnectionId` ao modelo.
-- [ ] Persistir provider e modo em conversas, mensagens, contatos, leads e eventos.
-- [ ] Criar migrations e índices.
+- [x] Modelar `Conversation`.
+- [x] Modelar `Message`.
+- [x] Modelar `Contact`.
+- [x] Modelar `Lead`.
+- [x] Modelar `Tag` e associação com contato.
+- [x] Adicionar `provider`, `mode`, IDs externos e `channelConnectionId` ao modelo.
+- [x] Persistir provider e modo em conversas, mensagens, contatos, leads e eventos.
+- [x] Criar migrations e índices.
 
 ### Worker
 
-- [ ] Criar resposta pública simulada.
-- [ ] Criar DM simulada.
-- [ ] Criar ação de entrega de link.
-- [ ] Criar ação de captura de e-mail.
-- [ ] Normalizar e-mail.
-- [ ] Criar/atualizar contato de forma idempotente.
-- [ ] Criar lead associado à execução.
-- [ ] Aplicar tag sem duplicidade.
+- [x] Criar resposta pública simulada.
+- [x] Criar DM simulada.
+- [x] Criar ação de entrega de link.
+- [x] Criar ação de captura de e-mail.
+- [x] Normalizar e-mail.
+- [x] Criar/atualizar contato de forma idempotente.
+- [x] Criar lead associado à execução.
+- [x] Aplicar tag sem duplicidade.
 
 ### Interface
 
-- [ ] Lista de conversas.
-- [ ] Detalhe de conversa.
-- [ ] Lista de contatos.
-- [ ] Lista de leads.
-- [ ] Visualização de tags.
-- [ ] Filtros básicos.
+- [x] Lista de conversas.
+- [x] Detalhe de conversa.
+- [x] Lista de contatos.
+- [x] Lista de leads.
+- [x] Visualização de tags.
+- [x] Filtros básicos.
 
-**Critério de conclusão:** um comentário correspondente gera conversa, resposta, DM e lead quando o fluxo de captura é escolhido.
+**Critério de conclusão:** ✅ um comentário correspondente gera conversa, resposta, DM e lead quando o fluxo de captura é escolhido.
 
-**Bloqueios:** depende da conclusão da Fase 4.
+**Bloqueios:** nenhum. A PRD `008-conversations-contacts-leads` e os tickets `001`–`011` foram concluídos em 2026-09-10.
+
+**Validação de encerramento (2026-09-10):** `npm run verify` aprovado integralmente (typecheck sem erros em todos os workspaces; 42 arquivos e 237 testes passando no Vitest Browser e Node.js test runner contra PostgreSQL e Redis locais; ESLint 0 erros; Prettier 100% formatado).
 
 ---
 

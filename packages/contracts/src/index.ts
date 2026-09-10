@@ -1111,3 +1111,69 @@ export const contactListResponseSchema = z
   })
   .strict()
 export type ContactListResponse = z.infer<typeof contactListResponseSchema>
+
+export const cursorPaginationMetaSchema = z
+  .object({
+    limit: z.number().int().min(1),
+    nextCursor: z.string().nullable(),
+    hasNextPage: z.boolean(),
+    total: z.number().int().min(0).optional(),
+  })
+  .strict()
+export type CursorPaginationMeta = z.infer<typeof cursorPaginationMetaSchema>
+
+export const leadSummaryContactSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().nullable().optional(),
+    username: z.string().nullable().optional(),
+    externalUserId: z.string().nullable().optional(),
+    email: z.string().nullable().optional(),
+  })
+  .strict()
+export type LeadSummaryContact = z.infer<typeof leadSummaryContactSchema>
+
+export const leadSummaryAutomationSchema = z
+  .object({
+    id: z.string().min(1),
+    name: z.string().nullable().optional(),
+  })
+  .strict()
+export type LeadSummaryAutomation = z.infer<typeof leadSummaryAutomationSchema>
+
+export const leadSummarySchema = z
+  .object({
+    id: z.string().min(1),
+    capturedAt: responseDateTimeSchema,
+    provider: contentProviderSchema,
+    mode: contentModeSchema,
+    contact: leadSummaryContactSchema,
+    automation: leadSummaryAutomationSchema.nullable().optional(),
+    originExecutionId: z.string().nullable().optional(),
+    tags: z.array(conversationSummaryTagSchema),
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type LeadSummary = z.infer<typeof leadSummarySchema>
+
+export const leadListQuerySchema = z
+  .object({
+    limit: z.coerce.number().int().min(1).max(100).default(20),
+    cursor: z.string().trim().min(1).optional(),
+    query: z.string().trim().max(120).optional(),
+    provider: normalizeQueryArray(contentProviderSchema),
+    mode: normalizeQueryArray(contentModeSchema),
+    automationId: z.string().trim().min(1).max(255).optional(),
+    tagId: z.string().trim().min(1).max(255).optional(),
+  })
+  .strict()
+export type LeadListQuery = z.infer<typeof leadListQuerySchema>
+
+export const leadListResponseSchema = z
+  .object({
+    items: z.array(leadSummarySchema),
+    meta: cursorPaginationMetaSchema,
+  })
+  .strict()
+export type LeadListResponse = z.infer<typeof leadListResponseSchema>

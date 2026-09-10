@@ -13,6 +13,9 @@ import {
   type EmailCaptureDetail,
   type EmailCaptureResponseResult,
   type EmailCaptureResponseSubmission,
+  type LeadListQuery,
+  type LeadListResponse,
+  type LeadSummary,
 } from '@engancha/contracts'
 import { PrismaService } from '../../../platform/database/prisma.service'
 import { AuthorizationContext } from '../../../platform/security/authorization-context'
@@ -145,6 +148,55 @@ export class ConversationsService {
         limit,
         total,
         totalPages: Math.ceil(total / limit),
+      },
+    }
+  }
+
+  async listLeads(
+    authContext: AuthorizationContext,
+    query: LeadListQuery,
+  ): Promise<LeadListResponse> {
+    const limit = Math.max(1, Math.min(100, query.limit ?? 20))
+    const { where, countWhere } = this.buildLeadWhere(authContext.organizationId, query)
+
+    const [itemsWithExtra, total] = await Promise.all([
+      this.database.client.lead.findMany({
+        where,
+        take: limit + 1,
+        orderBy: [{ capturedAt: 'desc' }, { id: 'desc' }],
+        include: {
+          contact: {
+            include: {
+              tags: { include: { tag: true } },
+            },
+          },
+          automation: {
+            include: {
+              currentPublishedRevision: true,
+            },
+          },
+        },
+      }),
+      this.database.client.lead.count({ where: countWhere }),
+    ])
+
+    const hasNextPage = itemsWithExtra.length > limit
+    const leads = hasNextPage ? itemsWithExtra.slice(0, limit) : itemsWithExtra
+    const lastLead = leads[leads.length - 1]
+    const nextCursor =
+      hasNextPage && lastLead
+        ? Buffer.from(
+            JSON.stringify({ capturedAt: lastLead.capturedAt.toISOString(), id: lastLead.id }),
+          ).toString('base64url')
+        : null
+
+    return {
+      items: leads.map((lead) => this.mapLeadSummary(lead)),
+      meta: {
+        limit,
+        nextCursor,
+        hasNextPage,
+        total,
       },
     }
   }
@@ -458,5 +510,125 @@ export class ConversationsService {
     }
 
     return null
+  }
+
+  private decodeLeadCursor(cursor?: string): { capturedAt: Date; id: string } | null {
+    if (!cursor) return null
+    try {
+      const raw = Buffer.from(cursor, 'base64url').toString('utf8')
+      const parsed = JSON.parse(raw)
+      if (parsed && typeof parsed.capturedAt === 'string' && typeof parsed.id === 'string') {
+        const d = new Date(parsed.capturedAt)
+        if (!isNaN(d.getTime())) {
+          return { capturedAt: d, id: parsed.id }
+        }
+      }
+      return null
+    } catch {
+      return null
+    }
+  }
+
+  private buildLeadWhere(
+    organizationId: string,
+    query: LeadListQuery,
+  ): { where: Record<string, unknown>; countWhere: Record<string, unknown> } {
+    const conditions: Record<string, unknown>[] = [{ organizationId }]
+
+    if (query.provider?.length) {
+      conditions.push({ provider: { in: query.provider } })
+    }
+    if (query.mode?.length) {
+      conditions.push({ mode: { in: query.mode } })
+    }
+    if (query.automationId) {
+      conditions.push({
+        automation: {
+          id: query.automationId,
+          organizationId,
+        },
+      })
+    }
+    if (query.tagId) {
+      conditions.push({
+        contact: {
+          tags: {
+            some: {
+              tag: {
+                id: query.tagId,
+                organizationId,
+              },
+            },
+          },
+        },
+      })
+    }
+    if (query.query?.trim()) {
+      const s = query.query.trim()
+      conditions.push({
+        contact: {
+          OR: [
+            { username: { contains: s, mode: 'insensitive' } },
+            { name: { contains: s, mode: 'insensitive' } },
+            { emailNormalized: { contains: s.toLowerCase() } },
+          ],
+        },
+      })
+    }
+
+    const countWhere = { AND: [...conditions] }
+
+    const cursorDecoded = this.decodeLeadCursor(query.cursor)
+    if (cursorDecoded) {
+      conditions.push({
+        OR: [
+          { capturedAt: { lt: cursorDecoded.capturedAt } },
+          {
+            capturedAt: cursorDecoded.capturedAt,
+            id: { lt: cursorDecoded.id },
+          },
+        ],
+      })
+    }
+
+    const where = { AND: conditions }
+
+    return { where, countWhere }
+  }
+
+  private mapLeadSummary(lead: any): LeadSummary {
+    const automationName =
+      lead.automation?.currentPublishedRevision?.name ??
+      lead.automation?.id ??
+      lead.automationId ??
+      null
+
+    return {
+      id: lead.id,
+      capturedAt: lead.capturedAt.toISOString(),
+      provider: lead.provider,
+      mode: lead.mode,
+      contact: {
+        id: lead.contact.id,
+        name: lead.contact.name,
+        username: lead.contact.username,
+        externalUserId: lead.contact.externalUserId,
+        email: lead.contact.email,
+      },
+      automation: lead.automationId
+        ? {
+            id: lead.automationId,
+            name: automationName,
+          }
+        : null,
+      originExecutionId: lead.executionId,
+      tags: (lead.contact.tags ?? []).map((ct: any) => ({
+        id: ct.tag.id,
+        name: ct.tag.name,
+        normalizedName: ct.tag.normalizedName,
+      })),
+      createdAt: lead.createdAt.toISOString(),
+      updatedAt: lead.updatedAt.toISOString(),
+    }
   }
 }

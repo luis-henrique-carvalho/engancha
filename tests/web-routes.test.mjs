@@ -31,6 +31,7 @@ test('web route tree exposes only Engancha routes', async () => {
     "'/conversations'",
     "'/conversations/$conversationId'",
     "'/contacts'",
+    "'/leads'",
   ]) {
     assert.match(source, new RegExp(route.replaceAll('/', '\\/').replaceAll('$', '\\$')))
   }
@@ -47,6 +48,7 @@ test('web route tree exposes only Engancha routes', async () => {
     'AuthenticatedAutomationsIndexRoute',
     'AuthenticatedAutomationsAutomationIdRouteRoute',
     'AuthenticatedContactsRoute',
+    'AuthenticatedLeadsRoute',
     'AuthenticatedConversationsIndexRoute',
     'AuthenticatedConversationsConversationIdRoute',
   ]) {
@@ -63,6 +65,7 @@ test('sidebar data exposes workspace people navigation without reference-only ro
   assert.match(source, /url: '\/automations'/)
   assert.match(source, /url: '\/conversations'/)
   assert.match(source, /url: '\/contacts'/)
+  assert.match(source, /url: '\/leads'/)
   assert.match(source, /url: '\/users'/)
   assert.doesNotMatch(source, /tasks|apps|settings|chats|clerk|_authenticated/)
 })

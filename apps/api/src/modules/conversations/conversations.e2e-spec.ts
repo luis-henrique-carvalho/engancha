@@ -301,3 +301,174 @@ test('GET /api/v1/contacts lista contatos e filtra por leadState', async () => {
   assert.equal(resNotLead.body.items[0].username, 'no_lead')
   assert.equal(resNotLead.body.items[0].isLead, false)
 })
+
+test('GET /api/v1/leads lista leads com cursor opaco, filtros e isolamento multi-tenant', async () => {
+  const ws1 = await createWorkspaceScenario()
+  const ws2 = await createWorkspaceScenario()
+
+  // Automation e Tag no ws1
+  const tag1 = await prisma.client.tag.create({
+    data: {
+      organizationId: ws1.organizationId,
+      name: 'E-book VIP',
+      normalizedName: 'e-book vip',
+    },
+  })
+
+  const automation1 = await prisma.client.automation.create({
+    data: {
+      organizationId: ws1.organizationId,
+      createdByUserId: ws1.userId,
+      status: 'ACTIVE',
+    },
+  })
+
+  const rev1 = await prisma.client.automationRevision.create({
+    data: {
+      automationId: automation1.id,
+      version: 1,
+      name: 'Automação de Captura 1',
+      status: 'PUBLISHED',
+    },
+  })
+
+  await prisma.client.automation.update({
+    where: { id: automation1.id },
+    data: { currentPublishedRevisionId: rev1.id },
+  })
+
+  // Contato 1 com lead e tag
+  const contact1 = await prisma.client.contact.create({
+    data: {
+      organizationId: ws1.organizationId,
+      username: 'lead_alpha',
+      name: 'Alpha Lead',
+      email: 'alpha@test.com',
+      emailNormalized: 'alpha@test.com',
+      lastInteractionAt: new Date('2026-09-10T12:00:00Z'),
+    },
+  })
+
+  await prisma.client.contactTag.create({
+    data: {
+      contactId: contact1.id,
+      tagId: tag1.id,
+    },
+  })
+
+  const lead1 = await prisma.client.lead.create({
+    data: {
+      organizationId: ws1.organizationId,
+      contactId: contact1.id,
+      automationId: automation1.id,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      capturedAt: new Date('2026-09-10T12:30:00Z'),
+    },
+  })
+
+  // Contato 2 com lead mais antigo
+  const contact2 = await prisma.client.contact.create({
+    data: {
+      organizationId: ws1.organizationId,
+      username: 'lead_beta',
+      name: 'Beta Lead',
+      email: 'beta@test.com',
+      emailNormalized: 'beta@test.com',
+      lastInteractionAt: new Date('2026-09-10T11:00:00Z'),
+    },
+  })
+
+  const lead2 = await prisma.client.lead.create({
+    data: {
+      organizationId: ws1.organizationId,
+      contactId: contact2.id,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      capturedAt: new Date('2026-09-10T11:00:00Z'),
+    },
+  })
+
+  // Contato e Lead no ws2 (isolamento)
+  const contactWs2 = await prisma.client.contact.create({
+    data: {
+      organizationId: ws2.organizationId,
+      username: 'foreign_lead',
+      name: 'Foreign Lead',
+      email: 'foreign@test.com',
+      emailNormalized: 'foreign@test.com',
+    },
+  })
+
+  await prisma.client.lead.create({
+    data: {
+      organizationId: ws2.organizationId,
+      contactId: contactWs2.id,
+      capturedAt: new Date('2026-09-10T12:45:00Z'),
+    },
+  })
+
+  const api = request(app.getHttpServer())
+
+  // 1. Listagem completa no ws1: ordenado por capturedAt desc (lead1 depois lead2), 2 itens
+  const resWs1 = await api.get('/api/v1/leads').set(ws1.headers)
+  expectStatus(resWs1, 200)
+  assert.equal(resWs1.body.items.length, 2)
+  assert.equal(resWs1.body.items[0].id, lead1.id)
+  assert.equal(resWs1.body.items[0].contact.username, 'lead_alpha')
+  assert.equal(resWs1.body.items[0].contact.email, 'alpha@test.com')
+  assert.equal(resWs1.body.items[0].automation?.name, 'Automação de Captura 1')
+  assert.equal(resWs1.body.items[0].tags.length, 1)
+  assert.equal(resWs1.body.items[0].tags[0].name, 'E-book VIP')
+  assert.equal(resWs1.body.items[1].id, lead2.id)
+  assert.equal(resWs1.body.meta.hasNextPage, false)
+  assert.equal(resWs1.body.meta.nextCursor, null)
+  assert.equal(resWs1.body.meta.total, 2)
+
+  // 2. Paginação com cursor: limit=1
+  const resPage1 = await api.get('/api/v1/leads?limit=1').set(ws1.headers)
+  expectStatus(resPage1, 200)
+  assert.equal(resPage1.body.items.length, 1)
+  assert.equal(resPage1.body.items[0].id, lead1.id)
+  assert.equal(resPage1.body.meta.hasNextPage, true)
+  assert.ok(resPage1.body.meta.nextCursor)
+
+  // Próxima página usando cursor
+  const resPage2 = await api
+    .get(`/api/v1/leads?limit=1&cursor=${encodeURIComponent(resPage1.body.meta.nextCursor)}`)
+    .set(ws1.headers)
+  expectStatus(resPage2, 200)
+  assert.equal(resPage2.body.items.length, 1)
+  assert.equal(resPage2.body.items[0].id, lead2.id)
+  assert.equal(resPage2.body.meta.hasNextPage, false)
+  assert.equal(resPage2.body.meta.nextCursor, null)
+
+  // 3. Filtro por tagId
+  const resTag = await api.get(`/api/v1/leads?tagId=${tag1.id}`).set(ws1.headers)
+  expectStatus(resTag, 200)
+  assert.equal(resTag.body.items.length, 1)
+  assert.equal(resTag.body.items[0].id, lead1.id)
+
+  // 4. Filtro por automationId
+  const resAuto = await api.get(`/api/v1/leads?automationId=${automation1.id}`).set(ws1.headers)
+  expectStatus(resAuto, 200)
+  assert.equal(resAuto.body.items.length, 1)
+  assert.equal(resAuto.body.items[0].id, lead1.id)
+
+  // 5. Busca textual por e-mail ou nome
+  const resSearch = await api.get('/api/v1/leads?query=beta').set(ws1.headers)
+  expectStatus(resSearch, 200)
+  assert.equal(resSearch.body.items.length, 1)
+  assert.equal(resSearch.body.items[0].id, lead2.id)
+
+  // 6. Isolamento multi-tenant: ws2 só enxerga o lead do ws2
+  const resWs2 = await api.get('/api/v1/leads').set(ws2.headers)
+  expectStatus(resWs2, 200)
+  assert.equal(resWs2.body.items.length, 1)
+  assert.equal(resWs2.body.items[0].contact.username, 'foreign_lead')
+
+  // 7. Usar tagId ou automationId de outro workspace no ws2 não retorna leads
+  const resForeign = await api.get(`/api/v1/leads?tagId=${tag1.id}`).set(ws2.headers)
+  expectStatus(resForeign, 200)
+  assert.equal(resForeign.body.items.length, 0)
+})

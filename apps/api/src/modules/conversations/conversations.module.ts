@@ -4,6 +4,7 @@ import { QUEUE_NAMES } from '@engancha/contracts'
 import { DatabaseModule } from '../../platform/database/database.module'
 import { ConversationsController } from './api/http/conversations.controller'
 import { ContactsController } from './api/http/contacts.controller'
+import { LeadsController } from './api/http/leads.controller'
 import { ConversationsService } from './application/conversations.service'
 import { EMAIL_CAPTURE_DISPATCHER } from './domain/ports/email-capture-dispatcher.port'
 import { BullMqEmailCaptureDispatcher } from './infrastructure/messaging/bullmq-email-capture.dispatcher'
@@ -15,7 +16,7 @@ import { BullMqEmailCaptureDispatcher } from './infrastructure/messaging/bullmq-
       name: QUEUE_NAMES.emailCapture,
     }),
   ],
-  controllers: [ConversationsController, ContactsController],
+  controllers: [ConversationsController, ContactsController, LeadsController],
 
   providers: [
     ConversationsService,

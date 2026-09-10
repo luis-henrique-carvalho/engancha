@@ -227,50 +227,50 @@ No external provider integration is added. Provider-specific payloads remain out
 
 ### Conversation and message history
 
-- [ ] A matching simulated comment creates or reuses one contact and one conversation in the active workspace.
-- [ ] Comment, public reply, DM, final link/e-mail request and later accepted response appear once, in order, with provider and simulated state.
-- [ ] Repeated simulations from the same normalized identity append to the same conversation; other workspace, provider or mode contexts remain isolated.
-- [ ] Worker redelivery, automatic retry and manual reprocessing create no duplicate conversation or message.
-- [ ] Existing execution/output history remains immutable and links to the projected product history.
+- [x] A matching simulated comment creates or reuses one contact and one conversation in the active workspace.
+- [x] Comment, public reply, DM, final link/e-mail request and later accepted response appear once, in order, with provider and simulated state.
+- [x] Repeated simulations from the same normalized identity append to the same conversation; other workspace, provider or mode contexts remain isolated.
+- [x] Worker redelivery, automatic retry and manual reprocessing create no duplicate conversation or message.
+- [x] Existing execution/output history remains immutable and links to the projected product history.
 
 ### Contact and identity
 
-- [ ] A contact exists after the first matching interaction even without e-mail or lead state.
-- [ ] A valid captured e-mail is normalized and added to the existing contact without losing its history.
-- [ ] The same normalized e-mail cannot create duplicate contacts inside one workspace but may exist independently in another workspace.
-- [ ] Conflicting provider-identity and e-mail matches fail closed without merging, reassignment or lead creation.
+- [x] A contact exists after the first matching interaction even without e-mail or lead state.
+- [x] A valid captured e-mail is normalized and added to the existing contact without losing its history.
+- [x] The same normalized e-mail cannot create duplicate contacts inside one workspace but may exist independently in another workspace.
+- [x] Conflicting provider-identity and e-mail matches fail closed without merging, reassignment or lead creation.
 
 ### Interactive capture and lead
 
-- [ ] Testar presents an accessible e-mail input only after an e-mail request and submits it idempotently.
-- [ ] Invalid input leaves the request pending, explains the validation problem and permits correction without side effects.
-- [ ] The originating execution remains completed while the persisted request moves independently through pending, processing, completed or superseded states.
-- [ ] A successful response appends the inbound message and atomically creates or resolves the contact, first lead and applicable tag effects.
-- [ ] The lead preserves the first valid capture date, automation and execution; subsequent valid captures do not duplicate it or rewrite attribution.
-- [ ] A newer request supersedes an older pending request in the same conversation, and a race cannot complete both.
-- [ ] Transient failures can recover without duplicate effects; permanent identity conflicts remain safe and understandable.
+- [x] Testar presents an accessible e-mail input only after an e-mail request and submits it idempotently.
+- [x] Invalid input leaves the request pending, explains the validation problem and permits correction without side effects.
+- [x] The originating execution remains completed while the persisted request moves independently through pending, processing, completed or superseded states.
+- [x] A successful response appends the inbound message and atomically creates or resolves the contact, first lead and applicable tag effects.
+- [x] The lead preserves the first valid capture date, automation and execution; subsequent valid captures do not duplicate it or rewrite attribution.
+- [x] A newer request supersedes an older pending request in the same conversation, and a race cannot complete both.
+- [x] Transient failures can recover without duplicate effects; permanent identity conflicts remain safe and understandable.
 
 ### Tags
 
-- [ ] An automation revision supports zero or one workspace tag and shows it in review before publication.
-- [ ] Inline tag creation and selection enforce normalized workspace uniqueness and reject foreign-workspace identifiers.
-- [ ] A matching execution applies the configured tag to the contact once and records traceability even before lead conversion.
-- [ ] Tags appear consistently in conversation, contact and lead projections.
+- [x] An automation revision supports zero or one workspace tag and shows it in review before publication.
+- [x] Inline tag creation and selection enforce normalized workspace uniqueness and reject foreign-workspace identifiers.
+- [x] A matching execution applies the configured tag to the contact once and records traceability even before lead conversion.
+- [x] Tags appear consistently in conversation, contact and lead projections.
 
 ### Lists, detail and authorization
 
-- [ ] Conversation, contact and lead lists are cursor-paginated, stably ordered and scoped to the active workspace.
-- [ ] Conversation detail presents an accessible, chronological product history with capture states and no infrastructure terminology.
-- [ ] Required period, execution status, automation, lead and tag filters work without cross-workspace leakage.
-- [ ] Search and applicable provider/mode/tag filters distinguish empty, no-results, loading and recoverable-error states.
-- [ ] Direct identifiers from another workspace cannot read or mutate contact, conversation, capture, lead or tag data.
+- [x] Conversation, contact and lead lists are cursor-paginated, stably ordered and scoped to the active workspace.
+- [x] Conversation detail presents an accessible, chronological product history with capture states and no infrastructure terminology.
+- [x] Required period, execution status, automation, lead and tag filters work without cross-workspace leakage.
+- [x] Search and applicable provider/mode/tag filters distinguish empty, no-results, loading and recoverable-error states.
+- [x] Direct identifiers from another workspace cannot read or mutate contact, conversation, capture, lead or tag data.
 
 ### Quality and observability
 
-- [ ] Contract, unit, PostgreSQL integration, worker, API E2E, web and full local E2E tests cover success, conflict, supersession, concurrency, retry, idempotency and tenant isolation.
-- [ ] Logs correlate opaque workspace, conversation, contact, capture, execution and job identifiers without full message text, e-mail, links or raw payloads.
-- [ ] Migrations and indexes enforce invariants under concurrent processing and support list/filter access paths.
-- [ ] Typecheck, lint, formatter and the complete relevant test suites pass before phase closure.
+- [x] Contract, unit, PostgreSQL integration, worker, API E2E, web and full local E2E tests cover success, conflict, supersession, concurrency, retry, idempotency and tenant isolation.
+- [x] Logs correlate opaque workspace, conversation, contact, capture, execution and job identifiers without full message text, e-mail, links or raw payloads.
+- [x] Migrations and indexes enforce invariants under concurrent processing and support list/filter access paths.
+- [x] Typecheck, lint, formatter and the complete relevant test suites pass before phase closure.
 
 ## Implementation Decisions
 
