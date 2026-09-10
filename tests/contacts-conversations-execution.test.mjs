@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   deterministicCommentMessageExternalId,
+  deterministicEmailCaptureRequestId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
   normalizeTagName,
@@ -730,11 +731,12 @@ test('Ticket 002: outputs projetam histórico ordenado e idempotente com EmailCa
   })
   assert.equal(oldCapture.status, 'SUPERSEDED')
 
-  // O novo pedido deve estar PENDING
+  // O novo pedido deve estar PENDING e com id determinístico
   const newCapture = await prisma.emailCaptureRequest.findFirstOrThrow({
     where: { executionId: exec2Id },
   })
   assert.equal(newCapture.status, 'PENDING')
+  assert.equal(newCapture.id, deterministicEmailCaptureRequestId(exec2Id))
 
   // 4. Idempotência: Retry / reexecução da mesma execução 2
   const retryResult = await dbRepository.saveExecutionCompleted({

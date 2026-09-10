@@ -33,9 +33,11 @@ Rules:
 
 ---
 
-## Workflow de Desenvolvimento & Matriz de Skills
+## Workflows de Desenvolvimento & Matriz de Skills
 
-Para novas funcionalidades, refatorações ou épicos, siga o workflow [`/dev-lifecycle`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/dev-lifecycle.md), que estrutura o ciclo de vida completo do projeto e sua matriz de skills (Descoberta, Design, Planejamento, Implementação e Revisão).
+O ciclo de desenvolvimento opera em duas fases desacopladas (executadas em sessões separadas):
+- **Planejamento & Especificação**: Use o workflow [`/plan-feature`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/plan-feature.md) para conduzir descoberta, arquitetura/design, criação de PRD em `docs/phases/` e decomposição em tickets verticais em `tickets/`.
+- **Implementação & Entrega de Tickets**: Use o workflow [`/implement-ticket`](file:///home/luis/Documentos/Git/Engancha/.agents/workflows/implement-ticket.md) em sessões dedicadas para implementar um ou múltiplos tickets com TDD, aplicar padrões backend/frontend, rodar `code-review`, remediar e registrar o resultado em cada ticket.
 
 ---
 

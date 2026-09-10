@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import type { Prisma } from '../../../platform/database/client'
+import type { Prisma, PrismaClient } from '../../../platform/database/client'
 import {
   deterministicCommentMessageExternalId,
+  deterministicEmailCaptureRequestId,
   deterministicOutputMessageExternalId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
@@ -192,11 +193,13 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     })
 
     const interactionAt = execution.createdAt ?? new Date()
+
     const contact = await this.resolveOrCreateContact(
       this.database.client,
       execution,
       interactionAt,
     )
+
     const conversation = await this.resolveOrCreateConversation(
       this.database.client,
       execution,
@@ -238,7 +241,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async resolveOrCreateContact(
-    tx: any,
+    client: PrismaClient | Prisma.TransactionClient,
     execution: {
       organizationId: string
       provider: ContentProvider
@@ -252,7 +255,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     const username = normalizeContactUsername(execution.inputAuthor)
     const name = username
 
-    let contact = await tx.contact.findFirst({
+    let contact = await client.contact.findFirst({
       where: {
         organizationId: execution.organizationId,
         provider: execution.provider,
@@ -264,7 +267,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
 
     if (!contact) {
       try {
-        contact = await tx.contact.create({
+        contact = await client.contact.create({
           data: {
             organizationId: execution.organizationId,
             provider: execution.provider,
@@ -277,7 +280,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           },
         })
       } catch {
-        contact = await tx.contact.findFirstOrThrow({
+        contact = await client.contact.findFirstOrThrow({
           where: {
             organizationId: execution.organizationId,
             provider: execution.provider,
@@ -288,7 +291,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         })
       }
     } else {
-      await tx.contact.update({
+      await client.contact.update({
         where: { id: contact.id },
         data: {
           lastInteractionAt: interactionAt,
@@ -302,7 +305,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async resolveOrCreateConversation(
-    tx: any,
+    client: PrismaClient | Prisma.TransactionClient,
     execution: {
       organizationId: string
       provider: ContentProvider
@@ -312,7 +315,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     contactId: string,
     interactionAt: Date,
   ) {
-    let conversation = await tx.conversation.findFirst({
+    let conversation = await client.conversation.findFirst({
       where: {
         organizationId: execution.organizationId,
         contactId,
@@ -324,7 +327,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
 
     if (!conversation) {
       try {
-        conversation = await tx.conversation.create({
+        conversation = await client.conversation.create({
           data: {
             organizationId: execution.organizationId,
             contactId,
@@ -336,7 +339,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           },
         })
       } catch {
-        conversation = await tx.conversation.findFirstOrThrow({
+        conversation = await client.conversation.findFirstOrThrow({
           where: {
             organizationId: execution.organizationId,
             contactId,
@@ -347,7 +350,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         })
       }
     } else {
-      await tx.conversation.update({
+      await client.conversation.update({
         where: { id: conversation.id },
         data: {
           lastMessageAt: interactionAt,
@@ -565,6 +568,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           try {
             await tx.emailCaptureRequest.create({
               data: {
+                id: deterministicEmailCaptureRequestId(execution.id),
                 organizationId: execution.organizationId,
                 conversationId,
                 contactId,
@@ -641,26 +645,29 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
         where: { id: tagId, organizationId },
       })
 
-      if (tag) {
-        const existing = await tx.contactTag.findUnique({
-          where: {
-            contactId_tagId: {
-              contactId,
-              tagId: tag.id,
-            },
+      if (!tag) {
+        // Tag doesn't exist or belongs to another workspace: reject application to preserve multi-tenant safety
+        return
+      }
+
+      const existing = await tx.contactTag.findUnique({
+        where: {
+          contactId_tagId: {
+            contactId,
+            tagId: tag.id,
+          },
+        },
+      })
+
+      if (!existing) {
+        await tx.contactTag.create({
+          data: {
+            contactId,
+            tagId: tag.id,
+            originExecutionId,
+            originAutomationId,
           },
         })
-
-        if (!existing) {
-          await tx.contactTag.create({
-            data: {
-              contactId,
-              tagId: tag.id,
-              originExecutionId,
-              originAutomationId,
-            },
-          })
-        }
       }
     }
   }
