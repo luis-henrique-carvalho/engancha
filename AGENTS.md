@@ -57,12 +57,13 @@ arquitetural antes de ser implementada.
 
 Para novas funcionalidades ou épicos:
 
+0. Caso tenha dúvida use o `/grill-me` para entender melhor o requisito.
 1. Use `prd-to-tickets` para analisar o requisito, resolver decisões pendentes, criar a PRD e propor tickets.
 2. Após a aprovação dos tickets, implemente uma fatia vertical por vez.
-3. Use `tdd` para tickets que alterem comportamentos, APIs, regras de negócio ou integrações.
+3. Use `implement` para tickets que alterem comportamentos, APIs, regras de negócio ou integrações.
 4. Use `nestjs-best-practices` em tickets da API e do worker NestJS.
 5. Use `frontend-design` em tickets que criem ou alterem interfaces.
-6. Use `review` ao concluir cada fatia vertical ou épico.
+6. Use `code-review` ao concluir cada fatia vertical ou épico.
 7. Atualize a seção `Result` do ticket com o comportamento entregue e as validações executadas.
 8. Depois de modificar código, execute `graphify update .`.
 
