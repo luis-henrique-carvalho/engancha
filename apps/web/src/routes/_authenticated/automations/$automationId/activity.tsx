@@ -28,7 +28,7 @@ function parseArrayParam<T extends string>(value: unknown, allowed: readonly T[]
   return selected.length ? selected : undefined
 }
 
-export const Route = createFileRoute('/automations/$automationId/activity')({
+export const Route = createFileRoute('/_authenticated/automations/$automationId/activity')({
   validateSearch: (search: Record<string, unknown>): ActivitySearch => ({
     query:
       typeof search.query === 'string' && search.query.trim() ? search.query.trim() : undefined,

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { UsersHeader, UsersView } from '../features/users/views'
-import { WorkspaceShell } from '../features/workspaces/workspace-shell'
+import { UsersHeader, UsersView } from '@/features/users/views'
+import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
 import type { WorkspaceMembersListRequest } from '@engancha/contracts'
 
 function selectedValues<T extends string>(value: unknown, allowed: readonly T[]): T[] | undefined {
@@ -11,7 +11,7 @@ function selectedValues<T extends string>(value: unknown, allowed: readonly T[])
   return selected.length ? selected : undefined
 }
 
-export const Route = createFileRoute('/users')({
+export const Route = createFileRoute('/_authenticated/users')({
   validateSearch: (search: Record<string, unknown>): WorkspaceMembersListRequest => ({
     page: typeof search.page === 'number' ? search.page : 1,
     limit: typeof search.limit === 'number' ? search.limit : 20,

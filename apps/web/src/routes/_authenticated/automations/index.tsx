@@ -15,7 +15,7 @@ function selectedStatuses(value: unknown): AutomationListRequest['status'] {
   return selected.length ? selected : undefined
 }
 
-export const Route = createFileRoute('/automations/')({
+export const Route = createFileRoute('/_authenticated/automations/')({
   validateSearch: (search: Record<string, unknown>): AutomationListRequest => ({
     page: typeof search.page === 'number' ? search.page : 1,
     limit: typeof search.limit === 'number' ? search.limit : 20,

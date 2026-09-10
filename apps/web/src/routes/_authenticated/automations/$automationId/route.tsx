@@ -3,7 +3,7 @@ import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
 import { AutomationsHeader } from '@/features/automations/components'
 import { AutomationEditorLayoutView } from '@/features/automations/views'
 
-export const Route = createFileRoute('/automations/$automationId')({
+export const Route = createFileRoute('/_authenticated/automations/$automationId')({
   component: AutomationEditorRoutePage,
 })
 

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { KeywordStepView } from '@/features/automations/views/keyword-step-view'
 
-export const Route = createFileRoute('/automations/$automationId/keyword')({
+export const Route = createFileRoute('/_authenticated/automations/$automationId/keyword')({
   component: KeywordStepPage,
 })
 

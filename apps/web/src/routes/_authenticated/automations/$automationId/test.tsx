@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { AutomationTestTabView } from '@/features/automations/views/automation-test-tab-view'
 
-export const Route = createFileRoute('/automations/$automationId/test')({
+export const Route = createFileRoute('/_authenticated/automations/$automationId/test')({
   component: AutomationTestRoutePage,
 })
 

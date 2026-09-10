@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/automations/$automationId/')({
+export const Route = createFileRoute('/_authenticated/automations/$automationId/')({
   beforeLoad: ({ params }) => {
     throw redirect({
       to: '/automations/$automationId/identification',

@@ -1,8 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { createFileRoute } from '@tanstack/react-router'
-import { WorkspaceShell } from '../features/workspaces/workspace-shell'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { WorkspaceShell } from '@/features/workspaces/workspace-shell'
 
-export const Route = createFileRoute('/workspace')({ component: WorkspacePage })
+export const Route = createFileRoute('/_authenticated/workspace')({ component: WorkspacePage })
 
 function WorkspacePage() {
   return (

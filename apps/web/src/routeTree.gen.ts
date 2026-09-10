@@ -10,31 +10,36 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AcceptInvitationRouteImport } from './routes/accept-invitation'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
-import { Route as UsersRouteImport } from './routes/users'
-import { Route as WorkspaceRouteImport } from './routes/workspace'
+import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedWorkspaceRouteImport } from './routes/_authenticated/workspace'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
-import { Route as AutomationsIndexRouteImport } from './routes/automations/index'
-import { Route as AutomationsAutomationIdRouteRouteImport } from './routes/automations/$automationId/route'
-import { Route as AutomationsAutomationIdIndexRouteImport } from './routes/automations/$automationId/index'
-import { Route as AutomationsAutomationIdActivityRouteImport } from './routes/automations/$automationId/activity'
-import { Route as AutomationsAutomationIdContentRouteImport } from './routes/automations/$automationId/content'
-import { Route as AutomationsAutomationIdDirectMessageRouteImport } from './routes/automations/$automationId/direct-message'
-import { Route as AutomationsAutomationIdFinalActionRouteImport } from './routes/automations/$automationId/final-action'
-import { Route as AutomationsAutomationIdIdentificationRouteImport } from './routes/automations/$automationId/identification'
-import { Route as AutomationsAutomationIdKeywordRouteImport } from './routes/automations/$automationId/keyword'
-import { Route as AutomationsAutomationIdPublicReplyRouteImport } from './routes/automations/$automationId/public-reply'
-import { Route as AutomationsAutomationIdReviewRouteImport } from './routes/automations/$automationId/review'
-import { Route as AutomationsAutomationIdTestRouteImport } from './routes/automations/$automationId/test'
+import { Route as AuthenticatedAutomationsIndexRouteImport } from './routes/_authenticated/automations/index'
+import { Route as AuthenticatedAutomationsAutomationIdRouteRouteImport } from './routes/_authenticated/automations/$automationId/route'
+import { Route as AuthenticatedAutomationsAutomationIdIndexRouteImport } from './routes/_authenticated/automations/$automationId/index'
+import { Route as AuthenticatedAutomationsAutomationIdActivityRouteImport } from './routes/_authenticated/automations/$automationId/activity'
+import { Route as AuthenticatedAutomationsAutomationIdContentRouteImport } from './routes/_authenticated/automations/$automationId/content'
+import { Route as AuthenticatedAutomationsAutomationIdDirectMessageRouteImport } from './routes/_authenticated/automations/$automationId/direct-message'
+import { Route as AuthenticatedAutomationsAutomationIdFinalActionRouteImport } from './routes/_authenticated/automations/$automationId/final-action'
+import { Route as AuthenticatedAutomationsAutomationIdIdentificationRouteImport } from './routes/_authenticated/automations/$automationId/identification'
+import { Route as AuthenticatedAutomationsAutomationIdKeywordRouteImport } from './routes/_authenticated/automations/$automationId/keyword'
+import { Route as AuthenticatedAutomationsAutomationIdPublicReplyRouteImport } from './routes/_authenticated/automations/$automationId/public-reply'
+import { Route as AuthenticatedAutomationsAutomationIdReviewRouteImport } from './routes/_authenticated/automations/$automationId/review'
+import { Route as AuthenticatedAutomationsAutomationIdTestRouteImport } from './routes/_authenticated/automations/$automationId/test'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AcceptInvitationRoute = AcceptInvitationRouteImport.update({
@@ -47,15 +52,15 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UsersRoute = UsersRouteImport.update({
+const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const WorkspaceRoute = WorkspaceRouteImport.update({
+const AuthenticatedWorkspaceRoute = AuthenticatedWorkspaceRouteImport.update({
   id: '/workspace',
   path: '/workspace',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   id: '/forgot-password',
@@ -82,149 +87,151 @@ const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AutomationsIndexRoute = AutomationsIndexRouteImport.update({
-  id: '/automations/',
-  path: '/automations/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AutomationsAutomationIdRouteRoute =
-  AutomationsAutomationIdRouteRouteImport.update({
+const AuthenticatedAutomationsIndexRoute =
+  AuthenticatedAutomationsIndexRouteImport.update({
+    id: '/automations/',
+    path: '/automations/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAutomationsAutomationIdRouteRoute =
+  AuthenticatedAutomationsAutomationIdRouteRouteImport.update({
     id: '/automations/$automationId',
     path: '/automations/$automationId',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AutomationsAutomationIdIndexRoute =
-  AutomationsAutomationIdIndexRouteImport.update({
+const AuthenticatedAutomationsAutomationIdIndexRoute =
+  AuthenticatedAutomationsAutomationIdIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdActivityRoute =
-  AutomationsAutomationIdActivityRouteImport.update({
+const AuthenticatedAutomationsAutomationIdActivityRoute =
+  AuthenticatedAutomationsAutomationIdActivityRouteImport.update({
     id: '/activity',
     path: '/activity',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdContentRoute =
-  AutomationsAutomationIdContentRouteImport.update({
+const AuthenticatedAutomationsAutomationIdContentRoute =
+  AuthenticatedAutomationsAutomationIdContentRouteImport.update({
     id: '/content',
     path: '/content',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdDirectMessageRoute =
-  AutomationsAutomationIdDirectMessageRouteImport.update({
+const AuthenticatedAutomationsAutomationIdDirectMessageRoute =
+  AuthenticatedAutomationsAutomationIdDirectMessageRouteImport.update({
     id: '/direct-message',
     path: '/direct-message',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdFinalActionRoute =
-  AutomationsAutomationIdFinalActionRouteImport.update({
+const AuthenticatedAutomationsAutomationIdFinalActionRoute =
+  AuthenticatedAutomationsAutomationIdFinalActionRouteImport.update({
     id: '/final-action',
     path: '/final-action',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdIdentificationRoute =
-  AutomationsAutomationIdIdentificationRouteImport.update({
+const AuthenticatedAutomationsAutomationIdIdentificationRoute =
+  AuthenticatedAutomationsAutomationIdIdentificationRouteImport.update({
     id: '/identification',
     path: '/identification',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdKeywordRoute =
-  AutomationsAutomationIdKeywordRouteImport.update({
+const AuthenticatedAutomationsAutomationIdKeywordRoute =
+  AuthenticatedAutomationsAutomationIdKeywordRouteImport.update({
     id: '/keyword',
     path: '/keyword',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdPublicReplyRoute =
-  AutomationsAutomationIdPublicReplyRouteImport.update({
+const AuthenticatedAutomationsAutomationIdPublicReplyRoute =
+  AuthenticatedAutomationsAutomationIdPublicReplyRouteImport.update({
     id: '/public-reply',
     path: '/public-reply',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdReviewRoute =
-  AutomationsAutomationIdReviewRouteImport.update({
+const AuthenticatedAutomationsAutomationIdReviewRoute =
+  AuthenticatedAutomationsAutomationIdReviewRouteImport.update({
     id: '/review',
     path: '/review',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
-const AutomationsAutomationIdTestRoute =
-  AutomationsAutomationIdTestRouteImport.update({
+const AuthenticatedAutomationsAutomationIdTestRoute =
+  AuthenticatedAutomationsAutomationIdTestRouteImport.update({
     id: '/test',
     path: '/test',
-    getParentRoute: () => AutomationsAutomationIdRouteRoute,
+    getParentRoute: () => AuthenticatedAutomationsAutomationIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
-  '/users': typeof UsersRoute
-  '/workspace': typeof WorkspaceRoute
-  '/automations/$automationId': typeof AutomationsAutomationIdRouteRouteWithChildren
+  '/users': typeof AuthenticatedUsersRoute
+  '/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/automations/': typeof AutomationsIndexRoute
-  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
-  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
-  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
-  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
-  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
-  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
-  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
-  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
-  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
-  '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
+  '/automations/$automationId': typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  '/automations/': typeof AuthenticatedAutomationsIndexRoute
+  '/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
+  '/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
+  '/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
+  '/automations/$automationId/final-action': typeof AuthenticatedAutomationsAutomationIdFinalActionRoute
+  '/automations/$automationId/identification': typeof AuthenticatedAutomationsAutomationIdIdentificationRoute
+  '/automations/$automationId/keyword': typeof AuthenticatedAutomationsAutomationIdKeywordRoute
+  '/automations/$automationId/public-reply': typeof AuthenticatedAutomationsAutomationIdPublicReplyRoute
+  '/automations/$automationId/review': typeof AuthenticatedAutomationsAutomationIdReviewRoute
+  '/automations/$automationId/test': typeof AuthenticatedAutomationsAutomationIdTestRoute
+  '/automations/$automationId/': typeof AuthenticatedAutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
-  '/users': typeof UsersRoute
-  '/workspace': typeof WorkspaceRoute
+  '/users': typeof AuthenticatedUsersRoute
+  '/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/automations': typeof AutomationsIndexRoute
-  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
-  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
-  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
-  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
-  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
-  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
-  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
-  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
-  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
-  '/automations/$automationId': typeof AutomationsAutomationIdIndexRoute
+  '/automations': typeof AuthenticatedAutomationsIndexRoute
+  '/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
+  '/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
+  '/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
+  '/automations/$automationId/final-action': typeof AuthenticatedAutomationsAutomationIdFinalActionRoute
+  '/automations/$automationId/identification': typeof AuthenticatedAutomationsAutomationIdIdentificationRoute
+  '/automations/$automationId/keyword': typeof AuthenticatedAutomationsAutomationIdKeywordRoute
+  '/automations/$automationId/public-reply': typeof AuthenticatedAutomationsAutomationIdPublicReplyRoute
+  '/automations/$automationId/review': typeof AuthenticatedAutomationsAutomationIdReviewRoute
+  '/automations/$automationId/test': typeof AuthenticatedAutomationsAutomationIdTestRoute
+  '/automations/$automationId': typeof AuthenticatedAutomationsAutomationIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/accept-invitation': typeof AcceptInvitationRoute
-  '/users': typeof UsersRoute
-  '/workspace': typeof WorkspaceRoute
-  '/automations/$automationId': typeof AutomationsAutomationIdRouteRouteWithChildren
+  '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/workspace': typeof AuthenticatedWorkspaceRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/automations/': typeof AutomationsIndexRoute
-  '/automations/$automationId/activity': typeof AutomationsAutomationIdActivityRoute
-  '/automations/$automationId/content': typeof AutomationsAutomationIdContentRoute
-  '/automations/$automationId/direct-message': typeof AutomationsAutomationIdDirectMessageRoute
-  '/automations/$automationId/final-action': typeof AutomationsAutomationIdFinalActionRoute
-  '/automations/$automationId/identification': typeof AutomationsAutomationIdIdentificationRoute
-  '/automations/$automationId/keyword': typeof AutomationsAutomationIdKeywordRoute
-  '/automations/$automationId/public-reply': typeof AutomationsAutomationIdPublicReplyRoute
-  '/automations/$automationId/review': typeof AutomationsAutomationIdReviewRoute
-  '/automations/$automationId/test': typeof AutomationsAutomationIdTestRoute
-  '/automations/$automationId/': typeof AutomationsAutomationIdIndexRoute
+  '/_authenticated/automations/$automationId': typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  '/_authenticated/automations/': typeof AuthenticatedAutomationsIndexRoute
+  '/_authenticated/automations/$automationId/activity': typeof AuthenticatedAutomationsAutomationIdActivityRoute
+  '/_authenticated/automations/$automationId/content': typeof AuthenticatedAutomationsAutomationIdContentRoute
+  '/_authenticated/automations/$automationId/direct-message': typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
+  '/_authenticated/automations/$automationId/final-action': typeof AuthenticatedAutomationsAutomationIdFinalActionRoute
+  '/_authenticated/automations/$automationId/identification': typeof AuthenticatedAutomationsAutomationIdIdentificationRoute
+  '/_authenticated/automations/$automationId/keyword': typeof AuthenticatedAutomationsAutomationIdKeywordRoute
+  '/_authenticated/automations/$automationId/public-reply': typeof AuthenticatedAutomationsAutomationIdPublicReplyRoute
+  '/_authenticated/automations/$automationId/review': typeof AuthenticatedAutomationsAutomationIdReviewRoute
+  '/_authenticated/automations/$automationId/test': typeof AuthenticatedAutomationsAutomationIdTestRoute
+  '/_authenticated/automations/$automationId/': typeof AuthenticatedAutomationsAutomationIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -234,12 +241,12 @@ export interface FileRouteTypes {
     | '/accept-invitation'
     | '/users'
     | '/workspace'
-    | '/automations/$automationId'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
+    | '/automations/$automationId'
     | '/automations/'
     | '/automations/$automationId/activity'
     | '/automations/$automationId/content'
@@ -277,37 +284,35 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/auth'
     | '/accept-invitation'
-    | '/users'
-    | '/workspace'
-    | '/automations/$automationId'
+    | '/_authenticated/users'
+    | '/_authenticated/workspace'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/reset-password'
     | '/auth/verify-email'
-    | '/automations/'
-    | '/automations/$automationId/activity'
-    | '/automations/$automationId/content'
-    | '/automations/$automationId/direct-message'
-    | '/automations/$automationId/final-action'
-    | '/automations/$automationId/identification'
-    | '/automations/$automationId/keyword'
-    | '/automations/$automationId/public-reply'
-    | '/automations/$automationId/review'
-    | '/automations/$automationId/test'
-    | '/automations/$automationId/'
+    | '/_authenticated/automations/$automationId'
+    | '/_authenticated/automations/'
+    | '/_authenticated/automations/$automationId/activity'
+    | '/_authenticated/automations/$automationId/content'
+    | '/_authenticated/automations/$automationId/direct-message'
+    | '/_authenticated/automations/$automationId/final-action'
+    | '/_authenticated/automations/$automationId/identification'
+    | '/_authenticated/automations/$automationId/keyword'
+    | '/_authenticated/automations/$automationId/public-reply'
+    | '/_authenticated/automations/$automationId/review'
+    | '/_authenticated/automations/$automationId/test'
+    | '/_authenticated/automations/$automationId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   AcceptInvitationRoute: typeof AcceptInvitationRoute
-  UsersRoute: typeof UsersRoute
-  WorkspaceRoute: typeof WorkspaceRoute
-  AutomationsAutomationIdRouteRoute: typeof AutomationsAutomationIdRouteRouteWithChildren
-  AutomationsIndexRoute: typeof AutomationsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -317,6 +322,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/accept-invitation': {
@@ -333,19 +345,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/users': {
-      id: '/users'
+    '/_authenticated/users': {
+      id: '/_authenticated/users'
       path: '/users'
       fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/workspace': {
-      id: '/workspace'
+    '/_authenticated/workspace': {
+      id: '/_authenticated/workspace'
       path: '/workspace'
       fullPath: '/workspace'
-      preLoaderRoute: typeof WorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedWorkspaceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/auth/forgot-password': {
       id: '/auth/forgot-password'
@@ -382,92 +394,152 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthVerifyEmailRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/automations/': {
-      id: '/automations/'
+    '/_authenticated/automations/': {
+      id: '/_authenticated/automations/'
       path: '/automations'
       fullPath: '/automations/'
-      preLoaderRoute: typeof AutomationsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAutomationsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/automations/$automationId': {
-      id: '/automations/$automationId'
+    '/_authenticated/automations/$automationId': {
+      id: '/_authenticated/automations/$automationId'
       path: '/automations/$automationId'
       fullPath: '/automations/$automationId'
-      preLoaderRoute: typeof AutomationsAutomationIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/automations/$automationId/': {
-      id: '/automations/$automationId/'
+    '/_authenticated/automations/$automationId/': {
+      id: '/_authenticated/automations/$automationId/'
       path: '/'
       fullPath: '/automations/$automationId/'
-      preLoaderRoute: typeof AutomationsAutomationIdIndexRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdIndexRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/activity': {
-      id: '/automations/$automationId/activity'
+    '/_authenticated/automations/$automationId/activity': {
+      id: '/_authenticated/automations/$automationId/activity'
       path: '/activity'
       fullPath: '/automations/$automationId/activity'
-      preLoaderRoute: typeof AutomationsAutomationIdActivityRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdActivityRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/content': {
-      id: '/automations/$automationId/content'
+    '/_authenticated/automations/$automationId/content': {
+      id: '/_authenticated/automations/$automationId/content'
       path: '/content'
       fullPath: '/automations/$automationId/content'
-      preLoaderRoute: typeof AutomationsAutomationIdContentRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdContentRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/direct-message': {
-      id: '/automations/$automationId/direct-message'
+    '/_authenticated/automations/$automationId/direct-message': {
+      id: '/_authenticated/automations/$automationId/direct-message'
       path: '/direct-message'
       fullPath: '/automations/$automationId/direct-message'
-      preLoaderRoute: typeof AutomationsAutomationIdDirectMessageRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdDirectMessageRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/final-action': {
-      id: '/automations/$automationId/final-action'
+    '/_authenticated/automations/$automationId/final-action': {
+      id: '/_authenticated/automations/$automationId/final-action'
       path: '/final-action'
       fullPath: '/automations/$automationId/final-action'
-      preLoaderRoute: typeof AutomationsAutomationIdFinalActionRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdFinalActionRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/identification': {
-      id: '/automations/$automationId/identification'
+    '/_authenticated/automations/$automationId/identification': {
+      id: '/_authenticated/automations/$automationId/identification'
       path: '/identification'
       fullPath: '/automations/$automationId/identification'
-      preLoaderRoute: typeof AutomationsAutomationIdIdentificationRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdIdentificationRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/keyword': {
-      id: '/automations/$automationId/keyword'
+    '/_authenticated/automations/$automationId/keyword': {
+      id: '/_authenticated/automations/$automationId/keyword'
       path: '/keyword'
       fullPath: '/automations/$automationId/keyword'
-      preLoaderRoute: typeof AutomationsAutomationIdKeywordRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdKeywordRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/public-reply': {
-      id: '/automations/$automationId/public-reply'
+    '/_authenticated/automations/$automationId/public-reply': {
+      id: '/_authenticated/automations/$automationId/public-reply'
       path: '/public-reply'
       fullPath: '/automations/$automationId/public-reply'
-      preLoaderRoute: typeof AutomationsAutomationIdPublicReplyRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdPublicReplyRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/review': {
-      id: '/automations/$automationId/review'
+    '/_authenticated/automations/$automationId/review': {
+      id: '/_authenticated/automations/$automationId/review'
       path: '/review'
       fullPath: '/automations/$automationId/review'
-      preLoaderRoute: typeof AutomationsAutomationIdReviewRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdReviewRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
-    '/automations/$automationId/test': {
-      id: '/automations/$automationId/test'
+    '/_authenticated/automations/$automationId/test': {
+      id: '/_authenticated/automations/$automationId/test'
       path: '/test'
       fullPath: '/automations/$automationId/test'
-      preLoaderRoute: typeof AutomationsAutomationIdTestRouteImport
-      parentRoute: typeof AutomationsAutomationIdRouteRoute
+      preLoaderRoute: typeof AuthenticatedAutomationsAutomationIdTestRouteImport
+      parentRoute: typeof AuthenticatedAutomationsAutomationIdRouteRoute
     }
   }
 }
+
+interface AuthenticatedAutomationsAutomationIdRouteRouteChildren {
+  AuthenticatedAutomationsAutomationIdActivityRoute: typeof AuthenticatedAutomationsAutomationIdActivityRoute
+  AuthenticatedAutomationsAutomationIdContentRoute: typeof AuthenticatedAutomationsAutomationIdContentRoute
+  AuthenticatedAutomationsAutomationIdDirectMessageRoute: typeof AuthenticatedAutomationsAutomationIdDirectMessageRoute
+  AuthenticatedAutomationsAutomationIdFinalActionRoute: typeof AuthenticatedAutomationsAutomationIdFinalActionRoute
+  AuthenticatedAutomationsAutomationIdIdentificationRoute: typeof AuthenticatedAutomationsAutomationIdIdentificationRoute
+  AuthenticatedAutomationsAutomationIdKeywordRoute: typeof AuthenticatedAutomationsAutomationIdKeywordRoute
+  AuthenticatedAutomationsAutomationIdPublicReplyRoute: typeof AuthenticatedAutomationsAutomationIdPublicReplyRoute
+  AuthenticatedAutomationsAutomationIdReviewRoute: typeof AuthenticatedAutomationsAutomationIdReviewRoute
+  AuthenticatedAutomationsAutomationIdTestRoute: typeof AuthenticatedAutomationsAutomationIdTestRoute
+  AuthenticatedAutomationsAutomationIdIndexRoute: typeof AuthenticatedAutomationsAutomationIdIndexRoute
+}
+
+const AuthenticatedAutomationsAutomationIdRouteRouteChildren: AuthenticatedAutomationsAutomationIdRouteRouteChildren =
+  {
+    AuthenticatedAutomationsAutomationIdActivityRoute:
+      AuthenticatedAutomationsAutomationIdActivityRoute,
+    AuthenticatedAutomationsAutomationIdContentRoute:
+      AuthenticatedAutomationsAutomationIdContentRoute,
+    AuthenticatedAutomationsAutomationIdDirectMessageRoute:
+      AuthenticatedAutomationsAutomationIdDirectMessageRoute,
+    AuthenticatedAutomationsAutomationIdFinalActionRoute:
+      AuthenticatedAutomationsAutomationIdFinalActionRoute,
+    AuthenticatedAutomationsAutomationIdIdentificationRoute:
+      AuthenticatedAutomationsAutomationIdIdentificationRoute,
+    AuthenticatedAutomationsAutomationIdKeywordRoute:
+      AuthenticatedAutomationsAutomationIdKeywordRoute,
+    AuthenticatedAutomationsAutomationIdPublicReplyRoute:
+      AuthenticatedAutomationsAutomationIdPublicReplyRoute,
+    AuthenticatedAutomationsAutomationIdReviewRoute:
+      AuthenticatedAutomationsAutomationIdReviewRoute,
+    AuthenticatedAutomationsAutomationIdTestRoute:
+      AuthenticatedAutomationsAutomationIdTestRoute,
+    AuthenticatedAutomationsAutomationIdIndexRoute:
+      AuthenticatedAutomationsAutomationIdIndexRoute,
+  }
+
+const AuthenticatedAutomationsAutomationIdRouteRouteWithChildren =
+  AuthenticatedAutomationsAutomationIdRouteRoute._addFileChildren(
+    AuthenticatedAutomationsAutomationIdRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedWorkspaceRoute: typeof AuthenticatedWorkspaceRoute
+  AuthenticatedAutomationsAutomationIdRouteRoute: typeof AuthenticatedAutomationsAutomationIdRouteRouteWithChildren
+  AuthenticatedAutomationsIndexRoute: typeof AuthenticatedAutomationsIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedWorkspaceRoute: AuthenticatedWorkspaceRoute,
+  AuthenticatedAutomationsAutomationIdRouteRoute:
+    AuthenticatedAutomationsAutomationIdRouteRouteWithChildren,
+  AuthenticatedAutomationsIndexRoute: AuthenticatedAutomationsIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
@@ -489,51 +561,11 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface AutomationsAutomationIdRouteRouteChildren {
-  AutomationsAutomationIdActivityRoute: typeof AutomationsAutomationIdActivityRoute
-  AutomationsAutomationIdContentRoute: typeof AutomationsAutomationIdContentRoute
-  AutomationsAutomationIdDirectMessageRoute: typeof AutomationsAutomationIdDirectMessageRoute
-  AutomationsAutomationIdFinalActionRoute: typeof AutomationsAutomationIdFinalActionRoute
-  AutomationsAutomationIdIdentificationRoute: typeof AutomationsAutomationIdIdentificationRoute
-  AutomationsAutomationIdKeywordRoute: typeof AutomationsAutomationIdKeywordRoute
-  AutomationsAutomationIdPublicReplyRoute: typeof AutomationsAutomationIdPublicReplyRoute
-  AutomationsAutomationIdReviewRoute: typeof AutomationsAutomationIdReviewRoute
-  AutomationsAutomationIdTestRoute: typeof AutomationsAutomationIdTestRoute
-  AutomationsAutomationIdIndexRoute: typeof AutomationsAutomationIdIndexRoute
-}
-
-const AutomationsAutomationIdRouteRouteChildren: AutomationsAutomationIdRouteRouteChildren =
-  {
-    AutomationsAutomationIdActivityRoute: AutomationsAutomationIdActivityRoute,
-    AutomationsAutomationIdContentRoute: AutomationsAutomationIdContentRoute,
-    AutomationsAutomationIdDirectMessageRoute:
-      AutomationsAutomationIdDirectMessageRoute,
-    AutomationsAutomationIdFinalActionRoute:
-      AutomationsAutomationIdFinalActionRoute,
-    AutomationsAutomationIdIdentificationRoute:
-      AutomationsAutomationIdIdentificationRoute,
-    AutomationsAutomationIdKeywordRoute: AutomationsAutomationIdKeywordRoute,
-    AutomationsAutomationIdPublicReplyRoute:
-      AutomationsAutomationIdPublicReplyRoute,
-    AutomationsAutomationIdReviewRoute: AutomationsAutomationIdReviewRoute,
-    AutomationsAutomationIdTestRoute: AutomationsAutomationIdTestRoute,
-    AutomationsAutomationIdIndexRoute: AutomationsAutomationIdIndexRoute,
-  }
-
-const AutomationsAutomationIdRouteRouteWithChildren =
-  AutomationsAutomationIdRouteRoute._addFileChildren(
-    AutomationsAutomationIdRouteRouteChildren,
-  )
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   AcceptInvitationRoute: AcceptInvitationRoute,
-  UsersRoute: UsersRoute,
-  WorkspaceRoute: WorkspaceRoute,
-  AutomationsAutomationIdRouteRoute:
-    AutomationsAutomationIdRouteRouteWithChildren,
-  AutomationsIndexRoute: AutomationsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
