@@ -9,3 +9,4 @@
 **/graphify-out
 **/__screenshots__/
 **/.vitest-attachments/
+/apps/api/generated
