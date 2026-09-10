@@ -4,6 +4,7 @@ dist
 coverage
 graphify-out
 .codex
+.agents
 docs
 AGENTS.md
 apps/web/src/routeTree.gen.ts

@@ -239,12 +239,12 @@ export type MessageType = z.infer<typeof messageTypeSchema>
 export const messageStatusSchema = z.enum(['PENDING', 'SENT', 'FAILED', 'RECEIVED'])
 export type MessageStatus = z.infer<typeof messageStatusSchema>
 
-export function normalizeContactExternalUserId(author: string): string {
-  return author.trim().replace(/^@+/, '').toLowerCase()
-}
-
 export function normalizeContactUsername(author: string): string {
   return author.trim().replace(/^@+/, '')
+}
+
+export function normalizeContactExternalUserId(author: string): string {
+  return normalizeContactUsername(author).toLowerCase()
 }
 
 export function deterministicCommentMessageExternalId(executionId: string): string {

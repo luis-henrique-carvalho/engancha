@@ -1,15 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common'
+import type { Prisma } from '../../../platform/database/client'
 import {
   deterministicCommentMessageExternalId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
   type AutomationSnapshot,
+  type ContentMode,
+  type ContentProvider,
 } from '@engancha/contracts'
 import { PrismaService } from '../../../platform/database/prisma.service'
 import type {
   AutomationExecutionRepository,
   CandidateAutomation,
   ClaimedExecution,
+  SaveExecutionCompletedResult,
 } from '../../domain/ports/automation-execution-repository.port'
 
 @Injectable()
@@ -170,7 +174,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
       type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
       payload: Record<string, unknown>
     }>
-  }): Promise<{ contactId: string; conversationId: string }> {
+  }): Promise<SaveExecutionCompletedResult> {
     return await this.database.client.$transaction(async (tx) => {
       const execution = await tx.automationExecution.findUniqueOrThrow({
         where: { id: params.executionId },
@@ -222,11 +226,11 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async resolveOrCreateContact(
-    tx: any,
+    tx: Prisma.TransactionClient,
     execution: {
       organizationId: string
-      provider: any
-      mode: any
+      provider: ContentProvider
+      mode: ContentMode
       channelConnectionId: string | null
       inputAuthor: string
     },
@@ -286,11 +290,11 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async resolveOrCreateConversation(
-    tx: any,
+    tx: Prisma.TransactionClient,
     execution: {
       organizationId: string
-      provider: any
-      mode: any
+      provider: ContentProvider
+      mode: ContentMode
       channelConnectionId: string | null
     },
     contactId: string,
@@ -343,12 +347,12 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async recordInboundCommentMessage(
-    tx: any,
+    tx: Prisma.TransactionClient,
     execution: {
       id: string
       organizationId: string
-      provider: any
-      mode: any
+      provider: ContentProvider
+      mode: ContentMode
       channelConnectionId: string | null
       inputText: string
       inputAuthor: string
@@ -395,7 +399,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async upsertExecutionOutputs(
-    tx: any,
+    tx: Prisma.TransactionClient,
     executionId: string,
     outputs: Array<{
       key: string

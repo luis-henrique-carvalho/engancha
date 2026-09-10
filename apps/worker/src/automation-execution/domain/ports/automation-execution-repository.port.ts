@@ -56,6 +56,11 @@ export interface AutomationExecutionOutputDraft {
   payload: Record<string, unknown>
 }
 
+export interface SaveExecutionCompletedResult {
+  contactId?: string
+  conversationId?: string
+}
+
 export interface AutomationExecutionRepository {
   claimExecution(executionId: string, organizationId: string): Promise<ClaimedExecution | null>
   findActiveCandidateAutomations(
@@ -78,7 +83,7 @@ export interface AutomationExecutionRepository {
     revisionId: string
     snapshot: AutomationSnapshot
     outputs: AutomationExecutionOutputDraft[]
-  }): Promise<{ contactId?: string; conversationId?: string } | void>
+  }): Promise<SaveExecutionCompletedResult>
   recordAttemptFailure(params: {
     executionId: string
     organizationId: string

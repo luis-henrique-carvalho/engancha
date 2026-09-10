@@ -385,12 +385,8 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
       matched: true,
       automationId,
       revisionId,
-      ...(saved && typeof saved === 'object' && 'contactId' in saved && saved.contactId
-        ? { contactId: saved.contactId }
-        : {}),
-      ...(saved && typeof saved === 'object' && 'conversationId' in saved && saved.conversationId
-        ? { conversationId: saved.conversationId }
-        : {}),
+      ...(saved?.contactId ? { contactId: saved.contactId } : {}),
+      ...(saved?.conversationId ? { conversationId: saved.conversationId } : {}),
     }
   }
 

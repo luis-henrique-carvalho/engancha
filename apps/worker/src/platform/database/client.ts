@@ -1,5 +1,7 @@
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../../../../api/generated/prisma/client'
+import { PrismaClient, type Prisma } from '../../../../api/generated/prisma/client'
+
+export type { Prisma }
 
 const connectionString =
   process.env.DATABASE_URL ?? 'postgresql://engancha:engancha@localhost:5432/engancha'
