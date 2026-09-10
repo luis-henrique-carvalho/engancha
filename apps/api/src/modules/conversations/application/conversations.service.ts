@@ -62,7 +62,17 @@ export class ConversationsService {
           executions: {
             orderBy: { createdAt: 'desc' },
             take: 1,
-            include: { automation: true },
+            include: {
+              automation: {
+                include: {
+                  currentPublishedRevision: true,
+                  revisions: {
+                    take: 1,
+                    orderBy: { version: 'desc' },
+                  },
+                },
+              },
+            },
           },
         },
       }),
@@ -106,7 +116,17 @@ export class ConversationsService {
         executions: {
           orderBy: { createdAt: 'desc' },
           take: 1,
-          include: { automation: true },
+          include: {
+            automation: {
+              include: {
+                currentPublishedRevision: true,
+                revisions: {
+                  take: 1,
+                  orderBy: { version: 'desc' },
+                },
+              },
+            },
+          },
         },
       },
     })
@@ -134,7 +154,19 @@ export class ConversationsService {
         take: limit,
         orderBy: [{ lastInteractionAt: 'desc' }, { id: 'desc' }],
         include: {
-          lead: { include: { automation: true } },
+          lead: {
+            include: {
+              automation: {
+                include: {
+                  currentPublishedRevision: true,
+                  revisions: {
+                    take: 1,
+                    orderBy: { version: 'desc' },
+                  },
+                },
+              },
+            },
+          },
           tags: { include: { tag: true } },
         },
       }),
@@ -173,6 +205,10 @@ export class ConversationsService {
           automation: {
             include: {
               currentPublishedRevision: true,
+              revisions: {
+                take: 1,
+                orderBy: { version: 'desc' },
+              },
             },
           },
         },
@@ -321,7 +357,10 @@ export class ConversationsService {
           }
         : null,
       automation: lastExec?.automation
-        ? { id: lastExec.automation.id, name: lastExec.automationId }
+        ? {
+            id: lastExec.automation.id,
+            name: this.resolveAutomationName(lastExec.automation),
+          }
         : null,
       lead: conv.contact.lead
         ? {
@@ -396,7 +435,10 @@ export class ConversationsService {
           }
         : null,
       automation: lastExec?.automation
-        ? { id: lastExec.automation.id, name: lastExec.automationId }
+        ? {
+            id: lastExec.automation.id,
+            name: this.resolveAutomationName(lastExec.automation),
+          }
         : null,
       messages,
       emailCaptures,
@@ -442,7 +484,9 @@ export class ConversationsService {
             id: contact.lead.id,
             capturedAt: contact.lead.capturedAt.toISOString(),
             automationId: contact.lead.automationId,
-            automationName: contact.lead.automationId,
+            automationName: contact.lead.automation
+              ? this.resolveAutomationName(contact.lead.automation)
+              : null,
           }
         : null,
       tags: contact.tags.map((ct: any) => ({
@@ -597,11 +641,7 @@ export class ConversationsService {
   }
 
   private mapLeadSummary(lead: any): LeadSummary {
-    const automationName =
-      lead.automation?.currentPublishedRevision?.name ??
-      lead.automation?.id ??
-      lead.automationId ??
-      null
+    const automationName = lead.automation ? this.resolveAutomationName(lead.automation) : null
 
     return {
       id: lead.id,
@@ -630,5 +670,11 @@ export class ConversationsService {
       createdAt: lead.createdAt.toISOString(),
       updatedAt: lead.updatedAt.toISOString(),
     }
+  }
+
+  private resolveAutomationName(automation: any): string {
+    return (
+      automation?.currentPublishedRevision?.name ?? automation?.revisions?.[0]?.name ?? 'Automação'
+    )
   }
 }

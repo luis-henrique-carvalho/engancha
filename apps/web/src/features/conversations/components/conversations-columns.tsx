@@ -72,13 +72,21 @@ export const conversationsColumns: ColumnDef<ConversationSummary>[] = [
     cell: ({ row }) => {
       const automation = row.original.automation
       if (!automation) return <span className="text-xs text-muted-foreground">—</span>
+      const automationName = automation.name?.trim() || 'Automação'
       return (
-        <Badge
-          variant="outline"
-          className="text-xs font-normal max-w-[150px] truncate"
+        <Link
+          to="/automations/$automationId"
+          params={{ automationId: automation.id }}
+          className="inline-flex max-w-[180px] items-center"
+          title={`Ver automação: ${automationName}`}
         >
-          {automation.name}
-        </Badge>
+          <Badge
+            variant="outline"
+            className="text-xs font-normal truncate cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            {automationName}
+          </Badge>
+        </Link>
       )
     },
   },

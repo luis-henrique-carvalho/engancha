@@ -249,6 +249,90 @@ test('GET /api/v1/conversations/:id retorna histórico e 404 para foreign worksp
   expectStatus(resForbidden, 404)
 })
 
+test('GET /api/v1/conversations e /:id retornam o nome da automação vinculada', async () => {
+  const ws1 = await createWorkspaceScenario()
+
+  const automation = await prisma.client.automation.create({
+    data: {
+      organizationId: ws1.organizationId,
+      createdByUserId: ws1.userId,
+      status: 'ACTIVE',
+    },
+  })
+
+  const rev = await prisma.client.automationRevision.create({
+    data: {
+      automationId: automation.id,
+      version: 1,
+      name: 'Automação Black Friday',
+      status: 'PUBLISHED',
+    },
+  })
+
+  await prisma.client.automation.update({
+    where: { id: automation.id },
+    data: { currentPublishedRevisionId: rev.id },
+  })
+
+  const contact = await prisma.client.contact.create({
+    data: {
+      organizationId: ws1.organizationId,
+      username: 'comprador_bf',
+      name: 'Comprador BF',
+    },
+  })
+
+  const conv = await prisma.client.conversation.create({
+    data: {
+      organizationId: ws1.organizationId,
+      contactId: contact.id,
+      lastMessageAt: new Date('2026-09-10T12:00:00Z'),
+    },
+  })
+
+  const content = await prisma.client.content.create({
+    data: {
+      organizationId: ws1.organizationId,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      contentType: 'POST',
+      title: 'Post BF',
+      externalContentId: randomUUID(),
+    },
+  })
+
+  await prisma.client.automationExecution.create({
+    data: {
+      organizationId: ws1.organizationId,
+      automationId: automation.id,
+      conversationId: conv.id,
+      contactId: contact.id,
+      contentId: content.id,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: randomUUID(),
+      inputAuthor: '@comprador_bf',
+      inputText: 'Quero comprar',
+      commentId: randomUUID(),
+      status: 'COMPLETED',
+      matched: true,
+    },
+  })
+
+  const api = request(app.getHttpServer())
+
+  const resList = await api.get('/api/v1/conversations').set(ws1.headers)
+  expectStatus(resList, 200)
+  assert.equal(resList.body.items.length, 1)
+  assert.equal(resList.body.items[0].automation?.id, automation.id)
+  assert.equal(resList.body.items[0].automation?.name, 'Automação Black Friday')
+
+  const resDetail = await api.get(`/api/v1/conversations/${conv.id}`).set(ws1.headers)
+  expectStatus(resDetail, 200)
+  assert.equal(resDetail.body.automation?.id, automation.id)
+  assert.equal(resDetail.body.automation?.name, 'Automação Black Friday')
+})
+
 test('GET /api/v1/contacts lista contatos e filtra por leadState', async () => {
   const ws1 = await createWorkspaceScenario()
 

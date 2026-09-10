@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { ConversationDetailResponse } from '@engancha/contracts'
@@ -58,12 +59,19 @@ export function ConversationContactCard({
         {conversation.automation && (
           <div>
             <span className="text-xs text-muted-foreground block mb-1">Automação originária</span>
-            <Badge
-              variant="outline"
-              className="text-xs font-normal"
+            <Link
+              to="/automations/$automationId"
+              params={{ automationId: conversation.automation.id }}
+              className="inline-flex items-center"
+              title={`Ver automação: ${conversation.automation.name ?? 'Automação'}`}
             >
-              {conversation.automation.name}
-            </Badge>
+              <Badge
+                variant="outline"
+                className="text-xs font-normal cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                {conversation.automation.name ?? 'Automação'}
+              </Badge>
+            </Link>
           </div>
         )}
       </CardContent>

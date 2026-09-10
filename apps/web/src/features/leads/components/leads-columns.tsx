@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
 import type { LeadSummary } from '@engancha/contracts'
@@ -58,11 +59,17 @@ export const leadsColumns: ColumnDef<LeadSummary>[] = [
       if (!automation) {
         return <span className="text-xs text-muted-foreground">—</span>
       }
+      const automationName = automation.name?.trim() || automation.id
       return (
-        <div className="flex items-center gap-1.5 text-sm text-foreground">
+        <Link
+          to="/automations/$automationId"
+          params={{ automationId: automation.id }}
+          className="inline-flex items-center gap-1.5 text-sm text-foreground hover:underline hover:text-primary transition-colors"
+          title={`Ver automação: ${automationName}`}
+        >
           <Bot className="size-3.5 text-muted-foreground" />
-          <span>{automation.name ?? automation.id}</span>
-        </div>
+          <span>{automationName}</span>
+        </Link>
       )
     },
   },
