@@ -336,6 +336,17 @@ export class AutomationExecutionService implements AutomationExecutionConsumer {
                 simulated: true,
               },
             }
+          case 'APPLY_TAG':
+            return {
+              key: `${claimId}:${action.position}:TAG_APPLICATION`,
+              position: action.position,
+              type: 'TAG_APPLICATION',
+              payload: {
+                tagId: (action.config as { tagId?: string }).tagId,
+                name: (action.config as { name?: string }).name,
+                simulated: true,
+              },
+            }
           default:
             throw new Error(`Tipo de ação não suportado: ${action.type}`)
         }

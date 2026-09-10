@@ -119,6 +119,7 @@ export const executionOutputTypeSchema = z.enum([
   'PRIVATE_REPLY',
   'LINK_DELIVERY',
   'EMAIL_CAPTURE_REQUEST',
+  'TAG_APPLICATION',
 ])
 export type ExecutionOutputType = z.infer<typeof executionOutputTypeSchema>
 
@@ -126,7 +127,9 @@ export const channelCapabilitiesSchema = z
   .object({
     provider: z.enum(['INSTAGRAM', 'TIKTOK']),
     mode: z.enum(['SIMULATED', 'REAL']),
-    supportedActions: z.array(z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL'])),
+    supportedActions: z.array(
+      z.enum(['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL', 'APPLY_TAG']),
+    ),
     publicReply: z.boolean(),
     privateReply: z.boolean(),
     linkDelivery: z.boolean(),
@@ -141,7 +144,7 @@ export function getChannelCapabilities(provider: string, mode: string): ChannelC
     return {
       provider: 'INSTAGRAM',
       mode: 'SIMULATED',
-      supportedActions: ['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL'],
+      supportedActions: ['PUBLIC_REPLY', 'PRIVATE_REPLY', 'LINK', 'CAPTURE_EMAIL', 'APPLY_TAG'],
       publicReply: true,
       privateReply: true,
       linkDelivery: true,
@@ -233,11 +236,21 @@ export const messageTypeSchema = z.enum([
   'PUBLIC_REPLY',
   'PRIVATE_REPLY',
   'DIRECT_MESSAGE',
+  'DIRECT_MESSAGE_WITH_LINK',
+  'EMAIL_CAPTURE_REQUEST',
 ])
 export type MessageType = z.infer<typeof messageTypeSchema>
 
 export const messageStatusSchema = z.enum(['PENDING', 'SENT', 'FAILED', 'RECEIVED'])
 export type MessageStatus = z.infer<typeof messageStatusSchema>
+
+export const emailCaptureRequestStatusSchema = z.enum([
+  'PENDING',
+  'PROCESSING',
+  'COMPLETED',
+  'SUPERSEDED',
+])
+export type EmailCaptureRequestStatus = z.infer<typeof emailCaptureRequestStatusSchema>
 
 export function normalizeContactUsername(author: string): string {
   return author.trim().replace(/^@+/, '')
@@ -247,8 +260,30 @@ export function normalizeContactExternalUserId(author: string): string {
   return normalizeContactUsername(author).toLowerCase()
 }
 
+export function normalizeTagName(name: string): string {
+  return name
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .replace(/^#+/, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+}
+
 export function deterministicCommentMessageExternalId(executionId: string): string {
   return `execution:${executionId}:comment`
+}
+
+export function deterministicOutputMessageExternalId(
+  executionId: string,
+  outputKey: string,
+): string {
+  return `execution:${executionId}:output:${outputKey}`
+}
+
+export function deterministicEmailCaptureRequestId(executionId: string): string {
+  return `execution:${executionId}:email-capture`
 }
 
 const normalizeSimulationQueryArray = <T extends z.ZodTypeAny>(schema: T) =>
@@ -514,6 +549,16 @@ export const automationActionSchema = z.discriminatedUnion('type', [
   z
     .object({ type: z.literal('CAPTURE_EMAIL'), prompt: z.string().trim().min(1).max(300) })
     .strict(),
+  z
+    .object({
+      type: z.literal('APPLY_TAG'),
+      tagId: z.string().min(1).optional(),
+      name: z.string().trim().min(1).max(50).optional(),
+    })
+    .strict()
+    .refine((data) => Boolean(data.tagId || data.name), {
+      message: 'Either tagId or name is required for APPLY_TAG',
+    }),
 ])
 export type AutomationAction = z.infer<typeof automationActionSchema>
 
@@ -522,12 +567,13 @@ export const publishableAutomationSchema = z
     name: z.string().trim().min(1).max(80),
     targetId: z.string().min(1),
     keyword: z.string().trim().min(1).max(120),
-    actions: z.array(automationActionSchema).min(1).max(3),
+    actions: z.array(automationActionSchema).min(1).max(4),
   })
   .strict()
   .superRefine((automation, context) => {
     const types = automation.actions.map((action) => action.type)
     const terminalActions = types.filter((type) => type === 'LINK' || type === 'CAPTURE_EMAIL')
+    const tagActions = types.filter((type) => type === 'APPLY_TAG')
 
     if (types.at(-1) !== 'LINK' && types.at(-1) !== 'CAPTURE_EMAIL')
       context.addIssue({
@@ -535,11 +581,21 @@ export const publishableAutomationSchema = z
         path: ['actions'],
         message: 'The final action must be LINK or CAPTURE_EMAIL',
       })
-    if (types.slice(0, -1).some((type) => type !== 'PUBLIC_REPLY' && type !== 'PRIVATE_REPLY'))
+    if (
+      types
+        .slice(0, -1)
+        .some((type) => type !== 'PUBLIC_REPLY' && type !== 'PRIVATE_REPLY' && type !== 'APPLY_TAG')
+    )
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['actions'],
-        message: 'Only reply actions may precede the final action',
+        message: 'Only reply or tag actions may precede the final action',
+      })
+    if (tagActions.length > 1)
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['actions'],
+        message: 'At most one tag action is allowed',
       })
     if (terminalActions.length !== 1)
       context.addIssue({
@@ -637,7 +693,7 @@ export const patchAutomationRequestSchema = z
     name: z.string().trim().min(1).max(80).nullable().optional(),
     targetId: z.string().min(1).nullable().optional(),
     keyword: z.string().trim().min(1).max(120).nullable().optional(),
-    actions: z.array(automationActionSchema).max(3).nullable().optional(),
+    actions: z.array(automationActionSchema).max(4).nullable().optional(),
   })
   .strict()
 export type PatchAutomationRequest = z.infer<typeof patchAutomationRequestSchema>
@@ -747,3 +803,30 @@ export const paginationRequestSchema = z
   })
   .strict()
 export type PaginationRequest = z.infer<typeof paginationRequestSchema>
+
+export const tagSchema = z
+  .object({
+    id: z.string().min(1),
+    organizationId: z.string().min(1),
+    name: z.string().trim().min(1).max(50),
+    normalizedName: z.string().trim().min(1).max(50),
+    createdAt: responseDateTimeSchema,
+    updatedAt: responseDateTimeSchema,
+  })
+  .strict()
+export type Tag = z.infer<typeof tagSchema>
+export type TagResponse = Tag
+
+export const tagListResponseSchema = z
+  .object({
+    items: z.array(tagSchema),
+  })
+  .strict()
+export type TagListResponse = z.infer<typeof tagListResponseSchema>
+
+export const createTagRequestSchema = z
+  .object({
+    name: z.string().trim().min(1).max(50),
+  })
+  .strict()
+export type CreateTagRequest = z.infer<typeof createTagRequestSchema>

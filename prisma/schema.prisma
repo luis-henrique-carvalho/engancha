@@ -70,20 +70,22 @@ model Verification {
 }
 
 model Organization {
-  id          String                @id
-  name        String
-  slug        String                @unique
-  logo        String?
-  metadata    String?
-  createdAt   DateTime              @default(now())
-  members     Member[]
-  invitations Invitation[]
-  automations Automation[]
-  contents    Content[]
-  executions  AutomationExecution[]
-  contacts    Contact[]
-  conversations Conversation[]
-  messages    Message[]
+  id                   String                @id
+  name                 String
+  slug                 String                @unique
+  logo                 String?
+  metadata             String?
+  createdAt            DateTime              @default(now())
+  members              Member[]
+  invitations          Invitation[]
+  automations          Automation[]
+  contents             Content[]
+  executions           AutomationExecution[]
+  contacts             Contact[]
+  conversations        Conversation[]
+  messages             Message[]
+  tags                 Tag[]
+  emailCaptureRequests EmailCaptureRequest[]
 }
 
 enum AutomationStatus {
@@ -138,6 +140,7 @@ enum AutomationExecutionOutputType {
   PRIVATE_REPLY
   LINK_DELIVERY
   EMAIL_CAPTURE_REQUEST
+  TAG_APPLICATION
 }
 
 model Content {
@@ -176,24 +179,26 @@ model Automation {
   currentPublishedRevision   AutomationRevision?   @relation("CurrentPublishedRevision", fields: [currentPublishedRevisionId], references: [id])
   originatingExecutions      AutomationExecution[] @relation("ExecutionOriginAutomation")
   matchedExecutions          AutomationExecution[] @relation("ExecutionAutomation")
+  emailCaptureRequests       EmailCaptureRequest[]
 
   @@index([organizationId, status, updatedAt])
 }
 
 model AutomationRevision {
-  id           String                   @id @default(uuid())
-  automationId String
-  version      Int
-  status       AutomationRevisionStatus @default(DRAFT)
-  name         String?
-  createdAt    DateTime                 @default(now())
-  publishedAt  DateTime?
-  automation   Automation               @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  publishedFor Automation?              @relation("CurrentPublishedRevision")
-  target       AutomationTarget?
-  trigger      AutomationTrigger?
-  actions      AutomationAction[]
-  executions   AutomationExecution[]
+  id                   String                   @id @default(uuid())
+  automationId         String
+  version              Int
+  status               AutomationRevisionStatus @default(DRAFT)
+  name                 String?
+  createdAt            DateTime                 @default(now())
+  publishedAt          DateTime?
+  automation           Automation               @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  publishedFor         Automation?              @relation("CurrentPublishedRevision")
+  target               AutomationTarget?
+  trigger              AutomationTrigger?
+  actions              AutomationAction[]
+  executions           AutomationExecution[]
+  emailCaptureRequests EmailCaptureRequest[]
 
   @@unique([automationId, version])
 }
@@ -263,6 +268,7 @@ model AutomationExecution {
   conversation         Conversation?               @relation(fields: [conversationId], references: [id], onDelete: SetNull)
   outputs              AutomationExecutionOutput[]
   messages             Message[]
+  emailCaptureRequest  EmailCaptureRequest?
 
   @@unique([organizationId, provider, mode, idempotencyKey])
   @@index([organizationId, status, createdAt])
@@ -330,6 +336,8 @@ enum MessageType {
   PUBLIC_REPLY
   PRIVATE_REPLY
   DIRECT_MESSAGE
+  DIRECT_MESSAGE_WITH_LINK
+  EMAIL_CAPTURE_REQUEST
 }
 
 enum MessageStatus {
@@ -339,24 +347,33 @@ enum MessageStatus {
   RECEIVED
 }
 
+enum EmailCaptureRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  SUPERSEDED
+}
+
 model Contact {
-  id                  String                @id @default(uuid())
-  organizationId      String
-  channelConnectionId String?
-  provider            ContentProvider       @default(INSTAGRAM)
-  mode                ContentMode           @default(SIMULATED)
-  externalUserId      String?
-  username            String?
-  name                String?
-  email               String?
-  emailNormalized     String?
-  metadata            Json?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  lastInteractionAt   DateTime?
-  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  conversations       Conversation[]
-  executions          AutomationExecution[]
+  id                   String                @id @default(uuid())
+  organizationId       String
+  channelConnectionId  String?
+  provider             ContentProvider       @default(INSTAGRAM)
+  mode                 ContentMode           @default(SIMULATED)
+  externalUserId       String?
+  username             String?
+  name                 String?
+  email                String?
+  emailNormalized      String?
+  metadata             Json?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  lastInteractionAt    DateTime?
+  organization         Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversations        Conversation[]
+  executions           AutomationExecution[]
+  tags                 ContactTag[]
+  emailCaptureRequests EmailCaptureRequest[]
 
   @@index([organizationId, updatedAt])
   @@index([organizationId, lastInteractionAt])
@@ -365,21 +382,22 @@ model Contact {
 }
 
 model Conversation {
-  id                  String                @id @default(uuid())
-  organizationId      String
-  contactId           String
-  channelConnectionId String?
-  provider            ContentProvider       @default(INSTAGRAM)
-  mode                ContentMode           @default(SIMULATED)
-  externalId          String?
-  status              ConversationStatus    @default(OPEN)
-  lastMessageAt       DateTime?
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  contact             Contact               @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  messages            Message[]
-  executions          AutomationExecution[]
+  id                   String                @id @default(uuid())
+  organizationId       String
+  contactId            String
+  channelConnectionId  String?
+  provider             ContentProvider       @default(INSTAGRAM)
+  mode                 ContentMode           @default(SIMULATED)
+  externalId           String?
+  status               ConversationStatus    @default(OPEN)
+  lastMessageAt        DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  organization         Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contact              Contact               @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  messages             Message[]
+  executions           AutomationExecution[]
+  emailCaptureRequests EmailCaptureRequest[]
 
   @@index([organizationId, lastMessageAt])
   @@index([organizationId, contactId, provider, mode])
@@ -387,26 +405,91 @@ model Conversation {
 }
 
 model Message {
-  id                  String                @id @default(uuid())
-  organizationId      String
-  conversationId      String
-  executionId         String?
-  channelConnectionId String?
-  direction           MessageDirection
-  type                MessageType
-  provider            ContentProvider       @default(INSTAGRAM)
-  mode                ContentMode           @default(SIMULATED)
-  externalId          String?
-  text                String?
-  payload             Json?
-  status              MessageStatus         @default(SENT)
-  sentAt              DateTime?
-  createdAt           DateTime              @default(now())
-  organization        Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  conversation        Conversation          @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  execution           AutomationExecution?  @relation(fields: [executionId], references: [id], onDelete: SetNull)
+  id                   String                @id @default(uuid())
+  organizationId       String
+  conversationId       String
+  executionId          String?
+  channelConnectionId  String?
+  direction            MessageDirection
+  type                 MessageType
+  provider             ContentProvider       @default(INSTAGRAM)
+  mode                 ContentMode           @default(SIMULATED)
+  externalId           String?
+  text                 String?
+  payload              Json?
+  position             Int?
+  status               MessageStatus         @default(SENT)
+  sentAt               DateTime?
+  createdAt            DateTime              @default(now())
+  organization         Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation         Conversation          @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  execution            AutomationExecution?  @relation(fields: [executionId], references: [id], onDelete: SetNull)
+  emailCaptureRequest  EmailCaptureRequest?  @relation("EmailCaptureRequestMessage")
+  emailCaptureResponse EmailCaptureRequest?  @relation("EmailCaptureResponseMessage")
 
   @@index([conversationId, createdAt])
   @@index([organizationId, createdAt])
   @@index([executionId])
+}
+
+model Tag {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  normalizedName String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contacts       ContactTag[]
+
+  @@unique([organizationId, normalizedName])
+  @@index([organizationId, name])
+}
+
+model ContactTag {
+  contactId          String
+  tagId              String
+  originExecutionId  String?
+  originAutomationId String?
+  createdAt          DateTime @default(now())
+  contact            Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag                Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+  @@index([tagId])
+  @@index([contactId])
+}
+
+model EmailCaptureRequest {
+  id                   String                    @id @default(uuid())
+  organizationId       String
+  conversationId       String
+  contactId            String
+  automationId         String?
+  automationRevisionId String?
+  executionId          String                    @unique
+  messageId            String                    @unique
+  responseMessageId    String?                   @unique
+  status               EmailCaptureRequestStatus @default(PENDING)
+  idempotencyKey       String?
+  attempts             Int                       @default(0)
+  errorCode            String?
+  errorMessage         String?
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  claimedAt            DateTime?
+  completedAt          DateTime?
+
+  organization         Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  conversation         Conversation              @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact              Contact                   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  automation           Automation?               @relation(fields: [automationId], references: [id], onDelete: SetNull)
+  automationRevision   AutomationRevision?       @relation(fields: [automationRevisionId], references: [id], onDelete: SetNull)
+  execution            AutomationExecution       @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  requestMessage       Message                   @relation("EmailCaptureRequestMessage", fields: [messageId], references: [id], onDelete: Cascade)
+  responseMessage      Message?                  @relation("EmailCaptureResponseMessage", fields: [responseMessageId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([conversationId, status])
+  @@index([contactId])
 }

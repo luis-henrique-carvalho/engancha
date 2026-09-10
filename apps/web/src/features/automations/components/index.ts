@@ -10,6 +10,7 @@ export * from './content/content-picker'
 
 export * from './final-action/final-action-email-fields'
 export * from './final-action/final-action-link-fields'
+export * from './final-action/final-action-tag-field'
 export * from './final-action/final-action-type-selector'
 
 export * from './keyword/keyword-normalization-preview'

@@ -9,4 +9,5 @@ export const automationsKeys = {
   details: (workspaceId: string) => ['workspaces', workspaceId, 'automations', 'detail'] as const,
   detail: (workspaceId: string, automationId: string) =>
     ['workspaces', workspaceId, 'automations', 'detail', automationId] as const,
+  tags: (workspaceId: string) => ['workspaces', workspaceId, 'automations', 'tags'] as const,
 }

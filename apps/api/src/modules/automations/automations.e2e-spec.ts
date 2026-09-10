@@ -359,7 +359,7 @@ test('retorna erros de contrato para publicação incompleta e ação não supor
   const invalidAction = await api
     .patch(`/api/v1/automations/${automation.id}`)
     .set(scenario.headers)
-    .send({ actions: [{ type: 'APPLY_TAG', tag: 'lead' }] })
+    .send({ actions: [{ type: 'UNSUPPORTED_ACTION' }] })
   expectStatus(invalidAction, 400)
   assert.equal(invalidAction.body.code, 'VALIDATION_FAILED')
   assert.equal(invalidAction.body.issues[0].path, 'actions.0.type')

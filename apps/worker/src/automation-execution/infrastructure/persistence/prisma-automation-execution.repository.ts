@@ -2,14 +2,18 @@ import { Inject, Injectable } from '@nestjs/common'
 import type { Prisma } from '../../../platform/database/client'
 import {
   deterministicCommentMessageExternalId,
+  deterministicOutputMessageExternalId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
+  normalizeTagName,
   type AutomationSnapshot,
   type ContentMode,
   type ContentProvider,
+  type MessageType,
 } from '@engancha/contracts'
 import { PrismaService } from '../../../platform/database/prisma.service'
 import type {
+  AutomationExecutionOutputDraft,
   AutomationExecutionRepository,
   CandidateAutomation,
   ClaimedExecution,
@@ -168,40 +172,39 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
     automationId: string
     revisionId: string
     snapshot: AutomationSnapshot
-    outputs: Array<{
-      key: string
-      position: number
-      type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
-      payload: Record<string, unknown>
-    }>
+    outputs: AutomationExecutionOutputDraft[]
   }): Promise<SaveExecutionCompletedResult> {
+    const execution = await this.database.client.automationExecution.findUniqueOrThrow({
+      where: { id: params.executionId },
+      select: {
+        id: true,
+        organizationId: true,
+        provider: true,
+        mode: true,
+        channelConnectionId: true,
+        inputAuthor: true,
+        inputText: true,
+        commentId: true,
+        createdAt: true,
+        contactId: true,
+        conversationId: true,
+      },
+    })
+
+    const interactionAt = execution.createdAt ?? new Date()
+    const contact = await this.resolveOrCreateContact(
+      this.database.client,
+      execution,
+      interactionAt,
+    )
+    const conversation = await this.resolveOrCreateConversation(
+      this.database.client,
+      execution,
+      contact.id,
+      interactionAt,
+    )
+
     return await this.database.client.$transaction(async (tx) => {
-      const execution = await tx.automationExecution.findUniqueOrThrow({
-        where: { id: params.executionId },
-        select: {
-          id: true,
-          organizationId: true,
-          provider: true,
-          mode: true,
-          channelConnectionId: true,
-          inputAuthor: true,
-          inputText: true,
-          commentId: true,
-          createdAt: true,
-          contactId: true,
-          conversationId: true,
-        },
-      })
-
-      const interactionAt = execution.createdAt ?? new Date()
-      const contact = await this.resolveOrCreateContact(tx, execution, interactionAt)
-      const conversation = await this.resolveOrCreateConversation(
-        tx,
-        execution,
-        contact.id,
-        interactionAt,
-      )
-
       await this.recordInboundCommentMessage(tx, execution, conversation.id, interactionAt)
 
       await tx.automationExecution.update({
@@ -221,12 +224,21 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
 
       await this.upsertExecutionOutputs(tx, params.executionId, params.outputs)
 
+      await this.projectOutputsToHistory(
+        tx,
+        execution,
+        contact.id,
+        conversation.id,
+        params,
+        interactionAt,
+      )
+
       return { contactId: contact.id, conversationId: conversation.id }
     })
   }
 
   private async resolveOrCreateContact(
-    tx: Prisma.TransactionClient,
+    tx: any,
     execution: {
       organizationId: string
       provider: ContentProvider
@@ -290,7 +302,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   }
 
   private async resolveOrCreateConversation(
-    tx: Prisma.TransactionClient,
+    tx: any,
     execution: {
       organizationId: string
       provider: ContentProvider
@@ -384,6 +396,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           mode: execution.mode,
           externalId: commentExternalId,
           text: execution.inputText,
+          position: 0,
           payload: {
             author: execution.inputAuthor,
             commentId: execution.commentId,
@@ -401,12 +414,7 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
   private async upsertExecutionOutputs(
     tx: Prisma.TransactionClient,
     executionId: string,
-    outputs: Array<{
-      key: string
-      position: number
-      type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
-      payload: Record<string, unknown>
-    }>,
+    outputs: AutomationExecutionOutputDraft[],
   ) {
     for (const output of outputs) {
       await tx.automationExecutionOutput.upsert({
@@ -429,6 +437,231 @@ export class PrismaAutomationExecutionRepository implements AutomationExecutionR
           payload: output.payload as never,
         },
       })
+    }
+  }
+
+  private async projectOutputsToHistory(
+    tx: Prisma.TransactionClient,
+    execution: {
+      id: string
+      organizationId: string
+      provider: ContentProvider
+      mode: ContentMode
+      channelConnectionId: string | null
+    },
+    contactId: string,
+    conversationId: string,
+    params: {
+      executionId: string
+      automationId: string
+      revisionId: string
+      snapshot: AutomationSnapshot
+      outputs: AutomationExecutionOutputDraft[]
+    },
+    interactionAt: Date,
+  ) {
+    const sortedOutputs = params.outputs.slice().sort((a, b) => a.position - b.position)
+
+    for (const output of sortedOutputs) {
+      if (output.type === 'TAG_APPLICATION') {
+        await this.applyTagToContact(
+          tx,
+          execution.organizationId,
+          contactId,
+          output.payload,
+          execution.id,
+          params.automationId,
+        )
+        continue
+      }
+
+      const externalId = deterministicOutputMessageExternalId(execution.id, output.key)
+      let messageType: MessageType
+      let text: string | null = null
+
+      switch (output.type) {
+        case 'PUBLIC_REPLY':
+          messageType = 'PUBLIC_REPLY'
+          text = (output.payload.text as string) ?? null
+          break
+        case 'PRIVATE_REPLY':
+          messageType = 'DIRECT_MESSAGE'
+          text = (output.payload.text as string) ?? null
+          break
+        case 'LINK_DELIVERY':
+          messageType = 'DIRECT_MESSAGE_WITH_LINK'
+          text = `${(output.payload.label as string) || 'Abrir link'}: ${(output.payload.url as string) || ''}`
+          break
+        case 'EMAIL_CAPTURE_REQUEST':
+          messageType = 'EMAIL_CAPTURE_REQUEST'
+          text = (output.payload.prompt as string) ?? null
+          break
+        default:
+          continue
+      }
+
+      const position = output.position + 1
+      const sentAt = new Date(interactionAt.getTime() + position * 1000)
+
+      let message = await tx.message.findFirst({
+        where: {
+          conversationId,
+          externalId,
+        },
+      })
+
+      if (!message) {
+        try {
+          message = await tx.message.create({
+            data: {
+              organizationId: execution.organizationId,
+              conversationId,
+              executionId: execution.id,
+              channelConnectionId: execution.channelConnectionId ?? null,
+              direction: 'OUTBOUND',
+              type: messageType,
+              provider: execution.provider,
+              mode: execution.mode,
+              externalId,
+              text,
+              position,
+              payload: {
+                ...output.payload,
+                position: output.position,
+                outputKey: output.key,
+                outputType: output.type,
+              },
+              status: 'SENT',
+              sentAt,
+            },
+          })
+        } catch {
+          message = await tx.message.findFirstOrThrow({
+            where: {
+              conversationId,
+              externalId,
+            },
+          })
+        }
+      }
+
+      if (output.type === 'EMAIL_CAPTURE_REQUEST') {
+        const capture = await tx.emailCaptureRequest.findUnique({
+          where: { executionId: execution.id },
+        })
+
+        if (!capture) {
+          // Supersede any pending capture request in this conversation
+          await tx.emailCaptureRequest.updateMany({
+            where: {
+              conversationId,
+              status: 'PENDING',
+            },
+            data: {
+              status: 'SUPERSEDED',
+            },
+          })
+
+          try {
+            await tx.emailCaptureRequest.create({
+              data: {
+                organizationId: execution.organizationId,
+                conversationId,
+                contactId,
+                automationId: params.automationId,
+                automationRevisionId: params.revisionId,
+                executionId: execution.id,
+                messageId: message.id,
+                status: 'PENDING',
+              },
+            })
+          } catch {
+            // Reentry / race
+          }
+        }
+      }
+    }
+
+    const lastOutput = sortedOutputs.filter((o) => o.type !== 'TAG_APPLICATION').at(-1)
+    if (lastOutput) {
+      const lastSentAt = new Date(interactionAt.getTime() + (lastOutput.position + 1) * 1000)
+      await tx.conversation.update({
+        where: { id: conversationId },
+        data: { lastMessageAt: lastSentAt },
+      })
+    }
+  }
+
+  private async applyTagToContact(
+    tx: Prisma.TransactionClient,
+    organizationId: string,
+    contactId: string,
+    payload: Record<string, unknown>,
+    originExecutionId?: string,
+    originAutomationId?: string,
+  ) {
+    let tagId = payload.tagId as string | undefined
+
+    if (!tagId && typeof payload.name === 'string' && payload.name.trim()) {
+      const normalizedName = normalizeTagName(payload.name)
+      let tag = await tx.tag.findUnique({
+        where: {
+          organizationId_normalizedName: {
+            organizationId,
+            normalizedName,
+          },
+        },
+      })
+
+      if (!tag) {
+        try {
+          tag = await tx.tag.create({
+            data: {
+              organizationId,
+              name: payload.name.trim(),
+              normalizedName,
+            },
+          })
+        } catch {
+          tag = await tx.tag.findUniqueOrThrow({
+            where: {
+              organizationId_normalizedName: {
+                organizationId,
+                normalizedName,
+              },
+            },
+          })
+        }
+      }
+      tagId = tag.id
+    }
+
+    if (tagId) {
+      const tag = await tx.tag.findFirst({
+        where: { id: tagId, organizationId },
+      })
+
+      if (tag) {
+        const existing = await tx.contactTag.findUnique({
+          where: {
+            contactId_tagId: {
+              contactId,
+              tagId: tag.id,
+            },
+          },
+        })
+
+        if (!existing) {
+          await tx.contactTag.create({
+            data: {
+              contactId,
+              tagId: tag.id,
+              originExecutionId,
+              originAutomationId,
+            },
+          })
+        }
+      }
     }
   }
 

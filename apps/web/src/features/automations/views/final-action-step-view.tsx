@@ -10,12 +10,15 @@ import {
   useOptionalAutomationEditor,
   FinalActionEmailFields,
   FinalActionLinkFields,
+  FinalActionTagField,
   FinalActionTypeSelector,
 } from '../components'
 import {
   buildUpdatedActions,
   getFinalAction,
+  getTagAction,
   type FinalAutomationAction,
+  type TagAutomationAction,
 } from '../data/automation-action-mappers'
 
 import {
@@ -24,6 +27,7 @@ import {
 } from '../data/automation-step-schemas'
 import { useAutomationMutations } from '../hooks/use-automation-mutations'
 import { useAutomation } from '../hooks/use-automation'
+import { useTags } from '../hooks/use-tags'
 import { useUnsavedChanges } from '../hooks/use-unsaved-changes'
 
 interface FinalActionStepViewProps {
@@ -53,11 +57,25 @@ export function FinalActionStepView({
   const activeAutomation = propAutomation ?? context?.automation ?? fetchedAutomation
   const currentActions = activeAutomation?.current?.actions ?? []
   const initialFinalAction = getFinalAction(currentActions)
+  const initialTagAction = getTagAction(currentActions)
 
   const initialActionType: 'LINK' | 'CAPTURE_EMAIL' =
     initialFinalAction?.type === 'CAPTURE_EMAIL' ? 'CAPTURE_EMAIL' : 'LINK'
 
+  const initialTagMode: 'none' | 'existing' | 'new' = initialTagAction
+    ? initialTagAction.tagId
+      ? 'existing'
+      : initialTagAction.name
+        ? 'new'
+        : 'none'
+    : 'none'
+
   const [selectedType, setSelectedType] = useState<'LINK' | 'CAPTURE_EMAIL'>(initialActionType)
+  const [tagMode, setTagMode] = useState<'none' | 'existing' | 'new'>(initialTagMode)
+  const [selectedTagId, setSelectedTagId] = useState<string>(initialTagAction?.tagId ?? '')
+  const [newTagName, setNewTagName] = useState<string>(initialTagAction?.name ?? '')
+
+  const { tags, isLoading: isLoadingTags } = useTags(workspaceId)
   const { patchAutomation, isSaving } = useAutomationMutations(workspaceId, automationId)
 
   const form = useForm<AutomationFinalActionFormValues>({
@@ -91,8 +109,13 @@ export function FinalActionStepView({
     watchedValues.actionType === 'CAPTURE_EMAIL' ? (watchedValues.prompt ?? '') : ''
   const watchedLabel = watchedValues.actionType === 'LINK' ? (watchedValues.label ?? '') : ''
 
+  const isTagDirty =
+    tagMode !== initialTagMode ||
+    (tagMode === 'existing' && selectedTagId !== (initialTagAction?.tagId ?? '')) ||
+    (tagMode === 'new' && newTagName !== (initialTagAction?.name ?? ''))
+
   const { UnsavedChangesDialog } = useUnsavedChanges({
-    isDirty: form.formState.isDirty,
+    isDirty: form.formState.isDirty || isTagDirty,
   })
 
   const handleModeChange = (newType: 'LINK' | 'CAPTURE_EMAIL') => {
@@ -135,8 +158,16 @@ export function FinalActionStepView({
       }
     }
 
+    let tagAction: TagAutomationAction | null = null
+    if (tagMode === 'existing' && selectedTagId) {
+      tagAction = { type: 'APPLY_TAG', tagId: selectedTagId }
+    } else if (tagMode === 'new' && newTagName.trim()) {
+      tagAction = { type: 'APPLY_TAG', name: newTagName.trim() }
+    }
+
     const updatedActions = buildUpdatedActions(currentActions, {
       finalAction,
+      tagAction,
     })
 
     await patchAutomation({
@@ -185,6 +216,17 @@ export function FinalActionStepView({
               watchedPrompt={watchedPrompt}
             />
           )}
+
+          <FinalActionTagField
+            tags={tags}
+            isLoadingTags={isLoadingTags}
+            tagMode={tagMode}
+            onTagModeChange={setTagMode}
+            selectedTagId={selectedTagId}
+            onSelectTagId={setSelectedTagId}
+            newTagName={newTagName}
+            onNewTagNameChange={setNewTagName}
+          />
 
           <AutomationSaveBar
             onSave={form.handleSubmit(onSubmit)}

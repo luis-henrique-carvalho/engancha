@@ -17,6 +17,7 @@ import {
   getFinalAction,
   getPrivateReplyText,
   getPublicReplyText,
+  getTagAction,
 } from '../../data/automation-action-mappers'
 import type { AutomationStepId } from '../../data/automation-readiness'
 import { AutomationStatusBadge } from '../shared/automation-status-badge'
@@ -75,6 +76,7 @@ export function AutomationReviewSummary({
 
   const publicReplyText = getPublicReplyText(actions)
   const privateReplyText = getPrivateReplyText(actions)
+  const tagAction = getTagAction(actions)
   const finalAction = getFinalAction(actions)
 
   return (
@@ -258,6 +260,34 @@ export function AutomationReviewSummary({
             )
           ) : (
             <p className="text-xs text-muted-foreground italic">Nenhuma ação final configurada.</p>
+          )}
+        </SummaryCard>
+
+        {/* Tag do contato */}
+        <SummaryCard
+          stepId="final-action"
+          title="Tag do contato"
+          icon={Tag}
+          testId="automation-review-summary-tag"
+          editTestId="automation-review-edit-tag"
+          onEdit={() => onNavigateStep?.('final-action')}
+        >
+          {tagAction ? (
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant="secondary"
+                  className="font-mono text-xs"
+                >
+                  {tagAction.name ? `#${tagAction.name}` : tagAction.tagId ? `#tag` : 'Tag ativa'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Aplicada ao contato quando esta automação é executada.
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground italic">Nenhuma tag configurada.</p>
           )}
         </SummaryCard>
       </div>

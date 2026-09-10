@@ -52,7 +52,12 @@ export interface CandidateAutomation {
 export interface AutomationExecutionOutputDraft {
   key: string
   position: number
-  type: 'PUBLIC_REPLY' | 'PRIVATE_REPLY' | 'LINK_DELIVERY' | 'EMAIL_CAPTURE_REQUEST'
+  type:
+    | 'PUBLIC_REPLY'
+    | 'PRIVATE_REPLY'
+    | 'LINK_DELIVERY'
+    | 'EMAIL_CAPTURE_REQUEST'
+    | 'TAG_APPLICATION'
   payload: Record<string, unknown>
 }
 

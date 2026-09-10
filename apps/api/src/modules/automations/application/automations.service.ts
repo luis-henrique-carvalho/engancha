@@ -8,10 +8,13 @@ import {
   automationListResponseSchema,
   automationResponseSchema,
   contentResponseSchema,
+  tagListResponseSchema,
+  tagSchema,
   validatePublishableAutomation,
   type AutomationAction,
   type AutomationListRequest,
   type CreateAutomationRequest,
+  type CreateTagRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
 import type { AuthorizationContext } from '../../../platform/security/authorization-context'
@@ -44,6 +47,32 @@ export class AutomationsService {
     })
   }
 
+  async listTags(context: AuthorizationContext) {
+    const tags = await this.automations.listTags(context.organizationId)
+    return tagListResponseSchema.parse({
+      items: tags.map((tag) => ({
+        id: tag.id,
+        organizationId: tag.organizationId,
+        name: tag.name,
+        normalizedName: tag.normalizedName,
+        createdAt: tag.createdAt.toISOString(),
+        updatedAt: tag.updatedAt.toISOString(),
+      })),
+    })
+  }
+
+  async createTag(context: AuthorizationContext, input: CreateTagRequest) {
+    const tag = await this.automations.findOrCreateTag(context.organizationId, input.name)
+    return tagSchema.parse({
+      id: tag.id,
+      organizationId: tag.organizationId,
+      name: tag.name,
+      normalizedName: tag.normalizedName,
+      createdAt: tag.createdAt.toISOString(),
+      updatedAt: tag.updatedAt.toISOString(),
+    })
+  }
+
   async create(context: AuthorizationContext, input: CreateAutomationRequest) {
     const automation = await this.automations.create(context.organizationId, context.userId, input)
     return this.present(automation)
@@ -60,6 +89,26 @@ export class AutomationsService {
     if (input.targetId !== null && input.targetId !== undefined) {
       const content = await this.contents.findInOrganization(input.targetId, context.organizationId)
       if (!content) throw new NotFoundException()
+    }
+    if (input.actions) {
+      for (const action of input.actions) {
+        if (action.type === 'APPLY_TAG') {
+          if (action.tagId) {
+            const tag = await this.automations.findTag(action.tagId, context.organizationId)
+            if (!tag) {
+              throw new NotFoundException({
+                code: 'TAG_NOT_FOUND',
+                message: 'Tag não encontrada no workspace',
+              })
+            }
+            action.name = tag.name
+          } else if (action.name) {
+            const tag = await this.automations.findOrCreateTag(context.organizationId, action.name)
+            action.tagId = tag.id
+            action.name = tag.name
+          }
+        }
+      }
     }
     await this.automations.updateDraft(draft.id, input)
     return this.get(context, id)

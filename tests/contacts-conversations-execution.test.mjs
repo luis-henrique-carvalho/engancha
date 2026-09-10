@@ -4,9 +4,11 @@ import {
   deterministicCommentMessageExternalId,
   normalizeContactExternalUserId,
   normalizeContactUsername,
+  normalizeTagName,
 } from '@engancha/contracts'
 import { AutomationExecutionService } from '../apps/worker/src/automation-execution/application/automation-execution.service.ts'
 import { PrismaAutomationExecutionRepository } from '../apps/worker/src/automation-execution/infrastructure/persistence/prisma-automation-execution.repository.ts'
+import { PrismaAutomationRepository } from '../apps/api/src/modules/automations/infrastructure/persistence/prisma-automation.repository.ts'
 import { prisma } from '../apps/api/src/platform/database/client.ts'
 
 test('normalizeContactExternalUserId remove arroba, espaços e converte para minúsculas', () => {
@@ -254,11 +256,12 @@ test('PostgreSQL: comentário cria contato, conversa e mensagem de entrada idemp
   assert.equal(conversation1.status, 'OPEN')
   assert.ok(conversation1.lastMessageAt instanceof Date)
 
-  // Verifica persistência de Message
+  // Verifica persistência de Message (inbound comment + outbound public reply)
   const messages1 = await prisma.message.findMany({
     where: { conversationId: conversation1.id },
+    orderBy: { position: 'asc' },
   })
-  assert.equal(messages1.length, 1)
+  assert.equal(messages1.length, 2)
   assert.equal(messages1[0].organizationId, orgA)
   assert.equal(messages1[0].executionId, exec1Id)
   assert.equal(messages1[0].direction, 'INBOUND')
@@ -268,6 +271,11 @@ test('PostgreSQL: comentário cria contato, conversa e mensagem de entrada idemp
   assert.equal(messages1[0].externalId, `execution:${exec1Id}:comment`)
   assert.equal(messages1[0].text, 'Eu quero o material!')
   assert.equal(messages1[0].status, 'RECEIVED')
+  assert.equal(messages1[0].position, 0)
+
+  assert.equal(messages1[1].direction, 'OUTBOUND')
+  assert.equal(messages1[1].type, 'PUBLIC_REPLY')
+  assert.equal(messages1[1].position, 1)
 
   // Verifica vínculo na AutomationExecution
   const updatedExec1 = await prisma.automationExecution.findUniqueOrThrow({
@@ -315,14 +323,14 @@ test('PostgreSQL: comentário cria contato, conversa e mensagem de entrada idemp
   })
   assert.ok(contactAfter2.lastInteractionAt >= contact1.lastInteractionAt)
 
-  // Deve haver duas mensagens na conversa agora
+  // Deve haver quatro mensagens na conversa agora (2 execuções x 2 mensagens cada)
   const messagesAfter2 = await prisma.message.findMany({
     where: { conversationId: conversation1.id },
     orderBy: { createdAt: 'asc' },
   })
-  assert.equal(messagesAfter2.length, 2)
-  assert.equal(messagesAfter2[1].executionId, exec2Id)
-  assert.equal(messagesAfter2[1].text, 'Quero novamente!')
+  assert.equal(messagesAfter2.length, 4)
+  assert.equal(messagesAfter2[2].executionId, exec2Id)
+  assert.equal(messagesAfter2[2].text, 'Quero novamente!')
 
   // 3. Retry / Redelivery da mesma execução: NUNCA duplica contato, conversa ou mensagem
   const savedRetry = await dbRepository.saveExecutionCompleted({
@@ -340,7 +348,7 @@ test('PostgreSQL: comentário cria contato, conversa e mensagem de entrada idemp
   const messagesForExec1 = await prisma.message.findMany({
     where: { executionId: exec1Id },
   })
-  assert.equal(messagesForExec1.length, 1, 'Retry não pode criar duplicatas de mensagem')
+  assert.equal(messagesForExec1.length, 2, 'Retry não pode criar duplicatas de mensagem')
 
   const totalContactsInOrgA = await prisma.contact.count({
     where: { organizationId: orgA },
@@ -444,4 +452,556 @@ test('PostgreSQL: comentário cria contato, conversa e mensagem de entrada idemp
     resC2.conversationId,
     'Concorrência deve convergir para a mesma Conversation',
   )
+})
+
+test('Ticket 002: outputs projetam histórico ordenado e idempotente com EmailCaptureRequest e supersessão', async () => {
+  const ts = Date.now() + 200
+  const org = `org-t002-${ts}`
+  const user = `user-t002-${ts}`
+  const content = `content-t002-${ts}`
+  const auto = `auto-t002-${ts}`
+  const autoRev = `rev-t002-${ts}`
+
+  await prisma.organization.create({
+    data: { id: org, name: 'Org Ticket 002', slug: `org-t002-${ts}` },
+  })
+
+  await prisma.user.create({
+    data: { id: user, name: 'User T002', email: `user-t002-${ts}@example.test` },
+  })
+
+  await prisma.content.create({
+    data: {
+      id: content,
+      organizationId: org,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      contentType: 'POST',
+      title: 'Post T002',
+      externalContentId: `ext-t002-${ts}`,
+    },
+  })
+
+  await prisma.automation.create({
+    data: {
+      id: auto,
+      organizationId: org,
+      createdByUserId: user,
+      status: 'ACTIVE',
+    },
+  })
+
+  await prisma.automationRevision.create({
+    data: {
+      id: autoRev,
+      automationId: auto,
+      version: 1,
+      status: 'PUBLISHED',
+      target: { create: { contentId: content } },
+      trigger: {
+        create: {
+          type: 'COMMENT_KEYWORD',
+          keyword: 'QueroT002',
+          keywordNormalized: 'querot002',
+        },
+      },
+      actions: {
+        create: [
+          { position: 0, type: 'PUBLIC_REPLY', config: { text: 'Resposta pública no post' } },
+          { position: 1, type: 'PRIVATE_REPLY', config: { text: 'Oi! Enviando no direct' } },
+          {
+            position: 2,
+            type: 'LINK',
+            config: { url: 'https://exemplo.com/promo', label: 'Acessar promoção' },
+          },
+          {
+            position: 3,
+            type: 'CAPTURE_EMAIL',
+            config: { prompt: 'Por favor, digite seu e-mail para enviarmos o material:' },
+          },
+        ],
+      },
+    },
+  })
+
+  await prisma.automation.update({
+    where: { id: auto },
+    data: { currentPublishedRevisionId: autoRev },
+  })
+
+  const exec1Id = `exec-t002-1-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec1Id,
+      organizationId: org,
+      contentId: content,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t002-1-${ts}`,
+      inputAuthor: '@SeguidorCurioso',
+      inputText: 'QueroT002 por favor!',
+      commentId: `comment-t002-1-${ts}`,
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  const snapshot = {
+    automationId: auto,
+    revisionId: autoRev,
+    version: 1,
+    target: { contentId: content },
+    trigger: { type: 'COMMENT_KEYWORD', keyword: 'QueroT002', keywordNormalized: 'querot002' },
+    actions: [
+      { position: 0, type: 'PUBLIC_REPLY', config: { text: 'Resposta pública no post' } },
+      { position: 1, type: 'PRIVATE_REPLY', config: { text: 'Oi! Enviando no direct' } },
+      {
+        position: 2,
+        type: 'LINK',
+        config: { url: 'https://exemplo.com/promo', label: 'Acessar promoção' },
+      },
+      {
+        position: 3,
+        type: 'CAPTURE_EMAIL',
+        config: { prompt: 'Por favor, digite seu e-mail para enviarmos o material:' },
+      },
+    ],
+  }
+
+  const outputs1 = [
+    {
+      key: `${exec1Id}:0:PUBLIC_REPLY`,
+      position: 0,
+      type: 'PUBLIC_REPLY',
+      payload: { text: 'Resposta pública no post', simulated: true },
+    },
+    {
+      key: `${exec1Id}:1:PRIVATE_REPLY`,
+      position: 1,
+      type: 'PRIVATE_REPLY',
+      payload: { text: 'Oi! Enviando no direct', simulated: true },
+    },
+    {
+      key: `${exec1Id}:2:LINK_DELIVERY`,
+      position: 2,
+      type: 'LINK_DELIVERY',
+      payload: {
+        url: 'https://exemplo.com/promo',
+        label: 'Acessar promoção',
+        simulated: true,
+      },
+    },
+    {
+      key: `${exec1Id}:3:EMAIL_CAPTURE_REQUEST`,
+      position: 3,
+      type: 'EMAIL_CAPTURE_REQUEST',
+      payload: {
+        prompt: 'Por favor, digite seu e-mail para enviarmos o material:',
+        simulated: true,
+      },
+    },
+  ]
+
+  // Executa conclusão da execução 1
+  const result1 = await dbRepository.saveExecutionCompleted({
+    executionId: exec1Id,
+    organizationId: org,
+    automationId: auto,
+    revisionId: autoRev,
+    snapshot,
+    outputs: outputs1,
+  })
+
+  assert.ok(result1.contactId)
+  assert.ok(result1.conversationId)
+
+  // 1. Valida mensagens na conversa
+  const messages = await prisma.message.findMany({
+    where: { conversationId: result1.conversationId },
+    orderBy: { position: 'asc' },
+  })
+
+  // 1 inbound comment (position 0) + 4 outbound outputs (positions 1..4)
+  assert.equal(messages.length, 5)
+
+  // Mensagem 0: Comentário Inbound
+  assert.equal(messages[0].position, 0)
+  assert.equal(messages[0].direction, 'INBOUND')
+  assert.equal(messages[0].type, 'COMMENT')
+  assert.equal(messages[0].text, 'QueroT002 por favor!')
+  assert.equal(messages[0].externalId, `execution:${exec1Id}:comment`)
+
+  // Mensagem 1: Public reply
+  assert.equal(messages[1].position, 1)
+  assert.equal(messages[1].direction, 'OUTBOUND')
+  assert.equal(messages[1].type, 'PUBLIC_REPLY')
+  assert.equal(messages[1].text, 'Resposta pública no post')
+  assert.equal(messages[1].externalId, `execution:${exec1Id}:output:${outputs1[0].key}`)
+
+  // Mensagem 2: Private reply (DM)
+  assert.equal(messages[2].position, 2)
+  assert.equal(messages[2].direction, 'OUTBOUND')
+  assert.equal(messages[2].type, 'DIRECT_MESSAGE')
+  assert.equal(messages[2].text, 'Oi! Enviando no direct')
+  assert.equal(messages[2].externalId, `execution:${exec1Id}:output:${outputs1[1].key}`)
+
+  // Mensagem 3: Link delivery (DM com link)
+  assert.equal(messages[3].position, 3)
+  assert.equal(messages[3].direction, 'OUTBOUND')
+  assert.equal(messages[3].type, 'DIRECT_MESSAGE_WITH_LINK')
+  assert.equal(messages[3].text, 'Acessar promoção: https://exemplo.com/promo')
+  assert.equal(messages[3].payload.url, 'https://exemplo.com/promo')
+  assert.equal(messages[3].payload.label, 'Acessar promoção')
+  assert.equal(messages[3].payload.simulated, true)
+
+  // Mensagem 4: Email capture request
+  assert.equal(messages[4].position, 4)
+  assert.equal(messages[4].direction, 'OUTBOUND')
+  assert.equal(messages[4].type, 'EMAIL_CAPTURE_REQUEST')
+  assert.equal(messages[4].text, 'Por favor, digite seu e-mail para enviarmos o material:')
+
+  // Monotonicidade dos timestamps
+  for (let i = 0; i < messages.length - 1; i++) {
+    assert.ok(
+      messages[i].sentAt.getTime() <= messages[i + 1].sentAt.getTime(),
+      `sentAt deve ser não-decrescente: msg ${i} vs ${i + 1}`,
+    )
+  }
+
+  // 2. Valida EmailCaptureRequest criado em status PENDING
+  const captureRequests1 = await prisma.emailCaptureRequest.findMany({
+    where: { conversationId: result1.conversationId },
+  })
+  assert.equal(captureRequests1.length, 1)
+  const cap1 = captureRequests1[0]
+  assert.equal(cap1.status, 'PENDING')
+  assert.equal(cap1.organizationId, org)
+  assert.equal(cap1.contactId, result1.contactId)
+  assert.equal(cap1.conversationId, result1.conversationId)
+  assert.equal(cap1.messageId, messages[4].id)
+  assert.equal(cap1.automationId, auto)
+  assert.equal(cap1.automationRevisionId, autoRev)
+  assert.equal(cap1.executionId, exec1Id)
+
+  // 3. Supersessão: Nova execução na mesma conversa com EmailCaptureRequest
+  const exec2Id = `exec-t002-2-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: exec2Id,
+      organizationId: org,
+      contentId: content,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-t002-2-${ts}`,
+      inputAuthor: 'seguidorcurioso',
+      inputText: 'Quero de novo!',
+      commentId: `comment-t002-2-${ts}`,
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  const outputs2 = [
+    {
+      key: `${exec2Id}:0:EMAIL_CAPTURE_REQUEST`,
+      position: 0,
+      type: 'EMAIL_CAPTURE_REQUEST',
+      payload: {
+        prompt: 'Novo prompt de e-mail:',
+        simulated: true,
+      },
+    },
+  ]
+
+  const result2 = await dbRepository.saveExecutionCompleted({
+    executionId: exec2Id,
+    organizationId: org,
+    automationId: auto,
+    revisionId: autoRev,
+    snapshot,
+    outputs: outputs2,
+  })
+
+  assert.equal(result2.conversationId, result1.conversationId)
+
+  // O pedido anterior deve ter transitado para SUPERSEDED
+  const oldCapture = await prisma.emailCaptureRequest.findUniqueOrThrow({
+    where: { id: cap1.id },
+  })
+  assert.equal(oldCapture.status, 'SUPERSEDED')
+
+  // O novo pedido deve estar PENDING
+  const newCapture = await prisma.emailCaptureRequest.findFirstOrThrow({
+    where: { executionId: exec2Id },
+  })
+  assert.equal(newCapture.status, 'PENDING')
+
+  // 4. Idempotência: Retry / reexecução da mesma execução 2
+  const retryResult = await dbRepository.saveExecutionCompleted({
+    executionId: exec2Id,
+    organizationId: org,
+    automationId: auto,
+    revisionId: autoRev,
+    snapshot,
+    outputs: outputs2,
+  })
+
+  assert.equal(retryResult.conversationId, result1.conversationId)
+
+  // Total de pedidos de captura para a execução 2 continua sendo exatamente 1 e com status PENDING
+  const cap2Count = await prisma.emailCaptureRequest.count({
+    where: { executionId: exec2Id },
+  })
+  assert.equal(cap2Count, 1)
+
+  const currentCap2 = await prisma.emailCaptureRequest.findUniqueOrThrow({
+    where: { id: newCapture.id },
+  })
+  assert.equal(currentCap2.status, 'PENDING')
+})
+
+test('Ticket 003: normalização, criação inline, multi-tenant e aplicação idempotente de tags no contato', async () => {
+  const ts = Date.now() + 300
+  const orgA = `org-t003-a-${ts}`
+  const orgB = `org-t003-b-${ts}`
+  const userA = `user-t003-a-${ts}`
+  const contentA = `content-t003-a-${ts}`
+  const autoA = `auto-t003-a-${ts}`
+  const autoRevA = `rev-t003-a-${ts}`
+
+  await prisma.organization.createMany({
+    data: [
+      { id: orgA, name: 'Org T003 A', slug: `org-t003-a-${ts}` },
+      { id: orgB, name: 'Org T003 B', slug: `org-t003-b-${ts}` },
+    ],
+  })
+
+  await prisma.user.create({
+    data: { id: userA, name: 'User T003', email: `user-t003-${ts}@example.test` },
+  })
+
+  await prisma.content.create({
+    data: {
+      id: contentA,
+      organizationId: orgA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      contentType: 'POST',
+      title: 'Post T003',
+      externalContentId: `ext-t003-${ts}`,
+    },
+  })
+
+  const autoRepo = new PrismaAutomationRepository(prismaService)
+
+  // 1. Normalização de tag
+  assert.equal(normalizeTagName('  #Leads-VIP  '), 'leads-vip')
+  assert.equal(normalizeTagName('CLIENTE ESPECIAL'), 'cliente-especial')
+
+  // 2. Criação inline / busca idempotente via repositório
+  const tag1 = await autoRepo.findOrCreateTag(orgA, 'Leads VIP')
+  assert.equal(tag1.name, 'Leads VIP')
+  assert.equal(tag1.normalizedName, 'leads-vip')
+
+  const tag1Same = await autoRepo.findOrCreateTag(orgA, '#leads-vip')
+  assert.equal(tag1Same.id, tag1.id, 'Tag com mesmo nome normalizado deve reutilizar registro')
+
+  // Tag com mesmo nome em Org B é isolada
+  const tagB = await autoRepo.findOrCreateTag(orgB, 'Leads VIP')
+  assert.notEqual(tagB.id, tag1.id, 'Tag em outro workspace deve ter id diferente')
+  assert.equal(tagB.organizationId, orgB)
+
+  // 3. Listagem de tags por organização
+  const tagsA = await autoRepo.listTags(orgA)
+  assert.equal(tagsA.length, 1)
+  assert.equal(tagsA[0].id, tag1.id)
+
+  const tagsB = await autoRepo.listTags(orgB)
+  assert.equal(tagsB.length, 1)
+  assert.equal(tagsB[0].id, tagB.id)
+
+  // 4. Criação de automação e snapshot com APPLY_TAG
+  await prisma.automation.create({
+    data: {
+      id: autoA,
+      organizationId: orgA,
+      createdByUserId: userA,
+      status: 'ACTIVE',
+    },
+  })
+
+  await prisma.automationRevision.create({
+    data: {
+      id: autoRevA,
+      automationId: autoA,
+      version: 1,
+      status: 'PUBLISHED',
+      target: { create: { contentId: contentA } },
+      trigger: {
+        create: {
+          type: 'COMMENT_KEYWORD',
+          keyword: 'TagMe',
+          keywordNormalized: 'tagme',
+        },
+      },
+      actions: {
+        create: [
+          { position: 0, type: 'APPLY_TAG', config: { tagId: tag1.id, name: tag1.name } },
+          {
+            position: 1,
+            type: 'LINK',
+            config: { url: 'https://exemplo.com/vip', label: 'Área VIP' },
+          },
+        ],
+      },
+    },
+  })
+
+  await prisma.automation.update({
+    where: { id: autoA },
+    data: { currentPublishedRevisionId: autoRevA },
+  })
+
+  // 5. Execução no worker aplica tag ao contato
+  const execTagId = `exec-tag-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: execTagId,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-tag-${ts}`,
+      inputAuthor: '@ClienteEspecial',
+      inputText: 'TagMe agora!',
+      commentId: `comment-tag-${ts}`,
+      status: 'PROCESSING',
+      attempts: 1,
+    },
+  })
+
+  const tagSnapshot = {
+    automationId: autoA,
+    revisionId: autoRevA,
+    version: 1,
+    target: { contentId: contentA },
+    trigger: { type: 'COMMENT_KEYWORD', keyword: 'TagMe', keywordNormalized: 'tagme' },
+    actions: [
+      { position: 0, type: 'APPLY_TAG', config: { tagId: tag1.id, name: tag1.name } },
+      {
+        position: 1,
+        type: 'LINK',
+        config: { url: 'https://exemplo.com/vip', label: 'Área VIP' },
+      },
+    ],
+  }
+
+  const tagOutputs = [
+    {
+      key: `${execTagId}:0:TAG_APPLICATION`,
+      position: 0,
+      type: 'TAG_APPLICATION',
+      payload: {
+        tagId: tag1.id,
+        name: tag1.name,
+        applied: true,
+        simulated: true,
+      },
+    },
+    {
+      key: `${execTagId}:1:LINK_DELIVERY`,
+      position: 1,
+      type: 'LINK_DELIVERY',
+      payload: {
+        url: 'https://exemplo.com/vip',
+        label: 'Área VIP',
+        simulated: true,
+      },
+    },
+  ]
+
+  const savedTagExec = await dbRepository.saveExecutionCompleted({
+    executionId: execTagId,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: tagSnapshot,
+    outputs: tagOutputs,
+  })
+
+  // Valida que ContactTag foi persistido com rastreabilidade
+  const contactTags = await prisma.contactTag.findMany({
+    where: { contactId: savedTagExec.contactId },
+  })
+  assert.equal(contactTags.length, 1)
+  assert.equal(contactTags[0].tagId, tag1.id)
+  assert.equal(contactTags[0].originExecutionId, execTagId)
+  assert.equal(contactTags[0].originAutomationId, autoA)
+
+  // Valida que o contato possui a tag mesmo antes de ter e-mail ou ser lead
+  const contactRecord = await prisma.contact.findUniqueOrThrow({
+    where: { id: savedTagExec.contactId },
+  })
+  assert.equal(contactRecord.email, null, 'Contato ainda não tem email')
+
+  // 6. Retry da execução: Idempotência de ContactTag (não duplica nem lança erro)
+  const retryTagExec = await dbRepository.saveExecutionCompleted({
+    executionId: execTagId,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: tagSnapshot,
+    outputs: tagOutputs,
+  })
+
+  assert.equal(retryTagExec.contactId, savedTagExec.contactId)
+  const contactTagsAfterRetry = await prisma.contactTag.count({
+    where: { contactId: savedTagExec.contactId },
+  })
+  assert.equal(contactTagsAfterRetry, 1, 'Retry não duplica ContactTag')
+
+  // 7. Multi-tenant: tentar aplicar tag de Org B na execução de Org A é bloqueado
+  const foreignTagOutputs = [
+    {
+      key: `${execTagId}:foreign:TAG_APPLICATION`,
+      position: 0,
+      type: 'TAG_APPLICATION',
+      payload: {
+        tagId: tagB.id, // Pertence a Org B!
+        name: tagB.name,
+        applied: true,
+      },
+    },
+  ]
+
+  const execForeignId = `exec-foreign-${ts}`
+  await prisma.automationExecution.create({
+    data: {
+      id: execForeignId,
+      organizationId: orgA,
+      contentId: contentA,
+      provider: 'INSTAGRAM',
+      mode: 'SIMULATED',
+      idempotencyKey: `idem-foreign-${ts}`,
+      inputAuthor: '@ClienteEspecial',
+      inputText: 'TagMe foreign!',
+      commentId: `comment-foreign-${ts}`,
+      status: 'PROCESSING',
+    },
+  })
+
+  await dbRepository.saveExecutionCompleted({
+    executionId: execForeignId,
+    organizationId: orgA,
+    automationId: autoA,
+    revisionId: autoRevA,
+    snapshot: tagSnapshot,
+    outputs: foreignTagOutputs,
+  })
+
+  // Tag de Org B não deve ter sido vinculada ao contato de Org A
+  const tagBAssociated = await prisma.contactTag.findFirst({
+    where: { contactId: savedTagExec.contactId, tagId: tagB.id },
+  })
+  assert.equal(tagBAssociated, null, 'Tag de outro workspace não pode ser associada')
 })

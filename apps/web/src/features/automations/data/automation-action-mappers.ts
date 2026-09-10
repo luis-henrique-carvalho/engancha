@@ -4,6 +4,8 @@ export type FinalAutomationAction =
   | (AutomationAction & { type: 'LINK' })
   | (AutomationAction & { type: 'CAPTURE_EMAIL' })
 
+export type TagAutomationAction = AutomationAction & { type: 'APPLY_TAG' }
+
 export function getPublicReplyText(actions: AutomationAction[] | null | undefined): string {
   if (!actions) return ''
   const action = actions.find((item) => item.type === 'PUBLIC_REPLY')
@@ -14,6 +16,14 @@ export function getPrivateReplyText(actions: AutomationAction[] | null | undefin
   if (!actions) return ''
   const action = actions.find((item) => item.type === 'PRIVATE_REPLY')
   return action && action.type === 'PRIVATE_REPLY' ? action.text : ''
+}
+
+export function getTagAction(
+  actions: AutomationAction[] | null | undefined,
+): TagAutomationAction | undefined {
+  if (!actions) return undefined
+  const action = actions.find((item) => item.type === 'APPLY_TAG')
+  return action as TagAutomationAction | undefined
 }
 
 export function getFinalAction(
@@ -27,6 +37,7 @@ export function getFinalAction(
 export function orderAutomationActions(actions: AutomationAction[]): AutomationAction[] {
   const publicReply = actions.find((action) => action.type === 'PUBLIC_REPLY')
   const privateReply = actions.find((action) => action.type === 'PRIVATE_REPLY')
+  const tagAction = actions.find((action) => action.type === 'APPLY_TAG')
   const finalAction = actions.find(
     (action) => action.type === 'LINK' || action.type === 'CAPTURE_EMAIL',
   )
@@ -34,6 +45,7 @@ export function orderAutomationActions(actions: AutomationAction[]): AutomationA
   const ordered: AutomationAction[] = []
   if (publicReply) ordered.push(publicReply)
   if (privateReply) ordered.push(privateReply)
+  if (tagAction) ordered.push(tagAction)
   if (finalAction) ordered.push(finalAction)
 
   return ordered
@@ -42,6 +54,7 @@ export function orderAutomationActions(actions: AutomationAction[]): AutomationA
 export interface BuildActionsOptions {
   publicReply?: string | null
   privateReply?: string | null
+  tagAction?: TagAutomationAction | null
   finalAction?: FinalAutomationAction | null
 }
 
@@ -53,6 +66,7 @@ export function buildUpdatedActions(
 
   let publicReplyAction = existingActions.find((a) => a.type === 'PUBLIC_REPLY')
   let privateReplyAction = existingActions.find((a) => a.type === 'PRIVATE_REPLY')
+  let tagAction = existingActions.find((a) => a.type === 'APPLY_TAG')
   let finalAction = existingActions.find((a) => a.type === 'LINK' || a.type === 'CAPTURE_EMAIL')
 
   if ('publicReply' in update) {
@@ -65,6 +79,10 @@ export function buildUpdatedActions(
     privateReplyAction = trimmed ? { type: 'PRIVATE_REPLY', text: trimmed } : undefined
   }
 
+  if ('tagAction' in update) {
+    tagAction = update.tagAction ? update.tagAction : undefined
+  }
+
   if ('finalAction' in update) {
     finalAction = update.finalAction ? update.finalAction : undefined
   }
@@ -72,6 +90,7 @@ export function buildUpdatedActions(
   const result: AutomationAction[] = []
   if (publicReplyAction) result.push(publicReplyAction)
   if (privateReplyAction) result.push(privateReplyAction)
+  if (tagAction) result.push(tagAction)
   if (finalAction) result.push(finalAction)
 
   return result

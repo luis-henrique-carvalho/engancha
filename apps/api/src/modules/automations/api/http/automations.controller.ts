@@ -13,9 +13,11 @@ import {
 import {
   automationListRequestSchema,
   createAutomationRequestSchema,
+  createTagRequestSchema,
   patchAutomationRequestSchema,
   type AutomationListRequest,
   type CreateAutomationRequest,
+  type CreateTagRequest,
   type PatchAutomationRequest,
 } from '@engancha/contracts'
 import {
@@ -36,12 +38,25 @@ export class AutomationsController {
   ) {
     return this.automations.list(request.authorizationContext!, query)
   }
+
   @Post() create(
     @Body(new ZodValidationPipe(createAutomationRequestSchema)) body: CreateAutomationRequest,
     @Req() request: RequestWithAuthorization,
   ) {
     return this.automations.create(request.authorizationContext!, body)
   }
+
+  @Get('tags') listTags(@Req() request: RequestWithAuthorization) {
+    return this.automations.listTags(request.authorizationContext!)
+  }
+
+  @Post('tags') createTag(
+    @Body(new ZodValidationPipe(createTagRequestSchema)) body: CreateTagRequest,
+    @Req() request: RequestWithAuthorization,
+  ) {
+    return this.automations.createTag(request.authorizationContext!, body)
+  }
+
   @Get(':id') get(@Param('id') id: string, @Req() request: RequestWithAuthorization) {
     return this.automations.get(request.authorizationContext!, id)
   }

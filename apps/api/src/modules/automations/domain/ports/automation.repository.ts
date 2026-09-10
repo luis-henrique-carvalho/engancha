@@ -23,4 +23,7 @@ export interface AutomationRepository {
     activeKeywordNormalized: string,
   ): Promise<void>
   pause(id: string): Promise<void>
+  listTags(organizationId: string): Promise<any[]>
+  findTag(id: string, organizationId: string): Promise<any | null>
+  findOrCreateTag(organizationId: string, name: string): Promise<any>
 }

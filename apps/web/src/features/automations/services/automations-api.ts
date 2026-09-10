@@ -3,9 +3,14 @@ import {
   type AutomationListResponse,
   type AutomationResponse,
   type CreateAutomationRequest,
+  type CreateTagRequest,
   type PatchAutomationRequest,
+  type TagListResponse,
+  type TagResponse,
   automationListResponseSchema,
   automationResponseSchema,
+  tagListResponseSchema,
+  tagSchema,
 } from '@engancha/contracts'
 import { apiFetch } from '@/lib/api-client'
 
@@ -59,5 +64,18 @@ export const AutomationsApi = {
       method: 'POST',
     })
     return automationResponseSchema.parse(data)
+  },
+
+  async listTags(): Promise<TagListResponse> {
+    const data = await apiFetch<unknown>('/automations/tags')
+    return tagListResponseSchema.parse(data)
+  },
+
+  async createTag(body: CreateTagRequest): Promise<TagResponse> {
+    const data = await apiFetch<unknown>('/automations/tags', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+    return tagSchema.parse(data)
   },
 }

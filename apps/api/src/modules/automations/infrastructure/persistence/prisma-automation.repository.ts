@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import {
   normalizeAutomationKeyword,
+  normalizeTagName,
   type AutomationListRequest,
   type CreateAutomationRequest,
   type PatchAutomationRequest,
@@ -231,6 +232,55 @@ export class PrismaAutomationRepository implements AutomationRepository {
       },
     })
   }
+
+  listTags(organizationId: string) {
+    return this.database.client.tag.findMany({
+      where: { organizationId },
+      orderBy: { name: 'asc' },
+    })
+  }
+
+  findTag(id: string, organizationId: string) {
+    return this.database.client.tag.findFirst({
+      where: { id, organizationId },
+    })
+  }
+
+  async findOrCreateTag(organizationId: string, name: string) {
+    const normalizedName = normalizeTagName(name)
+    let tag = await this.database.client.tag.findUnique({
+      where: {
+        organizationId_normalizedName: {
+          organizationId,
+          normalizedName,
+        },
+      },
+    })
+
+    if (!tag) {
+      try {
+        tag = await this.database.client.tag.create({
+          data: {
+            organizationId,
+            name: name.trim(),
+            normalizedName,
+          },
+        })
+      } catch {
+        tag = await this.database.client.tag.findUniqueOrThrow({
+          where: {
+            organizationId_normalizedName: {
+              organizationId,
+              normalizedName,
+            },
+          },
+        })
+      }
+    }
+
+    return tag
+  }
+
   private isUnique(error: unknown) {
     return typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002'
   }

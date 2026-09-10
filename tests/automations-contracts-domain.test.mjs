@@ -8,6 +8,7 @@ import {
   getChannelCapabilities,
   matchesAutomationKeyword,
   normalizeAutomationKeyword,
+  patchAutomationRequestSchema,
   simulationCommentRequestSchema,
   validatePublishableAutomation,
 } from '@engancha/contracts'
@@ -135,9 +136,29 @@ test('valida capacidades do canal simulado Instagram', () => {
     'PRIVATE_REPLY',
     'LINK',
     'CAPTURE_EMAIL',
+    'APPLY_TAG',
   ])
 
   const tiktokCapabilities = getChannelCapabilities('TIKTOK', 'REAL')
   assert.equal(tiktokCapabilities.publicReply, false)
   assert.deepEqual(tiktokCapabilities.supportedActions, [])
+})
+
+test('patchAutomationRequestSchema aceita até 4 ações incluindo resposta pública, privada, tag e terminal', () => {
+  const actions = [
+    { type: 'PUBLIC_REPLY', text: 'teste obrigado' },
+    { type: 'PRIVATE_REPLY', text: 'teste' },
+    { type: 'APPLY_TAG', tagId: 'f9bae2db-61ea-4a59-937e-b8b193711f3c' },
+    { type: 'CAPTURE_EMAIL', prompt: 'teste' },
+  ]
+
+  const parsed = patchAutomationRequestSchema.parse({ actions })
+  assert.equal(parsed.actions?.length, 4)
+
+  // Rejeita mais de 4 ações
+  assert.throws(() =>
+    patchAutomationRequestSchema.parse({
+      actions: [...actions, { type: 'PUBLIC_REPLY', text: 'extra' }],
+    }),
+  )
 })
