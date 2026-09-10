@@ -2,7 +2,7 @@
 
 1. **GRAPHIFY FIRST**: Para qualquer pergunta sobre código, arquitetura ou exploração do repositório, execute PRIMEIRO `graphify query "<termo>"` antes de ler arquivos ou buscar com grep/find.
 2. **SHADCN REFERENCE GRAPHIFY**: Antes de criar ou alterar telas, fluxos ou componentes em `apps/web`, consulte PRIMEIRO a referência local (`shadcn-admin-reference`) via `graphify query`.
-3. **GRAPHIFY UPDATE**: Imediatamente após alterar qualquer arquivo de código no repositório, execute `graphify update .`.
+3. **GRAPHIFY UPDATE**: Execute `graphify update .` ao final da tarefa ou sessão após concluir as alterações de código (evitando execuções intermediárias redundantes a cada micro-arquivo).
 
 ---
 
@@ -23,7 +23,7 @@ Rules:
 - Dirty `graphify-out/` files are expected after incremental updates; do not skip graphify because of them.
 - If `graphify-out/wiki/index.md` exists, use it for broad navigation instead of raw source browsing.
 - Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- Ao final da sessão/tarefa após modificar código, execute `graphify update .` para manter o grafo atualizado.
 - Antes de criar ou alterar componentes web, consulte o grafo da referência local em `$XDG_DATA_HOME/engancha/shadcn-admin-reference`:
   ```bash
   reference_dir="${ENGANCHA_SHADCN_ADMIN_REFERENCE_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/engancha/shadcn-admin-reference}"

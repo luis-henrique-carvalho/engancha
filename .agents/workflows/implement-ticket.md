@@ -5,54 +5,41 @@ description: Sessão de implementação, testes, revisão e entrega de um ou mú
 
 # Workflow: Implementação & Entrega de Tickets
 
-Use este workflow para a **Sessão de Implementação**. Ele foi projetado para implementar **um único ticket ou uma sequência de tickets** (lote do mesmo épico/funcionalidade) em fatias verticais ordenadas.
+> **Dica de Ouro**: Sempre inicie uma nova sessão de chat limpa ao começar um novo lote de tickets ou funcionalidade para evitar acúmulo de contexto e lentidão.
+
+Este workflow é utilizado na **Sessão de Implementação** para executar um único ticket ou uma sequência de tickets em fatias verticais.
 
 ---
 
-## 1. Ponto de Entrada & Planejamento da Sessão
-- Identifique o(s) ticket(s) fornecido(s) pelo usuário (ex: `tickets/TICK-001.md` ou uma lista como `tickets/TICK-001.md tickets/TICK-002.md`).
-- Se múltiplos tickets forem fornecidos, ordene-os por dependência lógica e processe-os sequencialmente em loop (um ticket por vez).
+## 1. Ponto de Entrada
+- Identifique o(s) ticket(s) fornecido(s) pelo usuário (ex: `/implement-ticket tickets/TICK-001.md` ou múltiplos tickets como `tickets/TICK-001.md tickets/TICK-002.md`).
+- Se múltiplos tickets forem passados, processe-os sequencialmente em loop (um ticket por vez).
 
 ---
 
 ## 2. Ciclo de Execução (Por Ticket)
 
-Para cada ticket da fila, execute o ciclo completo antes de avançar para o próximo:
+Para cada ticket da lista:
 
-### A. Leitura & Escopo
-- Leia o arquivo do ticket atual para absorver critérios de aceite, regras de negócio e arquivos impactados.
+### A. Leitura do Ticket
+- Leia o arquivo do ticket em `tickets/` para verificar escopo, arquivos afetados e critérios de aceite.
 
-### B. Implementação com TDD & Padrões
-1. **TDD First**:
-   - Aplique a skill `tdd` (ciclo red-green-refactor) para regras de negócio críticas, agregados, validações e serviços de domínio.
-2. **Backend (NestJS)**:
-   - Aplique a skill `nestjs-best-practices` em tickets da API (`apps/api`) e dos workers (`apps/worker`).
-3. **Frontend (Web)**:
-   - Consulte o grafo de referência do Shadcn Admin antes de criar/alterar UI:
-     `cd "$reference_dir" && graphify query "<padrão visual ou de interação>"`
-   - Siga a convenção canônica de `apps/web/src/features/users` (`views/`, `components/`, `hooks/`, `services/`).
-   - Aplique as skills `modern-web-guidance`, `vercel-react-best-practices` e `vercel-composition-patterns`.
-4. **Arquitetura Limpa**:
-   - Use `improve-codebase-architecture` caso identifique oportunidade de simplificar dívida técnica ou desmembrar god nodes tocados pelo ticket.
+### B. Implementação com Testes & Padrões
+1. **TDD**: Aplique a skill `tdd` (ciclo red-green-refactor) para regras de negócio críticas e serviços de domínio.
+2. **Backend**: Aplique `nestjs-best-practices` em tickets da API (`apps/api`) e workers (`apps/worker`).
+3. **Frontend**: Consulte a referência Shadcn (`apps/web/src/features/users`) e aplique `modern-web-guidance`, `vercel-react-best-practices` e `vercel-composition-patterns`.
 
 ### C. Revisão & Remediação
-1. **Revisão de Código**:
-   - Execute a skill `code-review` no diff deste ticket contra a base (avaliando *Standards* e *Spec*).
-2. **Auditoria de UI/UX (se aplicável)**:
-   - Se houver interface web modificada, valide contra `web-design-guidelines`.
-3. **Ajustes & Remediação Imediata**:
-   - Se houver apontamentos de padrões ou divergências de spec, corrija imediatamente e revalide a suíte de testes do ticket.
+1. **Revisão de Código**: Execute `code-review` no diff contra a base.
+2. **Auditoria UI/UX**: Se houver alteração de interface web, valide contra `web-design-guidelines`.
+3. **Ajustes**: Corrija imediatamente qualquer problema apontado no review e garanta que os testes passem.
 
 ### D. Documentação do Ticket
-- Abra o arquivo do ticket em `tickets/` e preencha/atualize a seção `Result`:
-  - Resumo das mudanças implementadas.
-  - Testes executados e status de aprovação.
-  - Decisões técnicas ou desvios em relação à spec original.
-- Se houver mais tickets na fila da sessão, avance para o próximo ticket e repita o ciclo (A → B → C → D).
+- Atualize a seção `Result` no arquivo do próprio ticket com o resumo do que foi entregue e os testes executados.
+- Avance para o próximo ticket da fila (se houver).
 
 ---
 
-## 3. Finalização da Sessão (Pós-Lote)
-Quando todos os tickets da sessão forem concluídos:
-1. **Validação Global**: Execute a suíte de testes dos módulos tocados para garantir que não há regressões cruzadas.
-2. **Sincronização do Grafo**: Execute `graphify update .` para atualizar o grafo de conhecimento com todo o código entregue na sessão.
+## 3. Finalização da Sessão (Sincronização Única)
+- Após concluir todos os tickets do lote da sessão:
+  - **Sincronização Única**: Execute `graphify update .` **apenas 1 vez** ao término da sessão inteira (não execute a cada micro-alteração de arquivo).
